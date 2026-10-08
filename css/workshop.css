@@ -1,0 +1,1085 @@
+/**
+ * AgriTwin - Workshop Menu (Age of Empires II Diegetic Style)
+ * Styles for the Workshop Overlay, Sprites, Tooltips, Admin Panel & Interactive Charts
+ */
+
+/* ─── Workshop Fullscreen Overlay ─── */
+.workshop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: #080c14;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workshop-overlay.active {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* ─── Workshop Header Bar (Permanently Removed) ─── */
+.workshop-header {
+  display: none !important;
+}
+
+.workshop-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.workshop-brand-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #27180e;
+  border: 1px solid rgba(217, 119, 6, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.workshop-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #fbbf24;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.workshop-badge {
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #3b2314;
+  color: #fde68a;
+  border: 1px solid #b45309;
+}
+
+.workshop-subtitle {
+  font-size: 11px;
+  color: #d6c4a8;
+  font-style: italic;
+  font-family: Georgia, serif;
+}
+
+/* ─── Central Engines Dock ─── */
+.workshop-engines-dock {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(32, 21, 14, 0.95);
+  padding: 4px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(120, 53, 15, 0.7);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.engine-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.engine-pill:first-child {
+  padding-right: 14px;
+  border-right: 1px solid rgba(120, 53, 15, 0.6);
+}
+
+.engine-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse-engine 2s infinite ease-in-out;
+}
+
+.engine-status-dot.cyan {
+  background-color: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+
+.engine-status-dot.amber {
+  background-color: #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
+}
+
+@keyframes pulse-engine {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.engine-label {
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.engine-value {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.engine-value.cyan { color: #67e8f9; }
+.engine-value.amber { color: #fde68a; }
+
+/* ─── Actions Button Group ─── */
+.workshop-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-workshop-action {
+  background: #2b180d;
+  color: #fde68a;
+  border: 1px solid #b45309;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: Georgia, serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.btn-workshop-action:hover {
+  background: #3f2413;
+  border-color: #f59e0b;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-workshop-action.active {
+  background: #b45309;
+  color: #fff;
+  border-color: #fef3c7;
+}
+
+.btn-workshop-primary {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  color: #ffffff;
+  border: 1px solid rgba(52, 211, 153, 0.7);
+  box-shadow: 0 2px 8px rgba(4, 120, 87, 0.4);
+}
+
+.btn-workshop-primary:hover {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  border-color: #6ee7b7;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-workshop-close {
+  background: transparent;
+  color: #d6c4a8;
+  border: 1px solid rgba(120, 53, 15, 0.5);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-workshop-close:hover {
+  background: #451a03;
+  color: #ffffff;
+  border-color: #b45309;
+}
+
+/* ─── Diegetic Scene Area ─── */
+.workshop-stage-container {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  height: calc(100vh - 56px);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.workshop-stage-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  height: 100%;
+  max-height: 1080px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workshop-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  filter: contrast(1.02) brightness(1.0);
+}
+
+.workshop-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 45%, transparent 68%, rgba(12, 7, 4, 0.45) 100%);
+}
+
+/* ─── Interactive Sprites (AoE II Physics & Glow) ─── */
+.workshop-sprite-anchor {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  transform-origin: top center;
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 300ms ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.65));
+}
+
+.workshop-sprite-anchor:hover {
+  z-index: 30;
+  filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.85)) brightness(1.18);
+}
+
+.workshop-sprite-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hang & Sway Variations for each object */
+.workshop-sprite-anchor.sprite-a:hover .workshop-sprite-img { transform: scale(1.06) rotate(-2.5deg); }
+.workshop-sprite-anchor.sprite-b:hover .workshop-sprite-img { transform: scale(1.06) rotate(1.8deg); }
+.workshop-sprite-anchor.sprite-c:hover .workshop-sprite-img { transform: scale(1.06) rotate(-1.2deg); }
+.workshop-sprite-anchor.sprite-d:hover .workshop-sprite-img { transform: scale(1.06) rotate(3.0deg); }
+.workshop-sprite-anchor.sprite-e:hover .workshop-sprite-img { transform: scale(1.06) rotate(-2.0deg); }
+.workshop-sprite-anchor.sprite-f:hover .workshop-sprite-img { transform: scale(1.06) rotate(2.2deg); }
+.workshop-sprite-anchor.sprite-map:hover .workshop-sprite-img { transform: scale(1.08) rotate(1.5deg); }
+
+.workshop-sprite-anchor.sprite-map .workshop-sprite-img {
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), 0 0 15px rgba(245, 158, 11, 0.25);
+  background: transparent;
+  object-fit: cover;
+}
+
+.workshop-sprite-anchor.sprite-map:hover .workshop-sprite-img {
+  border-color: #fde047;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.9), 0 0 25px rgba(251, 191, 36, 0.6);
+}
+
+/* Beacon Ping Dot */
+.sprite-ping-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.8;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* ─── Diegetic Tooltip (Wood & Brass Cartela) ─── */
+.workshop-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translateX(-50%) translateY(8px);
+  width: 270px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 40;
+}
+
+.workshop-sprite-anchor:hover .workshop-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-cartela {
+  background: rgba(34, 19, 10, 0.96);
+  border: 2px solid #b45309;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fde68a;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(251, 191, 36, 0.3);
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+
+.tooltip-cartela::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 9px solid #b45309;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(120, 53, 15, 0.6);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+.tooltip-code {
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 800;
+  color: #fbbf24;
+  text-transform: uppercase;
+}
+
+.tooltip-category {
+  font-size: 9px;
+  font-family: Georgia, serif;
+  background: #451a03;
+  color: #fde68a;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #92400e;
+}
+
+.tooltip-title {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+}
+
+.tooltip-desc {
+  font-size: 10.5px;
+  color: #e6ccb2;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.tooltip-footer {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(120, 53, 15, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  font-family: Georgia, serif;
+}
+
+.tooltip-callout {
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+/* Subtle hanging badge under object */
+.sprite-hanging-label {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.sprite-hanging-label span {
+  display: inline-block;
+  background: rgba(31, 18, 8, 0.9);
+  border: 1px solid rgba(146, 64, 14, 0.8);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: Georgia, serif;
+  font-weight: 700;
+  color: #fde68a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* ─── Regla Visual Unificada AoE II: Cartela de Campaña Persistente (Galpón 3D) ─── */
+.aoe-unified-station-badge {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 148px;
+  background: rgba(13, 19, 34, 0.94);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: 10px;
+  padding: 5px 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(251, 191, 36, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  z-index: 35;
+}
+.workshop-sprite-anchor:hover .aoe-unified-station-badge,
+.aoe-unified-station-badge:hover {
+  transform: translateX(-50%) translateY(-2px) scale(1.05);
+  border-color: #fde047;
+  background: rgba(20, 27, 45, 0.98);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.95), 0 0 18px rgba(245, 158, 11, 0.6);
+}
+.aoe-badge-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #94a3b8;
+  margin-bottom: 2px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 0.02em;
+}
+.aoe-badge-code {
+  color: #fde68a;
+}
+.aoe-badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 6px #fbbf24;
+}
+.aoe-badge-title {
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.aoe-badge-metric {
+  font-family: monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fbbf24;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Admin & Master Modal Panel (Panel Maestro Predial) ─── */
+.workshop-admin-panel {
+  width: 100%;
+  max-width: 940px;
+  background: #190f09;
+  border: 2px solid #b45309;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+  animation: zoomModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 70;
+}
+
+.admin-panel-header {
+  padding: 14px 20px;
+  background: #27150c;
+  border-bottom: 2px solid #78350f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #180d07;
+  border-bottom: 1px solid rgba(120, 53, 15, 0.6);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.admin-tab-btn {
+  padding: 6px 12px;
+  background: rgba(25, 14, 8, 0.7);
+  border: 1px solid rgba(120, 53, 15, 0.5);
+  border-radius: 6px;
+  color: #cbd5e1;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.admin-tab-btn:hover {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.admin-tab-btn.active {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.25);
+  border-color: #fbbf24;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.admin-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #e6ccb2;
+}
+
+/* File Tree Styling */
+.file-tree-container {
+  background: #0e0805;
+  border: 1px solid #451a03;
+  border-radius: 10px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #cbd5e1;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.file-tree-node {
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.file-tree-node:hover {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.file-tree-node.folder {
+  color: #fde68a;
+  font-weight: 700;
+}
+
+.file-tree-node.file {
+  color: #94a3b8;
+}
+
+.file-tree-children {
+  padding-left: 14px;
+  margin-left: 6px;
+  border-left: 1px solid rgba(120, 53, 15, 0.4);
+}
+
+/* Station Modal Card */
+.station-modal-container {
+  width: 100%;
+  max-width: 740px;
+  background: #190f09;
+  border: 2px solid #b45309;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+  animation: zoomModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes zoomModal {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ─── Diegetic Project Campaign Board (AoE II Style) ─── */
+.workshop-campaign-board {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+/* Hanging chains from upper timber beams */
+.board-hanging-chains {
+  width: 76%;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 32px;
+  pointer-events: none;
+}
+
+.hanging-chain-link {
+  width: 9px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    180deg,
+    #5c3a21 0px,
+    #854d0e 3px,
+    #2c180e 6px,
+    #170c06 9px
+  );
+  border: 1px solid #1a0e07;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7), inset 1px 1px 1px rgba(245, 158, 11, 0.3);
+}
+
+.board-wood-plaque {
+  position: relative;
+  background: rgba(13, 19, 34, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 16px 22px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.85),
+    0 0 35px rgba(245, 158, 11, 0.15);
+  width: 600px;
+  max-width: 94vw;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Brass Rivets on the corners */
+.plaque-rivet {
+  display: none;
+}
+
+.board-top-ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.ribbon-icon {
+  font-size: 11px;
+}
+
+.ribbon-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+
+.board-header {
+  margin-bottom: 8px;
+}
+
+.board-farm-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.board-farm-title {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.board-farm-location {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.board-farm-location .bullet {
+  color: #f59e0b;
+}
+
+.board-pills-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.board-stat-pill {
+  background: rgba(18, 10, 5, 0.85);
+  border: 1px solid rgba(120, 53, 15, 0.6);
+  border-radius: 6px;
+  padding: 3px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+}
+
+.pill-label {
+  color: #94a3b8;
+  font-family: monospace;
+  text-transform: uppercase;
+  font-size: 8.5px;
+}
+
+.pill-val {
+  font-weight: 700;
+  color: #f3f4f6;
+  font-family: monospace;
+}
+
+.pill-val.emerald { color: #34d399; }
+.pill-val.amber { color: #fbbf24; }
+.pill-val.cyan { color: #38bdf8; }
+
+/* Primary Game Modes Grid */
+.board-primary-action-wrap {
+  margin-bottom: 10px;
+}
+
+.board-game-modes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 580px) {
+  .board-game-modes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-board-launch {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #065f46 0%, #047857 45%, #059669 100%);
+  border: 2px solid #34d399;
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 
+    0 6px 20px rgba(4, 120, 87, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-board-launch.mode-predial {
+  background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+  border: 2px solid #34d399;
+  box-shadow: 0 4px 16px rgba(4, 120, 87, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn-board-launch.mode-predial:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 50%, #10b981 100%);
+  border-color: #6ee7b7;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.7), 0 0 16px rgba(52, 211, 153, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn-board-launch.mode-vecinal {
+  background: linear-gradient(135deg, #78350f 0%, #b45309 50%, #d97706 100%);
+  border: 2px solid #facc15;
+  box-shadow: 0 4px 16px rgba(180, 83, 9, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn-board-launch.mode-vecinal:hover {
+  background: linear-gradient(135deg, #92400e 0%, #d97706 50%, #f59e0b 100%);
+  border-color: #fef08a;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.7), 0 0 16px rgba(251, 191, 36, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn-launch-glow.gold {
+  background: radial-gradient(circle at 50% 50%, rgba(250, 204, 21, 0.3) 0%, transparent 70%);
+}
+
+.btn-mode-badge {
+  font-family: monospace;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  display: inline-block;
+}
+
+.btn-mode-badge.predial {
+  background: rgba(6, 78, 59, 0.85);
+  color: #a7f3d0;
+  border: 1px solid #10b981;
+}
+
+.btn-mode-badge.vecinal {
+  background: rgba(69, 26, 3, 0.85);
+  color: #fef08a;
+  border: 1px solid #eab308;
+}
+
+.btn-board-launch:hover {
+  border-color: #6ee7b7;
+  box-shadow: 
+    0 8px 24px rgba(16, 185, 129, 0.7),
+    0 0 16px rgba(52, 211, 153, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn-board-launch:active {
+  transform: translateY(1px);
+}
+
+.btn-launch-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.btn-launch-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex: 1;
+  margin-left: 12px;
+}
+
+.btn-launch-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.btn-launch-sub {
+  font-size: 10px;
+  color: #d1fae5;
+  font-family: 'Outfit', sans-serif;
+  opacity: 0.9;
+}
+
+.btn-launch-arrow {
+  font-size: 16px;
+  color: #fef08a;
+  transition: transform 0.2s ease;
+}
+
+.btn-board-launch:hover .btn-launch-arrow {
+  transform: translateX(4px);
+}
+
+/* Secondary Actions (New, Open, Import GIS) */
+.board-secondary-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.btn-board-sub {
+  background: rgba(30, 17, 10, 0.9);
+  border: 1px solid #78350f;
+  border-radius: 8px;
+  padding: 7px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fde68a;
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.btn-board-sub:hover {
+  background: #3f2212;
+  border-color: #f59e0b;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+}
+
+.sub-btn-icon {
+  font-size: 13px;
+}
+
+.sub-btn-label {
+  white-space: nowrap;
+}
+
+.board-bottom-hint {
+  font-size: 9.5px;
+  color: #d6c4a8;
+  font-family: Georgia, serif;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.board-bottom-hint strong {
+  color: #fbbf24;
+}
+
+/* ─── Admin Panel Semantic Utilities ─── */
+.admin-card-base {
+  background: #24130a;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(120, 53, 15, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-card-dark {
+  background: #180d06;
+  border: 1px solid rgba(120, 53, 15, 0.7);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-card-nested {
+  background: #120703;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.admin-subnav-btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-subnav-btn.active {
+  border: 1px solid #fbbf24;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+}
+
+.admin-subnav-btn:not(.active) {
+  border: 1px solid rgba(120, 53, 15, 0.5);
+  background: rgba(25, 14, 8, 0.7);
+  color: #cbd5e1;
+}
+
+.admin-subnav-btn:hover:not(.active) {
+  background: rgba(245, 158, 11, 0.1);
+  color: #ffffff;
+}
+
+.admin-pill-tag {
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}

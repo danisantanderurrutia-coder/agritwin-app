@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriTwin • Vista Vecinal y Predios Contiguos (Catan Edition)</title>
+  <link rel="icon" type="image/jpeg" href="assets/ui/logo_agritwin_regional.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0c0805;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-cinzel-dec { font-family: 'Cinzel Decorative', cursive; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+
+    /* Estética Catan & Madera Fina */
+    .catan-wood-panel {
+      background: linear-gradient(135deg, rgba(28, 17, 11, 0.96), rgba(18, 11, 7, 0.98));
+      border: 2px solid #854d0e;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9), inset 0 1px 2px rgba(254, 240, 138, 0.25);
+    }
+
+    .civ-gold-panel {
+      background: linear-gradient(135deg, rgba(22, 28, 18, 0.95), rgba(11, 16, 9, 0.98));
+      border: 2px solid #ca8a04;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9), inset 0 1px 3px rgba(254, 240, 138, 0.3);
+    }
+
+    .catan-card {
+      background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+      color: #451a03;
+      border: 2px solid #d97706;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 2px #fff;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .catan-card:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 8px 18px rgba(245, 158, 11, 0.5);
+    }
+
+    .brass-badge {
+      background: linear-gradient(180deg, #ca8a04 0%, #854d0e 100%);
+      color: #fef08a;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      border: 1px solid #fef08a;
+    }
+
+    .lens-active {
+      background: linear-gradient(180deg, #d97706 0%, #78350f 100%);
+      border-color: #fef08a !important;
+      color: #fff !important;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+    }
+
+    .dice-cube {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(145deg, #fffbeb, #fef3c7);
+      border: 2px solid #b45309;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.6), inset 0 1px 3px #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #78350f;
+      transition: transform 0.4s ease;
+    }
+
+    @keyframes rollShake {
+      0% { transform: rotate(0deg) scale(1); }
+      20% { transform: rotate(-25deg) scale(1.15); }
+      40% { transform: rotate(20deg) scale(1.1); }
+      60% { transform: rotate(-15deg) scale(1.05); }
+      80% { transform: rotate(10deg) scale(1.02); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    .rolling-dice {
+      animation: rollShake 0.6s ease-in-out;
+    }
+
+    /* Fondo de Mesa de Madera Catan */
+    .catan-tabletop {
+      background: radial-gradient(circle at center, #1e130c 0%, #0d0805 100%);
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0a0604] select-none">
+
+  <!-- ==================== HEADER SUPERIOR CATAN EDITION ==================== -->
+  <header class="h-16 bg-[#160d08]/95 border-b-2 border-amber-600/70 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 z-40 fixed top-0 left-0 right-0 shadow-2xl">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl overflow-hidden border-2 border-amber-400 shadow-md shrink-0 bg-[#0c1810]">
+        <img src="assets/catan/parchment_board.jpg" alt="Mapa Catan" class="w-full h-full object-cover">
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-cinzel font-black tracking-wider text-amber-300 text-sm sm:text-base">MODO 2 • PREDIOS VECINOS</span>
+          <span class="brass-badge text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider hidden sm:inline-block">CATAN COLLECTOR'S 3D</span>
+        </div>
+        <p class="text-[10px] sm:text-[11px] text-amber-200/80 font-mono">Fundo Estero Colliguay & Predios Vecinos • Sector Las Camelias / Retiro (36°12′S, 71°36′O)</p>
+      </div>
+    </div>
+
+    <!-- Barra de Recursos Catan (Resource Deck Bar) -->
+    <div class="hidden xl:flex items-center gap-3 px-4 py-1 rounded-xl bg-black/70 border border-amber-600/50 font-mono text-xs">
+      <div class="flex items-center gap-1.5" title="Trigo Candeal / Cereal">
+        <span class="text-amber-400 font-bold text-sm">🌾</span>
+        <span class="font-bold text-amber-200" id="deckResWheat">14</span>
+      </div>
+      <span class="text-amber-800">•</span>
+      <div class="flex items-center gap-1.5" title="Lana & Pastoreo PRV">
+        <span class="text-emerald-400 font-bold text-sm">🐑</span>
+        <span class="font-bold text-emerald-200" id="deckResWool">9</span>
+      </div>
+      <span class="text-amber-800">•</span>
+      <div class="flex items-center gap-1.5" title="Madera Esclerófila & Poda">
+        <span class="text-amber-600 font-bold text-sm">🌲</span>
+        <span class="font-bold text-amber-200" id="deckResLumber">12</span>
+      </div>
+      <span class="text-amber-800">•</span>
+      <div class="flex items-center gap-1.5" title="Uva Patrimonial País / Arcilla">
+        <span class="text-purple-400 font-bold text-sm">🍇</span>
+        <span class="font-bold text-purple-200" id="deckResWine">8</span>
+      </div>
+      <span class="text-amber-800">•</span>
+      <div class="flex items-center gap-1.5" title="Agua Keyline / Minerales">
+        <span class="text-cyan-400 font-bold text-sm">💧</span>
+        <span class="font-bold text-cyan-200" id="deckResWater">18.5k m³</span>
+      </div>
+    </div>
+
+    <!-- Navegación & Acciones -->
+    <div class="flex items-center gap-2">
+      <!-- Selector de Estilo: Catan 3D vs GIS Vector -->
+      <button id="btnToggleStyle" onclick="toggleBoardStyle()" class="px-3 py-1.5 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-600/50 text-xs font-bold font-mono transition-all flex items-center gap-1.5" title="Alternar entre fichas 3D de Catan y mapa vectorial">
+        <span id="styleBtnIcon">🎲</span>
+        <span id="styleBtnText">Estilo Catan 3D</span>
+      </button>
+
+      <!-- Botón Volver al Predio -->
+      <button onclick="if(window.parent && window.parent !== window && window.parent.document.getElementById('vecinosCatanModal')) { window.parent.document.getElementById('vecinosCatanModal').style.display = 'none'; } else { window.location.href = 'index.html#predio'; }" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-800 to-emerald-950 hover:from-emerald-700 hover:to-emerald-900 text-amber-300 border-2 border-emerald-400/70 text-xs font-mono font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>🏡 Volver a Fundo Colliguay</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== VISTA PRINCIPAL: TABLERO DE CATÁN ==================== -->
+  <main class="w-full min-h-screen pt-16 flex flex-col lg:flex-row bg-[#080503]">
+    
+    <!-- Lienzo Principal del Tablero de Juego -->
+    <div class="flex-1 relative h-[620px] lg:h-[calc(100vh-4rem)] catan-tabletop overflow-hidden flex items-center justify-center">
+      
+      <!-- Canvas interactivo con Texturas 3D de Catan -->
+      <canvas id="regionalMapCanvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+
+      <!-- BARRA DE LENTES TÁCTICOS CATAN (Bottom Left) -->
+      <div class="absolute bottom-5 left-5 z-20 flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-black/85 backdrop-blur-md border-2 border-amber-600/60 shadow-2xl">
+        <span class="text-[10px] font-cinzel font-bold text-amber-400 px-2 uppercase tracking-wider block">Lente:</span>
+        
+        <button onclick="setLens('lulc')" id="lensBtn_lulc" class="px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 lens-active">
+          <span>🎲 Biomas Catan</span>
+        </button>
+
+        <button onclick="setLens('fire')" id="lensBtn_fire" class="px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all text-slate-300 hover:text-white flex items-center gap-1.5">
+          <span>🔥 Riesgo Fuego</span>
+        </button>
+
+        <button onclick="setLens('flood')" id="lensBtn_flood" class="px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all text-slate-300 hover:text-white flex items-center gap-1.5">
+          <span>🌊 Crecida Fluvial</span>
+        </button>
+
+        <button onclick="setLens('coupling')" id="lensBtn_coupling" class="px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all text-emerald-300 hover:text-white bg-emerald-950/60 border border-emerald-500/40 flex items-center gap-1.5">
+          <span>🔗 Acople Colliguay</span>
+        </button>
+      </div>
+
+      <!-- WIDGET DIEGÉTICO DE DADOS DE MADERA (Bottom Center) -->
+      <div class="absolute bottom-5 right-5 lg:right-[460px] z-20 flex items-center gap-3 p-3 rounded-2xl catan-wood-panel shadow-2xl">
+        <div class="flex items-center gap-2">
+          <div id="dice1" class="dice-cube font-mono">⚂</div>
+          <div id="dice2" class="dice-cube font-mono">⚄</div>
+        </div>
+
+        <button onclick="rollCatanDice()" id="btnRollDice" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-cinzel font-black text-xs uppercase tracking-wider border border-amber-300 shadow-lg active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+          <span>🎲 Tirar Dados</span>
+        </button>
+      </div>
+
+      <!-- BANNER DE RESULTADO DE TIRADA -->
+      <div id="diceResultBanner" class="absolute top-20 left-1/2 -translate-x-1/2 z-30 px-5 py-2.5 rounded-2xl bg-black/90 border-2 border-amber-400 text-amber-200 font-mono text-xs shadow-2xl transition-all opacity-0 pointer-events-none flex items-center gap-2">
+        <span class="text-lg">🌾</span>
+        <span id="diceResultText">¡Tirada: 8! Fundo Estero Colliguay produce +2 Trigo Candeal</span>
+      </div>
+
+      <!-- HUD Flotante Superior: Viento y Caudal -->
+      <div class="absolute top-4 left-4 right-4 flex flex-wrap items-center justify-between gap-3 pointer-events-none z-20">
+        <div class="p-2.5 rounded-2xl bg-black/80 backdrop-blur-md border border-amber-500/40 pointer-events-auto flex items-center gap-3 font-mono text-xs">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-base">
+            💨
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 block font-sans">Viento Puelche (Cordillera):</span>
+            <span class="font-bold text-amber-300" id="hudWindVal">E-SE 38 km/h (Cálido y Seco)</span>
+          </div>
+        </div>
+
+        <div class="p-2.5 rounded-2xl bg-black/80 backdrop-blur-md border border-cyan-500/40 pointer-events-auto flex items-center gap-3 font-mono text-xs">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-base">
+            💧
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 block font-sans">Caudal Río Longaví:</span>
+            <span class="font-bold text-cyan-400" id="hudFlowVal">185 m³/s</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles de Zoom y Centrado -->
+      <div class="absolute top-20 right-4 z-20 flex flex-col gap-1.5 p-1 rounded-xl bg-black/80 border border-amber-500/30">
+        <button onclick="zoomMap(1.2)" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold flex items-center justify-center text-sm" title="Acercar mapa">+</button>
+        <button onclick="zoomMap(0.8)" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold flex items-center justify-center text-sm" title="Alejar mapa">-</button>
+        <button onclick="resetMap()" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold flex items-center justify-center text-xs" title="Centrar en Fundo Colliguay">🎯</button>
+      </div>
+
+      <!-- ESTANDARTE FLOTANTE DE PREDIO INSIGNE -->
+      <div id="estateBanner" class="absolute top-20 left-4 z-20 max-w-xs civ-gold-panel p-3.5 rounded-2xl space-y-2 pointer-events-auto border-2 border-emerald-400/80 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-amber-600/40 pb-1.5">
+          <div class="flex items-center gap-2">
+            <span class="text-base">🏰</span>
+            <div>
+              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold block w-fit">
+                TU PREDIO CENTRAL [Ficha 8]
+              </span>
+              <h4 class="font-cinzel font-black text-amber-300 text-xs">Fundo Estero Colliguay</h4>
+            </div>
+          </div>
+          <button onclick="document.getElementById('estateBanner').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm">&times;</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-1.5 font-mono text-[10px]">
+          <div class="p-1.5 rounded-lg bg-black/60 border border-amber-900/60">
+            <span class="text-slate-400 block text-[8px]">Superficie:</span>
+            <strong class="text-white">12.8 ha</strong>
+          </div>
+          <div class="p-1.5 rounded-lg bg-black/60 border border-amber-900/60">
+            <span class="text-slate-400 block text-[8px]">Humedad Suelo:</span>
+            <strong class="text-cyan-400">37.2% (Óptimo)</strong>
+          </div>
+          <div class="p-1.5 rounded-lg bg-black/60 border border-amber-900/60">
+            <span class="text-slate-400 block text-[8px]">Tranque Keyline:</span>
+            <strong class="text-emerald-400">18.500 m³</strong>
+          </div>
+          <div class="p-1.5 rounded-lg bg-black/60 border border-amber-900/60">
+            <span class="text-slate-400 block text-[8px]">Amortiguación:</span>
+            <strong class="text-amber-300">-3.2% Pico Crecida</strong>
+          </div>
+        </div>
+
+        <button onclick="if(window.parent && window.parent !== window && window.parent.document.getElementById('vecinosCatanModal')) { window.parent.document.getElementById('vecinosCatanModal').style.display = 'none'; } else { window.location.href = 'index.html#predio'; }" class="w-full py-1.5 px-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-cinzel font-black text-[10px] uppercase tracking-wider flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer">
+          <span>🚀 Entrar al Gemelo 3D Predial</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- PANEL LATERAL DE GOBERNANZA & CONSTRUCCIÓN CATAN -->
+    <aside class="w-full lg:w-[440px] catan-wood-panel p-5 overflow-y-auto max-h-screen space-y-5 text-slate-200 shadow-2xl">
+      
+      <!-- Selector de Sub-Vistas -->
+      <div class="grid grid-cols-4 gap-1 p-1 rounded-xl bg-black/60 border border-amber-600/40 font-mono text-[11px] font-bold">
+        <button onclick="setSimTab('carto')" id="tabBtn_carto" class="py-2 rounded-lg bg-amber-800 text-white text-center">🎲 Casillas</button>
+        <button onclick="setSimTab('build')" id="tabBtn_build" class="py-2 rounded-lg text-slate-400 hover:text-white text-center">🛠️ Obras</button>
+        <button onclick="setSimTab('fire')" id="tabBtn_fire" class="py-2 rounded-lg text-slate-400 hover:text-white text-center">🔥 FWI</button>
+        <button onclick="setSimTab('flood')" id="tabBtn_flood" class="py-2 rounded-lg text-slate-400 hover:text-white text-center">🌊 TWI</button>
+      </div>
+
+      <!-- SECCIÓN A: INSPECTOR DE CASILLAS Y BIOMAS (LULC) -->
+      <div id="subView_carto" class="space-y-4">
+        <div class="space-y-1">
+          <h3 class="text-sm font-bold font-cinzel text-amber-300">Dossier de Casilla Catan</h3>
+          <p class="text-xs text-amber-100/70 font-serif">Haz clic sobre cualquier hexágono de madera para inspeccionar su ficha de dados y recursos.</p>
+        </div>
+
+        <div id="tileInspectorBox" class="p-4 rounded-2xl bg-black/70 border border-amber-500/40 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-amber-900/60 pb-2">
+            <div>
+              <span class="text-[10px] text-amber-400 uppercase font-bold" id="insHexCoords">Casilla [q: 7, r: 7]</span>
+              <h4 class="text-sm font-cinzel font-black text-amber-200" id="insHexName">Fundo Estero Colliguay</h4>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-[10px]" id="insHexBiome">CAPITAL PREDIAL</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div>
+              <span class="text-slate-400 block text-[9px]">Comuna / Sector:</span>
+              <strong class="text-amber-300" id="insHexComuna">Las Camelias, Retiro</strong>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[9px]">Ficha de Dados:</span>
+              <strong class="text-red-400 font-bold" id="insHexChit">Ficha 8 (•••••)</strong>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[9px]">Piro-Riesgo FWI:</span>
+              <strong class="text-emerald-400" id="insHexFwi">Bajo (18)</strong>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[9px]">Rendimiento al Salir Dado:</span>
+              <strong class="text-lime-400" id="insHexYield">+5 🌾 +4 💧 +3 ⚡</strong>
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-[#1a120c] border border-amber-900/60 text-[11px] text-amber-100/90 font-serif" id="insHexDesc">
+            <strong>⭐ Fundo Estero Colliguay (Tu Predio):</strong> 12.8 ha con Tranque Keyline de 18.500 m³ y red de sensores agro-ecológicos en vivo. Tu diseño de zanjas en contorno e infiltración actúa como esponja hidrológica y barrera cortafuegos para tus vecinos contiguos.
+          </div>
+        </div>
+
+        <!-- Guía de Fichas de Dados del Tablero -->
+        <div class="p-3.5 rounded-xl bg-black/60 border border-amber-800/50 space-y-2 text-xs font-mono">
+          <span class="text-amber-300 font-bold text-[10px] uppercase block">Fichas Clave de Vecinos Contiguos:</span>
+          <div class="space-y-1 text-[11px]">
+            <div class="flex justify-between items-center p-1.5 rounded bg-[#1f150f]">
+              <span>🏰 Fundo Colliguay:</span>
+              <strong class="text-red-400 font-bold">Dado 8 (Rojo)</strong>
+            </div>
+            <div class="flex justify-between items-center p-1.5 rounded bg-[#1f150f]">
+              <span>🚜 Parcela Don Pedro (Ovinos/PRV):</span>
+              <strong class="text-red-400 font-bold">Dado 6 (Rojo)</strong>
+            </div>
+            <div class="flex justify-between items-center p-1.5 rounded bg-[#1f150f]">
+              <span>🍇 Viña Santa Elena (Secano):</span>
+              <strong class="text-amber-300">Dado 5</strong>
+            </div>
+            <div class="flex justify-between items-center p-1.5 rounded bg-[#1f150f]">
+              <span>🪵 Forestal Los Pinos:</span>
+              <strong class="text-amber-300">Dado 9</strong>
+            </div>
+            <div class="flex justify-between items-center p-1.5 rounded bg-[#1f150f]">
+              <span>⚡ Parque Agrovoltaico:</span>
+              <strong class="text-slate-300">Dado 3</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN B: MESA DE CONSTRUCCIÓN COOPERATIVA (CATAN BUILDING) -->
+      <div id="subView_build" class="space-y-4 hidden">
+        <div class="space-y-1">
+          <h3 class="text-sm font-bold font-cinzel text-amber-300">🛠️ Obras Cooperativas Vecinales</h3>
+          <p class="text-xs text-amber-100/70 font-serif">Invierte los recursos cosechados en dados para construir infraestructura regenerativa en la cuenca.</p>
+        </div>
+
+        <div class="space-y-2.5 font-mono text-xs">
+          <!-- Obra 1 -->
+          <div class="p-3 rounded-2xl bg-black/60 border border-amber-700/50 space-y-2">
+            <div class="flex justify-between items-center">
+              <strong class="text-amber-200">🛡️ Faja Cortafuegos de Interfaz</strong>
+              <span class="text-[10px] text-amber-400">Coste: 1🌲 + 1🍇</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-serif">Franja de 45m de bosque nativo esclerófilo (Quillay/Peumo) en el límite con Forestal Los Pinos.</p>
+            <button onclick="buildProject('cortafuegos')" class="w-full py-1.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs uppercase cursor-pointer transition-all">
+              Construir Faja (-1 Madera, -1 Uva)
+            </button>
+          </div>
+
+          <!-- Obra 2 -->
+          <div class="p-3 rounded-2xl bg-black/60 border border-cyan-700/50 space-y-2">
+            <div class="flex justify-between items-center">
+              <strong class="text-cyan-200">💧 Tranque / Abrevadero Keyline</strong>
+              <span class="text-[10px] text-cyan-400">Coste: 1🌲 + 1🌾 + 1🐑</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-serif">Conecta canal de descarga para abastecer los 8 potreros PRV y compartir agua con Don Pedro.</p>
+            <button onclick="buildProject('tranque')" class="w-full py-1.5 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs uppercase cursor-pointer transition-all">
+              Construir Tranque (-1 Madera, -1 Trigo, -1 Lana)
+            </button>
+          </div>
+
+          <!-- Obra 3 -->
+          <div class="p-3 rounded-2xl bg-black/60 border border-emerald-700/50 space-y-2">
+            <div class="flex justify-between items-center">
+              <strong class="text-emerald-200">📡 Sonda LoRaWAN FDR en Parcela Don Pedro</strong>
+              <span class="text-[10px] text-emerald-400">Coste: 1⚡ + 1💧</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-serif">Sonda multinivel a 4 profundidades con enlace al gateway de Fundo Colliguay.</p>
+            <button onclick="buildProject('sonda')" class="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs uppercase cursor-pointer transition-all">
+              Instalar Sonda (-1 Energía, -1 Agua)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN C: SIMULADOR DE INCENDIOS FORESTALES (FWI) -->
+      <div id="subView_fire" class="space-y-4 hidden">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-red-400 font-bold text-sm">
+            <span>🔥</span>
+            <h3 class="font-cinzel text-amber-300">Simulador de Riesgo FWI (Viento Puelche)</h3>
+          </div>
+          <p class="text-xs text-amber-100/70 font-serif">Propagación del fuego desde Forestal Los Pinos hacia la interfaz vecinal de Las Camelias.</p>
+        </div>
+
+        <div class="space-y-3 font-mono text-xs bg-black/70 p-4 rounded-2xl border border-red-950">
+          <div>
+            <div class="flex justify-between mb-1">
+              <span>Temperatura Máxima:</span>
+              <span id="fireTempVal" class="text-amber-400 font-bold">34°C</span>
+            </div>
+            <input type="range" id="sliderTemp" min="20" max="44" value="34" oninput="updateFireSim()" class="w-full accent-amber-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between mb-1">
+              <span>Humedad Relativa:</span>
+              <span id="fireHumVal" class="text-blue-400 font-bold">18%</span>
+            </div>
+            <input type="range" id="sliderHum" min="8" max="60" value="18" oninput="updateFireSim()" class="w-full accent-blue-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between mb-1">
+              <span>Rachas Viento Puelche:</span>
+              <span id="fireWindVal" class="text-red-400 font-bold">38 km/h</span>
+            </div>
+            <input type="range" id="sliderWind" min="5" max="75" value="38" oninput="updateFireSim()" class="w-full accent-red-500">
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-red-950/80 border border-red-600/60 text-xs space-y-1.5 font-mono">
+          <div class="flex justify-between items-center">
+            <span class="text-red-200 font-bold">Índice FWI Comunal Resultante:</span>
+            <span id="fireScoreBadge" class="px-2 py-0.5 rounded bg-red-700 text-white font-black">FWI 48 (MUY ALTO)</span>
+          </div>
+          <p class="text-[11px] text-red-100/90 font-serif">
+            Alerta amarilla CONAF. Cortafuegos nativo de Fundo Colliguay amortigua la velocidad de avance en 45%.
+          </p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN D: SIMULADOR DE CRECIDAS FLUVIALES (TWI) -->
+      <div id="subView_flood" class="space-y-4 hidden">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+            <span>🌊</span>
+            <h3 class="font-cinzel text-amber-300">Simulador de Inundación y Crecidas TWI</h3>
+          </div>
+          <p class="text-xs text-amber-100/70 font-serif">Respuesta hidrológica del Río Longaví ante frentes de mal tiempo cálidos con isoterma 0 alta.</p>
+        </div>
+
+        <div class="space-y-3 font-mono text-xs bg-black/70 p-4 rounded-2xl border border-blue-950">
+          <div>
+            <div class="flex justify-between mb-1">
+              <span>Caudal Río Longaví:</span>
+              <span id="floodFlowSliderVal" class="text-blue-400 font-bold">220 m³/s</span>
+            </div>
+            <input type="range" id="sliderFlow" min="40" max="650" value="220" oninput="updateFloodSim()" class="w-full accent-blue-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between mb-1">
+              <span>Periodo de Retorno (T):</span>
+              <span id="floodReturnVal" class="text-amber-400 font-bold">50 Años</span>
+            </div>
+            <input type="range" id="sliderReturn" min="5" max="100" step="5" value="50" oninput="updateFloodSim()" class="w-full accent-amber-500">
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-cyan-950/80 border border-cyan-600/60 text-xs space-y-1.5 font-mono">
+          <div class="flex justify-between items-center">
+            <span class="text-cyan-200 font-bold">Área Inundable Activa:</span>
+            <span id="floodAreaBadge" class="px-2 py-0.5 rounded bg-cyan-800 text-white font-black">4,280 ha</span>
+          </div>
+          <p class="text-[11px] text-cyan-100/90 font-serif">
+            Anegamiento en sectores bajos de Retiro. El tranque Keyline de Fundo Colliguay amortigua el caudal en 18.500 m³.
+          </p>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ==================== MOTOR DE TABLERO DE CATÁN REAL ==================== -->
+  <script>
+    // Variables de Estado
+    let currentSimTab = 'carto';
+    let currentLens = 'lulc'; // lulc, fire, flood, coupling
+    let isCatanMode = true; // true: 3D textured tiles; false: classic vector GIS
+    let fwiScore = 48;
+    let floodAreaHa = 4280;
+
+    // Recursos del mazo Catan
+    const playerResources = {
+      wheat: 14,
+      wool: 9,
+      lumber: 12,
+      wine: 8,
+      water: 18500
+    };
+
+    // Zoom y Pan del Mapa
+    let zoomLevel = 1.0;
+    let panX = 0;
+    let panY = 0;
+    let isDragging = false;
+    let startDragX = 0;
+    let startDragY = 0;
+
+    // Carga de Texturas 3D de Catan
+    const TILE_TEXTURES = {
+      wheat: new Image(),
+      pasture: new Image(),
+      forest: new Image(),
+      pines: new Image(),
+      vineyard: new Image(),
+      mountain: new Image(),
+      water: new Image(),
+      colliguay: new Image()
+    };
+
+    TILE_TEXTURES.wheat.src = 'assets/catan/tile_wheat.jpg';
+    TILE_TEXTURES.pasture.src = 'assets/catan/tile_pasture.jpg';
+    TILE_TEXTURES.forest.src = 'assets/catan/tile_forest.jpg';
+    TILE_TEXTURES.pines.src = 'assets/catan/tile_pines.jpg';
+    TILE_TEXTURES.vineyard.src = 'assets/catan/tile_vineyard.jpg';
+    TILE_TEXTURES.mountain.src = 'assets/catan/tile_mountain.jpg';
+    TILE_TEXTURES.water.src = 'assets/catan/tile_water.jpg';
+    TILE_TEXTURES.colliguay.src = 'assets/catan/tile_colliguay.jpg';
+
+    let texturesLoadedCount = 0;
+    const totalTextures = Object.keys(TILE_TEXTURES).length;
+    Object.values(TILE_TEXTURES).forEach(img => {
+      img.onload = () => {
+        texturesLoadedCount++;
+        drawRegionalMap();
+      };
+    });
+
+    // Cuadrícula Hexagonal
+    const HEX_RADIUS = 52;
+    const HEX_DATA = [];
+
+    // Fichas de dados auténticas de Catan (letras y números con probabilidades)
+    const CATAN_CHITS = [
+      { num: 5, letter: 'A' },
+      { num: 2, letter: 'B' },
+      { num: 6, letter: 'C' },
+      { num: 3, letter: 'D' },
+      { num: 8, letter: 'E' },
+      { num: 10, letter: 'F' },
+      { num: 9, letter: 'G' },
+      { num: 12, letter: 'H' },
+      { num: 11, letter: 'I' },
+      { num: 4, letter: 'J' },
+      { num: 8, letter: 'K' },
+      { num: 10, letter: 'L' },
+      { num: 9, letter: 'M' },
+      { num: 4, letter: 'N' },
+      { num: 5, letter: 'O' },
+      { num: 6, letter: 'P' },
+      { num: 3, letter: 'Q' },
+      { num: 11, letter: 'R' }
+    ];
+
+    function initHexGrid() {
+      HEX_DATA.length = 0;
+      const cols = 15;
+      const rows = 11;
+      let chitIdx = 0;
+
+      for (let r = 0; r < rows; r++) {
+        for (let q = 0; q < cols; q++) {
+          let biome = 'aluvial_agri';
+          let name = `Valle Triguero [${q},${r}]`;
+          let comuna = 'Parral';
+          let elev = 160 + (q * 14) - (r * 4);
+          let fwi = 25;
+          let yieldStr = '+3 🌾 +2 💧';
+          let isColliguay = false;
+          let diceNumber = null;
+          let chitLetter = null;
+
+          // Cordillera este (Mountain / Ore)
+          if (q >= 11) {
+            biome = 'precordillera';
+            name = `Precordillera Andina [${q},${r}]`;
+            comuna = 'Longaví Este';
+            elev = 480 + (q * 42);
+            yieldStr = '+4 🏔️ +3 💧';
+            diceNumber = (q + r) % 2 === 0 ? 10 : 3;
+          }
+          // Bosque nativo esclerófilo (Lumber)
+          else if (r >= 8 || (q <= 2 && r >= 5)) {
+            biome = 'native_forest';
+            name = `Reserva Esclerófila [${q},${r}]`;
+            comuna = 'Secano Interior';
+            yieldStr = '+3 🌲 +3 🛡️';
+            diceNumber = 11;
+          }
+          // Monocultivo de pino (Timber / Fire Risk)
+          else if (r <= 2 && q <= 7) {
+            biome = 'monoculture';
+            name = `Plantación Pino Insigne [${q},${r}]`;
+            comuna = 'Retiro Norte';
+            fwi = 65;
+            yieldStr = '+4 🪵 -2 💧';
+            diceNumber = 9;
+          }
+          // Río Longaví / Humedal
+          else if ((q === 6 && r <= 5) || (q === 5 && r >= 5 && r <= 8) || (q === 4 && r >= 8)) {
+            biome = 'river_wetland';
+            name = `Ribera Río Longaví [${q},${r}]`;
+            comuna = 'Eje Fluvial';
+            elev = 142;
+            yieldStr = '+5 💧 +1 🐟';
+            diceNumber = 2;
+          }
+
+          // PREDIO CENTRAL: FUNDO ESTERO COLLIGUAY [7, 6]
+          if (q === 7 && r === 6) {
+            biome = 'fundo_colliguay';
+            name = 'Fundo Estero Colliguay (Tu Predio)';
+            comuna = 'Las Camelias, Retiro';
+            elev = 175;
+            isColliguay = true;
+            yieldStr = '+5 🌾 +4 💧 +3 ⚡';
+            fwi = 18;
+            diceNumber = 8; // Número estrella rojo 8
+            chitLetter = '⭐';
+          }
+          // PREDIOS VECINOS CONTIGUOS
+          else if (q === 6 && r === 6) {
+            biome = 'monoculture';
+            name = 'Vecino Oeste: Forestal Los Pinos (Riesgo Fuego)';
+            comuna = 'Las Camelias (Predio Vecino)';
+            elev = 172;
+            fwi = 72;
+            yieldStr = '+4 🪵 -3 💧';
+            diceNumber = 9;
+            chitLetter = 'M';
+          }
+          else if (q === 8 && r === 6) {
+            biome = 'vecino_amigo';
+            name = 'Vecino Este: Parcela Don Pedro (Ovinos & APR)';
+            comuna = 'Las Camelias (Predio Vecino)';
+            elev = 178;
+            fwi = 28;
+            yieldStr = '+4 🐑 +2 💧';
+            diceNumber = 6; // Número estrella rojo 6
+            chitLetter = 'C';
+          }
+          else if (q === 7 && r === 5) {
+            biome = 'vina_patrimonial';
+            name = 'Vecino Norte: Viña Santa Elena (Secano)';
+            comuna = 'Las Camelias (Predio Vecino)';
+            elev = 182;
+            fwi = 32;
+            yieldStr = '+4 🍇 +1 💧';
+            diceNumber = 5;
+            chitLetter = 'A';
+          }
+          else if (q === 7 && r === 7) {
+            biome = 'vecino_amigo';
+            name = 'Vecino Sur: Fundo El Radal (Pastoreo & Forraje)';
+            comuna = 'Camino Bullileo L-751';
+            elev = 168;
+            fwi = 24;
+            yieldStr = '+3 🌾 +3 🐄';
+            diceNumber = 4;
+            chitLetter = 'J';
+          }
+          else if (q === 8 && r === 5) {
+            biome = 'native_forest';
+            name = 'Corredor Biológico: Bosque Nativo Las Camelias';
+            comuna = 'Protección Comunitaria';
+            elev = 188;
+            fwi = 15;
+            yieldStr = '+5 🌲 +4 🛡️';
+            diceNumber = 10;
+            chitLetter = 'F';
+          }
+          else if (q === 6 && r === 7) {
+            biome = 'humedal_retardo';
+            name = 'Humedal de Retardo Keyline & Biofiltro';
+            comuna = 'Amortiguación Fluvial Retiro';
+            elev = 155;
+            fwi = 10;
+            yieldStr = '+5 💧 +4 🛡️';
+            diceNumber = 11;
+            chitLetter = 'I';
+          }
+          else if (q === 8 && r === 7) {
+            biome = 'agrovoltaico';
+            name = 'Parque Agrovoltaico Maule Sur (9.9 kWp)';
+            comuna = 'Cooperativa Las Camelias';
+            elev = 180;
+            fwi = 20;
+            yieldStr = '+5 ⚡ +3 🛡️';
+            diceNumber = 3;
+            chitLetter = 'D';
+          }
+          else if (!diceNumber && (q >= 3 && q <= 10 && r >= 3 && r <= 7)) {
+            const chit = CATAN_CHITS[chitIdx % CATAN_CHITS.length];
+            diceNumber = chit.num;
+            chitLetter = chit.letter;
+            chitIdx++;
+          }
+
+          HEX_DATA.push({
+            q, r,
+            biome,
+            name,
+            comuna,
+            elev,
+            fwi,
+            yieldStr,
+            isColliguay,
+            diceNumber,
+            chitLetter
+          });
+        }
+      }
+    }
+
+    initHexGrid();
+
+    // Canvas setup
+    const canvas = document.getElementById('regionalMapCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(rect.width * dpr);
+      canvas.height = Math.floor(rect.height * dpr);
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+
+      // Centrar en Fundo Colliguay [7, 6]
+      const centerTile = hexToPixel(7, 6, HEX_RADIUS);
+      panX = (rect.width / 2) - centerTile.x * zoomLevel;
+      panY = (rect.height / 2) - centerTile.y * zoomLevel;
+      drawRegionalMap();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('DOMContentLoaded', () => setTimeout(resizeCanvas, 80));
+    window.addEventListener('load', () => setTimeout(resizeCanvas, 120));
+
+    function hexToPixel(q, r, radius) {
+      const x = radius * Math.sqrt(3) * (q + r/2);
+      const y = radius * 3/2 * r;
+      return { x, y };
+    }
+
+    function toggleBoardStyle() {
+      isCatanMode = !isCatanMode;
+      document.getElementById('styleBtnIcon').innerText = isCatanMode ? '🎲' : '🗺️';
+      document.getElementById('styleBtnText').innerText = isCatanMode ? 'Estilo Catan 3D' : 'Estilo GIS Vector';
+      drawRegionalMap();
+    }
+
+    // Dibujado del Tablero de Catan
+    function drawRegionalMap() {
+      if (!canvas || !ctx) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(dpr, dpr);
+
+      // Fondo de mesa de madera
+      ctx.fillStyle = '#0f0a06';
+      ctx.fillRect(0, 0, w, h);
+
+      // Aplicar Pan y Zoom
+      ctx.translate(panX, panY);
+      ctx.scale(zoomLevel, zoomLevel);
+
+      const r = HEX_RADIUS;
+
+      // 1. Dibujar Casillas Hexagonales
+      HEX_DATA.forEach(hex => {
+        const center = hexToPixel(hex.q, hex.r, r);
+        drawHexTile(ctx, center.x, center.y, r, hex);
+      });
+
+      // 2. Dibujar Asentamientos de Madera & Caminos Vecinales
+      drawSettlementsAndRoads(ctx, r);
+
+      // 3. Dibujar Puertos de Comercio Cooperativo (Catan Ports)
+      drawCooperativePorts(ctx, r);
+
+      // 4. Si el lente de fuego está activo, dibujar vectores de viento Puelche
+      if (currentLens === 'fire') {
+        drawFireVectors(ctx, w, h);
+      }
+
+      ctx.restore();
+    }
+
+    function drawHexTile(ctx, x, y, radius, hex) {
+      ctx.save();
+
+      // Hexagon Path
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = 2 * Math.PI / 6 * (i + 0.5);
+        const hx = x + radius * Math.cos(angle);
+        const hy = y + radius * Math.sin(angle);
+        if (i === 0) ctx.moveTo(hx, hy);
+        else ctx.lineTo(hx, hy);
+      }
+      ctx.closePath();
+
+      if (isCatanMode) {
+        // MODO CATAN 3D: Texturas fotorealistas
+        ctx.save();
+        ctx.clip();
+
+        let tex = TILE_TEXTURES.wheat;
+        if (hex.isColliguay) tex = TILE_TEXTURES.colliguay;
+        else if (hex.biome === 'monoculture') tex = TILE_TEXTURES.pines;
+        else if (hex.biome === 'native_forest') tex = TILE_TEXTURES.forest;
+        else if (hex.biome === 'vecino_amigo') tex = TILE_TEXTURES.pasture;
+        else if (hex.biome === 'vina_patrimonial') tex = TILE_TEXTURES.vineyard;
+        else if (hex.biome === 'precordillera') tex = TILE_TEXTURES.mountain;
+        else if (hex.biome === 'river_wetland' || hex.biome === 'humedal_retardo') tex = TILE_TEXTURES.water;
+
+        if (tex && tex.complete && tex.naturalWidth > 0) {
+          const drawSize = radius * 2.3;
+          ctx.drawImage(tex, x - drawSize / 2, y - drawSize / 2, drawSize, drawSize);
+        } else {
+          ctx.fillStyle = getFallbackColor(hex);
+          ctx.fill();
+        }
+
+        // Tintes tácticos de lentes
+        if (currentLens === 'fire') {
+          if (hex.biome === 'monoculture' || hex.fwi > 50) {
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+            ctx.fill();
+          } else if (hex.biome === 'native_forest' || hex.isColliguay) {
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.35)';
+            ctx.fill();
+          }
+        } else if (currentLens === 'flood') {
+          if (hex.biome === 'river_wetland' || hex.biome === 'humedal_retardo' || hex.elev < 155) {
+            ctx.fillStyle = 'rgba(2, 132, 199, 0.5)';
+            ctx.fill();
+          }
+        }
+
+        ctx.restore();
+
+        // Borde biselado de madera física
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = 2 * Math.PI / 6 * (i + 0.5);
+          const hx = x + radius * Math.cos(angle);
+          const hy = y + radius * Math.sin(angle);
+          if (i === 0) ctx.moveTo(hx, hy);
+          else ctx.lineTo(hx, hy);
+        }
+        ctx.closePath();
+
+        if (hex.isColliguay) {
+          ctx.strokeStyle = '#facc15';
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          ctx.strokeStyle = '#fef08a';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        } else {
+          ctx.strokeStyle = '#78350f';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(254, 240, 138, 0.25)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+      } else {
+        // MODO GIS VECTORIAL
+        ctx.fillStyle = getFallbackColor(hex);
+        ctx.fill();
+        ctx.strokeStyle = hex.isColliguay ? '#facc15' : 'rgba(202, 138, 4, 0.3)';
+        ctx.lineWidth = hex.isColliguay ? 3.5 : 1.5;
+        ctx.stroke();
+      }
+
+      // Dibujar Ficha Circular de Dados (Catan Number Chit)
+      if (hex.diceNumber) {
+        drawCatanChit(ctx, x, y, hex.diceNumber, hex.chitLetter, hex.isColliguay);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCatanChit(ctx, x, y, num, letter, isColliguay) {
+      const chitR = 15;
+
+      ctx.save();
+      // Sombra
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = 5;
+      ctx.shadowOffsetY = 2;
+
+      ctx.beginPath();
+      ctx.arc(x, y, chitR, 0, Math.PI * 2);
+      ctx.fillStyle = isColliguay ? '#fef08a' : '#fef3c7'; // Marfil
+      ctx.fill();
+      ctx.restore();
+
+      ctx.strokeStyle = isColliguay ? '#ca8a04' : '#b45309';
+      ctx.lineWidth = isColliguay ? 2 : 1.5;
+      ctx.stroke();
+
+      // Letra arriba
+      if (letter) {
+        ctx.font = '700 7px "JetBrains Mono"';
+        ctx.fillStyle = '#92400e';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(letter, x, y - 7);
+      }
+
+      // Número de dados
+      const isRed = (num === 6 || num === 8);
+      ctx.font = `bold ${isRed ? 14 : 12}px "Plus Jakarta Sans"`;
+      ctx.fillStyle = isRed ? '#dc2626' : '#1e293b';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(num.toString(), x, y + (letter ? 1 : 0));
+
+      // Puntos de probabilidad
+      let dots = 1;
+      if (num === 3 || num === 11) dots = 2;
+      else if (num === 4 || num === 10) dots = 3;
+      else if (num === 5 || num === 9) dots = 4;
+      else if (num === 6 || num === 8) dots = 5;
+
+      const spacing = 3;
+      const startX = x - ((dots - 1) * spacing) / 2;
+      ctx.fillStyle = isRed ? '#dc2626' : '#64748b';
+      for (let i = 0; i < dots; i++) {
+        ctx.beginPath();
+        ctx.arc(startX + i * spacing, y + 8, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function getFallbackColor(hex) {
+      if (hex.isColliguay) return '#065f46';
+      if (hex.biome === 'native_forest') return '#064e3b';
+      if (hex.biome === 'monoculture') return '#78350f';
+      if (hex.biome === 'aluvial_agri') return '#14532d';
+      if (hex.biome === 'river_wetland') return '#0e7490';
+      if (hex.biome === 'precordillera') return '#1c1917';
+      if (hex.biome === 'vecino_amigo') return '#15803d';
+      if (hex.biome === 'agrovoltaico') return '#38220f';
+      if (hex.biome === 'vina_patrimonial') return '#3b0764';
+      if (hex.biome === 'humedal_retardo') return '#0c4a6e';
+      return '#0a1d12';
+    }
+
+    // Dibujar Asentamientos de Madera & Caminos de Conexión
+    function drawSettlementsAndRoads(ctx, r) {
+      const colliguay = hexToPixel(7, 6, r);
+      const donPedro = hexToPixel(8, 6, r);
+      const santaElena = hexToPixel(7, 5, r);
+      const losPinos = hexToPixel(6, 6, r);
+
+      // Caminos de madera / Setos vivos entre predios
+      ctx.save();
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+
+      // Camino Colliguay - Don Pedro
+      ctx.beginPath();
+      ctx.moveTo(colliguay.x + r * 0.5, colliguay.y);
+      ctx.lineTo(donPedro.x - r * 0.5, donPedro.y);
+      ctx.stroke();
+
+      // Camino Colliguay - Santa Elena
+      ctx.beginPath();
+      ctx.moveTo(colliguay.x, colliguay.y - r * 0.5);
+      ctx.lineTo(santaElena.x, santaElena.y + r * 0.5);
+      ctx.stroke();
+
+      // Línea interior de camino
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+
+      // Casitas de madera en vértices
+      drawWoodHouse(ctx, donPedro.x, donPedro.y - r * 0.75, '#dc2626', 'DON PEDRO');
+      drawWoodHouse(ctx, santaElena.x + r * 0.65, santaElena.y - r * 0.4, '#9333ea', 'STA. ELENA');
+    }
+
+    function drawWoodHouse(ctx, x, y, color, label) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 4;
+
+      // Base casa
+      ctx.fillStyle = color;
+      ctx.fillRect(x - 7, y - 5, 14, 10);
+      // Techo dos aguas
+      ctx.beginPath();
+      ctx.moveTo(x - 9, y - 5);
+      ctx.lineTo(x, y - 13);
+      ctx.lineTo(x + 9, y - 5);
+      ctx.closePath();
+      ctx.fillStyle = '#fef3c7';
+      ctx.fill();
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Etiqueta
+      ctx.font = 'bold 8px "Cinzel"';
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y + 14);
+      ctx.restore();
+    }
+
+    // Dibujar Puertos de Comercio Cooperativo (Catan Trading Ports)
+    function drawCooperativePorts(ctx, r) {
+      const portTiles = [
+        { q: 4, r: 4, label: '3:1 PUERTO RETIRO' },
+        { q: 9, r: 4, label: '2:1 TRIGO MAULE' },
+        { q: 8, r: 8, label: '2:1 VINO PAÍS' },
+        { q: 5, r: 8, label: '2:1 OVINO PRV' }
+      ];
+
+      portTiles.forEach(p => {
+        const pt = hexToPixel(p.q, p.r, r);
+        ctx.save();
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#ca8a04';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(pt.x - 45, pt.y - r - 12, 90, 18, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = 'bold 8px "Cinzel"';
+        ctx.fillStyle = '#fef08a';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.label, pt.x, pt.y - r - 3);
+        ctx.restore();
+      });
+    }
+
+    function drawFireVectors(ctx, w, h) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(251, 146, 60, 0.6)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 5; i++) {
+        const arrowY = 140 + i * 95;
+        ctx.beginPath();
+        ctx.moveTo(w * 0.85, arrowY);
+        ctx.lineTo(w * 0.15, arrowY + 25);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(251, 146, 60, 0.8)';
+        ctx.beginPath();
+        ctx.arc(w * 0.15, arrowY + 25, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Tirar Dados Catan (2d6)
+    function rollCatanDice() {
+      const d1 = Math.floor(Math.random() * 6) + 1;
+      const d2 = Math.floor(Math.random() * 6) + 1;
+      const total = d1 + d2;
+
+      const diceUnicode = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+      const dice1El = document.getElementById('dice1');
+      const dice2El = document.getElementById('dice2');
+
+      dice1El.classList.add('rolling-dice');
+      dice2El.classList.add('rolling-dice');
+
+      setTimeout(() => {
+        dice1El.innerText = diceUnicode[d1];
+        dice2El.innerText = diceUnicode[d2];
+        dice1El.classList.remove('rolling-dice');
+        dice2El.classList.remove('rolling-dice');
+
+        handleDiceYield(total);
+      }, 400);
+    }
+
+    function handleDiceYield(diceTotal) {
+      const banner = document.getElementById('diceResultBanner');
+      const bannerText = document.getElementById('diceResultText');
+
+      let productionMsg = '';
+      if (diceTotal === 8) {
+        playerResources.wheat += 2;
+        playerResources.water += 500;
+        productionMsg = '🎉 ¡Tirada 8! Fundo Colliguay produce +2 🌾 Trigo Candeal y amortigua +500 m³ agua.';
+      } else if (diceTotal === 6) {
+        playerResources.wool += 2;
+        productionMsg = '🐑 ¡Tirada 6! Parcela Don Pedro activa pastoreo PRV (+2 Lana/Forraje).';
+      } else if (diceTotal === 5) {
+        playerResources.wine += 2;
+        productionMsg = '🍇 ¡Tirada 5! Viña Santa Elena cosecha uva patrimonial (+2 Cepa País).';
+      } else if (diceTotal === 9) {
+        playerResources.lumber += 2;
+        productionMsg = '🪵 ¡Tirada 9! Forestal Los Pinos genera madera comercial (+2 Madera).';
+      } else if (diceTotal === 7) {
+        productionMsg = '🌪️ ¡Tirada 7! Racha de viento Puelche. Ningún recurso producido este turno.';
+      } else {
+        playerResources.wheat += 1;
+        productionMsg = `🎲 ¡Tirada ${diceTotal}! La cuenca del Maule produce rendimientos agrícolas generales (+1 Trigo).`;
+      }
+
+      document.getElementById('deckResWheat').innerText = playerResources.wheat;
+      document.getElementById('deckResWool').innerText = playerResources.wool;
+      document.getElementById('deckResLumber').innerText = playerResources.lumber;
+      document.getElementById('deckResWine').innerText = playerResources.wine;
+
+      bannerText.innerText = productionMsg;
+      banner.style.opacity = '1';
+      banner.style.transform = 'translate(-50%, 0) scale(1)';
+
+      setTimeout(() => {
+        banner.style.opacity = '0';
+        banner.style.transform = 'translate(-50%, -10px) scale(0.95)';
+      }, 4500);
+
+      drawRegionalMap();
+    }
+
+    // Construcción Cooperativa
+    function buildProject(type) {
+      if (type === 'cortafuegos') {
+        if (playerResources.lumber >= 1 && playerResources.wine >= 1) {
+          playerResources.lumber -= 1;
+          playerResources.wine -= 1;
+          alert('🛡️ ¡Faja Cortafuegos construida con éxito! El riesgo FWI en la frontera oeste con Forestal Los Pinos se redujo a la mitad.');
+        } else {
+          alert('❌ Recursos insuficientes. Necesitas 1 Madera y 1 Uva/Arcilla.');
+        }
+      } else if (type === 'tranque') {
+        if (playerResources.lumber >= 1 && playerResources.wheat >= 1 && playerResources.wool >= 1) {
+          playerResources.lumber -= 1;
+          playerResources.wheat -= 1;
+          playerResources.wool -= 1;
+          playerResources.water += 2000;
+          alert('💧 ¡Abrevadero Móvil PRV construido! La capacidad de retención hídrica aumentó a 20.500 m³.');
+        } else {
+          alert('❌ Recursos insuficientes. Necesitas 1 Madera, 1 Trigo y 1 Lana.');
+        }
+      } else if (type === 'sonda') {
+        alert('📡 ¡Sonda LoRaWAN FDR instalada en Parcela Don Pedro! Los datos de humedad a 4 niveles ya se transmiten al Gateway de Fundo Colliguay.');
+      }
+
+      document.getElementById('deckResWheat').innerText = playerResources.wheat;
+      document.getElementById('deckResWool').innerText = playerResources.wool;
+      document.getElementById('deckResLumber').innerText = playerResources.lumber;
+      document.getElementById('deckResWine').innerText = playerResources.wine;
+      document.getElementById('deckResWater').innerText = `${(playerResources.water / 1000).toFixed(1)}k m³`;
+    }
+
+    // Interacción Mouse Pan & Zoom optimizada con rAF y prevención de falso clic
+    let dragDistance = 0;
+    let animFramePending = false;
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragDistance = 0;
+      startDragX = e.clientX - panX;
+      startDragY = e.clientY - panY;
+      canvas.classList.add('cursor-grabbing');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      dragDistance += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0);
+      panX = e.clientX - startDragX;
+      panY = e.clientY - startDragY;
+
+      if (!animFramePending) {
+        animFramePending = true;
+        requestAnimationFrame(() => {
+          drawRegionalMap();
+          animFramePending = false;
+        });
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      canvas.classList.remove('cursor-grabbing');
+    });
+
+    // Touch support for tablets / iPads
+    let touchStartX = 0, touchStartY = 0;
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        dragDistance = 0;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        startDragX = touchStartX - panX;
+        startDragY = touchStartY - panY;
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const tx = e.touches[0].clientX;
+      const ty = e.touches[0].clientY;
+      dragDistance += Math.abs(tx - touchStartX) + Math.abs(ty - touchStartY);
+      panX = tx - startDragX;
+      panY = ty - startDragY;
+      if (!animFramePending) {
+        animFramePending = true;
+        requestAnimationFrame(() => {
+          drawRegionalMap();
+          animFramePending = false;
+        });
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
+      zoomLevel = Math.max(0.5, Math.min(2.8, zoomLevel * zoomFactor));
+      drawRegionalMap();
+    }, { passive: false });
+
+    function zoomMap(factor) {
+      zoomLevel = Math.max(0.5, Math.min(2.8, zoomLevel * factor));
+      drawRegionalMap();
+    }
+
+    function resetMap() {
+      zoomLevel = 1.0;
+      const centerTile = hexToPixel(7, 6, HEX_RADIUS);
+      const rect = canvas.getBoundingClientRect();
+      panX = (rect.width / 2) - centerTile.x * zoomLevel;
+      panY = (rect.height / 2) - centerTile.y * zoomLevel;
+      drawRegionalMap();
+    }
+
+    // Clic en hexágono para inspección (solo si NO se estaba arrastrando la pantalla)
+    canvas.addEventListener('click', (e) => {
+      if (dragDistance > 8) return; // Se estaba desplazando la pantalla, ignorar selección
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = (e.clientX - rect.left - panX) / zoomLevel;
+      const mouseY = (e.clientY - rect.top - panY) / zoomLevel;
+
+      let closestHex = null;
+      let minDistance = Infinity;
+
+      HEX_DATA.forEach(hex => {
+        const center = hexToPixel(hex.q, hex.r, HEX_RADIUS);
+        const dist = Math.hypot(center.x - mouseX, center.y - mouseY);
+        if (dist < HEX_RADIUS && dist < minDistance) {
+          minDistance = dist;
+          closestHex = hex;
+        }
+      });
+
+      if (closestHex) {
+        inspectHex(closestHex);
+      }
+    });
+
+    function inspectHex(hex) {
+      document.getElementById('insHexCoords').innerText = `Casilla [q: ${hex.q}, r: ${hex.r}]`;
+      document.getElementById('insHexName').innerText = hex.name;
+      document.getElementById('insHexBiome').innerText = hex.isColliguay ? 'CAPITAL PREDIAL' : hex.biome.toUpperCase();
+      document.getElementById('insHexComuna').innerText = hex.comuna;
+      document.getElementById('insHexChit').innerText = hex.diceNumber ? `Ficha ${hex.diceNumber} (${hex.diceNumber === 6 || hex.diceNumber === 8 ? 'Rojo •••••' : 'Probabilidad'})` : 'Sin ficha';
+      document.getElementById('insHexFwi').innerText = hex.fwi > 50 ? `Crítico (${hex.fwi})` : `Moderado (${hex.fwi})`;
+      document.getElementById('insHexYield').innerText = hex.yieldStr;
+
+      if (hex.isColliguay) {
+        document.getElementById('estateBanner').classList.remove('hidden');
+        document.getElementById('insHexDesc').innerHTML = '<strong>⭐ Tu Predio Principal (Fundo Estero Colliguay):</strong> 12.8 ha con Tranque Keyline de 18.500 m³ y red de sensores agro-ecológicos en vivo. Tu diseño de zanjas en contorno e infiltración actúa como esponja hidrológica y barrera cortafuegos para tus vecinos contiguos.';
+      } else if (hex.biome === 'monoculture') {
+        document.getElementById('insHexDesc').innerHTML = '<strong>⚠️ Predio Vecino (Riesgo FWI Crítico):</strong> Plantación de monocultivo forestal de pino/eucalipto sin cortafuegos perimetral. Si entra viento Puelche desde la cordillera, este predio genera focos secundarios por pavesas que amenazan el límite de tu campo.';
+      } else if (hex.biome === 'vecino_amigo') {
+        document.getElementById('insHexDesc').innerHTML = '<strong>🤝 Predio Vecino Colaborativo (Don Pedro):</strong> Parcela en producción agropecuaria asociada. Participa en la rotación PRV y comparte conectividad LoRaWAN para calibración de suelos.';
+      } else if (hex.biome === 'vina_patrimonial') {
+        document.getElementById('insHexDesc').innerHTML = '<strong>🍇 Viñedo Patrimonial en Secano:</strong> Parra vieja conducida en cabeza sin riego (cepa País y Cinsault >70 años). Sus raíces exploran hasta 3 metros de profundidad, demostrando máxima resiliencia al cambio climático.';
+      } else if (hex.biome === 'humedal_retardo') {
+        document.getElementById('insHexDesc').innerHTML = '<strong>🌊 Humedal de Retardo Fluvial & Biofiltro:</strong> Zona de captación de excesos de escorrentía comunal. Filtra nitratos y sedimentos antes de descargar al Río Longaví, actuando como esponja hidrológica.';
+      } else {
+        document.getElementById('insHexDesc').innerText = `Suelo biofísico de la cuenca Maule. Elevación de ${hex.elev} metros con cobertura de ${hex.biome}.`;
+      }
+    }
+
+    // Tabs del Panel Lateral
+    function setSimTab(tab) {
+      currentSimTab = tab;
+      ['carto', 'build', 'fire', 'flood'].forEach(t => {
+        const btn = document.getElementById(`tabBtn_${t}`);
+        const view = document.getElementById(`subView_${t}`);
+        if (btn && view) {
+          if (t === tab) {
+            btn.className = 'py-2 rounded-lg bg-amber-800 text-white text-center';
+            view.classList.remove('hidden');
+          } else {
+            btn.className = 'py-2 rounded-lg text-slate-400 hover:text-white text-center';
+            view.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    // Lentes Tácticos
+    function setLens(lens) {
+      currentLens = lens;
+      ['lulc', 'fire', 'flood', 'coupling'].forEach(l => {
+        const btn = document.getElementById(`lensBtn_${l}`);
+        if (btn) {
+          if (l === lens) {
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 lens-active';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all text-slate-300 hover:text-white flex items-center gap-1.5';
+          }
+        }
+      });
+
+      if (lens === 'fire') setSimTab('fire');
+      else if (lens === 'flood') setSimTab('flood');
+      else if (lens === 'coupling') {
+        resetMap();
+        inspectHex(HEX_DATA.find(h => h.isColliguay));
+      }
+
+      drawRegionalMap();
+    }
+
+    function updateFireSim() {
+      const temp = parseInt(document.getElementById('sliderTemp').value);
+      const hum = parseInt(document.getElementById('sliderHum').value);
+      const wind = parseInt(document.getElementById('sliderWind').value);
+
+      document.getElementById('fireTempVal').innerText = `${temp}°C`;
+      document.getElementById('fireHumVal').innerText = `${hum}%`;
+      document.getElementById('fireWindVal').innerText = `${wind} km/h`;
+
+      fwiScore = Math.min(100, Math.max(5, Math.round((temp * 0.9) + (wind * 0.75) - (hum * 0.6) + 12)));
+      const badge = document.getElementById('fireScoreBadge');
+      if (fwiScore > 50) {
+        badge.innerText = `FWI ${fwiScore} (CRÍTICO)`;
+        badge.className = 'px-2 py-0.5 rounded bg-red-700 text-white font-black';
+      } else {
+        badge.innerText = `FWI ${fwiScore} (MODERADO)`;
+        badge.className = 'px-2 py-0.5 rounded bg-amber-700 text-white font-black';
+      }
+      drawRegionalMap();
+    }
+
+    function updateFloodSim() {
+      const flow = parseInt(document.getElementById('sliderFlow').value);
+      const retPeriod = parseInt(document.getElementById('sliderReturn').value);
+
+      document.getElementById('floodFlowSliderVal').innerText = `${flow} m³/s`;
+      document.getElementById('floodReturnVal').innerText = `${retPeriod} Años`;
+
+      floodAreaHa = Math.round(flow * 19.5);
+      document.getElementById('floodAreaBadge').innerText = `${floodAreaHa.toLocaleString()} ha`;
+      drawRegionalMap();
+    }
+  </script>
+</body>
+</html>

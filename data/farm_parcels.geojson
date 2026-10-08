@@ -1,0 +1,341 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "A101",
+        "name": "Cuartel Norte - Cereales Extensivos (Trigo Candeal & Avena)",
+        "crop": "Trigo Candeal (Triticum durum) & Avena",
+        "cropType": "trigo",
+        "symbol": "🌾",
+        "area_ha": 3.8,
+        "ndvi": 0.76,
+        "soil_type": "Franco Arcilloso Rojo Profundo",
+        "irrigation_type": "Secano con Riego Suplementario",
+        "status": "Óptimo",
+        "zone": "Zona 3 - Cereales & Cobertura"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0836, 37.3888],
+            [-122.0812, 37.3888],
+            [-122.0812, 37.3872],
+            [-122.0836, 37.3872],
+            [-122.0836, 37.3888]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "A102",
+        "name": "Parque Agrovoltaico Bifacial & Pastoreo Ovino",
+        "crop": "Agrivoltaics (Energía Solar 120 kWp) & Pastura Sombría",
+        "cropType": "agrovoltaico",
+        "symbol": "☀️",
+        "area_ha": 2.2,
+        "ndvi": 0.65,
+        "soil_type": "Franco con Estructura Estable",
+        "irrigation_type": "Goteo Automatizado Bajo Panel",
+        "status": "Óptimo",
+        "zone": "Zona 5 - Energías Renovables & Clima"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0858, 37.3888],
+            [-122.0838, 37.3888],
+            [-122.0838, 37.3874],
+            [-122.0858, 37.3874],
+            [-122.0858, 37.3888]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "A103",
+        "name": "Tranque Predial Australiano & Reserva Hídrica (HDPE)",
+        "crop": "Embalse de Acumulación 18.000 m³ con Boya IoT",
+        "cropType": "tranque",
+        "symbol": "💧",
+        "area_ha": 1.6,
+        "ndvi": 0.22,
+        "soil_type": "Cuenca Excavada con Geomembrana 1.5mm",
+        "irrigation_type": "Matriz Principal de Presurización",
+        "status": "Óptimo",
+        "zone": "Zona 5 - Seguridad Hídrica"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0810, 37.3888],
+            [-122.0792, 37.3888],
+            [-122.0792, 37.3872],
+            [-122.0810, 37.3872],
+            [-122.0810, 37.3888]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "A104",
+        "name": "Biofábrica, Vivero Bioclimático & Compost Bokashi",
+        "crop": "Microorganismos Nativos de Montaña & Biopreparados",
+        "cropType": "biofabrica",
+        "symbol": "🔬",
+        "area_ha": 0.8,
+        "ndvi": 0.88,
+        "soil_type": "Suelo Vivo Enmendado con Compost Termófilo",
+        "irrigation_type": "Nebulización & Microaspersión",
+        "status": "Óptimo",
+        "zone": "Zona 1 - Núcleo de Regeneración"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0836, 37.3870],
+            [-122.0820, 37.3870],
+            [-122.0820, 37.3862],
+            [-122.0836, 37.3862],
+            [-122.0836, 37.3870]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "B101",
+        "name": "Cuartel Viñedos Patrimoniales del Maule (País & Carignan)",
+        "crop": "Vitis vinifera (Cepa País Centenaria & Carignan Secano)",
+        "cropType": "vinedo",
+        "symbol": "🍇",
+        "area_ha": 2.8,
+        "ndvi": 0.79,
+        "soil_type": "Granítico Meteorizado con Cuarzo",
+        "irrigation_type": "Doble Línea de Goteo Subsuperficial",
+        "status": "Óptimo",
+        "zone": "Zona 2 - Vitivinicultura de Precisión"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0818, 37.3860],
+            [-122.0792, 37.3860],
+            [-122.0792, 37.3846],
+            [-122.0818, 37.3846],
+            [-122.0818, 37.3860]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "B102",
+        "name": "Cuartel Cerezos de Exportación (Lapins & Santina)",
+        "crop": "Prunus avium (Cerezos con Cobertura y Anti-Heladas)",
+        "cropType": "cerezos",
+        "symbol": "🍒",
+        "area_ha": 3.1,
+        "ndvi": 0.84,
+        "soil_type": "Franco Aluvial Profundo Bien Drenado",
+        "irrigation_type": "Microaspersión Antiheladas + Goteo",
+        "status": "Óptimo",
+        "zone": "Zona 2 - Fruticultura de Alta Rentabilidad"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0818, 37.3844],
+            [-122.0792, 37.3844],
+            [-122.0792, 37.3830],
+            [-122.0818, 37.3830],
+            [-122.0818, 37.3844]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "B103",
+        "name": "Monte Frutal de Olivos de Secano (Olea europaea)",
+        "crop": "Olivos Frantoio & Arbequina (Aceite Extra Virgen)",
+        "cropType": "olivos",
+        "symbol": "🫒",
+        "area_ha": 1.8,
+        "ndvi": 0.72,
+        "soil_type": "Pedregoso con Grava Fluvial",
+        "irrigation_type": "Déficit Hídrico Controlado (RDI)",
+        "status": "Óptimo",
+        "zone": "Zona 2 - Especies Resilientes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0838, 37.3844],
+            [-122.0820, 37.3844],
+            [-122.0820, 37.3830],
+            [-122.0838, 37.3830],
+            [-122.0838, 37.3844]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "B104",
+        "name": "Pradera Regenerativa Polifítica & Fijación de Nitrógeno",
+        "crop": "Alfalfa (Medicago sativa), Trébol Subterráneo & Festuca",
+        "cropType": "pradera",
+        "symbol": "🌱",
+        "area_ha": 1.4,
+        "ndvi": 0.86,
+        "soil_type": "Franco Orgánico Enrichido",
+        "irrigation_type": "Aspersión Sectorizada",
+        "status": "Óptimo",
+        "zone": "Zona 1 - Suelo Vivo & Pastoreo Rotacional"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0836, 37.3860],
+            [-122.0820, 37.3860],
+            [-122.0820, 37.3846],
+            [-122.0836, 37.3846],
+            [-122.0836, 37.3860]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "C101",
+        "name": "Huerto Agroecológico de Avellanos Europeos & Nogales",
+        "crop": "Corylus avellana (Barcelona) & Juglans regia (Chandler)",
+        "cropType": "frutales",
+        "symbol": "🌰",
+        "area_ha": 2.4,
+        "ndvi": 0.83,
+        "soil_type": "Limoso Aluvial Ribereño Húmedo",
+        "irrigation_type": "Microaspersión Bajo Copa",
+        "status": "Óptimo",
+        "zone": "Zona 2 - Agroforestería Frutal"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0864, 37.3868],
+            [-122.0840, 37.3868],
+            [-122.0840, 37.3854],
+            [-122.0864, 37.3854],
+            [-122.0864, 37.3868]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "C102",
+        "name": "Módulo de Cultivo de Hongos Shiitake en Troncos",
+        "crop": "Lentinula edodes en Troncos Inoculados de Roble",
+        "cropType": "shiitake",
+        "symbol": "🍄",
+        "area_ha": 0.9,
+        "ndvi": 0.91,
+        "soil_type": "Mantillo Húmedo con Capa de Hojarasca",
+        "irrigation_type": "Nebulización Fina por Microclima",
+        "status": "Óptimo",
+        "zone": "Zona 2 - Micología Aplicada"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0864, 37.3852],
+            [-122.0844, 37.3852],
+            [-122.0844, 37.3842],
+            [-122.0864, 37.3842],
+            [-122.0864, 37.3852]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "C103",
+        "name": "Corredor Ribereño Nativo & Amortiguación Fluvial (Estero Colliguay)",
+        "crop": "Quillay (Quillaja), Boldo, Maitén, Sauce Chileno & Maqui",
+        "cropType": "nativo",
+        "symbol": "🌳",
+        "area_ha": 2.2,
+        "ndvi": 0.94,
+        "soil_type": "Ripario Aluvial de Alta Infiltración",
+        "irrigation_type": "Régimen Fluvial Natural / Napa Freática",
+        "status": "Óptimo",
+        "zone": "Zona 4 - Corredor Biológico & Mitigación Inundación"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0866, 37.3840],
+            [-122.0838, 37.3840],
+            [-122.0838, 37.3826],
+            [-122.0866, 37.3826],
+            [-122.0866, 37.3840]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "D101",
+        "name": "Cuartel Forestal & Faja Cortafuego Silvopastoril",
+        "crop": "Pino radiata & Eucalyptus manejado con faja limpia CONAF",
+        "cropType": "forestal",
+        "symbol": "🌲",
+        "area_ha": 4.6,
+        "ndvi": 0.71,
+        "soil_type": "Secano Costero / Transición Andina",
+        "irrigation_type": "Lluvia Estacional / Desbroce Preventivo",
+        "status": "Precaución",
+        "zone": "Zona 4 - Barrera Cortafuego Predial"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-122.0790, 37.3888],
+            [-122.0770, 37.3888],
+            [-122.0770, 37.3830],
+            [-122.0790, 37.3830],
+            [-122.0790, 37.3888]
+          ]
+        ]
+      }
+    }
+  ]
+}

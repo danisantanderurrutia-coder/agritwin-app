@@ -1,0 +1,392 @@
+/* AgriTwin Core - Enterprise Glassmorphism UI Stylesheet */
+
+:root {
+  --bg-dark: #090d16;
+  --bg-panel: rgba(15, 23, 42, 0.88);
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(56, 189, 248, 0.4);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-purple: #8b5cf6;
+
+  --status-optimal: #10b981;
+  --status-warning: #f59e0b;
+  --status-critical: #ef4444;
+}
+
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  border-radius: var(--radius-md);
+  transition: all 0.25s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Glass Header */
+.app-header {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 406px; /* Leaves space for permanent side panel */
+  height: 60px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  border-top: 1px solid rgba(6, 182, 212, 0.35);
+  transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.drawer-collapsed .app-header {
+  right: 14px; /* Barra superior completa y simétrica cuando el panel de métricas está replegado */
+}
+
+/* When drawer is OPEN, auto-compact header elements to prevent clipping */
+body:not(.drawer-collapsed) .app-header {
+  right: 406px;
+}
+
+body:not(.drawer-collapsed) .app-header .brand-family-badge,
+body:not(.drawer-collapsed) .app-header .brand-subtitle {
+  display: none;
+}
+
+body:not(.drawer-collapsed) .header-partner-brands .btn-brand-badge {
+  padding: 4px 7px;
+  font-size: 10.5px;
+  gap: 4px;
+}
+
+.header-partner-brands {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+@media (max-width: 1680px) {
+  .header-stats .stat-pill:nth-child(n+3) {
+    display: none;
+  }
+}
+
+@media (max-width: 1550px) {
+  .header-stats {
+    display: none;
+  }
+  .brand-subtitle, .brand-family-badge {
+    display: none;
+  }
+  #brandRewildBtn, #brandUrrutiaBtn {
+    display: none;
+  }
+}
+
+@media (max-width: 1150px) {
+  .header-stats {
+    display: none;
+  }
+  .profile-tab-label {
+    display: none;
+  }
+  .profile-tab-btn {
+    padding: 6px 9px;
+  }
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.header-brand:hover {
+  background: rgba(245, 158, 11, 0.12);
+  transform: translateY(-1px);
+}
+
+.header-brand:hover .brand-icon {
+  transform: scale(1.08);
+  border-color: #fbbf24;
+  box-shadow: 0 0 22px rgba(251, 191, 36, 0.55);
+}
+
+.header-brand:active {
+  transform: scale(0.98);
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(11, 17, 28, 0.95);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.brand-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: #f8fafc;
+  white-space: nowrap;
+}
+
+.brand-family-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(16, 185, 129, 0.25));
+  color: var(--accent-cyan);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+  font-family: var(--font-main);
+  white-space: nowrap;
+}
+
+.header-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.stat-pill .label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.stat-pill .value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+}
+
+.header-partner-brands {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Permanent Side Detail Panel */
+.side-drawer {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  bottom: 14px;
+  width: 376px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  opacity: 1;
+  overflow: visible; /* Permite que la pestaña asa sobresalga hacia la izquierda del panel */
+  border-radius: var(--radius-md);
+  border-top: 1px solid rgba(6, 182, 212, 0.35);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.side-drawer.collapsed {
+  transform: translateX(calc(100% + 14px));
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Pestaña / Asa integrada al borde del panel de métricas (no botón suelto) */
+.drawer-handle-tab {
+  position: absolute;
+  left: -46px;
+  top: 110px;
+  width: 46px;
+  height: 125px;
+  padding: 8px 4px;
+  border-radius: 12px 0 0 12px;
+  background: rgba(11, 17, 28, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.45);
+  border-right: none;
+  box-shadow: -6px 4px 20px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #38bdf8;
+  z-index: 50;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.drawer-handle-tab:hover {
+  background: rgba(15, 23, 42, 0.98);
+  border-color: #38bdf8;
+  color: #fff;
+  box-shadow: -8px 6px 24px rgba(6, 182, 212, 0.35);
+  transform: translateX(-3px);
+}
+
+.drawer-handle-tab .tab-icon {
+  font-size: 16px;
+}
+
+.drawer-handle-tab .tab-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.drawer-handle-tab .tab-arrow {
+  font-size: 10px;
+  color: #06b6d4;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cuando el panel está abierto, la flecha apunta hacia la derecha indicando repliegue */
+.side-drawer:not(.collapsed) .drawer-handle-tab .tab-arrow {
+  transform: rotate(180deg);
+}
+
+.drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(11, 17, 28, 0.96);
+}
+
+.drawer-title-group h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.drawer-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.drawer-content {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.drawer-content::-webkit-scrollbar {
+  width: 4px;
+}
+.drawer-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+.drawer-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}

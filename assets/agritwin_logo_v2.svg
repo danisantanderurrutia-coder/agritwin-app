@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="v2Glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#070a11" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="v2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="100" cy="100" r="90" fill="url(#v2Glow)"/>
+
+  <!-- Leaf Contour -->
+  <path d="M 100 18 C 150 42, 178 88, 158 142 C 142 176, 105 182, 100 182 C 95 182, 58 176, 42 142 C 22 88, 50 42, 100 18 Z"
+        fill="none" stroke="url(#v2Grad)" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Central 3D Isometric Voxel / Parcel Block -->
+  <!-- Top Surface (Ground Parcel) -->
+  <polygon points="100,65 145,88 100,112 55,88" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Left Extruded Layer -->
+  <polygon points="55,88 100,112 100,140 55,116" fill="rgba(6, 182, 212, 0.3)" stroke="#06b6d4" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Right Extruded Layer -->
+  <polygon points="100,112 145,88 145,116 100,140" fill="rgba(234, 179, 8, 0.2)" stroke="#eab308" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- Inner Parcel Crop Grid Ribbons -->
+  <line x1="77.5" y1="76.5" x2="122.5" y2="100" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <line x1="122.5" y1="76.5" x2="77.5" y2="100" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- IoT Telemetry Beacon Pole & Signal Rings -->
+  <line x1="100" y1="88" x2="100" y2="40" stroke="#ffffff" stroke-width="2.5"/>
+  <circle cx="100" cy="40" r="4" fill="#06b6d4"/>
+  <ellipse cx="100" cy="34" rx="10" ry="4" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.8"/>
+  <ellipse cx="100" cy="26" rx="18" ry="7" fill="none" stroke="#10b981" stroke-width="1.2" opacity="0.5"/>
+</svg>
