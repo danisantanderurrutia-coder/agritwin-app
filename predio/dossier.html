@@ -606,7 +606,7 @@
       <div class="deck-header">
         <div>
           <div class="deck-tag" id="slideCategory">
-            <span>Categoría</span>
+            <span id="slideCategoryText">Categoría</span>
             <span class="deck-slug-pill" id="slideSlugPill">#slug</span>
           </div>
           <div class="deck-title" id="slideTitle">Título de la Lámina</div>
@@ -1746,28 +1746,39 @@
     }
 
     function renderCurrentSlide() {
-      const slide = SLIDES[currentSlide];
-      document.getElementById('slideCategory').innerHTML = `<span>${slide.category}</span>`;
-      document.getElementById('slideSlugPill').textContent = `#${slide.slug}`;
-      document.getElementById('slideTitle').textContent = slide.title;
-      document.getElementById('slideMeta').innerHTML = `LÁMINA ${String(currentSlide + 1).padStart(2, '0')} / ${String(SLIDES.length).padStart(2, '0')}<br/>AGRITWIN INTELLIGENCE`;
-      document.getElementById('slideBody').innerHTML = slide.html;
-      document.getElementById('slideFooterLeft').textContent = slide.footerLeft;
-      document.getElementById('slideFooterRight').textContent = `Lámina ${currentSlide + 1} de ${SLIDES.length}`;
+      try {
+        const slide = SLIDES[currentSlide];
+        const catEl = document.getElementById('slideCategoryText');
+        if (catEl) catEl.textContent = slide.category;
+        const slugEl = document.getElementById('slideSlugPill');
+        if (slugEl) slugEl.textContent = `#${slide.slug}`;
+        const titleEl = document.getElementById('slideTitle');
+        if (titleEl) titleEl.textContent = slide.title;
+        const metaEl = document.getElementById('slideMeta');
+        if (metaEl) metaEl.innerHTML = `LÁMINA ${String(currentSlide + 1).padStart(2, '0')} / ${String(SLIDES.length).padStart(2, '0')}<br/>AGRITWIN INTELLIGENCE`;
+        const bodyEl = document.getElementById('slideBody');
+        if (bodyEl) bodyEl.innerHTML = slide.html;
+        const footLeftEl = document.getElementById('slideFooterLeft');
+        if (footLeftEl) footLeftEl.textContent = slide.footerLeft;
+        const footRightEl = document.getElementById('slideFooterRight');
+        if (footRightEl) footRightEl.textContent = `Lámina ${currentSlide + 1} de ${SLIDES.length}`;
 
-      // Update URL hash without reload
-      if (history.replaceState) {
-        history.replaceState(null, null, `#${slide.slug}`);
-      } else {
-        window.location.hash = slide.slug;
-      }
+        // Update URL hash without reload
+        if (history.replaceState) {
+          history.replaceState(null, null, `#${slide.slug}`);
+        } else {
+          window.location.hash = slide.slug;
+        }
 
-      renderSlideStrip();
+        renderSlideStrip();
 
-      // Scroll chip into view
-      const activeChip = document.querySelectorAll('.slide-chip')[currentSlide];
-      if (activeChip) {
-        activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        // Scroll chip into view
+        const activeChip = document.querySelectorAll('.slide-chip')[currentSlide];
+        if (activeChip) {
+          activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      } catch (err) {
+        console.error("Error al renderizar la lámina:", err);
       }
     }
 
