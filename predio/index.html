@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Core Modular Stylesheets -->
+  <link rel="stylesheet" href="css/hud-toolbar.css">
+  <link rel="stylesheet" href="css/placement-dock.css">
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add('is-embedded');
+  }
+  const _initParams = new URLSearchParams(window.location.search);
+  if (_initParams.get('mode') === '3d' || _initParams.get('noworkshop') === '1') {
+    document.addEventListener('DOMContentLoaded', () => {
+      const w = document.getElementById('workshopOverlay');
+      if (w) {
+        w.classList.remove('active');
+        w.style.display = 'none';
+      }
+    });
+  }
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriTwin 3D - Gemelo Digital Agrícola</title>
+  <meta name="description" content="Plataforma de Gemelo Digital Agrícola 3D con monitoreo IoT en tiempo real y diagnóstico de riesgo de incendios.">
+
+  <!-- Favicon Nanobanana Isotipo Limpio (Sin Texto) -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- Three.js & OrbitControls CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- Three.js Loaders & PostProcessing Addons (r128) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <!-- shpjs: ESRI Shapefile (.zip / .shp) client-side parser -->
+  <script src="https://cdn.jsdelivr.net/npm/shpjs@latest/dist/shp.js"></script>
+
+  <!-- Chart.js CDN for Interactive Dynamic Charts (Replacing static plots) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Mermaid.js CDN for interactive visual architecture & dataflow diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    if (window.mermaid) {
+      window.mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+    }
+  </script>
+
+  <!-- Application CSS Stylesheets -->
+  <link rel="stylesheet" href="css/main.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/glassmorphism.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/components.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/drawing-tools.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/workshop.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/operator-notes.css?v=3.9.9-clean">
+  <link rel="stylesheet" href="css/windy-basin.css?v=1.0.0">
+</head>
+<body>
+  <div id="app">
+    <!-- 3D Globe Canvas Container -->
+    <div id="cesiumContainer"></div>
+
+    <!-- HUD FLOATING PILLS FOR CAMERA MODES -->
+    <!-- 1. Cinematic Tour HUD -->
+    <div id="hud_cinematic_tour" class="camera-hud-pill glass-panel" style="display: none;">
+      <div class="hud-pill-icon pulse-blue">🚁</div>
+      <div class="hud-pill-content">
+        <div class="hud-pill-title" id="hud_tour_title">Tour Guiado: Caserío Patrimonial</div>
+        <div class="hud-pill-subtitle" id="hud_tour_subtitle">Parada 1 de 7 • Arquitectura agrícola tradicional</div>
+      </div>
+      <button id="btn_stop_tour_hud" class="hud-pill-close-btn" title="Detener Tour">
+        <span>⏹</span> Detener
+      </button>
+    </div>
+
+    <!-- 2. Walkthrough Mode HUD -->
+    <div id="hud_walkthrough" class="camera-hud-pill glass-panel" style="display: none;">
+      <div class="hud-pill-icon pulse-green">🚶</div>
+      <div class="hud-pill-content">
+        <div class="hud-pill-title">Modo Paseo a Pie (1.75 m)</div>
+        <div class="hud-pill-subtitle">
+          <span class="hud-key">W A S D</span> Caminar • 
+          <span class="hud-key">Shift</span> Correr • 
+          <span class="hud-key">Arrastrar Mouse</span> Mirar
+        </div>
+      </div>
+      <button id="btn_stop_walk_hud" class="hud-pill-close-btn" title="Salir de Modo Paseo">
+        <span>✕</span> Salir (ESC)
+      </button>
+    </div>
+
+    <!-- 3. Solar Timelapse HUD -->
+    <div id="hud_solar_timelapse" class="camera-hud-pill glass-panel" style="display: none;">
+      <div class="hud-pill-icon pulse-amber">🌅</div>
+      <div class="hud-pill-content">
+        <div class="hud-pill-title" id="hud_timelapse_title">Timelapse Solar 24h: 12:00 hrs</div>
+        <div class="hud-pill-subtitle" id="hud_timelapse_subtitle">Luz solar dinámica • Sombras en tiempo real</div>
+      </div>
+      <button id="btn_stop_timelapse_hud" class="hud-pill-close-btn" title="Detener Timelapse">
+        <span>⏹</span> Detener
+      </button>
+    </div>
+
+    <!-- Rosa de los Vientos (Always visible at top-left, standalone) -->
+    <div id="standaloneCompass" class="standalone-compass" title="Rosa de los Vientos (Orientación 3D del Predio)">
+      <div class="compass-dial">
+        <span class="cardinal N">N</span>
+        <span class="cardinal E">E</span>
+        <span class="cardinal S">S</span>
+        <span class="cardinal W">O</span>
+        <div class="compass-needle" id="compassNeedle"></div>
+      </div>
+      <div class="compass-degree" id="compassDegree">0°</div>
+    </div>
+
+    <!-- Escala de Espacialidad (Pegada al inferior de la página) -->
+    <div id="standaloneScaleBar" class="scale-bar-box pinned-bottom" title="Escala gráfica calibrada">
+      <span class="scale-label">Escala:</span>
+      <div class="scale-bar-line" id="scaleBarLine"></div>
+      <span class="scale-bar-text" id="scaleBarText">50 m</span>
+    </div>
+
+    <!-- PANEL GUÍA 18 PUNTOS ESCALA DE YEOMANS (Visible en Modo Plan Maestro) -->
+    <div id="yeomansMasterPanel" class="yeomans-master-panel" style="display: none;">
+      <div class="yeomans-header">
+        <div class="yeomans-title">
+          <span>🌿</span> Plan Maestro: 18 Puntos Yeomans
+        </div>
+        <button id="closeYeomansPanelBtn" style="background: none; border: none; color: #fbbf24; font-size: 16px; cursor: pointer;">&times;</button>
+      </div>
+      <div class="yeomans-body">
+        <div style="font-size: 11px; color: #94a3b8; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
+          Construcción secuencial en orden biofísico de permanencia: del esqueleto hídrico a los seres vivos.
+        </div>
+
+        <!-- Estrato 1: Clima & Topografía -->
+        <div class="yeomans-step-card active-step">
+          <div class="yeomans-step-header">
+            <strong style="color: #60a5fa; font-size: 11px;">1. Clima & Matriz</strong>
+            <span class="yeomans-step-tag" style="background: rgba(59,130,246,0.2); color: #93c5fd;">Inmutable</span>
+          </div>
+          <div class="step-points-list">
+            <div class="step-point-item">
+              <span>1. Límites legales y deslindes</span>
+              <button class="point-action-btn" onclick="bus.emit('map:set_layer_mode', 'pbr')">Ver</button>
+            </div>
+            <div class="step-point-item">
+              <span>2. Topografía, DEM & Pendientes</span>
+              <button class="point-action-btn" onclick="bus.emit('map:set_layer_mode', 'dem')">Activar</button>
+            </div>
+            <div class="step-point-item">
+              <span>3. Viento Puelche & Insolación</span>
+              <button class="point-action-btn" onclick="bus.emit('geomorph:toggle_wind_streamlines', true)">Simular</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estrato 2: Agua & Keyline -->
+        <div class="yeomans-step-card">
+          <div class="yeomans-step-header">
+            <strong style="color: #38bdf8; font-size: 11px;">2. Esqueleto Hídrico</strong>
+            <span class="yeomans-step-tag" style="background: rgba(6,182,212,0.2); color: #67e8f9;">Prioridad 1</span>
+          </div>
+          <div class="step-points-list">
+            <div class="step-point-item">
+              <span>4. Keypoints & Curvas Clave</span>
+              <button class="point-action-btn" onclick="bus.emit('layer:keyline', true)">Isolíneas</button>
+            </div>
+            <div class="step-point-item">
+              <span>5. Tranque de cota alta</span>
+              <button class="point-action-btn" onclick="window.triggerDrawPermacultureItem && window.triggerDrawPermacultureItem('Tranque Keyline de Retención')">Trazar</button>
+            </div>
+            <div class="step-point-item">
+              <span>6. Zanjas Swales / Infiltración</span>
+              <button class="point-action-btn" onclick="window.triggerDrawPermacultureItem && window.triggerDrawPermacultureItem('Zanja de Infiltración / Swale')">Trazar</button>
+            </div>
+            <div class="step-point-item">
+              <span>7. Aliviaderos & Biofiltros</span>
+              <button class="point-action-btn" onclick="bus.emit('simulation:trigger_torrential_rain', {mm: 60, hours: 4})">Probar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estrato 3: Accesos & Caminos -->
+        <div class="yeomans-step-card">
+          <div class="yeomans-step-header">
+            <strong style="color: #fb923c; font-size: 11px;">3. Circulación & Vías</strong>
+            <span class="yeomans-step-tag" style="background: rgba(249,115,22,0.2); color: #fdba74;">Durable</span>
+          </div>
+          <div class="step-points-list">
+            <div class="step-point-item">
+              <span>8. Caminos de lomo de toro (crestas)</span>
+              <button class="point-action-btn" onclick="window.triggerDrawItem && window.triggerDrawItem('Taller Mecánico & Mantenimiento')">Vía</button>
+            </div>
+            <div class="step-point-item">
+              <span>9. Accesos perimetrales cortafuego</span>
+              <button class="point-action-btn" onclick="bus.emit('geomorph:toggle_hazard_zones', true)">Fajas</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estrato 4: Núcleos & Estructuras -->
+        <div class="yeomans-step-card">
+          <div class="yeomans-step-header">
+            <strong style="color: #f87171; font-size: 11px;">4. Estructuras & Energía</strong>
+            <span class="yeomans-step-tag" style="background: rgba(239,68,68,0.2); color: #fca5a5;">Zona 0</span>
+          </div>
+          <div class="step-points-list">
+            <div class="step-point-item">
+              <span>10. Galpón / Casa (Cinturón térmico)</span>
+              <button class="point-action-btn" onclick="window.triggerDrawItem && window.triggerDrawItem('Casa Patronal / Vivienda Campo')">Ubicar</button>
+            </div>
+            <div class="step-point-item">
+              <span>11. Invernadero & Biofábrica</span>
+              <button class="point-action-btn" onclick="window.triggerDrawItem && window.triggerDrawItem('Invernadero Alta Tecnología')">Ubicar</button>
+            </div>
+            <div class="step-point-item">
+              <span>12. Captación Solar & Telemetría</span>
+              <button class="point-action-btn" onclick="window.triggerDrawItem && window.triggerDrawItem('Estación Meteorológica IoT')">Ubicar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estrato 5: Mosaico Biológico & Suelo -->
+        <div class="yeomans-step-card">
+          <div class="yeomans-step-header">
+            <strong style="color: #4ade80; font-size: 11px;">5. Biología & Manejo</strong>
+            <span class="yeomans-step-tag" style="background: rgba(34,197,94,0.2); color: #86efac;">Adaptativo</span>
+          </div>
+          <div class="step-points-list">
+            <div class="step-point-item">
+              <span>13. Zonificación 1 a 5 de Mollison</span>
+              <button class="point-action-btn" onclick="bus.emit('layer:permaculture_zones', true)">Ver Zonas</button>
+            </div>
+            <div class="step-point-item">
+              <span>14. Cortinas cortavientos mixtas</span>
+              <button class="point-action-btn" onclick="window.triggerDrawItem && window.triggerDrawItem('Quillay (Quillaja saponaria)')">Plantar</button>
+            </div>
+            <div class="step-point-item">
+              <span>15. 8 Potreros PRV rotacionales</span>
+              <button class="point-action-btn" onclick="window.triggerDrawPermacultureItem && window.triggerDrawPermacultureItem('Potrero PRV (Pastoreo Voisin)')">Rotar</button>
+            </div>
+            <div class="step-point-item">
+              <span>16. Corredores biológicos rewilding</span>
+              <button class="point-action-btn" onclick="window.triggerDrawPermacultureItem && window.triggerDrawPermacultureItem('Zona 5: Reserva Intangible / Rewilding')">Delimitar</button>
+            </div>
+            <div class="step-point-item">
+              <span>17. Suelo vivo & Bokashi</span>
+              <button class="point-action-btn" onclick="window.triggerDrawPermacultureItem && window.triggerDrawPermacultureItem('Zona 1: Huerto Biointensivo')">Inocular</button>
+            </div>
+            <div class="step-point-item">
+              <span>18. Red de bebederos móviles</span>
+              <button class="point-action-btn" onclick="bus.emit('layer:livestock', true)">Red Bebedero</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Floating House Button to return to Workshop / Galpón -->
+    <button id="floatingHouseBtn" onclick="window.openGalponWorkshop()" class="floating-house-btn" title="Volver al Galpón / Casa (Landing)">
+      <span style="font-size: 16px;">🏡</span>
+      <span>Galpón Central</span>
+    </button>
+
+    <!-- Collapsible 3D Bottom Toolbar with Hammer Icon -->
+    <div id="toolbarContainer" class="toolbar-container">
+      <button id="btnToggleToolbar" class="btn-hammer-toggle" title="Desplegar/Ocultar Herramientas 3D" onclick="document.getElementById('toolbarContainer').classList.toggle('toolbar-open')">
+        <span style="font-size: 15px;">🔨</span>
+        <span class="hammer-label">Herramientas 3D</span>
+        <span class="hammer-arrow">▶</span>
+      </button>
+
+      <!-- Bottom Toolbar Controls Bar -->
+      <div class="controls-bar glass-panel">
+
+      <!-- Group 1: View Mode Dropdown (Modos 3D & Relieve) -->
+      <div class="dropdown-group" id="dropdown_view">
+        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Modo de Visualización 3D">
+          <span class="btn-dropdown-icon">🗺️</span>
+          <span class="btn-dropdown-label">Vista:</span>
+          <span class="btn-dropdown-value" id="trigger_view_label">Híbrido</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 240px;">
+          <div class="dropdown-header">🗺️ Modo de Terreno 3D</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_mode_sat" class="dropdown-item-btn">
+              <span>🛰️</span> Satélite Real
+            </button>
+            <button id="btn_mode_civ6" class="dropdown-item-btn">
+              <span>🎨</span> Gemelo 3D
+            </button>
+            <button id="btn_mode_hybrid" class="dropdown-item-btn active">
+              <span>⚡</span> Híbrido Precision
+            </button>
+            <button id="btn_mode_relief" class="dropdown-item-btn">
+              <span>🏔️</span> Relieve & DEM
+            </button>
+          </div>
+          <div style="padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px;">
+              <span>Exageración Relieve:</span>
+              <strong id="reliefSliderVal" style="color: var(--accent-cyan);">1.0x</strong>
+            </div>
+            <input type="range" id="slider_relief_scale" min="0.2" max="3.2" step="0.1" value="1.0" class="slider-glass" style="width: 100%; cursor: pointer;">
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group 3: Camera Presets & Dynamic Tour Dropdown -->
+      <div class="dropdown-group" id="dropdown_cam">
+        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Presets de Cámara 3D & Modos Dinámicos">
+          <span class="btn-dropdown-icon">🎥</span>
+          <span class="btn-dropdown-label">Cámara:</span>
+          <span class="btn-dropdown-value" id="trigger_cam_label">General</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 270px;">
+          <div class="dropdown-header">🎥 Enfoques de Interés (Presets)</div>
+          <div class="dropdown-menu-list">
+            <button id="cam_overview" class="dropdown-item-btn active">
+              <span>🌐</span> Vista General del Predio
+            </button>
+            <button id="cam_house" class="dropdown-item-btn">
+              <span>🏡</span> Caserío & Galpón Patrimonial
+            </button>
+            <button id="cam_solar" class="dropdown-item-btn">
+              <span>☀️</span> Parque Agrovoltaico 6.6 kWp
+            </button>
+            <button id="cam_tractor" class="dropdown-item-btn">
+              <span>🚜</span> Maquinaria Guiada RTK
+            </button>
+            <button id="cam_livestock" class="dropdown-item-btn">
+              <span>🐑</span> Rebaño & Manejo Holístico
+            </button>
+            <button id="cam_tranque" class="dropdown-item-btn">
+              <span>💧</span> Tranque Yeomans 18.5k m³
+            </button>
+            <button id="cam_condor" class="dropdown-item-btn">
+              <span>🦅</span> Vuelo de Cóndor (Cuenca)
+            </button>
+            <button id="cam_sensors" class="dropdown-item-btn">
+              <span>📡</span> Nodos IoT & Telemetría
+            </button>
+          </div>
+          <div style="border-top: 1px solid rgba(255,255,255,0.12); margin: 6px 0;"></div>
+          <div class="dropdown-header">🎬 Modos Dinámicos Especiales</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_toggle_tour" class="dropdown-item-btn" style="color: #60a5fa;">
+              <span>🚁</span> Tour Drone Automático <kbd class="hud-key" style="margin-left:auto;">C</kbd>
+            </button>
+            <button id="btn_toggle_walk" class="dropdown-item-btn" style="color: #34d399;">
+              <span>🚶</span> Paseo a Pie (1.75m) <kbd class="hud-key" style="margin-left:auto;">P</kbd>
+            </button>
+            <button id="btn_toggle_timelapse" class="dropdown-item-btn" style="color: #fbbf24;">
+              <span>🌅</span> Timelapse Solar 24h <kbd class="hud-key" style="margin-left:auto;">T</kbd>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group: Geomorphic & Stratigraphic Flows (Flujos D8, Vientos Windy, Zonas) -->
+      <div class="dropdown-group" id="dropdown_geomorph">
+        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Diagramas de Flujo Geomórficos & Estratigráficos">
+          <span class="btn-dropdown-icon">📐</span>
+          <span class="btn-dropdown-label">Flujos:</span>
+          <span class="btn-dropdown-value" id="trigger_geomorph_label">Desactivado</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 270px;">
+          <div class="dropdown-header">📐 Flujos Geomórficos & Riesgo</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_geo_water_flow" class="dropdown-item-btn" title="Flechas de flujo gravitacional por pendientes y talwegs (D8)">
+              <span>🌊</span> Flechas Drenaje (D8)
+            </button>
+            <button id="btn_geo_windy_stream" class="dropdown-item-btn" title="Partículas de viento estilo Windy animadas (Maestro)">
+              <span>🌪️</span> Viento Windy (Todas)
+            </button>
+            
+            <!-- Sub-corrientes orográficas dominantes -->
+            <div style="padding: 4px 6px 2px 6px; font-size: 9px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Corrientes Dominantes Cuenca:</div>
+            <button id="btn_geo_wind_puelche" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Viento Puelche / Raco E-NE (Cálido y Desecante, Alerta FWI)">
+              <span style="color: #ef4444;">🔴</span> Puelche E-NE (Desecante)
+            </button>
+            <button id="btn_geo_wind_breeze" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Brisa Marina Diurna SW (Fresco del Pacífico)">
+              <span style="color: #38bdf8;">🔵</span> Brisa Marina SW (Fresco)
+            </button>
+            <button id="btn_geo_wind_catabatic" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Drenaje Catabático Nocturno (Aire Frío en Hondonadas)">
+              <span style="color: #a855f7;">🟣</span> Drenaje Catabático (Heladas)
+            </button>
+            <button id="btn_geo_wind_talweg" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Canalización por Quebrada y Estero (Efecto Venturi)">
+              <span style="color: #10b981;">🟢</span> Chorro Quebrada (Venturi)
+            </button>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.08); margin: 4px 0;"></div>
+            <button id="btn_geo_hazard_zones" class="dropdown-item-btn" title="Zonificación delimitada de inundación T=10/T=100 y piro-riesgo">
+              <span>📐</span> Zonas Demarcadas
+            </button>
+            <button id="btn_geo_all_toggle" class="dropdown-item-btn" title="Alternar visualización geomorfológica completa">
+              <span>🗺️</span> Activar Modo Estratigráfico
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group: IoT Sensor Cards Visibility Toggle -->
+      <div class="dropdown-group" id="dropdown_sensor_cards">
+        <button class="btn-dropdown" id="trigger_sensor_cards_btn" aria-haspopup="true" aria-expanded="false" title="Visualización de Paneles Flotantes de Sensores 3D">
+          <span class="btn-dropdown-icon">🏷️</span>
+          <span class="btn-dropdown-label">Sensores:</span>
+          <span class="btn-dropdown-value" id="trigger_sensor_cards_label">Hover</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 215px;">
+          <div class="dropdown-header">📡 Paneles Sensores 3D</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_sensor_cards_hover" class="dropdown-item-btn active" data-mode="hover" title="Solo al interactuar con sensores (exclusivo, desactiva polígonos)">
+              <span>✨</span> Al Interactuar (Hover)
+            </button>
+            <button id="btn_sensor_cards_all" class="dropdown-item-btn" data-mode="all" title="Mostrar todos los sensores a la vez">
+              <span>👀</span> Ver Todos a la vez
+            </button>
+            <button id="btn_sensor_cards_none" class="dropdown-item-btn" data-mode="none" title="Ocultar paneles de sensores">
+              <span>🚫</span> Ocultar Paneles
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Polygon / Parcel Hover Cards Toggle (Exclusivo con Sensores) -->
+      <div class="dropdown-group" id="dropdown_polygon_cards">
+        <button class="btn-dropdown" id="trigger_polygon_cards_btn" aria-haspopup="true" aria-expanded="false" title="Visualización de Paneles Flotantes de Polígonos y Parcelas 3D">
+          <span class="btn-dropdown-icon">🌾</span>
+          <span class="btn-dropdown-label">Polígonos:</span>
+          <span class="btn-dropdown-value" id="trigger_polygon_cards_label">Oculto</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 250px;">
+          <div class="dropdown-header">🌾 Polígonos & Cuarteles 3D</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_toggle_parcel_geometry" class="dropdown-item-btn" title="Alternar polígonos coloreados de cuarteles en el terreno">
+              <span>🗺️</span> Ver Polígonos de Cuarteles
+            </button>
+            <button id="btn_polygon_cards_hover" class="dropdown-item-btn" data-mode="polygons" title="Hover exclusivo para Polígonos y Parcelas (oculta sensores)">
+              <span>✨</span> Al Interactuar (Hover)
+            </button>
+            <button id="btn_polygon_cards_none" class="dropdown-item-btn active" data-mode="none" title="Desactivar paneles de polígonos">
+              <span>🚫</span> Ocultar Paneles
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Objetos 3D (Editor AoE III) -->
+      <div class="dropdown-group" id="dropdown_objects">
+        <button class="btn-dropdown" id="trigger_objects_btn" style="color: #fbbf24;" title="Insertar Objetos 3D, Estructuras GLB, Animales y Sensores (Editor Age of Empires III)">
+          <span class="btn-dropdown-icon">🏛️</span>
+          <span class="btn-dropdown-label">Objetos</span>
+        </button>
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group 5: Herramientas de Dibujo & Esculpir (Pincel & Polígonos Tool) -->
+      <div class="dropdown-group" id="dropdown_drawing">
+        <button class="btn-dropdown" id="trigger_draw_btn" title="Herramienta Pincel, Dibujo Vectorial & Esculpido 3D">
+          <span class="btn-dropdown-icon">🎨</span>
+          <span class="btn-dropdown-label">Dibujar:</span>
+          <span class="btn-dropdown-value" id="trigger_draw_label">Pincel</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel align-right" style="min-width: 260px;">
+          <div class="dropdown-header">🎨 Herramientas de Polígonos & Suelos</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_open_objects_dock" class="dropdown-item-btn" style="color: #fde047; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.08);">
+              <span>🏛️</span> Insertar Objetos GLB (AoE III)
+            </button>
+            <button id="btn_draw_polygon" class="dropdown-item-btn">
+              <span>✏️</span> Dibujar Polígono
+            </button>
+            <button id="btn_move_objects" class="dropdown-item-btn" title="Tomar y mover cualquier objeto 3D por el terreno (paneles, casas, viñedos, tractor, cultivos)">
+              <span>✋</span> Mano / Mover Objetos
+            </button>
+            <button id="btn_erase_polygon" class="dropdown-item-btn">
+              <span>🗑️</span> Borrar Elemento
+            </button>
+            <button id="btn_clear_canvas" class="dropdown-item-btn">
+              <span>🧹</span> Limpiar Dibujos
+            </button>
+          </div>
+
+          <!-- Esculpido Manual (Hacedores de Relieve y Profundidad dentro del Pincel) -->
+          <div style="padding: 8px 12px 10px 12px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.2);">
+            <div style="font-size: 0.72rem; color: var(--accent-cyan); margin-bottom: 6px; font-weight: 700;">🛠️ Esculpir Terreno (Pincel 3D):</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button id="btn_sculpt_raise" class="btn-sculpt" title="Hacedor de Relieves (+ ⛰️): Mantén presionado sobre el mapa para elevar progresivamente el terreno al porte de una casa">
+                <span style="font-size: 1.15rem;">➕⛰️</span>
+                <span>Elevar (+Relieve)</span>
+              </button>
+              <button id="btn_sculpt_lower" class="btn-sculpt" title="Hacedor de Profundidades (- ⛰️): Mantén presionado sobre el mapa para excavar progresivamente hondonadas o quebradas">
+                <span style="font-size: 1.15rem;">➖⛰️</span>
+                <span>Excavar (-Hondo)</span>
+              </button>
+            </div>
+            <div id="sculpt_active_hint" style="display: none; margin-top: 6px; font-size: 0.7rem; color: var(--accent-cyan); text-align: center;">
+              ⚡ Mantén presionado en el mapa para esculpir. [ESC para salir]
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Permacultura & Ganadería PRV -->
+      <div class="dropdown-group" id="dropdown_perma_prv">
+        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Capas Agroecológicas: Permacultura, Keyline y Ganadería PRV">
+          <span class="btn-dropdown-icon">🌱</span>
+          <span class="btn-dropdown-label">Bio-Capas</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 260px;">
+          <div class="dropdown-header">🌱 Agroecología & Regeneración</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_toggle_livestock_3d" class="dropdown-item-btn active" title="Visualizar los 8 potreros PRV, semáforo forrajero y rebaño en 3D">
+              <span>🐄</span> Pastoreo PRV (8 Potreros)
+            </button>
+            <button id="btn_toggle_zones_3d" class="dropdown-item-btn active" title="Proyectar las Zonas 0 a 5 de Bill Mollison en 3D">
+              <span>🌿</span> Zonificación 0-5 (Mollison)
+            </button>
+            <button id="btn_toggle_keyline_3d" class="dropdown-item-btn active" title="Proyectar el Trazado de Subsolado Keyline de Yeomans y flujo al tranque">
+              <span>🚜</span> Trazado Keyline (Yeomans)
+            </button>
+            <button id="btn_sim_torrential_rain" class="dropdown-item-btn" title="Simular lluvia torrencial de 60mm y escorrentía gravitatoria hacia tranques y swales" style="border-top: 1px solid rgba(255,255,255,0.08); color: #38bdf8;">
+              <span>🌧️</span> Simular Tormenta (60mm/4h)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Visión & Drones Autónomos (Cámaras PTZ, Frustums 3D, Vuelos DJI) -->
+      <div class="dropdown-group" id="dropdown_vision">
+        <button class="btn-dropdown" id="trigger_vision_btn" aria-haspopup="true" aria-expanded="false" title="Cámaras Solares 4G, Frustums 3D y Drones Autónomos DJI">
+          <span class="btn-dropdown-icon">📹</span>
+          <span class="btn-dropdown-label">Visión:</span>
+          <span class="btn-dropdown-value" id="trigger_vision_label">Inactivo</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 275px;">
+          <div class="dropdown-header">📹 Cámaras Solares & Frustums 3D</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_toggle_vision_cameras" class="dropdown-item-btn" style="color: #fbbf24; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 4px; background: rgba(245, 158, 11, 0.12);">
+              <span id="icon_toggle_vision_cameras">👁️</span> <span id="label_toggle_vision_cameras">Activar Cámaras Visoras</span>
+            </button>
+            <button id="btn_cam_01_norte" class="dropdown-item-btn">
+              <span>🚨</span> CAM-01 • Acceso Norte (YOLO)
+            </button>
+            <button id="btn_cam_02_dga" class="dropdown-item-btn">
+              <span>🌊</span> CAM-02 • Compuerta DGA (Aforo)
+            </button>
+            <button id="btn_cam_03_fauna" class="dropdown-item-btn">
+              <span>🦊</span> CAM-03 • Fauna Nativa (ESG)
+            </button>
+            <button id="btn_cam_04_prv" class="dropdown-item-btn">
+              <span>🐄</span> CAM-04 • Potrero PRV (Ganado)
+            </button>
+          </div>
+          <div style="border-top: 1px solid rgba(255,255,255,0.08); margin: 6px 0;"></div>
+          <div class="dropdown-header">🚁 Drones Autónomos (DJI Dock 2)</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_drone_start_mission" class="dropdown-item-btn" style="color: #38bdf8;">
+              <span>🚀</span> Despegar Misión Fotogrametría
+            </button>
+            <button id="btn_drone_update_ortho" class="dropdown-item-btn" style="color: #4ade80;">
+              <span>🗺️</span> Actualizar Ortomosaico Terreno
+            </button>
+            <button id="btn_vision_sim_alert" class="dropdown-item-btn" style="color: #f87171;">
+              <span>⚡</span> Simular Alerta Edge AI (Intruso)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group 6: Proyectos & Archivos (.agritwin / .shp) -->
+      <div class="dropdown-group" id="dropdown_project">
+        <button class="btn-dropdown" title="Gestión de Proyecto">
+          <span class="btn-dropdown-icon">📁</span>
+          <span class="btn-dropdown-label">Proyecto</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel align-right">
+          <div class="dropdown-header">📁 Proyectos & GIS</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_save_project" class="dropdown-item-btn">
+              <span>💾</span> Guardar (.agritwin)
+            </button>
+            <button id="btn_open_project_dropdown" class="dropdown-item-btn">
+              <span>📂</span> Abrir Proyecto
+            </button>
+            <button id="btn_import_shp_dropdown" class="dropdown-item-btn">
+              <span>🗺️</span> Importar Shapefile (.shp)
+            </button>
+            <button id="btn_open_report_dropdown" class="dropdown-item-btn" onclick="window.openReporteTecnicoModal && window.openReporteTecnicoModal()" title="Generar Informe Técnico Oficial y Auditoría Agronómica">
+              <span>📑</span> Informe Técnico (SAG/DGA)
+            </button>
+            <button id="btn_open_dossier_dropdown" class="dropdown-item-btn" onclick="window.open('dossier.html', '_blank')" title="Abrir Dossier Estratégico de Teledetección e IA (14 Láminas)">
+              <span>📚</span> Dossier Satelital & IA (14 Láminas)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Alert Notification Banner (Floating Top-Center Toast) -->
+    <div id="alertBanner" class="alert-banner" style="display: none;">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-text" id="alertMessage">Alerta de prueba</div>
+    </div>
+
+
+
+    <!-- Interactive Right Side Detail Panel -->
+    <aside id="sideDrawer" class="side-drawer glass-panel">
+      <!-- Pestaña / Asa integrada al borde del panel para desplegar y replegar -->
+      <button id="btnDrawerOpen" class="drawer-handle-tab" title="Métricas del Predio (Clic para desplegar / replegar)">
+        <span class="tab-arrow">◀</span>
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">Métricas</span>
+      </button>
+
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <h2 id="drawerTitle">Detalle de Elemento</h2>
+          <div id="drawerSubtitle" class="drawer-subtitle">Selecciona un elemento en el mapa 3D</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button id="btnToggleDrawerCollapse" class="close-btn" title="Ocultar panel y ver mapa en pantalla completa" aria-label="Minimizar Panel">▶</button>
+          <button id="closeDrawerBtn" class="close-btn" title="Cerrar selección y volver a vista general" aria-label="Cerrar Panel">&times;</button>
+        </div>
+      </div>
+
+      <div id="drawerBody" class="drawer-content">
+        <div style="text-align: center; color: var(--text-muted); margin-top: 40px;">
+          Haz clic en cualquier parcela 3D, árbol u objeto IoT para inspeccionar métricas y tendencias en tiempo real.
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- HUD: Píldoras flotantes para dibujo y modo mover -->
+  <div id="drawingHudPill" style="display: none; position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(15, 23, 42, 0.94); border: 1px solid var(--accent-cyan); border-radius: 9999px; padding: 8px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(12px); align-items: center; gap: 12px; color: white; font-size: 0.88rem;">
+    <span id="drawingHudText">✏️ Trazando polígono (haz clic en el terreno)...</span>
+    <button id="btnHudFinishPoly" class="btn-primary" style="padding: 5px 14px; font-size: 0.8rem; border-radius: 9999px; display: none;">✅ Finalizar Polígono</button>
+    <button id="btnHudCancelPoly" class="btn-secondary" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 9999px;">Cancelar [ESC]</button>
+  </div>
+
+  <div id="moveHudPill" style="display: none; position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(15, 23, 42, 0.94); border: 1px solid #38bdf8; border-radius: 9999px; padding: 8px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(12px); align-items: center; gap: 12px; color: white; font-size: 0.88rem;">
+    <span id="moveHudText">✋ <strong>Modo Mover:</strong> 1. Haz clic en el objeto o cultivo a mover.</span>
+    <button id="btnHudDeselectMove" class="btn-secondary" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 9999px; display: none;">Deseleccionar</button>
+    <button id="btnHudExitMove" class="btn-secondary" style="padding: 5px 14px; font-size: 0.8rem; border-radius: 9999px;">Salir [ESC]</button>
+  </div>
+
+  <!-- MODAL: Asignar Ítem del Catálogo de Ítems a Polígono 3D -->
+  <div id="catalogPolyModal" class="modal-overlay glass-modal-backdrop" style="display: none;">
+    <div class="modal-container glass-panel width-large">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon" style="font-size: 1.6rem;">🎨</span>
+          <div>
+            <h3 class="modal-title">Catálogo de Ítems — Asignar a Polígono 3D</h3>
+            <div class="modal-subtitle">
+              Superficie trazada: <strong id="polyAreaHaVal" style="color: var(--accent-cyan);">0.0 ha</strong>
+            </div>
+          </div>
+        </div>
+        <button id="closeCatalogPolyBtn" class="close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Barra de Previsualización del Ítem Seleccionado -->
+        <div class="selected-item-banner glass-panel">
+          <div class="selected-item-preview">
+            <span id="selectedItemIcon" class="selected-icon">🌾</span>
+            <div class="selected-meta">
+              <div class="selected-title-row">
+                <span id="selectedItemName" class="selected-name">Pastizal Natural Seco</span>
+                <span id="selectedItemFamily" class="selected-family-badge">Poaceae</span>
+              </div>
+              <span id="selectedItemCategory" class="selected-category-text">🌿 Arbustos, Hierbas & Pastizales</span>
+            </div>
+          </div>
+          <div class="custom-name-field">
+            <label class="field-label">Etiqueta en Mapa 3D:</label>
+            <input type="text" id="polyNameInput" placeholder="Ej: Pastizal Norte, Cuartel 1..." class="input-glass">
+          </div>
+        </div>
+
+        <!-- Filtros y Búsqueda del Catálogo -->
+        <div class="item-picker-controls">
+          <input type="text" id="polyItemSearchInput" placeholder="🔍 Filtrar ítems (ej: pastizal, cerezo, galpón, estanque, roble, alfalfa)..." class="input-glass" style="width: 100%;">
+          <div class="item-category-pills" id="itemCategoryPills">
+            <button class="cat-pill active" data-cat="all">Todos</button>
+            <button class="cat-pill" data-cat="permaculture">🌿 Permacultura & Keyline</button>
+            <button class="cat-pill" data-cat="fruits">🍎 Frutales</button>
+            <button class="cat-pill" data-cat="native_forest">🌳 Bosque Nativo</button>
+            <button class="cat-pill" data-cat="shrubs_herbs">🌿 Arbustos & Pastizales</button>
+            <button class="cat-pill" data-cat="infrastructure">🏚️ Infraestructura</button>
+            <button class="cat-pill" data-cat="hydrologic">🌊 Agua & Sensores</button>
+          </div>
+        </div>
+
+        <!-- Cuadrícula Interactiva de Ítems del Catálogo -->
+        <div class="item-picker-grid" id="catalogPickerGrid">
+          <!-- Generado dinámicamente con PossibilitiesCatalog -->
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+        <span style="font-size: 0.78rem; color: var(--text-muted);">
+          ℹ️ Al asignar el ítem, se generará el modelo 3D y su insignia flotante en el mapa.
+        </span>
+        <div style="display: flex; gap: 8px;">
+          <button id="cancelPolyBtn" class="btn-secondary">Cancelar</button>
+          <button id="savePolyBtn" class="btn-primary">✅ Asignar y Generar en 3D</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Redirección de Marcas (Rewild & AgroTech Chile) -->
+  <div id="brandRedirectModal" class="modal-overlay glass-modal-backdrop" style="display: none;">
+    <div class="modal-container glass-panel width-small" style="text-align: center;">
+      <div class="modal-header" style="justify-content: center;">
+        <h3 id="brandModalTitle">🌐 Redirección Oficial</h3>
+      </div>
+      <div class="modal-body" style="padding: 16px 0;">
+        <p id="brandModalMsg" style="color: var(--text-muted);">
+          Estás siendo redirigido al portal oficial. El sitio web se encuentra actualmente en fase de actualización.
+        </p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button id="closeBrandModalBtn" class="btn-primary">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Simulación de Salida WhatsApp Business -->
+  <div id="whatsAppAlertModal" class="modal-overlay glass-modal-backdrop" style="display: none;">
+    <div class="modal-container glass-panel" style="max-width: 440px; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0; overflow: hidden;">
+      
+      <!-- WhatsApp Header -->
+      <div style="background: #075e54; padding: 14px 18px; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: #128c7e; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;">
+            🌱
+          </div>
+          <div>
+            <div style="font-weight: 700; font-size: 14px;">AgroTwin Bot • AgroTech Chile</div>
+            <div style="font-size: 10px; color: #a7f3d0;">Verificado • Servidor Maule</div>
+          </div>
+        </div>
+        <button id="closeWhatsAppModalBtn" class="close-btn" style="color: #fff; font-size: 20px;">&times;</button>
+      </div>
+
+      <!-- WhatsApp Body -->
+      <div style="background: #0b141a; padding: 20px 16px; min-height: 280px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="align-self: center; background: #182229; color: #8696a0; font-size: 10px; padding: 4px 10px; rounded-full; border-radius: 6px;">
+          HOY • 05:00 AM
+        </div>
+
+        <!-- Chat Bubble -->
+        <div style="background: #005c4b; color: #e9edef; padding: 12px 14px; border-radius: 12px 12px 12px 2px; font-size: 12px; line-height: 1.5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); max-width: 90%;">
+          <strong style="color: #6ee7b7; display: block; font-size: 13px; margin-bottom: 4px;">🚨 ALERTA MATUTINA PREDIAL</strong>
+          Predio: <strong>Fundo Estero Colliguay (Retiro, Maule)</strong><br>
+          Modelo: <span style="background: rgba(0,0,0,0.2); padding: 1px 4px; border-radius: 4px; font-family: monospace;">FAO-56 Penman-Monteith</span>
+          <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 8px 0;">
+          • <strong>Riego Recomendado:</strong> Cuartel A (Brotes)<br>
+          • <strong>Lámina de Reposición:</strong> 5.8 mm (42 minutos de bomba)<br>
+          • <strong>Humedad Radicular (20-60cm):</strong> 28.4% (Estrés moderado)<br>
+          • <strong>Riesgo Helada Katabática:</strong> Mínima prevista: 1.2°C a las 06:15 hrs en el bajo.<br>
+          <div style="text-align: right; font-size: 9px; color: #a7f3d0; margin-top: 6px;">05:00 ✓✓</div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+          <button style="background: #1f2c34; border: 1px solid #2a3942; color: #25d366; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center;">
+            💧 Confirmar Bomba de Riego Encendida
+          </button>
+          <button style="background: #1f2c34; border: 1px solid #2a3942; color: #38bdf8; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center;">
+            🗺️ Abrir Gemelo 3D en Teléfono
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div style="background: #111b21; padding: 10px 16px; border-top: 1px solid #202c33; font-size: 10px; color: #8696a0; text-align: center;">
+        ⚡ Conectado vía Webhook n8n / WhatsApp Cloud API autónomo
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Motor Biofísico FAO-56 & Especificación de Simulación -->
+  <div id="bioSimModal" class="modal-overlay glass-modal-backdrop" style="display: none;">
+    <div class="modal-container glass-panel" style="max-width: 600px; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.4);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">🔬</span>
+          <div>
+            <h3 style="font-size: 16px; font-weight: 800; color: #fff; margin: 0;">Motor Biofísico AgroTwin (Ground-Truth Sim)</h3>
+            <span style="font-size: 11px; color: #fbbf24; font-family: monospace;">Fase 1: Simulación Satelital Calibrada</span>
+          </div>
+        </div>
+        <button id="closeBioSimModalBtn" class="close-btn">&times;</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+        <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); padding: 12px; border-radius: 10px;">
+          <strong style="color: #fbbf24; display: block; margin-bottom: 4px;">¿Por qué operar con simulación biofísica?</strong>
+          Permite diagnosticar estrés hídrico, predecir heladas y programar riegos desde el primer día sin esperar la importación o instalación física de sondas IoT.
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-left: 3px solid #10b981;">
+            <strong style="color: #fff; display: block; margin-bottom: 2px;">1. Balance en 3 Capas</strong>
+            • 0-20 cm: Evaporación directa<br>
+            • 20-60 cm: Absorción radicular<br>
+            • 60-100 cm: Recarga de napa
+          </div>
+
+          <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            <strong style="color: #fff; display: block; margin-bottom: 2px;">2. FAO-56 Penman-Monteith</strong>
+            Calcula la evapotranspiración real (ETc = ETo × Kc) acoplada a la radiación solar y viento de ERA5-Land.
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-left: 3px solid #a855f7;">
+          <strong style="color: #fff; display: block; margin-bottom: 2px;">3. Drenaje Katabático de Heladas</strong>
+          El Modelo Digital de Elevación (DEM) identifica la acumulación de aire frío en fondos de quebrada bajo cielo despejado.
+        </div>
+
+        <div style="font-size: 11px; color: var(--accent-emerald); font-family: monospace; text-align: center; padding-top: 6px;">
+          ✓ Puente a Fase 2: Al enchufar sensores LoRaWAN, el modelo se autocalibra a >95% de certeza.
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; text-align: right;">
+        <button id="btnUnderstandBioSim" class="btn-primary" style="padding: 8px 18px; font-size: 12px;">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Ganadería Regenerativa, Pastoreo Racional Voisin (PRV) & Carga Animal -->
+  <div id="ganaderiaModal" class="modal-overlay glass-modal-backdrop" style="display: none; z-index: 9998; padding: 16px;">
+    <div class="modal-container glass-panel" style="max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.5); box-shadow: 0 20px 50px rgba(0,0,0,0.9);">
+      
+      <!-- Modal Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(245, 158, 11, 0.3); padding-bottom: 14px; margin-bottom: 18px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 28px;">🐄</span>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h3 style="font-size: 17px; font-weight: 800; color: #fff; margin: 0; font-family: 'Cinzel', serif;">
+                Ganadería Regenerativa & Pastoreo Racional Voisin (PRV)
+              </h3>
+              <span style="background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fde047; font-size: 10px; font-family: monospace; font-weight: bold; padding: 2px 6px; border-radius: 4px;">
+                FUNDO ESTERO COLLIGUAY • 12.8 HA
+              </span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; margin-top: 2px; font-family: monospace;">
+              Rotación diaria de potreros • Integración Silvopastoril con Cerezos y Keyline • Cero Químicos
+            </p>
+          </div>
+        </div>
+        <button id="closeGanaderiaModalBtn" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 32px; height: 32px; border-radius: 8px; font-size: 18px; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- Métricas Clave de Ganadería -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 18px;">
+        <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(245,158,11,0.2); padding: 12px; border-radius: 10px;">
+          <span style="font-size: 10px; color: #94a3b8; font-family: monospace; display: block;">Carga Instantánea</span>
+          <strong style="font-size: 18px; color: #fde047; font-family: monospace;" id="prvKpiCarga">1.8 UGM / ha</strong>
+          <span style="font-size: 9px; color: #10b981; display: block; margin-top: 2px;">Óptimo sin compactación</span>
+        </div>
+        <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(56,189,248,0.2); padding: 12px; border-radius: 10px;">
+          <span style="font-size: 10px; color: #94a3b8; font-family: monospace; display: block;">Agua de Tranque Bebedero</span>
+          <strong style="font-size: 18px; color: #38bdf8; font-family: monospace;">1.200 L / día</strong>
+          <span style="font-size: 9px; color: #94a3b8; display: block; margin-top: 2px;">Gravitacional desde tranque</span>
+        </div>
+        <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(16,185,129,0.2); padding: 12px; border-radius: 10px;">
+          <span style="font-size: 10px; color: #94a3b8; font-family: monospace; display: block;">Bosta Regenerativa</span>
+          <strong style="font-size: 18px; color: #10b981; font-family: monospace;">+4.2 kg MO/m²</strong>
+          <span style="font-size: 9px; color: #10b981; display: block; margin-top: 2px;">Ciclaje de nutrientes activo</span>
+        </div>
+        <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(168,85,247,0.2); padding: 12px; border-radius: 10px;">
+          <span style="font-size: 10px; color: #94a3b8; font-family: monospace; display: block;">Potrero Activo Hoy</span>
+          <strong style="font-size: 18px; color: #fde047; font-family: monospace;" id="prvKpiPotrero">Potrero 3 (P3)</strong>
+          <span style="font-size: 9px; color: #10b981; display: block; margin-top: 2px;" id="prvKpiEstado">Ocupación: Día 1 de 2</span>
+        </div>
+      </div>
+
+      <!-- GRAZING CHART (PLANIFICADOR INTERACTIVO DE ROTACIÓN PRV) -->
+      <div style="background: rgba(6, 16, 9, 0.85); border: 2px solid rgba(245, 158, 11, 0.4); border-radius: 14px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h4 style="margin: 0; font-family: 'Cinzel', serif; font-size: 14px; font-weight: 900; color: #fde047; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+              <span>🗓️</span> GRAZING CHART: ROTACIÓN DE LOS 8 POTREROS PRV
+            </h4>
+            <span style="font-size: 10px; color: #94a3b8; font-family: monospace;">Haz clic en cualquier potrero para inspeccionar o trasladar el rebaño en el Gemelo 3D</span>
+          </div>
+          <div style="display: flex; gap: 6px; font-size: 10px; font-family: monospace;">
+            <span style="background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid #22c55e; padding: 2px 8px; border-radius: 4px;">🟢 Listo (>35d)</span>
+            <span style="background: rgba(245, 158, 11, 0.2); color: #fde047; border: 1px solid #f59e0b; padding: 2px 8px; border-radius: 4px;">🔴 Activo Hoy</span>
+            <span style="background: rgba(132, 204, 22, 0.2); color: #bef264; border: 1px solid #84cc16; padding: 2px 8px; border-radius: 4px;">🟡 En Rebrote</span>
+            <span style="background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid #38bdf8; padding: 2px 8px; border-radius: 4px;">🔵 Gallinero Móvil</span>
+          </div>
+        </div>
+
+        <!-- Cuadrícula de los 8 Potreros PRV -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px;" id="grazingChartGrid">
+          <!-- P1 -->
+          <div class="prv-paddock-card" data-paddock-id="P1" style="background: rgba(34, 197, 94, 0.12); border: 2px solid #22c55e; border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P1</strong>
+              <span style="font-size: 9px; background: #15803d; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">LISTO</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Trébol & Festuca</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #86efac;">44d descanso • 24cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">2.850 kg MS/ha</div>
+          </div>
+
+          <!-- P2 -->
+          <div class="prv-paddock-card" data-paddock-id="P2" style="background: rgba(34, 197, 94, 0.12); border: 2px solid #22c55e; border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P2</strong>
+              <span style="font-size: 9px; background: #15803d; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">LISTO</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Alfalfa & Raygrass</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #86efac;">41d descanso • 22cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">2.600 kg MS/ha</div>
+          </div>
+
+          <!-- P3 (Activo) -->
+          <div class="prv-paddock-card active" data-paddock-id="P3" style="background: rgba(245, 158, 11, 0.2); border: 2px solid #f59e0b; box-shadow: 0 0 12px rgba(245,158,11,0.5); border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P3 🐄</strong>
+              <span style="font-size: 9px; background: #b45309; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">ACTIVO</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Pastura Polifítica</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #fde047;">Día 1 Ocupación • 25cm</div>
+            <div style="font-size: 9px; color: #fef08a;">3.100 kg MS/ha</div>
+          </div>
+
+          <!-- P4 -->
+          <div class="prv-paddock-card" data-paddock-id="P4" style="background: rgba(132, 204, 22, 0.08); border: 1px solid rgba(132, 204, 22, 0.5); border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P4</strong>
+              <span style="font-size: 9px; background: #3f6212; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">REBROTE</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Silvopastoreo Cerezos</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #bef264;">32d descanso • 18cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">1.950 kg MS/ha</div>
+          </div>
+
+          <!-- P5 -->
+          <div class="prv-paddock-card" data-paddock-id="P5" style="background: rgba(132, 204, 22, 0.08); border: 1px solid rgba(132, 204, 22, 0.5); border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P5</strong>
+              <span style="font-size: 9px; background: #3f6212; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">REBROTE</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Trébol Subterráneo</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #bef264;">24d descanso • 15cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">1.600 kg MS/ha</div>
+          </div>
+
+          <!-- P6 -->
+          <div class="prv-paddock-card" data-paddock-id="P6" style="background: rgba(132, 204, 22, 0.08); border: 1px solid rgba(132, 204, 22, 0.5); border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P6</strong>
+              <span style="font-size: 9px; background: #3f6212; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">REBROTE</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Pradera Este</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #bef264;">16d descanso • 12cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">1.250 kg MS/ha</div>
+          </div>
+
+          <!-- P7 -->
+          <div class="prv-paddock-card" data-paddock-id="P7" style="background: rgba(132, 204, 22, 0.08); border: 1px solid rgba(132, 204, 22, 0.5); border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P7</strong>
+              <span style="font-size: 9px; background: #3f6212; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">REBROTE</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Infiltración Sur</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #bef264;">8d descanso • 8cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">800 kg MS/ha</div>
+          </div>
+
+          <!-- P8 (Gallinero Móvil) -->
+          <div class="prv-paddock-card" data-paddock-id="P8" style="background: rgba(56, 189, 248, 0.12); border: 2px solid #38bdf8; border-radius: 10px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="color: #fff; font-size: 13px; font-family: monospace;">P8 🐓</strong>
+              <span style="font-size: 9px; background: #0369a1; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: bold;">GALLINERO</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-family: monospace;">Desparasitación Viva</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: bold; color: #7dd3fc;">4d post-vaca • 6cm</div>
+            <div style="font-size: 9px; color: #94a3b8;">Sanitizado de bostas</div>
+          </div>
+        </div>
+
+        <!-- Inspector & Acciones de Rotación Inmediata -->
+        <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <span style="font-size: 10px; color: #94a3b8; font-family: monospace; display: block;">Potrero Seleccionado en el Planificador:</span>
+            <strong style="font-size: 13px; color: #fde047; font-family: monospace;" id="selectedPaddockLabel">Potrero 1 (P1) • 44 días de reposo (Punto Óptimo Alcanzado)</strong>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btnRotateHerdToSelected" style="background: linear-gradient(135deg, #f59e0b, #b45309); color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 800; font-family: monospace; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(245,158,11,0.3);">
+              <span>📍 Trasladar Rebaño a este Potrero</span>
+            </button>
+            <button id="btnFocusPaddock3D" style="background: #1e293b; color: #38bdf8; border: 1px solid #0284c7; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; font-family: monospace; cursor: pointer;">
+              <span>👁️ Ver en 3D</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Galería de Especies & Roles Silvopastoriles -->
+      <h4 style="font-size: 13px; font-weight: 700; color: #fde047; text-transform: uppercase; font-family: monospace; margin-bottom: 10px; display: flex; items-center; gap: 6px;">
+        <span>🐾</span> Matriz de Especies y Función Agroecológica
+      </h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 20px;">
+        
+        <!-- Vaca / Bovinos -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #f59e0b; padding: 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="color: #fff; font-size: 12px;">🐄 Bovinos (Vacas Doble Propósito)</strong>
+            <span style="font-size: 9px; font-family: monospace; background: rgba(245,158,11,0.2); color: #fde047; padding: 1px 5px; border-radius: 3px;">Potrero 3 y 4</span>
+          </div>
+          <p style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.4;">
+            Consumo de pasto alto antes del espigado. Pisoteo planificado que incorpora materia orgánica sin destruir la estructura del suelo aluvial.
+          </p>
+        </div>
+
+        <!-- Ovejas -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #10b981; padding: 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="color: #fff; font-size: 12px;">🐑 Ovinos (Podadoras de Frutales)</strong>
+            <span style="font-size: 9px; font-family: monospace; background: rgba(16,185,129,0.2); color: #6ee7b7; padding: 1px 5px; border-radius: 3px;">Interhilera Cerezos</span>
+          </div>
+          <p style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.4;">
+            Control biológico de malezas bajo cerezos y avellanos durante el receso invernal. Elimina el uso de glifosato y abona con estiércol rico en fósforo.
+          </p>
+        </div>
+
+        <!-- Gallinas & Pavos -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #38bdf8; padding: 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="color: #fff; font-size: 12px;">🐓 Aves Pastoriles (Gallinas & Pavos)</strong>
+            <span style="font-size: 9px; font-family: monospace; background: rgba(56,189,248,0.2); color: #7dd3fc; padding: 1px 5px; border-radius: 3px;">Gallinero Móvil</span>
+          </div>
+          <p style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.4;">
+            Siguen a las vacas 3 días después para desparasitar las bostas (consumen larvas de moscas y parásitos), dispersando el abono y produciendo huevos camperos.
+          </p>
+        </div>
+
+        <!-- Caballos -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #ec4899; padding: 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="color: #fff; font-size: 12px;">🐎 Equinos (Caballos Criollos)</strong>
+            <span style="font-size: 9px; font-family: monospace; background: rgba(236,72,153,0.2); color: #f472b6; padding: 1px 5px; border-radius: 3px;">Manejo y Fajas</span>
+          </div>
+          <p style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.4;">
+            Pastoreo selectivo de gramíneas leñosas en fajas cortafuegos y caminos perimetrales. Apoyo en labores de campo con nula huella de carbono.
+          </p>
+        </div>
+
+        <!-- Cerdos -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #a855f7; padding: 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="color: #fff; font-size: 12px;">🐖 Cerdos en Franja (Tractor de Suelo)</strong>
+            <span style="font-size: 9px; font-family: monospace; background: rgba(168,85,247,0.2); color: #d8b4fe; padding: 1px 5px; border-radius: 3px;">Post-Cosecha</span>
+          </div>
+          <p style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.4;">
+            Hocicado controlado para descompactar cuadros de cultivo intensivo tras la cosecha de forraje, limpiando tubérculos residuales y semillas de malezas.
+          </p>
+        </div>
+
+        <!-- Peces en Tranque -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #06b6d4; padding: 12px; border-radius: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="color: #fff; font-size: 12px;">🐟 Piscicultura en Tranque Keyline</strong>
+            <span style="font-size: 9px; font-family: monospace; background: rgba(6,182,212,0.2); color: #67e8f9; padding: 1px 5px; border-radius: 3px;">18.500 m³</span>
+          </div>
+          <p style="font-size: 10px; color: #94a3b8; margin-top: 6px; line-height: 1.4;">
+            Truchas y pejerreyes en el tranque principal de Fundo Estero Colliguay. Controlan algas y mosquitos, enriqueciendo el agua de riego con efluentes orgánicos para los huertos.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Bienestar Animal & Índice ITH -->
+      <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 11px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="color: #fde047;">☀️ Índice de Temperatura y Humedad (ITH): 66 (Zona de Confort Total)</strong>
+          <span style="font-family: monospace; color: #10b981;">Alerta Estrés Calórico: Inactivo</span>
+        </div>
+        <p style="color: #cbd5e1; line-height: 1.5; margin: 0;">
+          El diseño agroforestal de Fundo Estero Colliguay proporciona sombra natural en el 45% del área de pastoreo, reduciendo la temperatura radiante en 6.4°C en los días calurosos de Retiro y manteniendo la producción lechera y ganancia de peso óptima.
+        </p>
+      </div>
+
+      <div style="margin-top: 18px; text-align: right;">
+        <button id="btnUnderstoodGanaderia" class="btn-primary" style="padding: 8px 20px; font-size: 12px;">
+          Cerrar & Volver al Gemelo 3D
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <!-- Vista de Catan retirada de la versión de Predio: se mantiene exclusivamente el gemelo 3D biofísico y sus polígonos -->
+
+  <!-- MODAL: GENERADOR DE INFORMES TÉCNICOS & MAPAS DE RIESGO DINÁMICOS -->
+  <div id="reporteTecnicoModal" class="modal-overlay glass-modal-backdrop" style="display: none; z-index: 9999; padding: 16px;">
+    <div class="modal-container glass-panel" style="width: 90vw; max-width: 960px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; border: 2px solid rgba(56, 189, 248, 0.6); box-shadow: 0 25px 60px rgba(0,0,0,0.95); border-radius: 16px;">
+      
+      <!-- Modal Header -->
+      <div style="height: 56px; background: #081524; border-bottom: 2px solid rgba(56, 189, 248, 0.5); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 22px;">📑</span>
+          <div>
+            <h3 style="margin: 0; font-family: 'Cinzel', serif; font-size: 14px; font-weight: 900; color: #7dd3fc; letter-spacing: 0.05em;">
+              INFORME TÉCNICO & MAPAS DE RIESGO DINÁMICOS
+            </h3>
+            <span style="font-size: 10px; color: #94a3b8; font-family: monospace;">Fundo Estero Colliguay • Auditoría de Rendimiento & Resiliencia Agronómica</span>
+          </div>
+        </div>
+        <button id="closeReporteTecnicoModalBtn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px; background: #030a12; color: #cbd5e1; font-size: 12px;">
+        
+        <!-- Quick KPIs Strip -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(56, 189, 248, 0.3); padding: 12px; border-radius: 10px;">
+            <span style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Superficie Predial</span>
+            <strong style="display: block; font-size: 18px; color: #38bdf8; font-family: monospace;">24.8 ha</strong>
+            <span style="font-size: 9px; color: #64748b;">Rol SII 142-88 Retiro</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.3); padding: 12px; border-radius: 10px;">
+            <span style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Reserva Hídrica Tranque</span>
+            <strong style="display: block; font-size: 18px; color: #34d399; font-family: monospace;">18,500 m³</strong>
+            <span style="font-size: 9px; color: #64748b;">Autonomía: 42 días</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245, 158, 11, 0.3); padding: 12px; border-radius: 10px;">
+            <span style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Carga Silvopastoril</span>
+            <strong style="display: block; font-size: 18px; color: #fbbf24; font-family: monospace;">1.8 UGM/ha</strong>
+            <span style="font-size: 9px; color: #64748b;">Pastoreo Racional Voisin</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(168, 85, 247, 0.3); padding: 12px; border-radius: 10px;">
+            <span style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Balance Carbono MRV</span>
+            <strong style="display: block; font-size: 18px; color: #c084fc; font-family: monospace;">4.8 tCO2e/ha</strong>
+            <span style="font-size: 9px; color: #64748b;">Hash: 0x8f2d4a19c6e</span>
+          </div>
+        </div>
+
+        <!-- Selector de Mapas de Riesgo Dinámicos -->
+        <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.4); padding: 16px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: #7dd3fc; font-family: monospace; text-transform: uppercase;">🗺️ Activar Capa de Riesgo Dinámico en el Visor 3D:</strong>
+            <span style="font-size: 10px; color: #94a3b8;">Cambio en tiempo real sobre las parcelas</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+            <button onclick="setRiskInViewer('none')" style="padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer; font-size: 11px;">
+              🟢 Normal (Cultivos)
+            </button>
+            <button onclick="setRiskInViewer('water')" style="padding: 8px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #7dd3fc; cursor: pointer; font-size: 11px;">
+              💧 Estrés Hídrico (FDR)
+            </button>
+            <button onclick="setRiskInViewer('frost')" style="padding: 8px; border-radius: 6px; background: rgba(14, 165, 233, 0.15); border: 1px solid #0ea5e9; color: #38bdf8; cursor: pointer; font-size: 11px;">
+              ❄️ Helada Katabática
+            </button>
+            <button onclick="setRiskInViewer('fire')" style="padding: 8px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; cursor: pointer; font-size: 11px;">
+              🔥 Piro-Riesgo FWI
+            </button>
+          </div>
+        </div>
+
+        <!-- Vista Previa del Informe de Auditoría -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.6; max-height: 240px; overflow-y: auto; color: #94a3b8;" id="reporteTextoPrevia">
+================================================================================
+INFORME TÉCNICO OFICIAL - PROYECTO DEMOSTRADOR FUNDO ESTERO COLLIGUAY
+SUITE AGRITWIN 1 (NIVEL PREDIAL) • MAULE SUR, CHILE
+================================================================================
+1. TOPOGRAFÍA & DISEÑO KEYLINE:
+   - Superficie Total: 12.8 hectáreas (Rol SII 142-88 Retiro)
+   - Patrón de Subsolado: Líneas Clave Yeomans a cota de infiltración
+   - Tranque de Cosecha de Aguas Lluvia: 18,500 m³ (Cota 198 msnm)
+   - Infiltración profunda en horizonte 20-60 cm: 37.1% VWC
+
+2. RED SENSÓRICA GROUND-TRUTH (KIOT MESH):
+   - FDR-01 Cerezos: 36.2% VWC (Estrato 0-20 cm) • Riego no requerido
+   - FDR-02 Avellano: 34.8% VWC (Estrato 20-60 cm) • Óptimo
+   - FDR-03 Keyline Sur: 37.1% VWC • Infiltración activa
+   - FDR-04 Pastura & Ganado: 35.0% VWC • Zona de rotación PRV
+   - Piezómetro Tranque: 18,500 m³ almacenados (Nivel 100%)
+
+3. MODELAMIENTO DE RIESGOS MICRO-LOCALES:
+   - Viento Puelche (Efecto Foehn): Mitigación con 2.4 km cortavientos Peumo/Quillay
+   - Drenaje Katabático: Cuarteles bajos con alerta de aspersión a las 05:30 AM
+   - Fire Weather Index (FWI): Riesgo Bajo (24) vs 68 en plantaciones forestales vecinas
+
+4. INTEGRACIÓN REGENERATIVA & PRV:
+   - Carga animal: 1.8 UGM/ha con rotación de 24 horas y 42 días de reposo
+   - Enriquecimiento edáfico: +4.2 kg MO/m² por ciclado biológico de deyecciones
+   - Integración aviar y ovina en interhileras frutales (cero pesticidas sintéticos)
+================================================================================
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 14px 20px; background: #081524; border-top: 1px solid rgba(56, 189, 248, 0.4); display: flex; justify-content: space-between; align-items: center; shrink: 0;">
+        <span style="font-size: 11px; font-family: monospace; color: #64748b;">
+          MRV Hash: 0x8f2d4a19c6e • Verificado con Sentinel-2
+        </span>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="downloadAgriTwinReportTxt()" class="btn-primary" style="background: #0284c7; border: 1px solid #38bdf8; font-size: 11px; padding: 6px 14px; border-radius: 8px;">
+            📥 Descargar Informe (.txt)
+          </button>
+          <button onclick="window.print()" class="btn-secondary" style="font-size: 11px; padding: 6px 14px; border-radius: 8px;">
+            🖨️ Imprimir / Guardar PDF
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: DOSSIER EJECUTIVO DE OBRA & PLAN MAESTRO (PUNTO 5) -->
+  <div id="dossierPlanMaestroModal" class="modal-overlay glass-modal-backdrop" style="display: none; z-index: 10000; padding: 16px;">
+    <div class="modal-container glass-panel" style="width: 92vw; max-width: 1020px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; border: 2px solid rgba(245, 158, 11, 0.6); box-shadow: 0 25px 60px rgba(0,0,0,0.95); border-radius: 16px;">
+      
+      <!-- Header Dossier -->
+      <div style="height: 56px; background: #1a1306; border-bottom: 2px solid rgba(245, 158, 11, 0.5); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 24px;">📐</span>
+          <div>
+            <h3 style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 800; color: #fbbf24; letter-spacing: 0.04em;">
+              DOSSIER EJECUTIVO DE OBRA • PLAN MAESTRO KEYLINE & REGENERATIVO
+            </h3>
+            <div style="font-size: 10px; color: #94a3b8; font-family: monospace;">
+              Carpeta de Replanteo Topográfico, Movimiento de Tierras & Fases de Permanencia
+            </div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('dossierPlanMaestroModal').style.display='none'" class="close-btn" style="color: #fbbf24; font-size: 22px;">&times;</button>
+      </div>
+
+      <!-- Cuerpo del Dossier -->
+      <div style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: rgba(10, 14, 26, 0.95);">
+        
+        <!-- Ficha de Identificación del Predio -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-family: monospace;">
+          <div style="background: rgba(255,255,255,0.04); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <span style="font-size: 9px; color: #94a3b8; display: block;">PREDIO</span>
+            <strong style="color: #fff; font-size: 12px;">Fundo Colliguay</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <span style="font-size: 9px; color: #94a3b8; display: block;">SUPERFICIE DE DISEÑO</span>
+            <strong style="color: #38bdf8; font-size: 12px;">12.8 ha Totales</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <span style="font-size: 9px; color: #94a3b8; display: block;">METODOLOGÍA</span>
+            <strong style="color: #fbbf24; font-size: 12px;">Yeomans Keyline 18 Pts</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <span style="font-size: 9px; color: #94a3b8; display: block;">ESTADO PROYECTO</span>
+            <strong style="color: #4ade80; font-size: 12px;">Listo para Replanteo</strong>
+          </div>
+        </div>
+
+        <!-- 1. CUBICACIÓN HIDROLÓGICA & MOVIMIENTO DE TIERRAS -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <strong style="color: #fbbf24; font-size: 12px; font-family: monospace;">
+              🚜 1. MEMORIA DE CUBICACIÓN & MOVIMIENTO DE TIERRAS (RETROEXCAVADORA)
+            </strong>
+            <span style="font-size: 10px; color: #67e8f9; font-family: monospace;">Cota 188 - 210 msnm</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; font-family: monospace; font-size: 11px;">
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border-left: 3px solid #0284c7;">
+              <span style="color: #94a3b8; display: block; font-size: 10px;">Tranque de Acumulación Alta</span>
+              <strong style="color: #38bdf8; font-size: 16px;">18,500 m³</strong>
+              <div style="color: #64748b; font-size: 9.5px; margin-top: 4px;">Excavación: 8,400 m³ • Terraplén compactado: 7,900 m³</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border-left: 3px solid #06b6d4;">
+              <span style="color: #94a3b8; display: block; font-size: 10px;">Zanjas de Infiltración (Swales)</span>
+              <strong style="color: #67e8f9; font-size: 16px;">1,240 m lineales</strong>
+              <div style="color: #64748b; font-size: 9.5px; margin-top: 4px;">Pendiente 0.25% off-fall • Capacidad: 930 m³/lluvia</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border-left: 3px solid #10b981;">
+              <span style="color: #94a3b8; display: block; font-size: 10px;">Carga Hidrostática a Zona 0</span>
+              <strong style="color: #34d399; font-size: 16px;">2.4 bar (24 mca)</strong>
+              <div style="color: #64748b; font-size: 9.5px; margin-top: 4px;">Riego por gravedad 100% pasivo (0 costo eléctrico)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. TABLA DE REPLANTEO TOPOGRÁFICO DE ESTACAS (KEYLINE) -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
+          <strong style="color: #f8fafc; font-size: 12px; font-family: monospace; display: block; margin-bottom: 10px;">
+            📍 2. TABLA DE COORDENADAS PARA REPLANTEO DE ESTACAS (TOPÓGRAFO / OPERADOR)
+          </strong>
+          <table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 11px; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.15); color: #94a3b8;">
+                <th style="padding: 6px;">Código</th>
+                <th style="padding: 6px;">Elemento</th>
+                <th style="padding: 6px;">Cota (Z)</th>
+                <th style="padding: 6px;">Coordenadas Relativas (X, Z)</th>
+                <th style="padding: 6px;">Pendiente Diseño</th>
+                <th style="padding: 6px;">Instrucción de Obra</th>
+              </tr>
+            </thead>
+            <tbody style="color: #cbd5e1;">
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 6px; color: #38bdf8;">KP-01</td>
+                <td style="padding: 6px;">Punto Clave Norte</td>
+                <td style="padding: 6px;">184.2 m</td>
+                <td style="padding: 6px;">(x: 12.0, z: -10.0)</td>
+                <td style="padding: 6px;">Inflexión 0%</td>
+                <td style="padding: 6px;">Inicio de canal de desvío hacia loma</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 6px; color: #38bdf8;">SW-01</td>
+                <td style="padding: 6px;">Swale Primario</td>
+                <td style="padding: 6px;">184.0 - 183.5 m</td>
+                <td style="padding: 6px;">(x: 18.0 a 34.0)</td>
+                <td style="padding: 6px;">0.25% hacia tranque</td>
+                <td style="padding: 6px;">Camellón aguas abajo con empaste vivo</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 6px; color: #fbbf24;">TQ-01</td>
+                <td style="padding: 6px;">Tranque Alto Principal</td>
+                <td style="padding: 6px;">182.0 m</td>
+                <td style="padding: 6px;">(x: 34.0, z: -22.0)</td>
+                <td style="padding: 6px;">Nivel espejo</td>
+                <td style="padding: 6px;">Muro compactado con núcleo de arcilla</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px; color: #4ade80;">PRV-01..08</td>
+                <td style="padding: 6px;">Potreros Pastoreo Voisin</td>
+                <td style="padding: 6px;">174.0 - 180.0 m</td>
+                <td style="padding: 6px;">Cuarteles P1 a P8</td>
+                <td style="padding: 6px;">Pendiente natural</td>
+                <td style="padding: 6px;">Instalar red de bebederos móviles y cerco</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. CRONOGRAMA DE EJECUCIÓN EN ORDEN DE PERMANENCIA -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
+          <strong style="color: #f8fafc; font-size: 12px; font-family: monospace; display: block; margin-bottom: 10px;">
+            📅 3. CRONOGRAMA DE EJECUCIÓN (ESCALA DE PERMANENCIA)
+          </strong>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 10.5px; font-family: monospace;">
+            <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-top: 3px solid #0284c7;">
+              <strong style="color: #38bdf8; display: block;">Fase 1 (Mes 1-2): Agua</strong>
+              <p style="color: #94a3b8; margin: 4px 0 0 0; line-height: 1.3;">Excavación de tranque, swales y aliviaderos antes de primeras lluvias.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-top: 3px solid #fb923c;">
+              <strong style="color: #fdba74; display: block;">Fase 2 (Mes 3-4): Accesos</strong>
+              <p style="color: #94a3b8; margin: 4px 0 0 0; line-height: 1.3;">Caminos de cresta sobre lomo de tranques y fajas cortafuegos.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-top: 3px solid #a855f7;">
+              <strong style="color: #c084fc; display: block;">Fase 3 (Mes 5-8): Árboles</strong>
+              <p style="color: #94a3b8; margin: 4px 0 0 0; line-height: 1.3;">Plantación de cortavientos nodrizas y siembra de camellones húmedos.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-top: 3px solid #16a34a;">
+              <strong style="color: #4ade80; display: block;">Fase 4 (Mes 9-12): Seres</strong>
+              <p style="color: #94a3b8; margin: 4px 0 0 0; line-height: 1.3;">Instalación de cerco eléctrico PRV, bebederos y entrada de ganado.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Dossier -->
+      <div style="padding: 14px 20px; background: #1a1306; border-top: 1px solid rgba(245, 158, 11, 0.4); display: flex; justify-content: space-between; align-items: center; shrink: 0;">
+        <span style="font-size: 11px; font-family: monospace; color: #94a3b8;">
+          AgriTwin Master Plan v1.0 • Hash Topográfico: 0xKEY-COLLIGUAY-18
+        </span>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="downloadDossierObraTxt()" class="btn-primary" style="background: #d97706; border: 1px solid #fbbf24; font-size: 11px; padding: 6px 14px; border-radius: 8px; color: #fff; cursor: pointer;">
+            📥 Descargar Memoria (.txt)
+          </button>
+          <button onclick="window.print()" class="btn-secondary" style="font-size: 11px; padding: 6px 14px; border-radius: 8px; cursor: pointer;">
+            🖨️ Imprimir Plano A3 / Guardar PDF
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: SIMULADOR DE TRANSICIÓN PERMACULTURAL -->
+  <div id="permaculturaModal" class="modal-overlay glass-modal-backdrop" style="display: none; z-index: 9999; padding: 16px;">
+    <div class="modal-container glass-panel" style="width: 90vw; max-width: 960px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; border: 2px solid rgba(16, 185, 129, 0.6); box-shadow: 0 25px 60px rgba(0,0,0,0.95); border-radius: 16px;">
+      
+      <!-- Modal Header -->
+      <div style="height: 56px; background: #06150c; border-bottom: 2px solid rgba(16, 185, 129, 0.5); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 22px;">🌱</span>
+          <div>
+            <h3 style="margin: 0; font-family: 'Cinzel', serif; font-size: 14px; font-weight: 900; color: #6ee7b7; letter-spacing: 0.05em;">
+              FASES DE TRANSICIÓN PERMACULTURAL • DISEÑO REGENERATIVO
+            </h3>
+            <span style="font-size: 10px; color: #94a3b8; font-family: monospace;">Metodología Permacultural & Keyline • Fundo Estero Colliguay (12.8 ha)</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="btnToggleZonesModal" style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #86efac; font-size: 11px; font-weight: bold; font-family: monospace; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Activar/desactivar proyección 3D de las Zonas 0 a 5">
+            <span>🌿 Zonas 0-5 (3D)</span>
+          </button>
+          <button id="btnToggleKeylineModal" style="background: rgba(6, 182, 212, 0.2); border: 1px solid #06b6d4; color: #67e8f9; font-size: 11px; font-weight: bold; font-family: monospace; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Activar/desactivar proyección 3D del trazado Keyline y flujo al tranque">
+            <span>🚜 Trazado Keyline (3D)</span>
+          </button>
+          <button id="closePermaculturaModalBtn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; background: #030d07; color: #cbd5e1; font-size: 12px;">
+        
+        <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin: 0;">
+          La transición ecológica de Fundo Estero Colliguay no ocurre de golpe; se ejecuta en cuatro fases biológicas acumulativas donde cada capa genera el suelo y microclima para la siguiente.
+        </p>
+
+        <!-- Las 4 Fases en Tarjetas Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          
+          <!-- Fase 1 -->
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(56, 189, 248, 0.4); border-left: 4px solid #38bdf8; padding: 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: #38bdf8; font-size: 13px;">Fase 1: Suelo y Agua (Keyline)</strong>
+              <span style="font-size: 9px; font-family: monospace; background: rgba(56,189,248,0.2); color: #7dd3fc; padding: 2px 6px; border-radius: 4px;">Completada</span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; margin: 0; line-height: 1.4;">
+              Subsolado en curvas de nivel Keyline (Yeomans) y construcción de tranque acumulador de 18.500 m³. La lluvia deja de escurrir y se infiltra en las terrazas.
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #38bdf8;">
+              ✓ +320 L/s Infiltración • Tranque 18.500 m³ • 0% erosión
+            </div>
+          </div>
+
+          <!-- Fase 2 -->
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.4); border-left: 4px solid #10b981; padding: 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: #34d399; font-size: 13px;">Fase 2: Cortavientos & Corredores</strong>
+              <span style="font-size: 9px; font-family: monospace; background: rgba(16,185,129,0.2); color: #6ee7b7; padding: 2px 6px; border-radius: 4px;">En Ejecución</span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; margin: 0; line-height: 1.4;">
+              Reforestación de 2.4 km perimetrales con especies nativas (Peumo, Quillay, Maitén). Freno al viento desecante Puelche y conexión de fauna silvestre.
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #34d399;">
+              ✓ -62% Velocidad Viento • FWI Reducido • Sombra natural
+            </div>
+          </div>
+
+          <!-- Fase 3 -->
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(245, 158, 11, 0.4); border-left: 4px solid #f59e0b; padding: 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: #fbbf24; font-size: 13px;">Fase 3: Ganadería PRV & Policultivos</strong>
+              <span style="font-size: 9px; font-family: monospace; background: rgba(245,158,11,0.2); color: #fde047; padding: 2px 6px; border-radius: 4px;">Activa</span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; margin: 0; line-height: 1.4;">
+              Pastoreo Racional Voisin (1.8 UGM/ha, 42 días descanso). Ovinos desbrozadores en cerezos y gallinas camperas que dispersan bosta y abono vivo.
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #fbbf24;">
+              ✓ +4.2 kg MO/m² • 0 Glifosato • Huevos y Carne agroecológica
+            </div>
+          </div>
+
+          <!-- Fase 4 -->
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(168, 85, 247, 0.4); border-left: 4px solid #a855f7; padding: 14px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: #c084fc; font-size: 13px;">Fase 4: Autonomía & Semillas</strong>
+              <span style="font-size: 9px; font-family: monospace; background: rgba(168,85,247,0.2); color: #d8b4fe; padding: 2px 6px; border-radius: 4px;">Planificada</span>
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; margin: 0; line-height: 1.4;">
+              Paneles solares flotantes en tranque, banco de semillas tradicionales campesinas y articulación con Cooperativa Las Camelias para escala regional.
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #c084fc;">
+              ✓ 100% Autonomía Energética • Respaldo Genético Criollo
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SECCIÓN DE ZONIFICACIÓN DE MOLLISON Y KEYLINE YEOMANS -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px;">
+          <!-- Zonas 0 a 5 -->
+          <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 12px; padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <strong style="color: #86efac; font-size: 12px; font-family: monospace; display: flex; align-items: center; gap: 6px;">
+                <span>🌿</span> Zonificación 0 a 5 (Bill Mollison)
+              </strong>
+              <span style="font-size: 9px; color: #94a3b8; font-family: monospace;">6 Zonas Funcionales</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 11px; font-family: monospace;">
+              <div style="background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;"><strong style="color: #fff;">Z0:</strong> Casa & Taller Central (Centro neurálgico)</div>
+              <div style="background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;"><strong style="color: #facc15;">Z1:</strong> Huerto Biointensivo, Biofábrica & Bokashi</div>
+              <div style="background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;"><strong style="color: #84cc16;">Z2:</strong> Aves camperas, Invernadero & Frutales menores</div>
+              <div style="background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;"><strong style="color: #059669;">Z3:</strong> Cuarteles de Cerezos, Avellanos & Pastoreo PRV</div>
+              <div style="background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;"><strong style="color: #b45309;">Z4:</strong> Silvopastoreo, Olivos & Bosque de Biomasa</div>
+              <div style="background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;"><strong style="color: #0284c7;">Z5:</strong> Reserva Esclerófila Intangible & Estero Colliguay</div>
+            </div>
+          </div>
+
+          <!-- Trazado Keyline Yeomans -->
+          <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(6, 182, 212, 0.4); border-radius: 12px; padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <strong style="color: #67e8f9; font-size: 12px; font-family: monospace; display: flex; align-items: center; gap: 6px;">
+                <span>🚜</span> Hidrología Keyline (P.A. Yeomans)
+              </strong>
+              <span style="font-size: 9px; color: #94a3b8; font-family: monospace;">Gravedad & Retención</span>
+            </div>
+            <div style="font-size: 11px; line-height: 1.5; color: #cbd5e1; space-y: 6px;">
+              <p style="margin: 0 0 6px 0;">
+                El arado subsolador Yeomans sin volteo descompacta a 35 cm siguiendo las líneas clave maestras, derivando el agua desde las vaguadas hacia las crestas secas.
+              </p>
+              <div style="background: rgba(6,182,212,0.1); border-left: 3px solid #06b6d4; padding: 6px 10px; border-radius: 6px; font-size: 10px; font-family: monospace;">
+                • <strong>Puntos Clave (Keypoints):</strong> 180 a 188 msnm<br>
+                • <strong>Tranque Receptor:</strong> 18.500 m³ en cota baja<br>
+                • <strong>Infiltración:</strong> +320 L/s absorción edáfica profunda
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 14px 20px; background: #06150c; border-top: 1px solid rgba(16, 185, 129, 0.4); display: flex; justify-content: space-between; align-items: center; shrink: 0;">
+        <span style="font-size: 11px; font-family: Georgia, serif; color: #6ee7b7; font-style: italic;">
+          "El suelo vivo es la infraestructura más rentable de un fundo" - Julio Pérez
+        </span>
+        <button id="btnUnderstoodPermacultura" class="btn-primary" style="background: #059669; border: 1px solid #10b981; font-size: 11px; padding: 6px 16px; border-radius: 8px;">
+          Entendido & Volver al Visor 3D
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AoE II Diegetic Workshop Landing Overlay Container (Hydrated and managed by AgroWorkshopOverlay) -->
+  <div id="workshopOverlay" class="workshop-overlay active"></div>
+
+  <!-- MODAL: ASESORES IA DEL PREDIO (3) EN AGRITWIN 3D -->
+  <div id="predioAdvisorsModalAgri" class="modal-overlay glass-modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 1rem;">
+    <div style="background: #090e1a; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; max-width: 820px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            🧠
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <h3 style="font-size: 16px; font-weight: 800; color: white; margin: 0;">Consejo Consultivo IA • Predio Twin (Fundo Meniel)</h3>
+              <span style="font-size: 10px; font-family: monospace; background: rgba(245, 158, 11, 0.2); color: #fde047; padding: 2px 6px; border-radius: 4px; font-weight: 700;">3 EXPERTOS IA</span>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8; font-family: monospace; margin-top: 2px;">Micro-Gestión Regenerativa: Forraje PRV, Bioconstrucción y Microrred Solar IoT</div>
+          </div>
+        </div>
+        <button onclick="closeAgriPredioAdvisorsModal()" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Grid 3 Asesores -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <!-- 1. Agricultor -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 24px;">🌾</span>
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Don Belisario Valenzuela</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Agricultor Regenerativo PRV</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Suelo nutrido con bosteo y 38 días de reposo. Humedad del 36.2% garantizada con Keyline en 8 potreros."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #34d399; background: rgba(16, 185, 129, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Forraje: 8.200 kg MS/ha<br>• Lombrices: &gt;120 / m²
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Carpintera -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 24px;">🔨</span>
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Maestra Laura Henríquez</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Carpintera & Bioconstrucción</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Aleros sellados con malla de cobre contra pavesas del Puelche. Galpón de roble con aislación térmica R=3.8."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #38bdf8; background: rgba(14, 165, 233, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Faja perimetral: 15m limpia<br>• Madera: 140 m³/ha certificada
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Eléctrico -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 24px;">⚡</span>
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Ing. Rodrigo Bustamante</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Sistemas IoT & Microrred FV</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "18 kWp solar con 30 kWh litio LiFePO4. 4.2 kWh/d de excedente inyectado a viviendas de vecinos."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #fde047; background: rgba(245, 158, 11, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Generación: 78.4 kWh/d<br>• LoRaWAN: 15 sondas FDR 99.9%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 11px;">
+        <a target="_top" href="http://localhost:7777/#dashboard" style="background: rgba(16, 185, 129, 0.25); border: 1px solid rgba(16, 185, 129, 0.45); color: #34d399; text-decoration: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <span>🏛️</span> Abrir Consejo General (18 Asesores • 6 Twins) & Dossier 2 Páginas
+        </a>
+        <button onclick="closeAgriPredioAdvisorsModal()" style="background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; padding: 6px 14px; border-radius: 8px; cursor: pointer;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ASESORES IA DEL ESTABLO (3) EN AGRITWIN 3D -->
+  <div id="establoAdvisorsModalAgri" class="modal-overlay glass-modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 1rem;">
+    <div style="background: #090e1a; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; max-width: 820px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            🐂
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <h3 style="font-size: 16px; font-weight: 800; color: white; margin: 0;">Consejo Consultivo IA • Establo Twin (Ganadería PRV)</h3>
+              <span style="font-size: 10px; font-family: monospace; background: rgba(245, 158, 11, 0.2); color: #fde047; padding: 2px 6px; border-radius: 4px; font-weight: 700;">3 EXPERTOS IA</span>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8; font-family: monospace; margin-top: 2px;">Manejo Regenerativo: Pastoreo Racional Voisin, Sanidad Natural SAG y Coexistencia</div>
+          </div>
+        </div>
+        <button onclick="closeAgriEstabloAdvisorsModal()" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Grid 3 Asesores Establo -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <!-- 1. Médica Veterinaria -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_establo_javiera.jpg" alt="Dra. Javiera Montecinos" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23b45309%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>🩺</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Dra. Javiera Montecinos</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Médico Veterinaria Holística SAG</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Sanidad preventiva de rebaño con fitofármacos y ajo silvestre. 100% libre de antibióticos sintéticos y DIIO oficial SAG."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #34d399; background: rgba(16, 185, 129, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • HPG Coprológico: &lt;100 (Bajo)<br>• Condición Corporal: 3.75 / 5.0
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Maestro de Pastoreo PRV -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_establo_gaston.jpg" alt="Don Gastón Fuenzalida" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23b45309%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>🌾</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Don Gastón Fuenzalida</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Maestro de Pastoreo Voisin (PRV)</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Punto Óptimo de Reposo en 8 potreros. Carga animal de 180 UGM/ha/d con 18h de ocupación para máximo rebrote."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #fde047; background: rgba(245, 158, 11, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Forraje Disponible: 2.850 kg MS/ha<br>• Aprovechamiento: 86% sin pisoteo
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Conservacionista de Fauna -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_fauna_ignacio.jpg" alt="Ignacio Subercaseaux" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #10b981;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23047857%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>🦊</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Ignacio Subercaseaux</div>
+                <div style="font-size: 10px; font-family: monospace; color: #10b981;">Coexistencia Rebaño-Fauna</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Cero bajas por depredación mediante mastines guardianes y luces Foxlights en cerco limítrofe con bosque nativo."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #38bdf8; background: rgba(14, 165, 233, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Tasa Depredación: 0.0%<br>• Eficacia Mastines: 98.5%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 11px;">
+        <a target="_top" href="http://localhost:7777/#dashboard" style="background: rgba(245, 158, 11, 0.25); border: 1px solid rgba(245, 158, 11, 0.45); color: #fde047; text-decoration: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <span>🏛️</span> Abrir Consejo General (18 Asesores • 6 Twins) & Dossier 2 Páginas
+        </a>
+        <button onclick="closeAgriEstabloAdvisorsModal()" style="background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; padding: 6px 14px; border-radius: 8px; cursor: pointer;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ASESORES IA DE INVERNADERO (3) EN AGRITWIN 3D -->
+  <div id="invernaderoAdvisorsModalAgri" class="modal-overlay glass-modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 1rem;">
+    <div style="background: #090e1a; border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 20px; max-width: 820px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            🌿
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <h3 style="font-size: 16px; font-weight: 800; color: white; margin: 0;">Consejo Consultivo IA • Invernadero & Cultivos Twin</h3>
+              <span style="font-size: 10px; font-family: monospace; background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 2px 6px; border-radius: 4px; font-weight: 700;">3 EXPERTOS IA</span>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8; font-family: monospace; margin-top: 2px;">Biofábrica Viva, Rescate de Semillas Criollas y Climatización Solar IoT</div>
+          </div>
+        </div>
+        <button onclick="closeAgriInvernaderoAdvisorsModal()" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Grid 3 Asesores Invernadero -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <!-- 1. Fisióloga Vegetal -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_invernadero_soledad.jpg" alt="Ing. Agr. Soledad Navarrete" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #10b981;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23047857%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>🌱</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Ing. Agr. Soledad Navarrete</div>
+                <div style="font-size: 10px; font-family: monospace; color: #34d399;">Fisiología & Biofábrica Viva</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Compost Bokashi fermentado a 55°C, té de compost hiperoxigenado y bioles para sellar la rizosfera contra patógenos."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #34d399; background: rgba(16, 185, 129, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • DPV Invernadero: 0.95 kPa (Óptimo)<br>• Bokashi Semanal: 1.200 kg maduros
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Curadora de Semillas -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_invernadero_carmen.jpg" alt="Doña Carmen Gloria Uribe" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23b45309%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>🏺</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Doña Carmen Gloria Uribe</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Curadora de Semillas Criollas</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "28 ecotipos campesinos de guarda con 94.2% de germinación. Variedades con tolerancia probada a heladas y secas."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #fde047; background: rgba(245, 158, 11, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Poder Germinativo: 94.2%<br>• Banco Semillas: 45.000 unidades
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. IoT & Climatización -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_predio_rodrigo.jpg" alt="Ing. Rodrigo Bustamante" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #10b981;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23047857%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>⚡</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Ing. Rodrigo Bustamante</div>
+                <div style="font-size: 10px; font-family: monospace; color: #34d399;">Climatización Solar & IoT</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Domótica cenital a 12V con delta de -8.2°C en olas de calor. Sensores PAR y CE operando 100% off-grid con LoRaWAN."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #38bdf8; background: rgba(14, 165, 233, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Amortiguación Térmica: -8.2°C<br>• Uptime LoRaWAN: 99.9%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 11px;">
+        <a target="_top" href="http://localhost:7777/#dashboard" style="background: rgba(16, 185, 129, 0.25); border: 1px solid rgba(16, 185, 129, 0.45); color: #34d399; text-decoration: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <span>🏛️</span> Abrir Consejo General (18 Asesores • 6 Twins) & Dossier 2 Páginas
+        </a>
+        <button onclick="closeAgriInvernaderoAdvisorsModal()" style="background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; padding: 6px 14px; border-radius: 8px; cursor: pointer;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ASESORES IA DE EXCURSIÓN & REWILDING (3) EN AGRITWIN 3D -->
+  <div id="excursionAdvisorsModalAgri" class="modal-overlay glass-modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.85); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 1rem;">
+    <div style="background: #090e1a; border: 1px solid rgba(20, 184, 166, 0.4); border-radius: 20px; max-width: 820px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(20, 184, 166, 0.2); border: 1px solid rgba(20, 184, 166, 0.4); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            🧭
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <h3 style="font-size: 16px; font-weight: 800; color: white; margin: 0;">Consejo Consultivo IA • Excursión & Rewilding Twin</h3>
+              <span style="font-size: 10px; font-family: monospace; background: rgba(20, 184, 166, 0.2); color: #2dd4bf; padding: 2px 6px; border-radius: 4px; font-weight: 700;">3 EXPERTOS IA</span>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8; font-family: monospace; margin-top: 2px;">Ciencia de Campo: Bioindicadores Botánicos, Fototrampeo y Edafología In Situ</div>
+          </div>
+        </div>
+        <button onclick="closeAgriExcursionAdvisorsModal()" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Grid 3 Asesores Excursión -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <!-- 1. Biólogo del Paisaje -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(20, 184, 166, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_cuenca_marcelo.jpg" alt="Dr. Marcelo Lagos R." style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #2dd4bf;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%230f766e%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>🌿</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Dr. Marcelo Lagos Riquelme</div>
+                <div style="font-size: 10px; font-family: monospace; color: #2dd4bf;">Biólogo del Paisaje & Botánica</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "48% cobertura de líquenes Usnea como bioindicador de aire puro. Corredor esclerófilo ripario con 22.4 m³/ha de necromasa viva."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #2dd4bf; background: rgba(20, 184, 166, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Cobertura Líquenes: 48% (A+)<br>• Conectividad Riparia: 0.95 IEI
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Conservacionista & Fototrampeo -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(20, 184, 166, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_fauna_ignacio.jpg" alt="Ignacio Subercaseaux" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #2dd4bf;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%230f766e%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>📸</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Ignacio Subercaseaux</div>
+                <div style="font-size: 10px; font-family: monospace; color: #2dd4bf;">Conservacionista & Fototrampeo</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Red de 8 cámaras trampa infrarrojas en Estero Colliguay. Registro de güiñas y quiques con 96.4% de precisión en censos."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #38bdf8; background: rgba(14, 165, 233, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Especies Nativas: 18 / mes<br>• Precisión Fototrampeo: 96.4%
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Edafólogo de Campo -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(20, 184, 166, 0.3); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <img src="assets/advisors/avatar_excursion_gonzalo.jpg" alt="Dr. Gonzalo Verdugo" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect width=%2238%22 height=%2238%22 fill=%22%23b45309%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2218%22>⛏️</text></svg>'">
+              <div>
+                <div style="font-weight: 700; color: white; font-size: 13px;">Dr. Gonzalo Verdugo</div>
+                <div style="font-size: 10px; font-family: monospace; color: #f59e0b;">Edafólogo de Campo & Suelo Vivo</div>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.5rem;">
+              "Calicatas in situ con 6.8% de materia orgánica en horizonte A. Infiltración de 185 mm/h y 44.5 t C/ha de carbono fijado."
+            </p>
+            <div style="font-size: 10px; font-family: monospace; color: #fde047; background: rgba(245, 158, 11, 0.1); padding: 4px 6px; border-radius: 6px;">
+              • Infiltración Hídrica: 185 mm/h<br>• Carbono Orgánico: 44.5 t C/ha
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 11px;">
+        <a target="_top" href="http://localhost:7777/#dashboard" style="background: rgba(20, 184, 166, 0.25); border: 1px solid rgba(20, 184, 166, 0.45); color: #2dd4bf; text-decoration: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <span>🏛️</span> Abrir Consejo General (18 Asesores • 6 Twins) & Dossier 2 Páginas
+        </a>
+        <button onclick="closeAgriExcursionAdvisorsModal()" style="background: rgba(255,255,255,0.1); border: 0; color: #cbd5e1; padding: 6px 14px; border-radius: 8px; cursor: pointer;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Container for Possibilities Catalog & Welcome Project Modals -->
+  <div id="modalsContainer"></div>
+
+  <!-- Entry Script (ES6 Module) con Cache Buster -->
+  <script type="module" src="js/app.js?v=3.9.9-clean-view-dynamic-drone"></script>
+</body>
+</html>

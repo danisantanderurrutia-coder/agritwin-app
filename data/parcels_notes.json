@@ -1,0 +1,47 @@
+{
+  "MENIEL": {
+    "admin": "Ing. Agrónomo Daniel Santander",
+    "phone": "+56 9 8452 1920",
+    "radio_channel": "VHF 147.450 MHz (Canal 4 Las Camelias)",
+    "cortafuego_status": "Óptimo - Faja PRV pastoreada a 1.8 UGM/ha (25m de ancho)",
+    "agreements": "Predio Núcleo AgroTech. Conexión de tubería Keyline a estero Colliguay.",
+    "notes": "Instalación de 15 sondas FDR completada. Monitoreo de infiltración en tiempo real para calibrar modelo Penman-Monteith.",
+    "updated_at": "2026-09-26T12:00:00Z"
+  },
+  "SAN_JOSE": {
+    "admin": "Don Alberto Sanhueza (Administrador)",
+    "phone": "+56 9 9123 4455",
+    "radio_channel": "VHF 147.500 MHz (Canal 5)",
+    "cortafuego_status": "Bajo riesgo en vega, pero sin despeje perimetral en lindes altas",
+    "agreements": "Convenio de amortiguación de crecidas con compuerta de descarga hacia canal matriz.",
+    "notes": "Cultivo de arroz de inundación. Suelos saturados actúan como esponja secundaria durante crecidas del Longaví.",
+    "updated_at": "2026-09-25T17:30:00Z"
+  },
+  "LOS_BOLDOS": {
+    "admin": "Consorcio Maderero Sur / Jefe de Brigada: Carlos Valenzuela",
+    "phone": "+56 9 7654 3210",
+    "radio_channel": "VHF 148.100 MHz (Red Forestal CONAF)",
+    "cortafuego_status": "Alerta Crítica: Pinar denso sin faja de protección hacia Las Camelias",
+    "agreements": "Pendiente firma de convenio para ensanche de faja cortafuegos de 45m de bosque esclerófilo.",
+    "notes": "Zona de máxima exposición a Viento Puelche. Se requiere pastoreo de rastrojo y eliminación de sotobosque antes de noviembre.",
+    "updated_at": "2026-09-24T10:15:00Z"
+  },
+  "STA_LUCIA": {
+    "admin": "Don Pedro Morales (Parcela Vecina)",
+    "phone": "+56 9 8877 6655",
+    "radio_channel": "VHF 147.450 MHz (Canal 4)",
+    "cortafuego_status": "Faja limpia con pastoreo ovino estacional",
+    "agreements": "Acuerdo de intercambio: Pastoreo ovino en post-cosecha y enlace a sonda LoRaWAN de Colliguay.",
+    "notes": "Muy buena disposición para instalar nodo LoRaWAN compartido para monitorear nivel freático.",
+    "updated_at": "2026-09-26T09:40:00Z"
+  },
+  "VINA_AUSTRAL": {
+    "admin": "Enóloga Francisca Retamal",
+    "phone": "+56 9 6655 4433",
+    "radio_channel": "VHF 147.450 MHz",
+    "cortafuego_status": "Matorral podado, suelo granítico con baja cobertura combustible",
+    "agreements": "Manejo agroecológico compartido. Respeto de corredor biológico de polinizadores nativos.",
+    "notes": "Parque de parras patrimoniales de rulo (País y Carignan). Interés en certificar carbono neutral mediante PRV vecino.",
+    "updated_at": "2026-09-23T15:00:00Z"
+  }
+}

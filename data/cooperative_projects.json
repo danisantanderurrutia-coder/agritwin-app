@@ -1,0 +1,44 @@
+[
+  {
+    "id": "PROJ-01",
+    "name": "Faja Cortafuegos de Interfaz (45m)",
+    "biome": "tile_forest.jpg",
+    "category": "Piro-Resiliencia & Biodiversidad",
+    "location": "Límite Este: Fundo Colliguay ↔ Forestal Los Pinos",
+    "description": "Establecimiento de franja de 45 metros de bosque nativo esclerófilo (Quillay, Peumo, Maitén) con pastoreo de impacto PRV a 1.8 UGM/ha para supresión total de combustible seco.",
+    "impact": "Amortigua la velocidad de avance del fuego en un 45% ante viento Puelche (FWI > 50).",
+    "capex_clp": 1250000,
+    "funding_target": "Fondo Concursable CONAF / Seguro Agrícola",
+    "status": "active",
+    "executed": true,
+    "last_audit": "2026-09-20"
+  },
+  {
+    "id": "PROJ-02",
+    "name": "Tranque & Abrevadero Keyline Compartido",
+    "biome": "tile_water.jpg",
+    "category": "Resiliencia Hídrica & Mitigación TWI",
+    "location": "Vaguada central interpredial: Colliguay ↔ Parcela Don Pedro",
+    "description": "Ampliación de tranque acumulador a 18.500 m³ conectado a red de zanjas en contorno con gradiente al 1%. Incluye ramal por gravedad para abastecer abrevaderos de Don Pedro.",
+    "impact": "Retiene 18.500 m³ durante crecidas del Río Longaví y garantiza 45 días de autonomía hídrica en verano.",
+    "capex_clp": 4800000,
+    "funding_target": "Bonificación Ley de Riego CNR (Ley 18.450)",
+    "status": "in_progress",
+    "executed": false,
+    "last_audit": "2026-09-15"
+  },
+  {
+    "id": "PROJ-03",
+    "name": "Sonda LoRaWAN FDR en Parcela Don Pedro",
+    "biome": "tile_pasture.jpg",
+    "category": "Red Centinela IoT & Monitoreo Freático",
+    "location": "Sector Oeste: Parcela Don Pedro (Potrero Ovinos)",
+    "description": "Sonda capacitiva FDR multinivel (10, 30 y 60 cm) con enlace inalámbrico LoRaWAN 915 MHz hacia el gateway central de Fundo Colliguay.",
+    "impact": "Mide el gradiente de recarga de napas trans-predial y calibra la curva de infiltración comunitaria.",
+    "capex_clp": 450000,
+    "funding_target": "Programa FIA / Innovación Agropecuaria",
+    "status": "planned",
+    "executed": false,
+    "last_audit": "2026-09-10"
+  }
+]
