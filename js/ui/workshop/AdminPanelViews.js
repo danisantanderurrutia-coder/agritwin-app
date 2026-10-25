@@ -64,10 +64,10 @@ export class AdminPanelViews {
             <span>📡</span> Red Sensores Maule
           </button>
           <button class="admin-tab-btn ${overlay.activeAdminTab === 'predios' ? 'active' : ''}" data-tab="predios">
-            <span>📋</span> Libreta Biofísica
+            <span>🌿</span> Estratégico de Permacultura
           </button>
-          <button class="admin-tab-btn ${overlay.activeAdminTab === 'visor3d' ? 'active' : ''}" data-tab="visor3d">
-            <span>🌾</span> Visor Predial 3D
+          <button class="admin-tab-btn ${overlay.activeAdminTab === 'scripts' ? 'active' : ''}" data-tab="scripts">
+            <span>🧰</span> Caja de Herramientas & Biofísica
           </button>
           <button class="admin-tab-btn ${overlay.activeAdminTab === 'map' ? 'active' : ''}" data-tab="map">
             <span>🗺️</span> Mosaico & Linderos
@@ -320,11 +320,17 @@ export class AdminPanelViews {
             </div>
           ` : ''}
 
-          <!-- ================= TAB: LIBRETA BIOFÍSICA & PREDIOS ================= -->
+          <!-- ================= TAB: ESTRATÉGICO DE PERMACULTURA ================= -->
           ${overlay.activeAdminTab === 'predios' ? `
             <div style="background: #24140b; padding: 14px 16px; border-radius: 12px; border: 1px solid #78350f; display: flex; flex-direction: column; gap: 12px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-family: Georgia, serif; font-weight: bold; color: #fbbf24; font-size: 14px;">Libreta Biofísica & Permacultura Maule:</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 20px;">📜</span>
+                  <div>
+                    <span style="font-family: Georgia, serif; font-weight: bold; color: #fbbf24; font-size: 14px;">Plan Maestro & Estratégico de Permacultura:</span>
+                    <div style="font-size: 10px; color: #94a3b8;">Evaluación Agroecológica Integral • Curva 5 Años & Zonas 0-5</div>
+                  </div>
+                </div>
                 <select id="selectAdminPredio" style="background: #140b06; color: #fbbf24; border: 1px solid #b45309; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-family: monospace;">
                   <option value="meniels" ${overlay.selectedPredioId === 'meniels' ? 'selected' : ''}>Fundo Estero Colliguay (12.8 ha • Parral)</option>
                   <option value="boldo" ${overlay.selectedPredioId === 'boldo' ? 'selected' : ''}>Fundo El Boldo (18.5 ha • Curicó)</option>
@@ -332,39 +338,38 @@ export class AdminPanelViews {
                 </select>
               </div>
 
-              <div style="font-size: 11.5px; color: #cbd5e1; line-height: 1.45;">
-                ${overlay.selectedPredioId === 'meniels' 
-                  ? 'Predio piloto Fundo Estero Colliguay (12.8 ha, Lat -36.14°S). Viña patrimonial País, cerezos Lapins y pasturas polifíticas. Incorpora sistema Keyline de 18.500 m³ y zonificación permacultural concéntrica 0 a 5.' 
-                  : overlay.selectedPredioId === 'boldo'
-                  ? 'Fundo El Boldo (18.5 ha). Cerezas de exportación Lapins con red telemétrica antiheladas crítica en Talca.'
-                  : 'Reserva Quebrada Los Boldos (62.0 ha). Bosque nativo esclerófilo maduro (peumo, quillay, boldo) con emisión de créditos de biodiversidad.'}
+              <!-- 4 Pilares Estratégicos Permaculturales -->
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-family: monospace; font-size: 10.5px;">
+                <div style="background: #150a04; border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px; border-radius: 8px; text-align: center;">
+                  <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Curva Suelo Vivo</span>
+                  <strong style="color: #4ade80; font-size: 13px;">+340% / 5 Años</strong>
+                  <div style="color: #94a3b8; font-size: 8.5px; margin-top: 2px;">Microbiología activa</div>
+                </div>
+                <div style="background: #150a04; border: 1px solid rgba(56, 189, 248, 0.4); padding: 8px; border-radius: 8px; text-align: center;">
+                  <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Infiltración Keyline</span>
+                  <strong style="color: #38bdf8; font-size: 13px;">18.500 m³</strong>
+                  <div style="color: #94a3b8; font-size: 8.5px; margin-top: 2px;">Cosecha pluvial gravedosa</div>
+                </div>
+                <div style="background: #150a04; border: 1px solid rgba(245, 158, 11, 0.4); padding: 8px; border-radius: 8px; text-align: center;">
+                  <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Ahorro Insumos</span>
+                  <strong style="color: #fbbf24; font-size: 13px;">$4.85M CLP/año</strong>
+                  <div style="color: #94a3b8; font-size: 8.5px; margin-top: 2px;">Fertilizante 0 + Diésel -65%</div>
+                </div>
+                <div style="background: #150a04; border: 1px solid rgba(168, 85, 247, 0.4); padding: 8px; border-radius: 8px; text-align: center;">
+                  <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Retorno Inversión</span>
+                  <strong style="color: #c084fc; font-size: 13px;">3.8 Años (ROI)</strong>
+                  <div style="color: #94a3b8; font-size: 8.5px; margin-top: 2px;">Punto de equilibrio neto</div>
+                </div>
               </div>
 
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div style="background: #140b06; padding: 10px; border-radius: 8px; border-left: 3px solid #10b981; font-size: 11px; color: #d6c4a8; line-height: 1.45;">
-                  <strong style="color: #6ee7b7; display: block; margin-bottom: 3px;">🌱 Zonificación Concéntrica 0-5 (Bill Mollison):</strong>
-                  • <strong>Zona 0:</strong> Casona central, taller de decisiones e infraestructura IoT.<br>
-                  • <strong>Zona 1:</strong> Huerto biointensivo de autoconsumo y espiral de hierbas.<br>
-                  • <strong>Zona 2:</strong> Aves de corral, árboles frutales menores y composteras.<br>
-                  • <strong>Zona 3:</strong> Cuarteles de cerezos, viña y 8 potreros de pastoreo rotacional.<br>
-                  • <strong>Zona 4:</strong> Silvopastoreo leñoso, cortavientos andinos y forraje.<br>
-                  • <strong>Zona 5:</strong> Reserva de bosque esclerófilo y amortiguación Estero Colliguay.
-                </div>
-
-                <div style="background: #140b06; padding: 10px; border-radius: 8px; border-left: 3px solid #38bdf8; font-size: 11px; color: #d6c4a8; line-height: 1.45;">
-                  <strong style="color: #7dd3fc; display: block; margin-bottom: 3px;">💧 Hidrología Keyline (P.A. Yeomans):</strong>
-                  Surcos de descompactación trazados al 1% de pendiente sobre el relieve real del DEM, conduciendo el escurrimiento de lluvias desde las crestas secas hacia los valles y alimentando por gravedad el tranque acumulador (18.500 m³).
-                </div>
-              </div>
-
-              <!-- Gráfica de Estratos Radiculares -->
+              <!-- Gráfica de Regeneración Biológica a 5 Años -->
               <div style="background: #120804; padding: 14px; border-radius: 12px; border: 1px solid rgba(120,53,15,0.8);">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                   <div style="font-family: Georgia, serif; font-size: 13px; font-weight: 800; color: #fff;">
-                    📊 Contenido Hídrico Volumétrico por Estrato Radicular (FAO-56)
+                    📈 Curva de Regeneración Biológica a 5 Años vs. Independencia de Insumos (%)
                   </div>
                   <span style="font-family: monospace; font-size: 9.5px; background: rgba(16,185,129,0.15); color: #34d399; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.3);">
-                    ETc Penman: 3.6 mm/día
+                    Mollison & Yeomans Ground-Truth
                   </span>
                 </div>
                 <div style="position: relative; height: 165px; width: 100%;">
@@ -372,17 +377,45 @@ export class AdminPanelViews {
                 </div>
               </div>
 
-              <div style="background: #150a04; border: 1px solid #92400e; padding: 10px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <strong style="color: #fde047; font-size: 11.5px;">⚖️ Expediente Registral & Uso de Suelo:</strong>
-                  <div style="font-size: 10.5px; color: #cbd5e1; margin-top: 2px;">
-                    Rol SII: <strong>${propertyRegistryManager.getProperty(overlay.selectedPredioId).rolSII}</strong> • 
-                    CBR: <strong>${propertyRegistryManager.getProperty(overlay.selectedPredioId).cbr.conservador}</strong> • 
-                    ${propertyRegistryManager.getProperty(overlay.selectedPredioId).documentos.length} documentos custodiados.
+              <!-- Las 6 Zonas Concéntricas de Bill Mollison (Zonas 0 a 5) -->
+              <div style="background: #140b06; padding: 12px; border-radius: 10px; border: 1px solid #92400e; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: #fbbf24; font-family: Georgia, serif; font-size: 12px;">🌱 Zonificación de Bill Mollison (Zonas 0 a 5):</strong>
+                  <span style="font-size: 9.5px; color: #94a3b8; font-family: monospace;">1 Polígono = 1 Tipo de Uso de Suelo</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 10.5px;">
+                  <div style="background: #1a0f08; padding: 6px 8px; border-radius: 6px; border-left: 2px solid #ef4444;">
+                    <strong style="color: #f87171;">Zona 0: Casa & Centro</strong><br>
+                    <span style="color: #94a3b8; font-size: 9.5px;">Casona, taller ciberfísico, IP67 y cocina. Visitas diarias constantes.</span>
+                  </div>
+                  <div style="background: #1a0f08; padding: 6px 8px; border-radius: 6px; border-left: 2px solid #f97316;">
+                    <strong style="color: #fb923c;">Zona 1: Huerta & Hierbas</strong><br>
+                    <span style="color: #94a3b8; font-size: 9.5px;">Bancales intensivos, espiral de hierbas y almácigos. Riego diario localizado.</span>
+                  </div>
+                  <div style="background: #1a0f08; padding: 6px 8px; border-radius: 6px; border-left: 2px solid #eab308;">
+                    <strong style="color: #fde047;">Zona 2: Huerto & Aves</strong><br>
+                    <span style="color: #94a3b8; font-size: 9.5px;">Cerezos, gallinero móvil, compostaje e invernaderos semi-intensivos.</span>
+                  </div>
+                  <div style="background: #1a0f08; padding: 6px 8px; border-radius: 6px; border-left: 2px solid #22c55e;">
+                    <strong style="color: #4ade80;">Zona 3: Praderas PRV & Cultivos</strong><br>
+                    <span style="color: #94a3b8; font-size: 9.5px;">Potreros de rotación Voisin (1.8 UGM/ha), viñedos y tranque Keyline.</span>
+                  </div>
+                  <div style="background: #1a0f08; padding: 6px 8px; border-radius: 6px; border-left: 2px solid #06b6d4;">
+                    <strong style="color: #22d3ee;">Zona 4: Agroforestería & Forraje</strong><br>
+                    <span style="color: #94a3b8; font-size: 9.5px;">Cortinas cortaviento, silvopastoreo leñoso y forraje arbóreo. Manejo periódico.</span>
+                  </div>
+                  <div style="background: #1a0f08; padding: 6px 8px; border-radius: 6px; border-left: 2px solid #a855f7;">
+                    <strong style="color: #c084fc;">Zona 5: Bosque Nativo & Silvestre</strong><br>
+                    <span style="color: #94a3b8; font-size: 9.5px;">Reserva esclerófila sin intervención humana. Corredor biológico del estero.</span>
                   </div>
                 </div>
-                <button class="admin-tab-btn" data-tab="map" style="padding: 6px 12px;">
-                  📜 Ver Marco Legal & Linderos
+              </div>
+
+              <!-- Pie con Acción para ir al Mapa 3D -->
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(120,53,15,0.6); padding-top: 8px;">
+                <span style="color: #94a3b8; font-size: 10px;">💡 Abre la Barra de Objetos [⚔️ Objetos] en el visor 3D para asentar elementos y ver su impacto What-If.</span>
+                <button id="btnJumpMapFromStrategic" class="btn-workshop-action btn-workshop-primary" style="padding: 7px 14px; font-size: 11px; font-weight: bold; background: #16a34a; border: 1px solid #22c55e; color: #ffffff; border-radius: 6px; cursor: pointer;">
+                  🌐 Ir al Visor 3D para Diseñar Predio
                 </button>
               </div>
             </div>
@@ -635,79 +668,27 @@ export class AdminPanelViews {
                 • <strong>Carga Global:</strong> 1.8 UGM/ha con rotación estricta bajo las 4 Leyes de André Voisin.
               </div>
 
-              <!-- ================= STACK TECNOLÓGICO & DIAGRAMAS MERMAID EN EL VAULT ================= -->
-              <div style="background: #120804; border: 1px solid #b45309; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(180,83,9,0.4); padding-bottom: 8px;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 16px;">🛠️</span>
+              <!-- ================= ENLACE CENTRALIZADO AL VAULT DE DOCUMENTACIÓN EN EL HUB ================= -->
+              <div style="background: #140b06; border: 1.5px solid #d97706; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.5);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(180,83,9,0.4); padding-bottom: 10px;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🏛️</span>
                     <div>
-                      <strong style="font-family: Georgia, serif; font-size: 13px; color: #fbbf24;">Stack Tecnológico, Lenguajes y Arquitectura 3D</strong>
-                      <div style="font-size: 9.5px; color: #94a3b8;">Documentación técnica de ingeniería mecatrónica y renderizado 60 FPS</div>
+                      <strong style="color: #fbbf24; font-size: 13.5px; font-family: Georgia, serif;">Centro de Documentación Técnica & Arquitectura C2 (Vault Central)</strong>
+                      <div style="font-size: 10px; color: #94a3b8;">La documentación técnica completa y los diagramas vectoriales residen en la Bóveda del Hub.</div>
                     </div>
                   </div>
-                  <span style="font-family: monospace; font-size: 9.5px; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 8px; border-radius: 4px; border: 1px solid #10b981;">v3.4 Activa</span>
+                  <span style="font-family: monospace; font-size: 9.5px; background: rgba(245,158,11,0.2); color: #fbbf24; padding: 2px 8px; border-radius: 4px; border: 1px solid #d97706;">Bóveda Central</span>
                 </div>
 
-                <!-- Tabla Resumen de Lenguajes -->
-                <div style="overflow-x: auto;">
-                  <table style="width: 100%; border-collapse: collapse; font-size: 10.5px; color: #e2e8f0; text-align: left;">
-                    <thead>
-                      <tr style="border-bottom: 1px solid #78350f; color: #fde047;">
-                        <th style="padding: 6px 8px;">Subsistema</th>
-                        <th style="padding: 6px 8px;">Lenguaje</th>
-                        <th style="padding: 6px 8px;">Módulos / Rol en AgriTwin</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr style="border-bottom: 1px solid rgba(120,53,15,0.4);">
-                        <td style="padding: 5px 8px; font-weight: bold; color: #38bdf8;">🌐 Cliente & UI</td>
-                        <td style="padding: 5px 8px;"><span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px; font-family: monospace;">JS (ES6+ / ESM)</span></td>
-                        <td style="padding: 5px 8px; color: #cbd5e1;">Orquestación DOM, EventBus Pub/Sub, Glassmorphism y Chart.js</td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid rgba(120,53,15,0.4);">
-                        <td style="padding: 5px 8px; font-weight: bold; color: #fb923c;">🎨 Shaders 3D</td>
-                        <td style="padding: 5px 8px;"><span style="background: rgba(251,146,60,0.2); padding: 1px 6px; border-radius: 4px; font-family: monospace;">GLSL</span></td>
-                        <td style="padding: 5px 8px; color: #cbd5e1;">Normales Sobel procedurales, absorción lumínica en suelo y NDVI</td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid rgba(120,53,15,0.4);">
-                        <td style="padding: 5px 8px; font-weight: bold; color: #a78bfa;">⚛️ Componentes 3D</td>
-                        <td style="padding: 5px 8px;"><span style="background: rgba(167,139,250,0.2); padding: 1px 6px; border-radius: 4px; font-family: monospace;">React Three Fiber (JSX)</span></td>
-                        <td style="padding: 5px 8px; color: #cbd5e1;">Atmósfera, sol astronómico -36.14°S, mallas PBR y nodos IoT</td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid rgba(120,53,15,0.4);">
-                        <td style="padding: 5px 8px; font-weight: bold; color: #818cf8;">⚡ Servidor Local</td>
-                        <td style="padding: 5px 8px;"><span style="background: rgba(129,140,248,0.2); padding: 1px 6px; border-radius: 4px; font-family: monospace;">Node.js (.cjs)</span></td>
-                        <td style="padding: 5px 8px; color: #cbd5e1;">HTTP nativo (:7773) zero-deps, CORS y acople con cuenca (:7774)</td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid rgba(120,53,15,0.4);">
-                        <td style="padding: 5px 8px; font-weight: bold; color: #10b981;">🌱 Hardware IoT</td>
-                        <td style="padding: 5px 8px;"><span style="background: rgba(16,185,129,0.2); padding: 1px 6px; border-radius: 4px; font-family: monospace;">C / C++ (Arduino)</span></td>
-                        <td style="padding: 5px 8px; color: #cbd5e1;">Firmware ESP32, pantalla SPI ILI9341, relés de pozo y sondas FDR</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 5px 8px; font-weight: bold; color: #f472b6;">🖥️ Escritorio</td>
-                        <td style="padding: 5px 8px;"><span style="background: rgba(244,114,182,0.2); padding: 1px 6px; border-radius: 4px; font-family: monospace;">Electron / Swift</span></td>
-                        <td style="padding: 5px 8px; color: #cbd5e1;">App nativa macOS, script binario de iconos y ejecutable de cabina</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <p style="font-size: 11px; color: #cbd5e1; margin: 0; line-height: 1.5;">
+                  El <strong>Stack Tecnológico</strong> (JS ESM, GLSL Sobel, R3F, Node.js, ESP32, WebRTC) y los <strong>4 Diagramas Arquitectónicos Vectoriales</strong> (Arquitectura 3 Capas, Ciclo EventBus, Mapa de Ecosistema y Visión & Drones C2) han sido trasladados y centralizados en el <strong>Asset & Knowledge Vault</strong> de la suite Hub.
+                </p>
 
-                <!-- Selector de Diagramas Mermaid Interactivos -->
-                <div style="background: #170b05; border: 1px solid #78350f; border-radius: 8px; padding: 10px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <span style="font-weight: bold; color: #fde047; font-size: 11px;">📊 Diagramas Arquitectónicos (Mermaid):</span>
-                    <div style="display: flex; gap: 4px;">
-                      <button type="button" class="btn-mermaid-tab active" data-diagram="arch" style="padding: 3px 8px; background: rgba(245,158,11,0.2); border: 1px solid #f59e0b; color: #fde68a; border-radius: 4px; font-size: 9.5px; cursor: pointer; font-weight: bold;">1. Arquitectura 3 Capas</button>
-                      <button type="button" class="btn-mermaid-tab" data-diagram="events" style="padding: 3px 8px; background: #27150c; border: 1px solid #78350f; color: #cbd5e1; border-radius: 4px; font-size: 9.5px; cursor: pointer;">2. Flujo EventBus</button>
-                      <button type="button" class="btn-mermaid-tab" data-diagram="tech" style="padding: 3px 8px; background: #27150c; border: 1px solid #78350f; color: #cbd5e1; border-radius: 4px; font-size: 9.5px; cursor: pointer;">3. Árbol de Tecnologías</button>
-                    </div>
-                  </div>
-
-                  <!-- Contenedor del Diagrama Mermaid -->
-                  <div id="vaultMermaidContainer" style="background: #0a0604; border: 1px solid rgba(120,53,15,0.7); border-radius: 6px; padding: 12px; min-height: 220px; overflow-x: auto; display: flex; justify-content: center; align-items: center;">
-                    <div id="vaultMermaidTarget" style="width: 100%; text-align: center;"></div>
-                  </div>
+                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                  <button id="btnOpenCentralVaultFromAdmin" class="btn-workshop-action btn-workshop-primary" style="flex: 1; padding: 9px 14px; font-size: 11.5px; font-weight: bold; background: linear-gradient(135deg, #d97706, #b45309); border: 1px solid #f59e0b; color: #ffffff; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4);" onclick="window.open('http://localhost:7777/?view=docs&tab=vault', '_blank')">
+                    📚 Abrir Vault de Documentación en AgriTwin Hub (:7777) ↗
+                  </button>
                 </div>
               </div>
             </div>
@@ -750,39 +731,76 @@ export class AdminPanelViews {
 
           <!-- ================= TAB: CAJA DE HERRAMIENTAS & SCRIPTS ================= -->
           ${overlay.activeAdminTab === 'scripts' ? `
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <span style="font-family: Georgia, serif; font-weight: bold; color: #fbbf24; font-size: 13px;">Comandos de Terminal & Automatización (1-Click Copy):</span>
-              
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <div style="background: #1a0f08; padding: 8px 10px; border-radius: 8px; border: 1px solid #78350f; display: flex; justify-content: space-between; align-items: center;">
-                  <div>
-                    <div style="font-size: 11px; color: #ffffff; font-weight: bold;">Lanzador AgriTwin 3D</div>
-                    <code style="font-size: 10px; color: #fbbf24; font-family: monospace;">node agritwin/server.cjs</code>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Sección 1: Modelos Biofísicos & Shaders 3D (Migrados desde Libreta Biofísica) -->
+              <div style="background: #24140b; border: 1px solid #78350f; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">🌱</span>
+                    <div>
+                      <strong style="color: #fbbf24; font-size: 13px; font-family: Georgia, serif;">Modelos Biofísicos & Shaders 3D (Unificados):</strong>
+                      <div style="font-size: 9.5px; color: #94a3b8;">FAO-56 • 3 Estratos Radiculares • PBR WebGL • Vegetación Instanciada</div>
+                    </div>
                   </div>
-                  <button class="btn-copy-cmd" data-cmd="node agritwin/server.cjs" style="padding: 4px 8px; background: #b45309; color: #fff; border: none; border-radius: 4px; font-size: 10px; cursor: pointer;">Copiar</button>
+                  <span style="font-family: monospace; font-size: 9px; color: #4ade80; background: rgba(74,222,128,0.15); border: 1px solid #10b981; padding: 2px 6px; border-radius: 4px;">60 FPS Activo</span>
                 </div>
 
-                <div style="background: #1a0f08; padding: 8px 10px; border-radius: 8px; border: 1px solid #78350f; display: flex; justify-content: space-between; align-items: center;">
-                  <div>
-                    <div style="font-size: 11px; color: #ffffff; font-weight: bold;">Lanzador Cuenca Regional</div>
-                    <code style="font-size: 10px; color: #fbbf24; font-family: monospace;">node agritwin-regional/server.cjs</code>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                  <div style="background: #150a04; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #10b981; color: #d6c4a8; line-height: 1.45;">
+                    <strong style="color: #6ee7b7; display: block; margin-bottom: 2px;">💧 FAO-56 Penman-Monteith:</strong>
+                    ETc = ETo × Kc. Modela la evapotranspiración de referencia horaria cruzada con balance en 3 estratos (0-20, 20-60, 60-100 cm) en suelo franco-arcilloso del Maule.
                   </div>
-                  <button class="btn-copy-cmd" data-cmd="node agritwin-regional/server.cjs" style="padding: 4px 8px; background: #b45309; color: #fff; border: none; border-radius: 4px; font-size: 10px; cursor: pointer;">Copiar</button>
+                  <div style="background: #150a04; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #38bdf8; color: #d6c4a8; line-height: 1.45;">
+                    <strong style="color: #7dd3fc; display: block; margin-bottom: 2px;">🎨 Shaders GLSL PBR & DEM:</strong>
+                    Normales Sobel procedurales para rugosidad de arado, gradiente de humedad volumétrica dinámica y sombra PCF 4K sobre ortofoto Esri.
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #180c06; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(180,83,9,0.3);">
+                  <div style="font-size: 10.5px; color: #cbd5e1;">
+                    📐 <strong>Dossier Ejecutivo de Obra:</strong> 18.500 m³ Keyline, replanteo topográfico y cubicación de tranque.
+                  </div>
+                  <button id="btnOpenDossierFromPredios" class="btn-workshop-action" style="padding: 5px 12px; background: #b45309; border: 1px solid #f59e0b; color: #ffffff; font-weight: bold; font-size: 10.5px; border-radius: 6px; cursor: pointer;">
+                    📐 Abrir Dossier de Obra
+                  </button>
                 </div>
               </div>
 
-              <!-- Gráfica Rendimiento 3D -->
-              <div style="background: #120804; padding: 14px; border-radius: 12px; border: 1px solid rgba(120,53,15,0.8);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                  <div style="font-family: Georgia, serif; font-size: 13px; font-weight: 800; color: #fff;">
-                    📊 Auditoría de Rendimiento WebGL vs. Umbral Seguro
+              <!-- Sección 2: Comandos de Terminal & Automatización -->
+              <div style="background: #1c0e07; border: 1px solid #78350f; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+                <span style="font-family: Georgia, serif; font-weight: bold; color: #fbbf24; font-size: 13px;">Comandos de Terminal & Automatización (1-Click Copy):</span>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div style="background: #140803; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(120,53,15,0.6); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <div style="font-size: 11px; color: #ffffff; font-weight: bold;">Lanzador AgriTwin 3D</div>
+                      <code style="font-size: 10px; color: #fbbf24; font-family: monospace;">node agritwin/server.cjs</code>
+                    </div>
+                    <button class="btn-copy-cmd" data-cmd="node agritwin/server.cjs" style="padding: 4px 8px; background: #b45309; color: #fff; border: none; border-radius: 4px; font-size: 10px; cursor: pointer;">Copiar</button>
                   </div>
-                  <span style="font-family: monospace; font-size: 9.5px; background: rgba(168,85,247,0.15); color: #c084fc; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(168,85,247,0.3);">
-                    PBR Benchmark 60 FPS
-                  </span>
+
+                  <div style="background: #140803; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(120,53,15,0.6); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <div style="font-size: 11px; color: #ffffff; font-weight: bold;">Lanzador Cuenca Regional</div>
+                      <code style="font-size: 10px; color: #fbbf24; font-family: monospace;">node agritwin-regional/server.cjs</code>
+                    </div>
+                    <button class="btn-copy-cmd" data-cmd="node agritwin-regional/server.cjs" style="padding: 4px 8px; background: #b45309; color: #fff; border: none; border-radius: 4px; font-size: 10px; cursor: pointer;">Copiar</button>
+                  </div>
                 </div>
-                <div style="position: relative; height: 165px; width: 100%;">
-                  <canvas id="stationDynamicChart"></canvas>
+
+                <!-- Gráfica Rendimiento 3D -->
+                <div style="background: #120804; padding: 12px; border-radius: 10px; border: 1px solid rgba(120,53,15,0.8); margin-top: 4px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="font-family: Georgia, serif; font-size: 12.5px; font-weight: 800; color: #fff;">
+                      📊 Auditoría de Rendimiento WebGL vs. Umbral Seguro
+                    </div>
+                    <span style="font-family: monospace; font-size: 9px; background: rgba(168,85,247,0.15); color: #c084fc; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(168,85,247,0.3);">
+                      PBR Benchmark 60 FPS
+                    </span>
+                  </div>
+                  <div style="position: relative; height: 155px; width: 100%;">
+                    <canvas id="stationDynamicChart"></canvas>
+                  </div>
                 </div>
               </div>
             </div>

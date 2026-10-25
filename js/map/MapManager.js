@@ -14,7 +14,7 @@ import { bus } from '../utils/EventBus.js';
 import { SpatialWidgets } from './SpatialWidgets.js';
 import { PBRSoilGenerator } from './PBRSoilGenerator.js';
 import { BiophysicalTerrainShader } from './BiophysicalTerrainShader.js';
-import { GeomorphicFlowManager } from './GeomorphicFlowManager.js';
+import { WindyBasinEngine } from './WindyBasinEngine.js';
 
 // Post-processing availability check
 async function tryLoadPostProcessing() {
@@ -75,6 +75,7 @@ export class MapManager {
     this.puelcheActive    = false;
     this.floodMesh        = null;
     this.floodLevel       = -10.0; // Oculto por defecto bajo el lecho
+    this.windyEngine      = null; // GPU Flow Field Visualizer (Windy.com style)
 
     // Single-Engine Multi-Profile System Groups
     this.currentProfile = 'enterprise';
@@ -89,6 +90,32 @@ export class MapManager {
     this.dayOfYear   = 172; // June 21 — Maule winter solstice
     this.hourOfDay   = 12;
     this.spatialWidgets = null;
+
+    // Modos de Cámara y Tour Cinematográfico
+    this.isTourActive   = false;
+    this.tourSpots      = [];
+    this.tourIndex      = 0;
+    this._tourDriftId   = null;
+    this._camAnimId     = null;
+
+    // Inspección en Primera Persona / Paseo a Pie (1.75m sobre terreno)
+    this.isWalkthrough    = false;
+    this.walkYaw          = 0;
+    this.walkPitch        = 0;
+    this.walkBobTime      = 0;
+    this.walkKeys         = { forward: false, backward: false, left: false, right: false, sprint: false };
+    this._walkIsMouseDown = false;
+    this._walkLastMouse   = { x: 0, y: 0 };
+    this._onWalkKeyDown   = null;
+    this._onWalkKeyUp     = null;
+    this._onWalkMouseDown = null;
+    this._onWalkMouseMove = null;
+    this._onWalkMouseUp   = null;
+
+    // Timelapse Solar 24h
+    this.isTimelapseActive  = false;
+    this.timelapseDuration  = 16000; // 16 segundos para ciclo completo
+    this.timelapseStartTime = 0;
   }
 
   /**
@@ -121,51 +148,21 @@ export class MapManager {
 
     // --- Scene ---
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog('#cbd5e1', 180, 750); // Crisp clarity for farm; atmospheric perspective on distant horizon
+    this.scene.fog = new THREE.FogExp2('#b8cce0', 0.0025);
 
     // --- Camera ---
     this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1200);
     this.camera.position.set(22, 40, 52);
 
     // --- Renderer (G6: High DPR + tone mapping) ---
-    try {
-      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
-      this.renderer.setSize(width, height);
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      this.renderer.shadowMap.enabled = true;
-      this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
-      this.renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.05;
-      this.renderer.outputColorSpace  = THREE.SRGBColorSpace;
-    } catch (webglErr) {
-      console.warn('⚠️ WebGL context unavailable, falling back to dummy 3D renderer:', webglErr);
-      this.isFallbackRenderer = true;
-      const fallbackCanvas = document.createElement('canvas');
-      fallbackCanvas.width = width;
-      fallbackCanvas.height = height;
-      this.renderer = {
-        domElement: fallbackCanvas,
-        setSize: () => {},
-        setPixelRatio: () => {},
-        getPixelRatio: () => 1,
-        getSize: (target) => {
-          if (target) { target.set(width, height); return target; }
-          return new THREE.Vector2(width, height);
-        },
-        getDrawingBufferSize: (target) => {
-          if (target) { target.set(width, height); return target; }
-          return new THREE.Vector2(width, height);
-        },
-        render: () => {},
-        clear: () => {},
-        setRenderTarget: () => {},
-        compile: () => {},
-        capabilities: { isWebGL2: false },
-        shadowMap: { enabled: false },
-        toneMapping: 0,
-        outputColorSpace: ''
-      };
-    }
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    this.renderer.setSize(width, height);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+    this.renderer.toneMapping       = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.02; // Calibrated for deep contrast and rich foliage
+    this.renderer.outputColorSpace  = THREE.SRGBColorSpace;
 
     this.container.innerHTML = '';
     this.container.appendChild(this.renderer.domElement);
@@ -192,7 +189,7 @@ export class MapManager {
 
     // --- G5: Post-processing (optional — graceful fallback) ---
     const ppAvailable = await tryLoadPostProcessing();
-    if (ppAvailable && !this.isFallbackRenderer) {
+    if (ppAvailable) {
       this.buildPostProcessing(width, height);
     }
 
@@ -211,18 +208,15 @@ export class MapManager {
     this.buildPuelcheWindRibbons();
     this.buildFloodWaterPlane();
 
-    // --- Sistema de Precipitación Procedural (Lluvia en Modo Predio) ---
-    this.buildPrecipitationSystem();
-
-    // --- Geomorphic & Stratigraphic Flow Manager ---
-    this.geomorphicManager = new GeomorphicFlowManager(this.scene, (x, z) => this.getTerrainElevation(x, z));
-
     // --- Single-Engine Multi-Profile Layers ---
     this.scene.add(this.enterpriseLayersGroup);
     this.scene.add(this.territorialLayersGroup);
     this.scene.add(this.esgLayersGroup);
     this.buildProfileLayers();
-    this.setProfileView('enterprise', false);
+    // Iniciar con visión limpia y realista: capas analíticas abstractas desactivadas por defecto
+    this.enterpriseLayersGroup.visible = false;
+    this.territorialLayersGroup.visible = false;
+    this.esgLayersGroup.visible = false;
 
     // --- Event Listeners ---
     this.setupEntityPicker();
@@ -230,7 +224,6 @@ export class MapManager {
 
     bus.on('map:flyto',            (preset)        => this.flyToPreset(preset));
     bus.on('map:set_mode',         (mode)          => this.setMapMode(mode));
-    bus.on('map:set_layer_mode',   (layer)         => this.setSpectralLayerMode(layer));
     bus.on('map:set_profile',      (profile)       => this.setProfileView(profile));
     bus.on('map:set_relief_scale', (scale)         => this.setReliefScale(scale));
     bus.on('map:set_sculpt_mode',  (mode)          => this.setSculptMode(mode));
@@ -239,17 +232,41 @@ export class MapManager {
     bus.on('basin:flood_level',     (meters)        => this.setFloodLevel(meters));
     bus.on('basin:aquifer_stress',  (active)        => this.setAquiferStress(active));
     bus.on('basin:reset_scenarios', ()              => this.resetBasinScenarios());
-    bus.on('weather:updated',       (wx)            => this.onWeatherUpdated(wx));
-    bus.on('weather:toggle_rain',   (active)        => this.setRainActive(active));
     bus.on('map:update_sun',       ({ day, hour }) => {
       this.updateSunPosition(day, hour);
       this.updateMoonPosition(day, hour);
     });
     bus.on('map:set_ndvi_mode',    (active)        => this.setNdviMode(active));
 
+    // Dynamic Camera Modes & Tours
+    bus.on('map:start_tour',        ()              => this.startCinematicTour());
+    bus.on('map:stop_tour',         ()              => this.stopCinematicTour());
+    bus.on('map:toggle_tour',       ()              => this.isTourActive ? this.stopCinematicTour() : this.startCinematicTour());
+    bus.on('map:start_walkthrough', ()              => this.startWalkthroughMode());
+    bus.on('map:stop_walkthrough',  ()              => this.stopWalkthroughMode());
+    bus.on('map:toggle_walkthrough',()              => this.isWalkthrough ? this.stopWalkthroughMode() : this.startWalkthroughMode());
+    bus.on('map:start_timelapse',   (durationMs)    => this.startSolarTimelapse(durationMs));
+    bus.on('map:stop_timelapse',    ()              => this.stopSolarTimelapse());
+    bus.on('map:toggle_timelapse',  ()              => this.isTimelapseActive ? this.stopSolarTimelapse() : this.startSolarTimelapse());
+
+    if (this.controls) {
+      this.controls.addEventListener('start', () => {
+        if (this.isTourActive) this.stopCinematicTour();
+      });
+    }
+
+    // GPU Flow Field Visualizer (Windy.com Style for Macro-Cuenca 122.000 ha)
+    try {
+      this.windyEngine = new WindyBasinEngine(this);
+      await this.windyEngine.init();
+      window.windyEngine = this.windyEngine;
+    } catch (err) {
+      console.warn('⚠️ [MapManager] WindyBasinEngine initialization error:', err);
+    }
+
     this.animate();
 
-    console.log('🌱 AgriTwin HD Terrain Engine initialized — Andes scale, Puelche wind vectors, Flood modeling, Geomorphic Flows.');
+    console.log('🌱 AgriTwin HD Terrain Engine initialized — Andes scale, Puelche wind vectors, Flood modeling.');
     return this;
   }
 
@@ -258,14 +275,10 @@ export class MapManager {
   buildDynamicSky() {
     // Sky dome — large hemisphere with vertical gradient baked into vertex colors
     const skyGeo = new THREE.SphereGeometry(600, 32, 16);
+    skyGeo.scale(-1, 1, -1); // flip normals inward
 
-    // Visible from interior of dome, rendering behind all geometry
-    this.skyMaterial = new THREE.MeshBasicMaterial({
-      vertexColors: true,
-      side: THREE.BackSide,
-      fog: false,
-      depthWrite: false
-    });
+    // We'll update this material's colors on each frame based on hourOfDay
+    this.skyMaterial = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false });
 
     // Bake initial vertex colors (noon default)
     this._paintSkyVertices(skyGeo, 12);
@@ -273,16 +286,15 @@ export class MapManager {
     this.skyMesh = new THREE.Mesh(skyGeo, this.skyMaterial);
     this.skyMesh.renderOrder = -1;
     this.scene.add(this.skyMesh);
-    this.scene.background = new THREE.Color('#93c5fd');
   }
 
   _paintSkyVertices(geometry, hour) {
     // Sky color interpolation: dawn → noon → dusk → night
     const skyPalettes = {
-      dawn:  { horizon: new THREE.Color('#fdba74'), zenith: new THREE.Color('#38bdf8') },
-      noon:  { horizon: new THREE.Color('#bae6fd'), zenith: new THREE.Color('#1e40af') },
-      dusk:  { horizon: new THREE.Color('#fb923c'), zenith: new THREE.Color('#4338ca') },
-      night: { horizon: new THREE.Color('#0f172a'), zenith: new THREE.Color('#020617') }
+      dawn:  { horizon: new THREE.Color('#f97316'), zenith: new THREE.Color('#7c3aed') },
+      noon:  { horizon: new THREE.Color('#93c5fd'), zenith: new THREE.Color('#1e40af') },
+      dusk:  { horizon: new THREE.Color('#fb923c'), zenith: new THREE.Color('#6d28d9') },
+      night: { horizon: new THREE.Color('#1e293b'), zenith: new THREE.Color('#0f172a') }
     };
 
     let palette;
@@ -313,17 +325,17 @@ export class MapManager {
     }
   }
 
-  // ─── Lighting (PBR Soft Shadows & Hyperrealistic Daylight IBL) ───────────────
+  // ─── Lighting (PBR Soft Shadows & Sunset Environment IBL) ─────────────────────
 
   buildLighting() {
-    const ambientLight = new THREE.AmbientLight('#e2e8f0', 0.28);
+    const ambientLight = new THREE.AmbientLight('#fef3c7', 0.32);
     this.scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight('#bae6fd', '#1c2e1b', 0.40);
+    const hemiLight = new THREE.HemisphereLight('#7dd3fc', '#14532d', 0.38);
     this.scene.add(hemiLight);
 
     // Dynamic Solar Directional Light with PCFSoftShadowMap
-    this.sunLight = new THREE.DirectionalLight('#fffef5', 1.45);
+    this.sunLight = new THREE.DirectionalLight('#fffbeb', 1.45);
     this.sunLight.castShadow = true;
     this.sunLight.shadow.mapSize.width  = 4096;
     this.sunLight.shadow.mapSize.height = 4096;
@@ -337,20 +349,20 @@ export class MapManager {
     this.sunLight.shadow.normalBias    =  0.04; // Eradicates shadow acne
     this.scene.add(this.sunLight);
 
-    // Fill light from sky (cool blue-tinted for ambient sky bounce)
-    const fillLight = new THREE.DirectionalLight('#93c5fd', 0.20);
+    // Fill light from sky (blue-tinted for ambient sky bounce)
+    const fillLight = new THREE.DirectionalLight('#93c5fd', 0.22);
     fillLight.position.set(-40, 25, -40);
     this.scene.add(fillLight);
 
-    // Image-Based Lighting (IBL) environment map (Hyperrealistic Daylight preset)
+    // Image-Based Lighting (IBL) environment map (Equirectangular Sunset preset)
     this.buildEnvironmentMap();
 
     this.updateSunPosition(this.dayOfYear, this.hourOfDay);
   }
 
   /**
-   * Generates a hyperrealistic daylight radiance environment map using PMREMGenerator.
-   * Provides natural sky reflections and foliage ground bounce for PBR materials.
+   * Generates a sunset radiance environment map using PMREMGenerator.
+   * Equivalent to Drei's <Environment preset="sunset" /> for PBR sheen.
    */
   buildEnvironmentMap() {
     if (!this.renderer) return;
@@ -364,19 +376,18 @@ export class MapManager {
       const ctx = envCanvas.getContext('2d');
 
       const grad = ctx.createLinearGradient(0, 0, 0, 256);
-      grad.addColorStop(0.0, '#1d4ed8');  // Sky zenith crystal blue
-      grad.addColorStop(0.35, '#60a5fa'); // Pure daylight azure
-      grad.addColorStop(0.50, '#dbeafe'); // Horizon clear atmospheric haze
-      grad.addColorStop(0.55, '#2e4a2d'); // Landscape foliage bounce
-      grad.addColorStop(0.70, '#26221c'); // Fertile earth bounce
-      grad.addColorStop(1.0, '#15120e');  // Nadir ground
+      grad.addColorStop(0.0, '#1e3a8a'); // Sky zenith deep navy
+      grad.addColorStop(0.38, '#ea580c'); // Warm sunset amber/orange
+      grad.addColorStop(0.52, '#fde047'); // Golden horizon line
+      grad.addColorStop(0.60, '#36220f'); // Soil diffuse reflection
+      grad.addColorStop(1.0, '#18110b'); // Nadir ground
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 512, 256);
 
-      // Clean natural daylight solar disk
-      ctx.fillStyle = '#ffffff';
+      // Golden solar disk
+      ctx.fillStyle = '#fffbeb';
       ctx.beginPath();
-      ctx.arc(256, 110, 16, 0, Math.PI * 2);
+      ctx.arc(256, 128, 20, 0, Math.PI * 2);
       ctx.fill();
 
       const envTex = new THREE.CanvasTexture(envCanvas);
@@ -384,7 +395,7 @@ export class MapManager {
       this.scene.environment = envRenderTarget.texture;
       envTex.dispose();
       pmremGenerator.dispose();
-      console.log('☀️ Hyperrealistic Daylight PBR Environment Map active.');
+      console.log('🌅 Sunset PBR Environment Map active for realistic IBL radiance.');
     } catch (err) {
       console.warn('Environment map setup skipped:', err);
     }
@@ -418,13 +429,13 @@ export class MapManager {
       const elevDeg = elevation * (180 / Math.PI);
       if (elevDeg < 14 && elevDeg > 0) {
         this.sunLight.color.setHex(0xfb923c); // Warm golden sunrise/sunset (alargadas sombras)
-        this.sunLight.intensity = 1.05;
+        this.sunLight.intensity = 1.2;
       } else if (elevDeg <= 0) {
         this.sunLight.color.setHex(0x1e293b); // Night
-        this.sunLight.intensity = 0.08;
+        this.sunLight.intensity = 0.15;
       } else {
-        this.sunLight.color.setHex(0xfffef5); // Midday crisp clean natural daylight sunlight
-        this.sunLight.intensity = 1.45;
+        this.sunLight.color.setHex(0xfffbeb); // Midday crisp warm white
+        this.sunLight.intensity = 1.9;
       }
     }
 
@@ -442,7 +453,6 @@ export class MapManager {
     }
 
     this.updateSkyColors(hour);
-    bus.emit('environment:time_of_day', { hour, isNight: (hour < 7 || hour > 19) });
   }
 
   // ─── G1: HD Terrain ───────────────────────────────────────────────────────────
@@ -476,92 +486,60 @@ export class MapManager {
     const colors  = new Float32Array(posAttr.count * 3);
     this.baseYValues = new Float32Array(posAttr.count);
 
-    // Natural hyperrealistic linear vertex colors (Maule Sur / Fundo Colliguay):
-    const cRiparian   = new THREE.Color('#164a20').convertSRGBToLinear();
-    const cHighAndes  = new THREE.Color('#cbd5e1').convertSRGBToLinear();
-    const cPrecord    = new THREE.Color('#4a5245').convertSRGBToLinear();
-    const cHillside   = new THREE.Color('#2d4d24').convertSRGBToLinear();
-    const cPasturePRV = new THREE.Color('#1f6628').convertSRGBToLinear();
-    const cGrassland  = new THREE.Color('#275825').convertSRGBToLinear();
-    const tmpC        = new THREE.Color();
-
     for (let i = 0; i < posAttr.count; i++) {
       const x = posAttr.getX(i);
       const z = posAttr.getZ(i);
 
-      // Smoother multi-octave noise terrain (manual Perlin-like sum)
-      let y = Math.sin(x * 0.04) * Math.cos(z * 0.04) * 1.8
-            + Math.sin(x * 0.09 + 0.7) * Math.cos(z * 0.07 - 0.3) * 1.0
-            + Math.sin(x * 0.18 + 1.2) * Math.cos(z * 0.16 + 0.9) * 0.4
-            + Math.sin(x * 0.02 + z * 0.02) * 2.5;
-
-      // Gradiente Orográfico Andino hacia el Este (Precordillera de Parral / Longaví)
-      if (x > 25) {
-        const andesProgress = (x - 25) / 65.0;
-        const andesRidge = Math.sin(z * 0.07) * 3.5 + Math.cos(z * 0.12) * 2.0;
-        y += Math.pow(andesProgress, 1.5) * 18.0 + andesRidge * andesProgress;
-      }
-
-      const dist      = getDistToRiver(x, z);
+      // Terreno plano agrícola sobre el campo de Meniel
+      let y = 0.0;
+      const dist = getDistToRiver(x, z);
       const riverWidth = 4.2;
 
+      // Suave lecho natural del estero Colliguay
       if (dist < riverWidth) {
         const t = 1 - Math.pow(dist / riverWidth, 2);
-        y -= t * 2.8;
-      } else if (dist < riverWidth + 3.5) {
-        const t = 1 - (dist - riverWidth) / 3.5;
-        y -= t * 0.9;
+        y -= t * 0.45;
       }
 
       posAttr.setY(i, y);
       this.baseYValues[i] = y;
 
-      // G1: Zone-based vertex colors for multi-texture blending effect
-      // Zones: river bank, cultivated, high mountain, rocky slopes, dry pasture
+      // Colores de vegetación natural del predio
       const u = uvAttr.getX(i);
       const v = uvAttr.getY(i);
+      let r, g, b;
 
-      let c;
       if (dist < riverWidth + 5) {
-        // Riparian zone — deep native Chilean riverbank forest (Boldo, Peumo, Sauce)
-        c = cRiparian;
-      } else if (y > 2.0) {
-        // Continuous smooth Andean elevation gradient
-        if (y < 4.5) {
-          const t = (y - 2.0) / 2.5;
-          c = tmpC.lerpColors(cGrassland, cHillside, t);
-        } else if (y < 8.0) {
-          const t = (y - 4.5) / 3.5;
-          c = tmpC.lerpColors(cHillside, cPrecord, t);
-        } else {
-          const t = Math.min(1.0, (y - 8.0) / 4.0);
-          c = tmpC.lerpColors(cPrecord, cHighAndes, t);
-        }
-      } else if ((u > 0.3 && u < 0.65) && (v > 0.2 && v < 0.7)) {
-        // Cultivated central zone (Potreros PRV Fundo Colliguay) — rich chlorophyll pasture
-        c = cPasturePRV;
+        // Ribera húmeda del estero
+        r = 0.10; g = 0.36; b = 0.14;
+      } else if ((u > 0.28 && u < 0.68) && (v > 0.2 && v < 0.72)) {
+        // Zona central de cultivo
+        r = 0.16; g = 0.40; b = 0.12;
       } else {
-        // Natural pasture / valley grassland
-        c = cGrassland;
+        // Pradera natural regenerativa
+        r = 0.22; g = 0.45; b = 0.15;
       }
 
-      colors[i * 3]     = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
+      colors[i * 3]     = r;
+      colors[i * 3 + 1] = g;
+      colors[i * 3 + 2] = b;
     }
 
     groundGeo.computeVertexNormals();
     groundGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // PBR Soil Micro-Relieve textures
+    // PBR Soil Micro-Relieve: Plowing Furrows & Humus Texture
     const soilNormalMap = PBRSoilGenerator.createSoilNormalMap(1024);
     const soilRoughnessMap = PBRSoilGenerator.createSoilRoughnessMap(1024);
 
-    // 1. Multi-texture material using vertex colors + Biophysical Soil Moisture
+    // 1. Multi-texture material using vertex colors + PBR Furrows + Biophysical Soil Moisture (Civ VI / Farm Sim)
     this.groundCiv6Mat = new THREE.MeshStandardMaterial({
       vertexColors: true,
-      roughness: 0.92,
-      metalness: 0.0,
+      normalMap: soilNormalMap,
+      normalScale: new THREE.Vector2(1.6, 1.6),
+      roughnessMap: soilRoughnessMap,
+      roughness: 0.86,
+      metalness: 0.04,
       flatShading: false
     });
     this.terrainMoistureUniforms = BiophysicalTerrainShader.apply(this.groundCiv6Mat, { initialMoisture: 0.38 });
@@ -740,65 +718,6 @@ export class MapManager {
     this.scene.add(this.waterMesh);
 
     this._waterTime = 0;
-    this._initWetlandFauna();
-  }
-
-  _initWetlandFauna() {
-    this.ducksGroup = new THREE.Group();
-    this.ducksGroup.name = 'wetland_ducks_group';
-    this.scene.add(this.ducksGroup);
-    this.ducks = [];
-
-    const loader = (typeof THREE.GLTFLoader !== 'undefined') ? new THREE.GLTFLoader() : null;
-    if (!loader) return;
-
-    loader.load(
-      'assets/models/Duck.glb',
-      (gltf) => {
-        const duckModel = gltf.scene;
-
-        // Tranque de acumulación / Laguna coordinates (~x: -16, z: 12)
-        const duckLocations = [
-          { x: -16.2, z: 10.5, heading: 0.8 },
-          { x: -14.8, z: 12.0, heading: -0.6 },
-          { x: -17.5, z: 13.2, heading: 1.4 },
-          { x: -15.4, z: 8.8,  heading: 2.1 }
-        ];
-
-        duckLocations.forEach((loc, idx) => {
-          const duck = duckModel.clone(true);
-          const elev = this.getTerrainElevation ? (this.getTerrainElevation(loc.x, loc.z) + 0.12) : 0.45;
-          duck.position.set(loc.x, elev, loc.z);
-          duck.scale.set(0.28, 0.28, 0.28);
-          duck.rotation.y = loc.heading;
-
-          duck.traverse(c => {
-            if (c.isMesh) {
-              c.castShadow = true;
-              c.receiveShadow = true;
-            }
-          });
-
-          const duckData = {
-            id: `duck_${idx + 1}`,
-            type: 'wildlife',
-            name: `Ánade Silvestre #${idx + 1} (Anas platyrhynchos)`,
-            icon: '🦆',
-            species: 'Fauna Silvestre Ecosistémica (Modelo 3D GLB)',
-            habitat: 'Tranque de Acumulación 18.500 m³',
-            telemetry: 'Bioindicador de calidad hídrica y control biológico de insectos'
-          };
-          duck.userData = duckData;
-          this.addPickable(duck, duckData);
-
-          this.ducksGroup.add(duck);
-          this.ducks.push({ mesh: duck, baseElev: elev, baseRot: loc.heading, offset: idx * 1.5 });
-        });
-        console.log('🦆 Wetland wildlife Ducks loaded in irrigation reservoir');
-      },
-      undefined,
-      (err) => console.warn('Could not load Duck.glb:', err)
-    );
   }
 
   conformWaterToTerrain() {
@@ -820,16 +739,6 @@ export class MapManager {
     const shimmer = 0.02 + Math.sin(time * 0.001) * 0.01;
     this.waterMaterial.emissiveIntensity = shimmer;
     this.waterMaterial.needsUpdate = false;
-
-    // Gentle bobbing and drifting for ducks on water surface
-    if (this.ducks && this.ducks.length > 0) {
-      const t = (time || performance.now()) * 0.002;
-      this.ducks.forEach(d => {
-        d.mesh.position.y = d.baseElev + Math.sin(t * 2.0 + d.offset) * 0.035;
-        d.mesh.rotation.y = d.baseRot + Math.sin(t * 0.6 + d.offset) * 0.12;
-        d.mesh.rotation.z = Math.cos(t * 1.5 + d.offset) * 0.025;
-      });
-    }
   }
 
   // ─── G5: Post-Processing ─────────────────────────────────────────────────────
@@ -940,17 +849,7 @@ export class MapManager {
 
   addPickable(mesh, entityData) {
     mesh.userData = entityData;
-    if (!this.pickableObjects.includes(mesh)) {
-      this.pickableObjects.push(mesh);
-    }
-  }
-
-  removePickable(mesh) {
-    if (!this.pickableObjects) return;
-    const idx = this.pickableObjects.indexOf(mesh);
-    if (idx !== -1) {
-      this.pickableObjects.splice(idx, 1);
-    }
+    this.pickableObjects.push(mesh);
   }
 
   addAnimated(object, updateFn) {
@@ -960,39 +859,15 @@ export class MapManager {
   setupEntityPicker() {
     const canvas = this.renderer.domElement;
 
-    // Helper: Validar visibilidad estricta de jerarquía completa (Three.js no lo hace por defecto al raycastear arrays directos)
-    const isHierarchyVisible = (obj) => {
-      let cur = obj;
-      while (cur) {
-        if (cur.visible === false) return false;
-        cur = cur.parent;
-      }
-      return true;
-    };
-
-    // Filtro de arrastre vs clic (OrbitControls drag threshold)
-    // Evita que al rotar/orbitar la cámara o dejar apretado se dispare selección o deselección
-    let pointerDownPos = { x: 0, y: 0 };
-    let isDragging = false;
-
-    canvas.addEventListener('pointerdown', (event) => {
-      pointerDownPos.x = event.clientX;
-      pointerDownPos.y = event.clientY;
-      isDragging = false;
-    });
-
-    canvas.addEventListener('pointermove', (event) => {
-      const dist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
-      if (dist > 6) {
-        isDragging = true;
-      }
-    });
-
     // 1. Mouse Click Raycaster (Selection)
     canvas.addEventListener('click', (event) => {
-      // Ignorar el evento si el usuario estaba orbitando, arrastrando o inspeccionando la vista 3D
-      const dragDist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
-      if (isDragging || dragDist > 6) {
+      // Ignorar selección si hay un modo táctico activo (Mover, Dibujar, Borrar, Colocar Objetos)
+      if (
+        this.drawingManager?.isDrawingActive ||
+        this.drawingManager?.isMoveMode ||
+        this.drawingManager?.isEraseMode ||
+        this.objectPlacementManager?.isPlacing
+      ) {
         return;
       }
 
@@ -1001,10 +876,18 @@ export class MapManager {
       this.mouse.y = -((event.clientY - rect.top)  / rect.height) * 2 + 1;
 
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const rawIntersects = this.raycaster.intersectObjects(this.pickableObjects, true);
 
-      // Filtrar estrictamente solo objetos cuyos ancestros estén 100% visibles
-      const intersects = rawIntersects.filter(hit => hit.object && isHierarchyVisible(hit.object));
+      // Filtrar solo objetos visibles (ignora cámaras o capas apagadas)
+      const activePickables = (this.pickableObjects || []).filter(obj => {
+        let cur = obj;
+        while (cur && cur !== this.scene) {
+          if (cur.visible === false) return false;
+          cur = cur.parent;
+        }
+        return true;
+      });
+
+      const intersects = this.raycaster.intersectObjects(activePickables, true);
 
       if (intersects.length > 0) {
         const hit = intersects[0];
@@ -1054,8 +937,7 @@ export class MapManager {
       this.mouse.y = -((event.clientY - rect.top)  / rect.height) * 2 + 1;
 
       this.raycaster.setFromCamera(this.mouse, this.camera);
-      const rawIntersects = this.raycaster.intersectObjects(this.pickableObjects, true);
-      const intersects = rawIntersects.filter(hit => hit.object && isHierarchyVisible(hit.object));
+      const intersects = this.raycaster.intersectObjects(this.pickableObjects, true);
 
       if (intersects.length > 0) {
         const hit = intersects[0];
@@ -1075,13 +957,21 @@ export class MapManager {
           hitObj = hitObj.parent;
         }
 
-        if (hitObj && hitObj.userData && hitObj.userData.type) {
+        if (hitObj && hitObj.userData && (hitObj.userData.type || hitObj.userData.isCustom || hitObj.userData.cropType)) {
           canvas.style.cursor = 'pointer';
           const id = hitObj.userData.id || hitObj.userData.parcelId;
           if (id !== lastHoveredId) {
             lastHoveredId = id;
             if (hitObj.userData.type === 'parcel') {
               bus.emit('parcel:hover', id);
+            }
+            if (hitObj.userData.type === 'parcel' || hitObj.userData.type === 'custom_polygon' || hitObj.userData.isCustom || hitObj.userData.cropType) {
+              bus.emit('polygon:hover', {
+                id,
+                data: hitObj.userData,
+                point: hit.point,
+                worldPos: hit.point.clone()
+              });
             }
           }
           return;
@@ -1091,8 +981,9 @@ export class MapManager {
       if (lastHoveredId !== null) {
         lastHoveredId = null;
         bus.emit('parcel:unhover');
+        bus.emit('polygon:unhover');
       }
-      if (!this.sculptMode) {
+      if (!this.sculptMode && !this.drawingManager?.isMoveMode) {
         canvas.style.cursor = 'default';
       }
     });
@@ -1100,25 +991,172 @@ export class MapManager {
 
   // ─── Camera Presets & Single-Engine Multi-Profile System ─────────────────────
 
-  flyToPreset(preset) {
+  getLiveObjectFocus(preset) {
+    if (!this.scene) return null;
+
+    let targetObj = null;
+
+    if (preset === 'tractor') {
+      this.scene.traverse((obj) => {
+        if (targetObj) return;
+        const id = obj.userData?.id || '';
+        const name = (obj.name || '') + ' ' + (obj.userData?.name || '');
+        if (id === 'tractor_agricola_glb' || id.includes('tractor') || name.toLowerCase().includes('tractor')) {
+          let cur = obj;
+          while (cur.parent && cur.parent !== this.scene && cur.parent.name !== 'realFarmsteadGLBGroup') {
+            if (cur.userData?.id === 'tractor_agricola_glb') break;
+            cur = cur.parent;
+          }
+          targetObj = cur;
+        }
+      });
+
+      if (targetObj) {
+        targetObj.updateMatrixWorld?.(true);
+        const box = new THREE.Box3().setFromObject(targetObj);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+        if (!isNaN(center.x) && !isNaN(center.z)) {
+          return {
+            target: new THREE.Vector3(center.x, center.y + 0.9, center.z),
+            pos:    new THREE.Vector3(center.x + 6.5, center.y + 2.8, center.z + 5.5)
+          };
+        }
+      }
+    } else if (preset === 'solar') {
+      this.scene.traverse((obj) => {
+        if (targetObj) return;
+        const id = obj.userData?.id || '';
+        const sp = (obj.userData?.species || '') + ' ' + (obj.userData?.variety || '') + ' ' + (obj.name || '');
+        if (id.includes('agrovoltaico') || id.includes('solar') || sp.toLowerCase().includes('agrivoltaic') || sp.toLowerCase().includes('solar')) {
+          targetObj = obj;
+        }
+      });
+
+      if (targetObj) {
+        targetObj.updateMatrixWorld?.(true);
+        const box = new THREE.Box3().setFromObject(targetObj);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+        if (!isNaN(center.x) && !isNaN(center.z)) {
+          return {
+            target: new THREE.Vector3(center.x, center.y + 1.4, center.z),
+            pos:    new THREE.Vector3(center.x + 7.5, center.y + 3.2, center.z + 6.5)
+          };
+        }
+      }
+    } else if (preset === 'house') {
+      this.scene.traverse((obj) => {
+        if (targetObj) return;
+        const id = obj.userData?.id || '';
+        const name = (obj.name || '') + ' ' + (obj.userData?.name || '');
+        if (id === 'house_main' || id === 'granero_principal_glb' || name.toLowerCase().includes('granero principal') || name.toLowerCase().includes('casa principal')) {
+          targetObj = obj;
+        }
+      });
+
+      if (targetObj) {
+        targetObj.updateMatrixWorld?.(true);
+        const box = new THREE.Box3().setFromObject(targetObj);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+        if (!isNaN(center.x) && !isNaN(center.z)) {
+          return {
+            target: new THREE.Vector3(center.x, center.y + 2.0, center.z),
+            pos:    new THREE.Vector3(center.x + 11.0, center.y + 5.0, center.z + 12.0)
+          };
+        }
+      }
+    } else if (preset === 'livestock') {
+      if (this.livestockManager?.sheepGroup && this.livestockManager.sheepGroup.children.length > 0) {
+        targetObj = this.livestockManager.sheepGroup;
+      } else if (this.livestockManager?.coopGroup) {
+        targetObj = this.livestockManager.coopGroup;
+      } else {
+        this.scene.traverse((obj) => {
+          if (targetObj) return;
+          const id = obj.userData?.id || '';
+          if (id.includes('sheep') || id.includes('coop')) targetObj = obj;
+        });
+      }
+
+      if (targetObj) {
+        targetObj.updateMatrixWorld?.(true);
+        const box = new THREE.Box3().setFromObject(targetObj);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+        if (!isNaN(center.x) && !isNaN(center.z)) {
+          return {
+            target: new THREE.Vector3(center.x, center.y + 0.8, center.z),
+            pos:    new THREE.Vector3(center.x + 8.5, center.y + 2.5, center.z + 7.0)
+          };
+        }
+      }
+    } else if (preset === 'tranque') {
+      this.scene.traverse((obj) => {
+        if (targetObj) return;
+        const id = obj.userData?.id || obj.userData?.parcelId || '';
+        const sp = (obj.userData?.species || '') + ' ' + (obj.userData?.variety || '') + ' ' + (obj.name || '');
+        if (id === 'A103' || sp.toLowerCase().includes('tranque') || sp.toLowerCase().includes('water basin') || sp.toLowerCase().includes('embalse')) {
+          targetObj = obj;
+        }
+      });
+
+      if (targetObj) {
+        targetObj.updateMatrixWorld?.(true);
+        const box = new THREE.Box3().setFromObject(targetObj);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+        if (!isNaN(center.x) && !isNaN(center.z)) {
+          return {
+            target: new THREE.Vector3(center.x, center.y + 0.8, center.z),
+            pos:    new THREE.Vector3(center.x + 14.0, center.y + 5.0, center.z + 15.0)
+          };
+        }
+      }
+    }
+
+    return null;
+  }
+
+  getCameraPreset(preset) {
+    // Si el objeto ha sido reubicado o está en escena viva, enfocar su centro real
+    const liveTarget = this.getLiveObjectFocus(preset);
+    if (liveTarget) {
+      return liveTarget;
+    }
+
     const presets = {
       // Perfiles Ejecutivos de Negocio
-      enterprise:  { pos: new THREE.Vector3(14, 20, 24),   target: new THREE.Vector3(-4, 1.5, 0)   }, // Zoom Predio / Cuarteles
-      territorial: { pos: new THREE.Vector3(65, 85, 95),   target: new THREE.Vector3(0, 0, -10)    }, // Zoom Cuenca / Comuna
-      esg:         { pos: new THREE.Vector3(120, 185, 210),target: new THREE.Vector3(0, 0, 0)      }, // Zoom Regional / Ecosistémico
-      studio:      { pos: new THREE.Vector3(22, 40, 52),   target: new THREE.Vector3(0, 0, 0)      }, // Modo Estudio / Sandbox
+      enterprise:  { pos: new THREE.Vector3(14, 20, 24),    target: new THREE.Vector3(-4, 1.5, 0)    },
+      territorial: { pos: new THREE.Vector3(65, 85, 95),    target: new THREE.Vector3(0, 0, -10)     },
+      esg:         { pos: new THREE.Vector3(120, 185, 210), target: new THREE.Vector3(0, 0, 0)       },
+      studio:      { pos: new THREE.Vector3(22, 40, 52),    target: new THREE.Vector3(0, 0, 0)       },
       
       // Presets Clásicos Preservados
-      overview:    { pos: new THREE.Vector3(22, 40, 52),   target: new THREE.Vector3(0, 0, 0)      },
-      house:       { pos: new THREE.Vector3(0, 8, 14),     target: new THREE.Vector3(-8, 2.5, 8)   }, // Casa Principal / Tudor Farmhouse
-      orchard:     { pos: new THREE.Vector3(-12, 20, 12),  target: new THREE.Vector3(-10, 2, -5)   },
-      sensors:     { pos: new THREE.Vector3(12, 16, 22),   target: new THREE.Vector3(5, 2, 8)      },
-      livestock:   { pos: new THREE.Vector3(14, 18, 22),   target: new THREE.Vector3(10, 2, 7)     },
-      permaculture:{ pos: new THREE.Vector3(18, 36, 44),   target: new THREE.Vector3(-2, 2, 6)     }
+      overview:    { pos: new THREE.Vector3(22, 40, 52),    target: new THREE.Vector3(0, 0, 0)       },
+      orchard:     { pos: new THREE.Vector3(-12, 20, 12),   target: new THREE.Vector3(-10, 2, -5)    },
+      sensors:     { pos: new THREE.Vector3(12, 16, 22),    target: new THREE.Vector3(5, 2, 8)       },
+      livestock:   { pos: new THREE.Vector3(15, 3.6, 6),    target: new THREE.Vector3(5, 1.2, -2)    },
+      permaculture:{ pos: new THREE.Vector3(18, 36, 44),    target: new THREE.Vector3(-2, 2, 6)      },
+
+      // Puntos de Interés Cinematográficos
+      house:       { pos: new THREE.Vector3(-2, 7.5, 20),   target: new THREE.Vector3(-13, 3.0, 8.5) },
+      solar:       { pos: new THREE.Vector3(-8, 3.8, -2),   target: new THREE.Vector3(-16, 1.8, -9)  },
+      tractor:     { pos: new THREE.Vector3(14, 4.0, -6),   target: new THREE.Vector3(7.5, 1.5, -11) },
+      tranque:     { pos: new THREE.Vector3(-24, 6.0, 28),  target: new THREE.Vector3(-38, 1.2, 12)  },
+      condor:      { pos: new THREE.Vector3(38, 75, 82),    target: new THREE.Vector3(0, 0, 0)       }
     };
 
-    const t = presets[preset] || presets.overview;
-    this.animateCamera(t.pos, t.target);
+    return presets[preset] || presets.overview;
+  }
+
+  flyToPreset(preset) {
+    if (this.isTourActive) this.stopCinematicTour();
+    if (this.isWalkthrough) this.stopWalkthroughMode();
+
+    const t = this.getCameraPreset(preset);
+    this.animateCamera(t.pos, t.target, 1400);
   }
 
   setProfileView(profile, animate = true) {
@@ -1202,18 +1240,6 @@ export class MapManager {
 
       this.enterpriseLayersGroup.add(colGroup);
     });
-
-    // Malla de Drenaje Katabático de Heladas (Fondo de Quebrada)
-    const frostCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-25, 0.6, 20),
-      new THREE.Vector3(-10, 0.4, 12),
-      new THREE.Vector3(0, 0.35, 10),
-      new THREE.Vector3(15, 0.4, 6)
-    ]);
-    const frostGeo = new THREE.TubeGeometry(frostCurve, 24, 0.6, 8, false);
-    const frostMat = new THREE.MeshBasicMaterial({ color: '#818cf8', transparent: true, opacity: 0.45, wireframe: true });
-    const frostMesh = new THREE.Mesh(frostGeo, frostMat);
-    this.enterpriseLayersGroup.add(frostMesh);
   }
 
   // 2. MODO B2G TERRITORIAL: Semáforo Acuíferos, Piro-Riesgo FWI, Rutas Aljibe y Cortafuegos
@@ -1325,13 +1351,11 @@ export class MapManager {
     });
   }
 
-  flyToPosition(px, py, pz, tx = 0, ty = 0, tz = 0, duration = 1000) {
-    if (this.camera && typeof this.animateCamera === 'function') {
-      this.animateCamera(new THREE.Vector3(px, py, pz), new THREE.Vector3(tx, ty, tz), duration);
+  animateCamera(targetPos, targetLookAt, duration = 1200, onComplete = null) {
+    if (this._camAnimId) {
+      cancelAnimationFrame(this._camAnimId);
+      this._camAnimId = null;
     }
-  }
-
-  animateCamera(targetPos, targetLookAt, duration = 1200) {
     const startPos    = this.camera.position.clone();
     const startTarget = this.controls ? this.controls.target.clone() : new THREE.Vector3();
     const startTime   = performance.now();
@@ -1347,9 +1371,305 @@ export class MapManager {
         this.controls.update();
       }
 
-      if (progress < 1.0) requestAnimationFrame(updateCamera);
+      if (progress < 1.0) {
+        this._camAnimId = requestAnimationFrame(updateCamera);
+      } else {
+        this._camAnimId = null;
+        if (typeof onComplete === 'function') {
+          onComplete();
+        }
+      }
     };
-    updateCamera();
+    this._camAnimId = requestAnimationFrame(updateCamera);
+  }
+
+  // ─── Modo 1: Tour Drone Cinematográfico Guiado ─────────────────────────────────
+
+  startCinematicTour() {
+    this.stopWalkthroughMode();
+    this.stopSolarTimelapse();
+    this.isTourActive = true;
+    this.tourIndex = 0;
+
+    this.tourSpots = [
+      { id: 'house',     label: 'Caserío Patrimonial & Galpón',   desc: 'Arquitectura tradicional, silo de granos y molino de viento', duration: 2800, pause: 3800 },
+      { id: 'solar',     label: 'Parque Agrovoltaico 6.6 kWp',     desc: 'Módulos bifaciales con seguimiento solar e inversores de red', duration: 3000, pause: 3800 },
+      { id: 'tractor',   label: 'Maquinaria RTK de Precisión',     desc: 'Tractor autónomo y cabecera de cuartel de viñedos', duration: 2800, pause: 3800 },
+      { id: 'livestock', label: 'Manejo Holístico & Gallinero',     desc: 'Pastoreo regenerativo Voisin y gallinero móvil en pradera', duration: 2800, pause: 3800 },
+      { id: 'tranque',   label: 'Tranque de Infiltración Yeomans', desc: '18.500 m³ cosechados mediante diseño hidrológico Keyline', duration: 3000, pause: 4000 },
+      { id: 'condor',    label: 'Vuelo de Cóndor sobre el Valle',   desc: 'Perspectiva aérea de la cuenca y zonificación territorial', duration: 3200, pause: 4200 },
+      { id: 'overview',  label: 'Vista Global del Gemelo 3D',      desc: 'Gemelo digital unificado de agricultura regenerativa y de precisión', duration: 2800, pause: 3500 }
+    ];
+
+    bus.emit('tour:started', { total: this.tourSpots.length });
+    this._runTourStep();
+  }
+
+  _runTourStep() {
+    if (!this.isTourActive) return;
+    const currentSpot = this.tourSpots[this.tourIndex];
+    bus.emit('tour:step', {
+      spot: currentSpot,
+      index: this.tourIndex + 1,
+      total: this.tourSpots.length
+    });
+
+    const preset = this.getCameraPreset(currentSpot.id);
+    if (!preset) return;
+
+    this.animateCamera(preset.pos, preset.target, currentSpot.duration, () => {
+      if (!this.isTourActive) return;
+
+      const driftStart = performance.now();
+      const originPos = preset.pos.clone();
+      const originTarget = preset.target.clone();
+
+      const runDrift = () => {
+        if (!this.isTourActive) return;
+        const driftElapsed = performance.now() - driftStart;
+        if (driftElapsed < currentSpot.pause) {
+          const t = driftElapsed * 0.0006;
+          this.camera.position.x = originPos.x + Math.sin(t) * 0.6;
+          this.camera.position.y = originPos.y + Math.cos(t * 0.8) * 0.2;
+          if (this.controls) {
+            this.controls.target.x = originTarget.x + Math.sin(t * 0.7) * 0.2;
+            this.controls.update();
+          }
+          this._tourDriftId = requestAnimationFrame(runDrift);
+        } else {
+          this.tourIndex = (this.tourIndex + 1) % this.tourSpots.length;
+          this._runTourStep();
+        }
+      };
+      this._tourDriftId = requestAnimationFrame(runDrift);
+    });
+  }
+
+  stopCinematicTour() {
+    if (!this.isTourActive) return;
+    this.isTourActive = false;
+    if (this._tourDriftId) {
+      cancelAnimationFrame(this._tourDriftId);
+      this._tourDriftId = null;
+    }
+    if (this._camAnimId) {
+      cancelAnimationFrame(this._camAnimId);
+      this._camAnimId = null;
+    }
+    bus.emit('tour:stopped');
+  }
+
+  // ─── Modo 3: Paseo a Pie / Inspección en Primera Persona (1.75m) ──────────────
+
+  startWalkthroughMode(spawnPos = null) {
+    this.stopCinematicTour();
+    this.stopSolarTimelapse();
+
+    this.isWalkthrough = true;
+    if (this.controls) this.controls.enabled = false;
+
+    let startX = -6;
+    let startZ = 12;
+    if (spawnPos) {
+      startX = spawnPos.x;
+      startZ = spawnPos.z;
+    } else if (Math.abs(this.camera.position.x) < 70 && Math.abs(this.camera.position.z) < 70) {
+      startX = this.camera.position.x;
+      startZ = this.camera.position.z;
+    }
+
+    const groundY = this.getTerrainElevation(startX, startZ);
+    this.camera.position.set(startX, groundY + 1.75, startZ);
+
+    const dir = new THREE.Vector3();
+    this.camera.getWorldDirection(dir);
+    this.walkYaw = Math.atan2(-dir.x, -dir.z);
+    this.walkPitch = Math.asin(Math.max(-0.85, Math.min(0.85, dir.y)));
+    this.walkBobTime = 0;
+    this.walkKeys = { forward: false, backward: false, left: false, right: false, sprint: false };
+
+    this._setupWalkthroughListeners();
+    bus.emit('walkthrough:started');
+  }
+
+  _setupWalkthroughListeners() {
+    this._onWalkKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (e.code === 'KeyW' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        this.walkKeys.forward = true;
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (e.code === 'KeyS' || e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        this.walkKeys.backward = true;
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (e.code === 'KeyA' || e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        this.walkKeys.left = true;
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (e.code === 'KeyD' || e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        this.walkKeys.right = true;
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        this.walkKeys.sprint = true;
+        e.stopPropagation();
+      }
+      if (e.key === 'Escape') {
+        this.stopWalkthroughMode();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    this._onWalkKeyUp = (e) => {
+      if (e.code === 'KeyW' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        this.walkKeys.forward = false;
+        e.stopPropagation();
+      }
+      if (e.code === 'KeyS' || e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        this.walkKeys.backward = false;
+        e.stopPropagation();
+      }
+      if (e.code === 'KeyA' || e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        this.walkKeys.left = false;
+        e.stopPropagation();
+      }
+      if (e.code === 'KeyD' || e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        this.walkKeys.right = false;
+        e.stopPropagation();
+      }
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        this.walkKeys.sprint = false;
+        e.stopPropagation();
+      }
+    };
+
+    const dom = this.renderer.domElement;
+    this._walkIsMouseDown = false;
+    this._walkLastMouse = { x: 0, y: 0 };
+
+    this._onWalkMouseDown = (e) => {
+      this._walkIsMouseDown = true;
+      this._walkLastMouse = { x: e.clientX, y: e.clientY };
+    };
+
+    this._onWalkMouseMove = (e) => {
+      if (!this._walkIsMouseDown) return;
+      const dx = e.clientX - this._walkLastMouse.x;
+      const dy = e.clientY - this._walkLastMouse.y;
+      this._walkLastMouse = { x: e.clientX, y: e.clientY };
+
+      this.walkYaw   -= dx * 0.0035;
+      this.walkPitch = Math.max(-1.3, Math.min(1.3, this.walkPitch - dy * 0.0035));
+    };
+
+    this._onWalkMouseUp = () => {
+      this._walkIsMouseDown = false;
+    };
+
+    window.addEventListener('keydown', this._onWalkKeyDown, true);
+    window.addEventListener('keyup', this._onWalkKeyUp, true);
+    dom.addEventListener('pointerdown', this._onWalkMouseDown);
+    window.addEventListener('pointermove', this._onWalkMouseMove);
+    window.addEventListener('pointerup', this._onWalkMouseUp);
+  }
+
+  _removeWalkthroughListeners() {
+    if (this._onWalkKeyDown)   window.removeEventListener('keydown', this._onWalkKeyDown, true);
+    if (this._onWalkKeyUp)     window.removeEventListener('keyup', this._onWalkKeyUp, true);
+    if (this._onWalkMouseDown && this.renderer) this.renderer.domElement.removeEventListener('pointerdown', this._onWalkMouseDown);
+    if (this._onWalkMouseMove) window.removeEventListener('pointermove', this._onWalkMouseMove);
+    if (this._onWalkMouseUp)   window.removeEventListener('pointerup', this._onWalkMouseUp);
+    this._walkIsMouseDown = false;
+  }
+
+  _updateWalkthrough(dt) {
+    let moveX = 0;
+    let moveZ = 0;
+    const forwardX = -Math.sin(this.walkYaw);
+    const forwardZ = -Math.cos(this.walkYaw);
+    const rightX = Math.cos(this.walkYaw);
+    const rightZ = -Math.sin(this.walkYaw);
+
+    if (this.walkKeys.forward)  { moveX += forwardX; moveZ += forwardZ; }
+    if (this.walkKeys.backward) { moveX -= forwardX; moveZ -= forwardZ; }
+    if (this.walkKeys.left)     { moveX -= rightX;   moveZ -= rightZ;   }
+    if (this.walkKeys.right)    { moveX += rightX;   moveZ += rightZ;   }
+
+    const isMoving = (moveX !== 0 || moveZ !== 0);
+    if (isMoving) {
+      const len = Math.hypot(moveX, moveZ);
+      const speed = (this.walkKeys.sprint ? 11.0 : 5.5) * dt;
+      moveX = (moveX / len) * speed;
+      moveZ = (moveZ / len) * speed;
+
+      this.camera.position.x = Math.max(-82, Math.min(82, this.camera.position.x + moveX));
+      this.camera.position.z = Math.max(-82, Math.min(82, this.camera.position.z + moveZ));
+
+      this.walkBobTime += dt * (this.walkKeys.sprint ? 13 : 8.5);
+    } else {
+      this.walkBobTime = 0;
+    }
+
+    const groundY = this.getTerrainElevation(this.camera.position.x, this.camera.position.z);
+    const bob = isMoving ? Math.sin(this.walkBobTime) * 0.04 : 0;
+    this.camera.position.y = groundY + 1.75 + bob;
+
+    const lookDist = 10;
+    const targetX = this.camera.position.x - Math.sin(this.walkYaw) * Math.cos(this.walkPitch) * lookDist;
+    const targetY = this.camera.position.y + Math.sin(this.walkPitch) * lookDist;
+    const targetZ = this.camera.position.z - Math.cos(this.walkYaw) * Math.cos(this.walkPitch) * lookDist;
+    this.camera.lookAt(targetX, targetY, targetZ);
+  }
+
+  stopWalkthroughMode() {
+    if (!this.isWalkthrough) return;
+    this.isWalkthrough = false;
+    this._removeWalkthroughListeners();
+
+    if (this.controls) {
+      this.controls.enabled = true;
+      const dir = new THREE.Vector3();
+      this.camera.getWorldDirection(dir);
+      this.controls.target.copy(this.camera.position).addScaledVector(dir, 12);
+      this.controls.update();
+    }
+    bus.emit('walkthrough:stopped');
+  }
+
+  // ─── Modo 4: Timelapse Solar 24 Horas Acelerado ────────────────────────────────
+
+  startSolarTimelapse(durationMs = 16000) {
+    this.stopCinematicTour();
+    this.isTimelapseActive = true;
+    this.timelapseDuration = durationMs;
+    this.timelapseStartTime = performance.now();
+    bus.emit('timelapse:started');
+  }
+
+  _updateSolarTimelapse() {
+    if (!this.isTimelapseActive) return;
+    const elapsed = performance.now() - this.timelapseStartTime;
+    const progress = (elapsed % this.timelapseDuration) / this.timelapseDuration;
+
+    // Ciclo completo de 24 horas: 05:00 -> 24:00 -> 05:00
+    const hour = (5.0 + progress * 24.0) % 24.0;
+
+    this.updateSunPosition(this.dayOfYear, hour);
+    this.updateMoonPosition(this.dayOfYear, hour);
+
+    bus.emit('timelapse:tick', { hour, day: this.dayOfYear });
+  }
+
+  stopSolarTimelapse() {
+    if (!this.isTimelapseActive) return;
+    this.isTimelapseActive = false;
+    bus.emit('timelapse:stopped');
   }
 
   // ─── Terrain Sculpting Engine (Hacedor de Relieves / Profundidades) ─────────
@@ -1618,41 +1938,7 @@ export class MapManager {
   buildAndesMountainsBackdrop() {
     this.andesGroup = new THREE.Group();
     this.andesGroup.name = 'andesMountainsBackdrop';
-
-    // Cadena montañosa andina en el límite este del horizonte (Nevados de Longaví / Parral)
-    const peakDefs = [
-      { x: 125, z: -80, h: 42, r: 24, name: 'Cerro El Nevado' },
-      { x: 135, z: -40, h: 52, r: 28, name: 'Nevados de Longaví (3.242m)' },
-      { x: 130, z:   0, h: 46, r: 26, name: 'Cordón Los Baños' },
-      { x: 138, z:  45, h: 49, r: 27, name: 'Punta Bullileo' },
-      { x: 128, z:  85, h: 39, r: 22, name: 'Cajón de Digua' }
-    ];
-
-    peakDefs.forEach(p => {
-      // 1. Cuerpo de la montaña (roca granítica oscura)
-      const mountainGeo = new THREE.ConeGeometry(p.r, p.h, 9);
-      const mountainMat = new THREE.MeshStandardMaterial({
-        color: '#334155',
-        roughness: 0.95,
-        flatShading: true
-      });
-      const mountain = new THREE.Mesh(mountainGeo, mountainMat);
-      mountain.position.set(p.x, p.h * 0.45, p.z);
-      this.andesGroup.add(mountain);
-
-      // 2. Casquete de nieve y glaciares andinos
-      const snowGeo = new THREE.ConeGeometry(p.r * 0.45, p.h * 0.35, 9);
-      const snowMat = new THREE.MeshStandardMaterial({
-        color: '#f8fafc',
-        roughness: 0.6,
-        metalness: 0.1,
-        flatShading: true
-      });
-      const snow = new THREE.Mesh(snowGeo, snowMat);
-      snow.position.set(p.x, p.h * 0.82, p.z);
-      this.andesGroup.add(snow);
-    });
-
+    // Cordillera eliminada a petición del usuario para vista limpia del predio
     this.scene.add(this.andesGroup);
   }
 
@@ -1770,93 +2056,6 @@ export class MapManager {
     this.togglePuelcheWind(false);
     this.setFloodLevel(-10.0);
     this.setAquiferStress(false);
-    this.setRainActive(false);
-  }
-
-  /**
-   * Sistema de Precipitación Procedural (Lluvia en Modo Predio)
-   * Crea un volumen de partículas cilíndrico/prismático centrado en el campo de visión.
-   */
-  buildPrecipitationSystem() {
-    this.rainCount = 2800;
-    this.rainGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(this.rainCount * 3);
-    const velocities = new Float32Array(this.rainCount);
-
-    const rangeX = 120;
-    const rangeY = 45;
-    const rangeZ = 120;
-
-    for (let i = 0; i < this.rainCount; i++) {
-      positions[i * 3 + 0] = (Math.random() - 0.5) * rangeX;
-      positions[i * 3 + 1] = Math.random() * rangeY;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * rangeZ;
-      velocities[i] = 0.8 + Math.random() * 0.6; // Velocidad de caída
-    }
-
-    this.rainGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    this.rainVelocities = velocities;
-
-    this.rainMat = new THREE.PointsMaterial({
-      color: 0x93c5fd,
-      size: 0.28,
-      transparent: true,
-      opacity: 0.65,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-
-    this.rainPoints = new THREE.Points(this.rainGeo, this.rainMat);
-    this.rainPoints.visible = false;
-    this.rainActive = false;
-    this.scene.add(this.rainPoints);
-
-    // Animación de caída de lluvia en el loop principal
-    this.addAnimated(this.rainPoints, () => {
-      if (!this.rainPoints.visible || !this.rainActive) return;
-
-      const posAttr = this.rainGeo.attributes.position;
-      const arr = posAttr.array;
-      const count = this.rainCount;
-
-      // Anclar caja de lluvia a la posición actual de la cámara (efecto de inmersión en cámara)
-      const camX = this.camera ? this.camera.position.x : 0;
-      const camZ = this.camera ? this.camera.position.z : 0;
-
-      for (let i = 0; i < count; i++) {
-        // Caída vertical con ligera inclinación por viento
-        arr[i * 3 + 1] -= this.rainVelocities[i];
-
-        // Deriva por viento Maule (dirección ENE)
-        arr[i * 3 + 0] -= 0.08;
-        arr[i * 3 + 2] += 0.05;
-
-        // Reset cuando toca el suelo o se aleja demasiado de la cámara
-        if (arr[i * 3 + 1] < 0) {
-          arr[i * 3 + 1] = 45 + Math.random() * 5;
-          arr[i * 3 + 0] = camX + (Math.random() - 0.5) * 120;
-          arr[i * 3 + 2] = camZ + (Math.random() - 0.5) * 120;
-        }
-      }
-      posAttr.needsUpdate = true;
-    });
-  }
-
-  setRainActive(active) {
-    this.rainActive = !!active;
-    if (this.rainPoints) {
-      this.rainPoints.visible = this.rainActive;
-    }
-  }
-
-  onWeatherUpdated(wx) {
-    if (!wx) return;
-    // Si hay lluvia en el pronóstico actual (> 0 mm) o condición de lluvia
-    const isRaining = (wx.rain_1h_mm && wx.rain_1h_mm > 0) || 
-                      (wx.conditionCode && (wx.conditionCode.toLowerCase().includes('rain') || wx.conditionCode.toLowerCase().includes('drizzle')));
-    if (isRaining && !this.rainActive) {
-      this.setRainActive(true);
-    }
   }
 
   onWindowResize() {
@@ -1871,51 +2070,14 @@ export class MapManager {
   }
 
   /**
-   * Sets multispectral & topographic layers on terrain:
-   * 'pbr' | 'ndvi' | 'dem' | 'ndwi' | 'nbr'
-   * @param {string} mode 
-   */
-  setSpectralLayerMode(mode) {
-    if (this.terrainMoistureUniforms) {
-      BiophysicalTerrainShader.setLayerMode(this.terrainMoistureUniforms, mode);
-
-      // Asegurar que groundMesh tenga asignado groundCiv6Mat (posee el shader multispectral)
-      if (this.groundMesh) {
-        if (mode === 'pbr') {
-          // Si el modo original era satélite o relieve, restaurarlo; sino mantener Civ6 PBR
-          if (this.currentMode === 'satellite') {
-            this.groundMesh.material = this.groundSatMat;
-          } else if (this.currentMode === 'relief' || this.currentMode === 'dem') {
-            this.groundMesh.material = this.groundReliefMat;
-          } else {
-            this.groundMesh.material = this.groundCiv6Mat;
-          }
-        } else {
-          // Si se activa cualquier capa espectral (NDVI, DEM, NDWI, NBR), activar material con shader
-          this.groundMesh.material = this.groundCiv6Mat;
-        }
-      }
-
-      // Mostrar u ocultar leyenda espectral flotante en la UI si existe
-      bus.emit('spectral:mode_changed', { mode });
-
-      const labels = {
-        pbr: '🌱 Capa Biofísica de Suelo PBR',
-        ndvi: '🛰️ Capa Satelital NDVI (Sentinel-2 Vigor)',
-        dem: '🏔️ Capa Topográfica DEM & Curvas de Nivel',
-        ndwi: '💧 Capa Hídrica NDWI (Humedad & Drenaje)',
-        nbr: '🔥 Capa NBR / Biomasa Forestal (Combustible)'
-      };
-      bus.emit('ui:show_toast', labels[mode] || `🛰️ Modo Espectral: ${mode.toUpperCase()}`);
-    }
-  }
-
-  /**
    * Toggles scientific Sentinel-2 NDVI multispectral layer on terrain.
    * @param {boolean} active 
    */
   setNdviMode(active) {
-    this.setSpectralLayerMode(active ? 'ndvi' : 'pbr');
+    if (this.terrainMoistureUniforms) {
+      BiophysicalTerrainShader.setNdviMode(this.terrainMoistureUniforms, active);
+      bus.emit('ui:show_toast', active ? '🛰️ Capa Satelital NDVI (Sentinel-2) Activada' : '🌱 Capa Biofísica de Suelo PBR Activada');
+    }
   }
 
   // ─── Render Loop ──────────────────────────────────────────────────────────────
@@ -1923,22 +2085,22 @@ export class MapManager {
   animate(time = 0) {
     requestAnimationFrame((t) => this.animate(t));
 
-    if (this.controls) this.controls.update();
+    // Update Walkthrough or OrbitControls
+    if (this.isWalkthrough) {
+      this._updateWalkthrough(0.016);
+    } else if (this.controls) {
+      this.controls.update();
+    }
+
+    // Update Solar Timelapse if active
+    if (this.isTimelapseActive) {
+      this._updateSolarTimelapse();
+    }
 
     // Animate water shimmer & biophysical shader time
     this._animateWater(time);
     if (this.terrainMoistureUniforms) {
       BiophysicalTerrainShader.updateTime(this.terrainMoistureUniforms, 0.016);
-    }
-
-    // Animate geomorphic wind vector particles (Windy style)
-    if (this.geomorphicManager) {
-      if (typeof this.geomorphicManager.updateWindParticles === 'function') {
-        this.geomorphicManager.updateWindParticles(0.016);
-      }
-      if (typeof this.geomorphicManager.updateRunoffParticles === 'function') {
-        this.geomorphicManager.updateRunoffParticles(0.016);
-      }
     }
 
     // Animate procedural foliage wind sway

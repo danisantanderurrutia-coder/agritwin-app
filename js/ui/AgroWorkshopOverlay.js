@@ -14,326 +14,15 @@
 import { bus } from '../utils/EventBus.js';
 import { propertyRegistryManager, CHILEAN_LAND_LEGAL_FRAMEWORK } from '../data/PropertyRegistryManager.js';
 import { actuatorManager } from '../data/ActuatorManager.js';
+if (typeof window !== 'undefined') {
+  window.propertyRegistryManager = propertyRegistryManager;
+}
 import { weatherService } from '../data/WeatherService.js';
 import { AdminPanelViews } from './workshop/AdminPanelViews.js';
 import { FieldEnclosureModal } from './workshop/FieldEnclosureModal.js';
 
-export const MAULE_SENSORS_CONFIG = {
-  frost: {
-    id: 'frost',
-    sensorId: 'IOT-FROST-01',
-    name: 'Nodos de Helada a Altura de Fruta (1.2m)',
-    icon: '❄️',
-    badge: 'Prioridad Crítica • Maule Sur',
-    color: '#38bdf8',
-    hardware: 'Nodo LoRaWAN Ultra-Low-Power (ESP32-C3) + SHT45 a 1.2m (BOM ref: USD 25-40)',
-    locationNote: 'Hondonadas bajas del predio donde drena y se acumula el aire frío katabático',
-    targetCrop: 'Cerezo Lapins / Santina, Manzano, Kiwi y Vid Vinífera',
-    toolName: 'Calculadora Psicrométrica de Bulbo Húmedo & Inversión Térmica',
-    toolDesc: 'Calcula en tiempo real la temperatura de bulbo húmedo (Twb) y la contrasta con el abrigo meteorológico estándar a 2 metros. Distingue helada radiativa pura (calma térmica) de helada advectiva (con viento) para guiar la decisión de aspersión antihelada.',
-    recommendation: '⚠️ NO ENCENDER RIEGO ANTIHELADA: T. Fruta es -0.8°C pero la temperatura de bulbo húmedo es -1.5°C (< -0.5°C). Aplicar aspersión con bulbo bajo provocará evaporación y congelamiento destructivo por calor latente negativo. Utilizar calefactores o ventiladores de inversión.',
-    economicImpact: 'Protección de cosecha: $14.500.000 CLP estimados en riesgo de pérdida por cuartel.',
-    chartTitle: 'Curva Térmica Altura Fruta (1.2m) vs. Abrigo Oficial (2m) & Bulbo Húmedo',
-    chartLabels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00'],
-    dataset1: [3.8, 2.5, 1.2, 0.2, -0.4, -0.8, 1.4],
-    label1: 'T. Altura Fruta 1.2m (°C)',
-    dataset2: [5.6, 4.8, 4.0, 3.4, 2.8, 2.4, 3.8],
-    label2: 'T. Abrigo Oficial 2m (°C)'
-  },
-  leaf: {
-    id: 'leaf',
-    sensorId: 'IOT-LEAF-01',
-    name: 'Sensor de Mojamiento Foliar (PHYTOS-31)',
-    icon: '🍃',
-    badge: 'Prioridad Crítica • Control Hongos',
-    color: '#84cc16',
-    hardware: 'Sensor Dieléctrico de Resistencia de Superficie Foliar PHYTOS-31 + LoRaWAN',
-    locationNote: 'Canopia foliar en cuarteles de parrón (cepa País) y huerto de arándanos',
-    targetCrop: 'Vid vinífera (Botritis y Oídio), Arándano y Manzano (Venturia)',
-    toolName: 'Modelo Epidemiológico de Mills (Infección por Horas de Hoja Mojada)',
-    toolDesc: 'Modela el riesgo de germinación y penetración de esporas fúngicas según horas continuas de agua líquida sobre la cutícula foliar cruzado con temperaturas óptimas (15-22°C).',
-    recommendation: '🍄 GATILLAR APLICACIÓN DE BOTRICIDA: 11.5 horas acumuladas de mojamiento a 17.2°C superan el umbral letal de infección. Suspender calendario fijo. Aplicar fungicida específico hoy en ventana sin viento de 16:30 a 19:00 h.',
-    economicImpact: 'Ahorro de $380.000 CLP/ha al sustituir 2 aplicaciones ciegas por pulverizaciones gatilladas por riesgo real.',
-    chartTitle: 'Horas Continuas de Hoja Mojada & Curva de Riesgo Botrytis Mills (%)',
-    chartLabels: ['10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '00:00'],
-    dataset1: [1.5, 3.5, 5.5, 7.5, 9.5, 11.5, 12.0, 10.5],
-    label1: 'Horas Mojamiento Continuo (h)',
-    dataset2: [15, 28, 42, 60, 75, 82, 85, 80],
-    label2: 'Riesgo Botrytis Mills (%)'
-  },
-  flow: {
-    id: 'flow',
-    sensorId: 'IOT-FLOW-01',
-    name: 'Caudalímetro Telemétrico DGA & Control Turno de Canal',
-    icon: '🚰',
-    badge: 'Prioridad Alta • Cumplimiento Normativo',
-    color: '#0284c7',
-    hardware: 'Caudalímetro Electromagnético DN100 + Datalogger 4G LTE-M (Norma MEE DGA Res. 1238)',
-    locationNote: 'Cabezal de bombeo pozo profundo y matriz de compuerta de canal',
-    targetCrop: 'Todos los cuarteles bajo riego tecnificado y gravitacional',
-    toolName: 'Calculador de Agotamiento de Suelo vs. Turno de Canal',
-    toolDesc: 'Resuelve la pregunta clave del productor del Maule: no es cuándo regar sino cuánto aplicar en el turno y si la reserva del perfil alcanza hasta el siguiente turno de canal.',
-    recommendation: '💧 DECISIÓN TURNO DE CANAL: La reserva del perfil aguanta 4.2 días. El turno del canal llega en 4 días (Martes 08:00 h). NO ENCENDER BOMBA DE POZO; aplicar 32 mm (1.150 m³) durante el turno para recargar perfil por gravedad.',
-    economicImpact: 'Ahorro eléctrico de $112.000 CLP en bombeo de pozo + transmisión DGA MEE al día.',
-    chartTitle: 'Lámina Útil de Suelo (mm) vs. Turno del Canal de Regadío',
-    chartLabels: ['Día 1', 'Día 2', 'Día 3', 'Día 4 (Turno)', 'Día 5', 'Día 6', 'Día 7'],
-    dataset1: [48, 40, 32, 24, 52, 45, 38],
-    label1: 'Lámina Útil Suelo (mm)',
-    dataset2: [22, 22, 22, 22, 22, 22, 22],
-    label2: 'Umbral Crítico de Reposición (mm)'
-  },
-  wx: {
-    id: 'wx',
-    sensorId: 'IOT-WX-01',
-    name: 'Estación Central de Microzona (Compartida)',
-    icon: '🌤️',
-    badge: 'Prioridad Crítica • Red 20-40 Productores',
-    color: '#f59e0b',
-    hardware: 'Torre Meteorológica Profesional OMM + Gateway LoRaWAN industrial (USD 1.500 compartido en red)',
-    locationNote: 'Punto central de la microzona (cubre 5 a 15 km de radio según topografía)',
-    targetCrop: 'Red territorial de productores asociados (Cereza, Vid, Berries)',
-    toolName: 'Matriz de Ventana Fitosanitaria & Semáforo de Partidura (Cracking 72h)',
-    toolDesc: 'Calcula ETo diaria Penman-Monteith, ventanas horarias de viento (<10 km/h) para pulverización fitosanitaria sin deriva y pronóstico de lluvia a 72h para cerezas.',
-    recommendation: '🚜 VENTANA FITOSANITARIA ACTIVA: Aplicar entre 07:30 y 10:45 h (viento 5.2 km/h ENE, sin deriva). Suspender al mediodía por viento Puelche > 22 km/h. Monitorear lluvia pronosticada a 72h para cuartel cerezo Lapins.',
-    economicImpact: 'Cero deriva a predios vecinos + 100% de eficacia fitosanitaria del producto aplicado.',
-    chartTitle: 'Velocidad de Viento Diurna (km/h) & Límite Máximo de Deriva',
-    chartLabels: ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
-    dataset1: [3.5, 5.2, 7.8, 16.5, 22.4, 24.8, 18.0, 8.5],
-    label1: 'Velocidad de Viento (km/h)',
-    dataset2: [10, 10, 10, 10, 10, 10, 10, 10],
-    label2: 'Límite Máximo Seguro Deriva (10 km/h)'
-  },
-  soil: {
-    id: 'soil',
-    sensorId: 'IOT-SN-01',
-    name: 'Sonda FDR Suelo Calibrada (Multi-Estrato)',
-    icon: '🌱',
-    badge: 'Prioridad Media • Riego Tecnificado',
-    color: '#10b981',
-    hardware: 'Sonda FDR Capacitiva Multinivel (20, 40, 60, 100 cm) + Calibración Franco-Arcilloso Maule',
-    locationNote: 'Bulbo de riego bajo gotero en cuartel representativo',
-    targetCrop: 'Cerezo y Viñedos bajo riego localizado',
-    toolName: 'Inspector de Bulbo Radicular & Curva de Calibración Textural',
-    toolDesc: 'Corrige la trampa de la calibración deficiente (+/-10% de error volumétrico sin calibrar). Modela el contenido hídrico volumétrico real en suelo franco-arcilloso del Maule.',
-    recommendation: '🌱 ESTRATO RADICULAR EN ESTADO ÓPTIMO: Estrato 20-60cm retiene 36.5% de humedad. No sobre-regar para evitar asfixia radicular en estratos arcillosos profundos.',
-    economicImpact: 'Ahorro de 18% en consumo de agua y energía de riego sin mermar calibre.',
-    chartTitle: 'Humedad Volumétrica por Estrato Radicular (%)',
-    chartLabels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-    dataset1: [28, 26, 25, 42, 38, 35, 33],
-    label1: 'Estrato 0-20cm Superficie (%)',
-    dataset2: [38, 37, 36, 44, 42, 40, 39],
-    label2: 'Estrato 20-60cm Raíz Activa (%)'
-  }
-};
-
-export const WORKSHOP_STATIONS_DATA = [
-  {
-    id: 'station_a',
-    code: 'OBJ-A',
-    title: 'Manual & Documentación Biofísica',
-    shortTitle: 'Libreta Biofísica',
-    category: 'Modelos Biofísicos',
-    badge: 'FAO-56 / Penman',
-    metric: 'FAO-56 • Penman ETc',
-    spriteSrc: 'assets/ui/sprite_a_clipboard.png',
-    position: { top: '22%', left: '6.5%', width: '9.5%' },
-    hangClass: 'sprite-a',
-    description: 'Documentación técnica de algoritmos biofísicos: evapotranspiración real Penman-Monteith, balance hídrico en 3 estratos radiculares y modelo DEM de acumulación katabática de aire frío.',
-    tools: [
-      'FAO-56 Penman-Monteith (ETc = ETo × Kc)',
-      'Balance Hídrico en 3 Estratos (0-20, 20-60, 60-100cm)',
-      'Modelo DEM de Drenaje Katabático de Heladas',
-      'Catálogo Taxonómico Botánico de Cultivos & Nativos'
-    ],
-    chartData: {
-      labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
-      dataset1: [36, 34, 32, 33, 41, 39, 37, 36],
-      dataset2: [28, 27, 26, 28, 35, 34, 31, 29],
-      label1: 'Estrato 1 (0-20 cm) %',
-      label2: 'Estrato 2 (20-60 cm) %'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openAdminPanelWithTab('predios');
-    }
-  },
-  {
-    id: 'station_b',
-    code: 'RED-MAULE-IOT',
-    title: 'Red de Sensores Maule & Telemetría IoT',
-    shortTitle: 'Red Sensores Maule',
-    category: 'Hardware & Microclima Compartido',
-    badge: 'Heladas • Mojamiento • Turnos • DGA',
-    metric: '5 Nodos • Mills Botrytis',
-    spriteSrc: 'assets/ui/sprite_b_iot_board.png',
-    position: { top: '23%', left: '19.5%', width: '10.5%' },
-    hangClass: 'sprite-b',
-    description: 'Centro de mando de la Red de Sensores de Pequeños y Medianos Agricultores de la Región del Maule: monitoreo térmico a altura de fruta contra heladas de primavera, modelos de mojamiento foliar para control de botritis, caudalímetros con transmisión DGA (MEE) y cálculo de balance para turnos de canal.',
-    tools: [
-      'Nodos de Helada a Altura de Fruta (Bulbo Húmedo & Inversión Katabática)',
-      'Sensor de Mojamiento Foliar PHYTOS-31 (Modelo Mills para Botrytis)',
-      'Estación Microzonal Compartida (Ventana Fitosanitaria & Cracking)',
-      'Caudalímetro MEE DGA Res. 1238 & Planificador de Turno de Canal',
-      'Sondas FDR Multi-Estrato Calibradas a Suelo Franco-Arcilloso'
-    ],
-    chartData: {
-      labels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00'],
-      dataset1: [4.2, 3.1, 1.8, 0.4, -0.2, -0.8, 1.2],
-      dataset2: [6.0, 5.2, 4.4, 3.8, 3.0, 2.4, 3.5],
-      label1: 'Temp. Altura Fruta 1.2m (°C)',
-      label2: 'Temp. Abrigo Oficial 2m (°C)'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openStationModal('station_b');
-    }
-  },
-  {
-    id: 'station_c',
-    code: 'OBJ-C',
-    title: 'Visor Predial 3D / AgroTwin',
-    shortTitle: 'Mesa de Planos 3D',
-    category: 'Motor Gráfico WebGL',
-    badge: 'Three.js / PBR',
-    metric: '60 FPS • PBR Shaders',
-    spriteSrc: 'assets/ui/sprite_c_monitor.png',
-    position: { top: '56%', left: '50.5%', width: '13%' },
-    hangClass: 'sprite-c',
-    description: 'Centro de mando táctico del gemelo digital: relieve topográfico DEM dinámico, textura de suelo PBR con surcos normales, iluminación solar diurna y parcelas extruidas estilo Civ VI.',
-    tools: [
-      'Motor 3D Three.js r128 (PBR Shaders)',
-      'Capas de Suelo, NDVI & Esri World Imagery',
-      'Vegetación Instanciada (Single-Draw-Call)',
-      'Simulador Solar Diurno & Hora Dorada'
-    ],
-    chartData: {
-      labels: ['Cuartel A', 'Cuartel B', 'Cuartel C', 'Cuartel D', 'Borde Estero'],
-      dataset1: [0.78, 0.82, 0.65, 0.71, 0.89],
-      dataset2: [12.4, 8.6, 14.1, 9.8, 5.2],
-      label1: 'Índice Vigor NDVI',
-      label2: 'Área Cuartel (ha)'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openAdminPanelWithTab('visor3d');
-    }
-  },
-  {
-    id: 'station_map',
-    code: 'REGISTRO-PREDIAL',
-    title: 'Registro de Límites Prediales & Régimen Jurídico',
-    shortTitle: 'Registros de Límites',
-    category: 'Régimen Jurídico & Deslindes',
-    badge: 'Rol SII • CBR • DL 3516 • IFC • Bóveda',
-    metric: 'Rol 144-01 • CBR 100%',
-    spriteSrc: 'assets/ui/sprite_map_vecinal.png',
-    position: { top: '54%', left: '68%', width: '13%' },
-    hangClass: 'sprite-map',
-    description: 'Bóveda técnica y jurídica del predio: títulos de propiedad inscritos en el Conservador de Bienes Raíces (CBR), Rol de Avalúo SII, deslindes catastrales, régimen normativo de uso de suelo (DL 3516, IFC Art. 55 LGUC, DGA Aguas, CONAF Bosque Nativo) y gestor documental local persistente para escrituras y certificados.',
-    tools: [
-      'Inscripción de Dominio CBR & Rol de Avalúo Fiscal SII',
-      'Deslindes Catastrales Cardinales (Norte, Sur, Este, Oeste)',
-      'Régimen de Suelo: DL 3516 (5.000m²) & Art. 55 LGUC (IFC)',
-      'Derechos de Agua (CBR & Catastro Público DGA Ley 21.435)',
-      'Bóveda Documental Persistente (Carga de Archivos .pdf/.dwg)',
-      'Mosaico Territorial Vecinal & Acople al Visor 3D'
-    ],
-    chartData: {
-      labels: ['Fundo Meniels (12.8ha)', 'Forestal Los Pinos (140ha)', 'Viña Santa Elena (35.2ha)', 'Parcela Don Pedro (18ha)', 'Reserva Los Boldos (62ha)'],
-      dataset1: [100, 100, 85, 70, 100],
-      dataset2: [12.8, 140.0, 35.2, 18.0, 62.0],
-      label1: 'Conformidad Legal & CBR %',
-      label2: 'Superficie Total (ha)'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openAdminPanelWithTab('map');
-    }
-  },
-  {
-    id: 'station_d',
-    code: 'OBJ-D',
-    title: 'Histórico ESG / MRV Ledger',
-    shortTitle: 'Libro de Registros ESG',
-    category: 'Certificación & Carbono',
-    badge: 'Cero Deforestación',
-    metric: '4.8 tCO2e/ha • EUDR 100%',
-    spriteSrc: 'assets/ui/sprite_d_esg_book.png',
-    position: { top: '69%', left: '33%', width: '10.5%' },
-    hangClass: 'sprite-d',
-    description: 'Libro maestro de auditoría ambiental: pasaporte digital de trazabilidad, secuestro de carbono tCO2e/ha certificado con hash criptográfico MRV y cumplimiento EUDR 100% Cero Deforestación.',
-    tools: [
-      'Balance de Carbono (4.8 tCO2e/ha secuestradas)',
-      'EUDR Cero Deforestación (Línea base Sentinel-2 2020)',
-      'Índice de Integridad Ecológica (IEI: 0.88)',
-      'Hash Criptográfico MRV: 0x8f2d4a19c6e'
-    ],
-    chartData: {
-      labels: ['2020', '2021', '2022', '2023', '2024', '2025 (Prev)'],
-      dataset1: [1.8, 2.4, 3.1, 3.9, 4.8, 5.6],
-      dataset2: [0.65, 0.70, 0.76, 0.82, 0.88, 0.92],
-      label1: 'Carbono Secuestrado (tCO2e/ha)',
-      label2: 'Índice Integridad IEI'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openAdminPanelWithTab('vault');
-    }
-  },
-  {
-    id: 'station_e',
-    code: 'OBJ-E',
-    title: 'Red Territorial & APRs',
-    shortTitle: 'Radio & Pizarra Comunal',
-    category: 'Comunidad B2G',
-    badge: 'Acuíferos & FWI',
-    metric: 'FWI 24 • 1.420 Familias',
-    spriteSrc: 'assets/ui/sprite_e_radio.png',
-    position: { top: '44%', left: '36%', width: '11%' },
-    hangClass: 'sprite-e',
-    description: 'Estación de enlace territorial: semáforo de recarga de acuíferos para Comités de Agua Potable Rural (APR), índice de riesgo de incendios FWI y cálculo de camiones aljibe evitados.',
-    tools: [
-      'Semáforo de Acuíferos & Pozos Comunitarios',
-      'Índice de Incendios Forestales FWI & Combustible',
-      'Planificación de Cortafuegos Preventivos (14.2 km)',
-      'Monitoreo Social B2G: 1,420 Familias Abastecidas'
-    ],
-    chartData: {
-      labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-      dataset1: [18, 24, 38, 45, 52, 42, 28],
-      dataset2: [72, 70, 68, 65, 63, 62, 64],
-      label1: 'Índice FWI Piro-Riesgo',
-      label2: 'Nivel Freático Acuífero (%)'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openAdminPanelWithTab('territorial');
-    }
-  },
-  {
-    id: 'station_f',
-    code: 'OBJ-F',
-    title: 'Ajustes del Sistema & Telemetría',
-    shortTitle: 'Caja de Herramientas',
-    category: 'Configuración & APIs',
-    badge: 'Webhooks / n8n',
-    metric: 'n8n Cloud • Bloom On',
-    spriteSrc: 'assets/ui/sprite_f_toolbox.png',
-    position: { top: '68%', left: '10%', width: '12%' },
-    hangClass: 'sprite-f',
-    description: 'Caja de herramientas técnicas: inspección de shaders GLSL en vivo, calibración de post-procesamiento UnrealBloom, configuración de webhooks n8n y despacho de alertas autónomas a WhatsApp Business.',
-    tools: [
-      'Inspector Técnico 3D (FPS, Shaders, Memoria)',
-      'Webhooks n8n & WhatsApp Cloud API',
-      'Velocidad de Simulación Temporal (1x, 2x, 5x)',
-      'Parámetros Globales & Protocolos de Calibración'
-    ],
-    chartData: {
-      labels: ['Draw Calls', 'Triángulos (k)', 'Texturas (MB)', 'Shader Passes', 'FPS'],
-      dataset1: [4, 48, 32, 6, 60],
-      dataset2: [12, 120, 96, 10, 30],
-      label1: 'Métricas Actuales',
-      label2: 'Umbral Máximo Seguro'
-    },
-    action: (app, overlay) => {
-      if (overlay) overlay.openAdminPanelWithTab('scripts');
-    }
-  }
-];
+import { MAULE_SENSORS_CONFIG, WORKSHOP_STATIONS_DATA } from '../data/MauleSensorsConfig.js';
+export { MAULE_SENSORS_CONFIG, WORKSHOP_STATIONS_DATA };
 
 // ─── Procedural Audio Engine (Silenciado Total por instrucción de usuario) ────
 class WorkshopAudioEngine {
@@ -455,7 +144,7 @@ export class AgroWorkshopOverlay {
               </div>
 
               <!-- Botón Principal Único: Entrar al Fundo en Modo Predio 3D -->
-              <div style="margin-bottom: 18px;">
+              <div style="margin-bottom: 10px;">
                 <button id="btnBoardLaunchPredio3D" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-radius: 14px; background: linear-gradient(135deg, #f59e0b, #d97706); border: 1.5px solid rgba(251, 191, 36, 0.6); cursor: pointer; text-align: left; transition: all 0.2s; box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 22px rgba(245, 158, 11, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 18px rgba(245, 158, 11, 0.35)'">
                   <div style="display: flex; align-items: center; gap: 14px;">
                     <span style="font-size: 26px;">🌾</span>
@@ -465,6 +154,20 @@ export class AgroWorkshopOverlay {
                     </div>
                   </div>
                   <span style="font-weight: 800; color: #1e1103; font-size: 18px;">▶</span>
+                </button>
+              </div>
+
+              <!-- Botón Estratégico de Permacultura en Landing -->
+              <div style="margin-bottom: 16px;">
+                <button id="btnBoardStrategicPermaculture" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(16, 185, 129, 0.5); cursor: pointer; text-align: left; transition: all 0.2s; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);" onmouseover="this.style.background='rgba(16, 185, 129, 0.25)'; this.style.borderColor='#34d399';" onmouseout="this.style.background='rgba(16, 185, 129, 0.15)'; this.style.borderColor='rgba(16, 185, 129, 0.5)';">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 20px;">📜</span>
+                    <div>
+                      <div style="font-weight: 800; font-size: 13px; color: #a7f3d0; font-family: 'Plus Jakarta Sans', sans-serif;">Plan Maestro & Estratégico de Permacultura</div>
+                      <div style="font-size: 10.5px; color: #6ee7b7; font-family: 'JetBrains Mono', monospace;">Curva de Retorno a 5 Años • Zonas 0 a 5 Mollison • Cero Químicos</div>
+                    </div>
+                  </div>
+                  <span style="font-weight: 800; color: #34d399; font-size: 16px;">▶</span>
                 </button>
               </div>
 
@@ -957,9 +660,12 @@ export class AgroWorkshopOverlay {
       bus.emit('ui:show_toast', '🌧️ Alternando simulación 3D de precipitaciones procedurales.');
     };
 
-    // Abrir/cerrar con tecla W o Escape
+    // Abrir/cerrar con tecla W o Escape (ignorar si el usuario camina en 3D)
     window.addEventListener('keydown', (e) => {
       if (e.key === 'w' || e.key === 'W') {
+        if (window.__agritwin_app?.mapManager?.isWalkthrough || window.agriTwinApp?.mapManager?.isWalkthrough) {
+          return;
+        }
         if (!e.target.matches('input, textarea')) {
           this.toggle();
         }
@@ -1195,6 +901,38 @@ export class AgroWorkshopOverlay {
       btnAdminOpenPropStation.addEventListener('click', () => {
         const st = WORKSHOP_STATIONS_DATA.find(s => s.id === 'station_map');
         if (st) this.openStationModal(st);
+      });
+    }
+
+    const btnBoardStrat = document.getElementById('btnBoardStrategicPermaculture');
+    if (btnBoardStrat) {
+      btnBoardStrat.addEventListener('click', () => {
+        this.openStrategicPermacultureModal();
+      });
+    }
+
+    const btnJumpMapFromStrat = document.getElementById('btnJumpMapFromStrategic');
+    if (btnJumpMapFromStrat) {
+      btnJumpMapFromStrat.addEventListener('click', () => {
+        this.close();
+        if (this.app?.mapManager?.flyToPreset) {
+          this.app.mapManager.flyToPreset('overview');
+        }
+        if (this.app?.objectPlacementManager?.openDock) {
+          setTimeout(() => this.app.objectPlacementManager.openDock(), 300);
+        }
+      });
+    }
+
+    const btnOpenDossierPredios = document.getElementById('btnOpenDossierFromPredios');
+    if (btnOpenDossierPredios) {
+      btnOpenDossierPredios.addEventListener('click', () => {
+        if (typeof window.openDossierPlanMaestroModal === 'function') {
+          window.openDossierPlanMaestroModal();
+        } else {
+          const dModal = document.getElementById('dossierPlanMaestroModal');
+          if (dModal) dModal.style.display = 'flex';
+        }
       });
     }
 
@@ -1665,6 +1403,10 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
   }
 
   openAdminPanelWithTab(tabId) {
+    if (this.overlayEl) {
+      this.overlayEl.style.display = 'flex';
+      this.overlayEl.classList.add('active');
+    }
     this.showAdminPanel = true;
     this.activeAdminTab = tabId || 'sensors';
     this.activeModalStation = null;
@@ -1690,7 +1432,10 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
       this.render();
       return;
     }
-    if (id === 'station_a') this.openAdminPanelWithTab('predios');
+    if (id === 'station_a') {
+      this.openStrategicPermacultureModal();
+      return;
+    }
     else if (id === 'station_c') this.openAdminPanelWithTab('visor3d');
     else if (id === 'station_map') this.openAdminPanelWithTab('map');
     else if (id === 'station_d') this.openAdminPanelWithTab('vault');
@@ -1732,13 +1477,13 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
       cColor2 = '#fbbf24';
     } else if (this.activeAdminTab === 'predios') {
       const st = WORKSHOP_STATIONS_DATA.find(s => s.id === 'station_a');
-      cLabels = st?.chartData?.labels || ['00:00', '06:00', '12:00', '18:00'];
-      cDataset1 = st?.chartData?.dataset1 || [36, 32, 41, 37];
-      cDataset2 = st?.chartData?.dataset2 || [28, 26, 35, 31];
-      cLabel1 = st?.chartData?.label1 || 'Estrato 1 (0-20 cm) %';
-      cLabel2 = st?.chartData?.label2 || 'Estrato 2 (20-60 cm) %';
+      cLabels = st?.chartData?.labels || ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'];
+      cDataset1 = st?.chartData?.dataset1 || [18, 38, 64, 85, 96];
+      cDataset2 = st?.chartData?.dataset2 || [25, 48, 72, 89, 98];
+      cLabel1 = st?.chartData?.label1 || 'Regeneración Suelo Vivo (%)';
+      cLabel2 = st?.chartData?.label2 || 'Independencia de Insumos (%)';
       cColor1 = '#10b981';
-      cColor2 = '#38bdf8';
+      cColor2 = '#fbbf24';
     } else if (this.activeAdminTab === 'visor3d') {
       const st = WORKSHOP_STATIONS_DATA.find(s => s.id === 'station_c');
       cLabels = st?.chartData?.labels || ['Cuartel A', 'Cuartel B', 'Cuartel C', 'Cuartel D', 'Borde Estero'];
@@ -1972,6 +1717,8 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
       this.overlayEl.classList.add('active');
       this.showCampaignBoard = true;
       this.render();
+      const floatBar = document.getElementById('floatingPlanMaestroBar');
+      if (floatBar) floatBar.style.display = 'none';
       if (playSound) this.audio?.playBellGong();
     }
   }
@@ -1982,10 +1729,280 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
       this.overlayEl.classList.remove('active');
       this.overlayEl.style.display = 'none';
       this.closeStationModal();
+      const floatBar = document.getElementById('floatingPlanMaestroBar');
+      if (floatBar) floatBar.style.display = 'flex';
+      if (this.app?.ui?.expandDrawer) {
+        this.app.ui.expandDrawer();
+      }
       if (this.app?.mapManager?.onWindowResize) {
         setTimeout(() => this.app.mapManager.onWindowResize(), 50);
       }
     }
+  }
+
+  openStrategicPermacultureModal() {
+    const existing = document.getElementById('strategicPermacultureModal');
+    if (existing) existing.remove();
+
+    const placedObjs = this.app?.objectPlacementManager?.placedObjects || [];
+    const countZ0 = placedObjs.filter(o => o.mollisonZone === 0).length;
+    const countZ1 = placedObjs.filter(o => o.mollisonZone === 1).length;
+    const countZ2 = placedObjs.filter(o => o.mollisonZone === 2).length;
+    const countZ3 = placedObjs.filter(o => o.mollisonZone === 3).length;
+    const countZ4 = placedObjs.filter(o => o.mollisonZone === 4).length;
+    const countZ5 = placedObjs.filter(o => o.mollisonZone === 5).length;
+
+    let totalCapex = 0;
+    placedObjs.forEach(o => totalCapex += (Number(o.costClp) || 0));
+
+    const modal = document.createElement('div');
+    modal.id = 'strategicPermacultureModal';
+    modal.className = 'modal-overlay glass-modal-backdrop';
+    modal.style.cssText = 'display: flex; z-index: 100005; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(14px); align-items: center; justify-content: center; padding: 16px;';
+
+    modal.innerHTML = `
+      <div style="background: linear-gradient(180deg, #24140b 0%, #150a04 100%); border: 2px solid #b45309; border-radius: 16px; max-width: 860px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.25); font-family: 'Plus Jakarta Sans', sans-serif;">
+        <!-- Header AoE3 Estilo Madera & Latón -->
+        <div style="padding: 16px 22px; background: #1c0e07; border-bottom: 2px solid #78350f; display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #120803; border: 1.5px solid #d97706; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+              📜
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 800; color: #fbbf24; background: #451a03; padding: 2px 8px; border-radius: 4px; border: 1px solid #92400e;">
+                  OBJ-A • PLAN MAESTRO
+                </span>
+                <strong style="color: #ffffff; font-size: 15px; font-family: Georgia, serif; letter-spacing: 0.02em;">
+                  Plan Maestro & Estratégico de Permacultura
+                </strong>
+              </div>
+              <div style="font-size: 11px; color: #d6c4a8; margin-top: 2px;">
+                Fundo Estero Colliguay (12.8 ha) • Retorno Agroecológico & Zonas 0-5 de Bill Mollison
+              </div>
+            </div>
+          </div>
+          <button id="btnCloseStrategicPermaculture" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); width: 32px; height: 32px; border-radius: 8px; font-size: 20px; color: #cbd5e1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color='white'; this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#cbd5e1'; this.style.background='rgba(255,255,255,0.08)'">&times;</button>
+        </div>
+
+        <!-- Body con Scroll -->
+        <div style="padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; color: #e6ccb2;">
+          
+          <!-- 4 KPIs Estratégicos -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-family: 'JetBrains Mono', monospace;">
+            <div style="background: #140803; border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px; border-radius: 10px; text-align: center;">
+              <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Suelo Vivo Acumulado</span>
+              <strong style="color: #4ade80; font-size: 15px;">+340%</strong>
+              <div style="color: #94a3b8; font-size: 9px; margin-top: 3px;">Materia orgánica & hongos</div>
+            </div>
+            <div style="background: #140803; border: 1px solid rgba(56, 189, 248, 0.4); padding: 10px; border-radius: 10px; text-align: center;">
+              <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Cosecha Hídrica Keyline</span>
+              <strong style="color: #38bdf8; font-size: 15px;">18.500 m³</strong>
+              <div style="color: #94a3b8; font-size: 9px; margin-top: 3px;">Captación pluvial pasiva</div>
+            </div>
+            <div style="background: #140803; border: 1px solid rgba(245, 158, 11, 0.4); padding: 10px; border-radius: 10px; text-align: center;">
+              <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Ahorro Anual Insumos</span>
+              <strong style="color: #fbbf24; font-size: 15px;">$4.850.000</strong>
+              <div style="color: #94a3b8; font-size: 9px; margin-top: 3px;">Cero NPK + -65% Diésel</div>
+            </div>
+            <div style="background: #140803; border: 1px solid rgba(168, 85, 247, 0.4); padding: 10px; border-radius: 10px; text-align: center;">
+              <span style="color: #64748b; font-size: 9px; display: block; text-transform: uppercase;">Retorno Inversión</span>
+              <strong style="color: #c084fc; font-size: 15px;">3.8 Años</strong>
+              <div style="color: #94a3b8; font-size: 9px; margin-top: 3px;">Payback neto consolidado</div>
+            </div>
+          </div>
+
+          <!-- Gráfica Dinámica Chart.js Curva 5 Años -->
+          <div style="background: #120703; padding: 16px; border-radius: 12px; border: 1px solid rgba(180,83,9,0.5);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+              <div style="font-family: Georgia, serif; font-size: 13.5px; font-weight: bold; color: #ffffff;">
+                📈 Curva de Regeneración Biológica a 5 Años vs. Autosuficiencia (%)
+              </div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 8px; border-radius: 4px; border: 1px solid #10b981;">
+                Ground-Truth Maule Sur
+              </span>
+            </div>
+            <div style="position: relative; height: 180px; width: 100%;">
+              <canvas id="strategicPermacultureChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Las 6 Zonas Concéntricas de Bill Mollison con Conteo de Objetos Asentados -->
+          <div style="background: #160a04; border: 1px solid #78350f; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: #fbbf24; font-family: Georgia, serif; font-size: 13px;">🌱 Zonificación de Bill Mollison (Zonas 0 a 5):</strong>
+              <span style="font-size: 10px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">1 Polígono = 1 Uso de Suelo • ${placedObjs.length} Elementos en Mapa</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 11px;">
+              <div style="background: #100602; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #ef4444;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: #f87171;">Zona 0: Casona & Núcleo</strong>
+                  <span style="font-family: monospace; font-size: 10px; color: #fca5a5;">${countZ0} elem.</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 10px; margin-top: 3px;">Hogar, taller IP67, secador solar y cocina. Frecuencia: Continua (múltiples visitas/día).</div>
+              </div>
+
+              <div style="background: #100602; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #f97316;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: #fb923c;">Zona 1: Huerta & Hierbas</strong>
+                  <span style="font-family: monospace; font-size: 10px; color: #fdba74;">${countZ1} elem.</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 10px; margin-top: 3px;">Bancales intensivos, espiral aromática, vermicompostera y almácigos. Frecuencia: Diaria.</div>
+              </div>
+
+              <div style="background: #100602; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #eab308;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: #fde047;">Zona 2: Huerto & Aves</strong>
+                  <span style="font-family: monospace; font-size: 10px; color: #fef08a;">${countZ2} elem.</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 10px; margin-top: 3px;">Frutales semi-intensivos, gallinero móvil (Egg Mobile), estanques y biofiltro. Frecuencia: 1-2 veces/día.</div>
+              </div>
+
+              <div style="background: #100602; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #22c55e;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: #4ade80;">Zona 3: Praderas & PRV</strong>
+                  <span style="font-family: monospace; font-size: 10px; color: #86efac;">${countZ3} elem.</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 10px; margin-top: 3px;">Pastoreo Racional Voisin (8 potreros, 1.8 UGM/ha), viñedos y tranque Keyline. Frecuencia: Semanal.</div>
+              </div>
+
+              <div style="background: #100602; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #06b6d4;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: #22d3ee;">Zona 4: Agroforestería</strong>
+                  <span style="font-family: monospace; font-size: 10px; color: #67e8f9;">${countZ4} elem.</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 10px; margin-top: 3px;">Cortinas cortaviento andinas, silvopastoreo leñoso y madera para leña. Frecuencia: Mensual/estacional.</div>
+              </div>
+
+              <div style="background: #100602; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #a855f7;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: #c084fc;">Zona 5: Reserva Nativa</strong>
+                  <span style="font-family: monospace; font-size: 10px; color: #d8b4fe;">${countZ5} elem.</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 10px; margin-top: 3px;">Bosque esclerófilo (peumos, quillayes) y estero. Cero intervención (observación y aprendizaje).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sinergia & Auditoría What-If Dinámica -->
+          <div style="background: #100703; border: 1px solid rgba(180,83,9,0.4); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <strong style="color: #fde047; font-size: 11.5px;">⚔️ Simulación What-If & Objetos Asentados:</strong>
+              <div style="font-size: 10.5px; color: #cbd5e1; margin-top: 2px;">
+                ${placedObjs.length} estructuras activas en el mapa • Inversión asentada: <strong>$${totalCapex.toLocaleString('es-CL')} CLP</strong>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btnStratOpenDossier" style="padding: 6px 12px; background: #b45309; border: 1px solid #f59e0b; color: #ffffff; font-weight: bold; font-size: 11px; border-radius: 6px; cursor: pointer;">
+                📐 Dossier Keyline
+              </button>
+              <button id="btnStratGoToMap" style="padding: 6px 14px; background: #16a34a; border: 1px solid #22c55e; color: #ffffff; font-weight: bold; font-size: 11px; border-radius: 6px; cursor: pointer;">
+                🌐 Diseñar en Visor 3D ↗
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Inicializar gráfica Chart.js para Curva de 5 Años
+    const canvas = document.getElementById('strategicPermacultureChart');
+    if (canvas && window.Chart) {
+      const ctx = canvas.getContext('2d');
+      const grad1 = ctx.createLinearGradient(0, 0, 0, 160);
+      grad1.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
+      grad1.addColorStop(1, 'rgba(16, 185, 129, 0.02)');
+
+      const grad2 = ctx.createLinearGradient(0, 0, 0, 160);
+      grad2.addColorStop(0, 'rgba(245, 158, 11, 0.45)');
+      grad2.addColorStop(1, 'rgba(245, 158, 11, 0.02)');
+
+      new window.Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Año 1 (Inicio)', 'Año 2 (Establecimiento)', 'Año 3 (Maduración)', 'Año 4 (Autosuficiencia)', 'Año 5 (Clímax)'],
+          datasets: [
+            {
+              label: 'Regeneración Suelo Vivo (%)',
+              data: [18, 38, 64, 85, 96],
+              borderColor: '#10b981',
+              backgroundColor: grad1,
+              borderWidth: 2.5,
+              tension: 0.35,
+              fill: true,
+              pointBackgroundColor: '#10b981',
+              pointRadius: 4
+            },
+            {
+              label: 'Independencia de Insumos Sintéticos (%)',
+              data: [25, 48, 72, 89, 98],
+              borderColor: '#fbbf24',
+              backgroundColor: grad2,
+              borderWidth: 2.5,
+              tension: 0.35,
+              fill: true,
+              pointBackgroundColor: '#fbbf24',
+              pointRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { color: '#d6c4a8', font: { family: 'Georgia, serif', size: 10 } }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(120, 53, 15, 0.2)' },
+              ticks: { color: '#94a3b8', font: { size: 9, family: 'monospace' } }
+            },
+            y: {
+              grid: { color: 'rgba(120, 53, 15, 0.2)' },
+              ticks: { color: '#94a3b8', font: { size: 9, family: 'monospace' } },
+              max: 100
+            }
+          }
+        }
+      });
+    }
+
+    // Bindings
+    document.getElementById('btnCloseStrategicPermaculture')?.addEventListener('click', () => {
+      modal.remove();
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+
+    document.getElementById('btnStratOpenDossier')?.addEventListener('click', () => {
+      modal.remove();
+      if (typeof window.openDossierPlanMaestroModal === 'function') {
+        window.openDossierPlanMaestroModal();
+      } else {
+        const dModal = document.getElementById('dossierPlanMaestroModal');
+        if (dModal) dModal.style.display = 'flex';
+      }
+    });
+
+    document.getElementById('btnStratGoToMap')?.addEventListener('click', () => {
+      modal.remove();
+      this.close();
+      if (this.app?.mapManager?.flyToPreset) {
+        this.app.mapManager.flyToPreset('overview');
+      }
+      if (this.app?.objectPlacementManager?.openDock) {
+        setTimeout(() => this.app.objectPlacementManager.openDock(), 300);
+      }
+    });
   }
 
   openWindDossierModal() {
@@ -2091,112 +2108,232 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
     }
 
     const diagrams = {
-      arch: `graph TD
+      arch: `%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Outfit, -apple-system, sans-serif",
+    "darkMode": true,
+    "background": "transparent",
+    "primaryColor": "#064e3b",
+    "primaryTextColor": "#f0fdf4",
+    "primaryBorderColor": "#10b981",
+    "lineColor": "#38bdf8",
+    "secondaryColor": "#1e1b4b",
+    "tertiaryColor": "#180d06"
+  }
+}}%%
+graph TB
     classDef iot fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#ECFDF5;
     classDef srv fill:#1E1B4B,stroke:#818CF8,stroke-width:2px,color:#E0E7FF;
-    classDef client fill:#0B253A,stroke:#38BDF8,stroke-width:2px,color:#F0F9FF;
+    classDef client fill:#0C4A6E,stroke:#38BDF8,stroke-width:2px,color:#F0F9FF;
     classDef render fill:#431407,stroke:#FB923C,stroke-width:2px,color:#FFF7ED;
 
-    subgraph TERRENO["🌱 1. Hardware IoT de Terreno (C / C++)"]
-        ESP["ESP32 DevKit v1 / S3<br/>firmware/esp32_field_enclosure.ino"]:::iot
-        FDR["Sondas FDR Suelo<br/>Humedad Multinivel (20-100cm)"]:::iot
-        CLIM["BME280 / SHT45<br/>T° / RH / Presión"]:::iot
-        RELE["Relés Optoacoplados<br/>Bombas Pozo, Riego, Heladas"]:::iot
-        TFT["Display Local SPI<br/>TFT_eSPI ILI9341 3.5''"]:::iot
-
-        FDR -->|Lectura Analógica| ESP
-        CLIM -->|Bus I2C| ESP
-        ESP -->|Control GPIO| RELE
-        ESP -->|UI SPI 320x240| TFT
+    subgraph TERRENO["🌱 CAPA 1: Hardware IoT Terreno (C / C++ Embebido)"]
+        direction LR
+        FDR["💧 Sondas FDR Suelo<br/>(20-100cm multinivel)"]:::iot -->|ADC| ESP(["⚡ ESP32 DevKit v1/S3<br/>firmware/esp32_enclosure.ino"]):::iot
+        CLIM["🌡️ BME280 / SHT45<br/>(T° / RH / Presión)"]:::iot -->|I2C| ESP
+        ESP -->|GPIO| RELE["🔌 Relés Industriales<br/>(Bomba Pozo & Riego)"]:::iot
+        ESP -->|SPI| TFT["📟 Display ILI9341 3.5''<br/>(Pantalla de Campo)"]:::iot
     end
 
-    subgraph BACK["⚡ 2. Backend & Sincronización (Node.js)"]
-        SRV["Servidor HTTP Nativo<br/>server.cjs (:7773)"]:::srv
-        API_TEL["API Telemetría & Status<br/>/api/enclosure/*"]:::srv
-        SYNC_CUENCA["Acople Cuenca Longaví<br/>/api/basin-sync (:7774)"]:::srv
-
-        SRV --- API_TEL
-        SRV --- SYNC_CUENCA
+    subgraph BACK["⚡ CAPA 2: Backend & Sincronización Local (Node.js :7773)"]
+        direction LR
+        API_TEL["📡 API REST Telemetría<br/>/api/enclosure/telemetry"]:::srv
+        SRV(["🖥️ Servidor HTTP Nativo<br/>server.cjs (Zero Deps)"]):::srv
+        SYNC_CUENCA["🏔️ Acople Cuenca Longaví<br/>/api/basin-sync (:7774)"]:::srv
+        API_TEL --- SRV --- SYNC_CUENCA
     end
 
-    subgraph CLIENTE["🖥️ 3. Cliente & Gemelo Digital 3D (JS / WebGL)"]
-        BROWSER["Navegador Web / Electron<br/>WebGL 2.0 @ 60 FPS"]:::client
-        THREE["Three.js r128 + R3F<br/>PBR Shaders & Sombras 4K"]:::render
-        CESIUM["CesiumJS<br/>Ortofoto Esri & DEM"]:::render
-        SHADERS["Shaders GLSL Custom<br/>Normales Sobel & Suelo"]:::render
-        SIM["Simulación Biofísica<br/>FAO-56 & Riesgo Heladas"]:::client
-        UI["UI Glassmorphism<br/>EventBus Pub/Sub & Chart.js"]:::client
-
-        BROWSER --> THREE
-        BROWSER --> CESIUM
-        THREE --> SHADERS
-        BROWSER --> SIM
-        BROWSER --> UI
+    subgraph CLIENTE["🌐 CAPA 3: Gemelo Digital 3D & UX Diegética (WebGL / Three.js)"]
+        direction TB
+        subgraph ENGINES["🎨 Motores de Render & Simulación"]
+            direction LR
+            THREE["🎨 Three.js r128 + R3F<br/>PBR Shaders, Sombras 4K"]:::render
+            CESIUM["🗺️ CesiumJS Engine<br/>Ortofoto Esri & DEM"]:::render
+            SHADERS["✨ Shaders GLSL<br/>Normales Sobel & Humedad"]:::render
+            SIM["🧬 Simulación FAO-56<br/>Estratos Radiculares"]:::client
+        end
+        subgraph FRONT["💻 Interfaz & Mando Táctico"]
+            direction LR
+            BROWSER(["💻 WebGL 2.0 @ 60 FPS<br/>Navegador / App de Escritorio"]):::client
+            UI["🎛️ UI Glassmorphism<br/>EventBus Pub/Sub & Chart.js"]:::client
+        end
+        FRONT <--> ENGINES
     end
 
-    ESP ==>|WiFi REST (JSON)| API_TEL
-    API_TEL --> SRV
-    SRV ==>|HTTP Local / EventBus| BROWSER`,
+    ESP ==>|"📡 WiFi / 4G (Payload JSON)"| API_TEL
+    SRV ==>|"⚡ WebSocket / EventBus Local"| BROWSER`,
 
-      events: `sequenceDiagram
+      events: `%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Outfit, -apple-system, sans-serif",
+    "darkMode": true,
+    "background": "transparent",
+    "actorBkg": "#064e3b",
+    "actorBorder": "#10b981",
+    "actorTextColor": "#f0fdf4",
+    "actorLineColor": "#38bdf8",
+    "signalColor": "#38bdf8",
+    "signalTextColor": "#f8fafc",
+    "noteBkgColor": "#1c1917",
+    "noteTextColor": "#fde047",
+    "noteBorderColor": "#d97706",
+    "sequenceNumberColor": "#022c22"
+  }
+}}%%
+sequenceDiagram
     autonumber
+    box #064e3b 🎛️ Interfaz Humana & Mandos
     actor Operador as 🧑‍🌾 Operador Agrícola
-    participant UI as 🎛️ UIController
-    participant Bus as 📡 EventBus (Pub/Sub)
-    participant Map as 🌐 MapManager (Three.js)
-    participant Sim as 🧬 SimulationEngine
-    participant HW as ⚡ ESP32 / server.cjs
+    participant UI as 🎛️ UIController<br/>(Glassmorphism)
+    end
+    box #1e1b4b 📡 Bus Desacoplado & Motores
+    participant Bus as 📡 EventBus<br/>(Pub/Sub)
+    participant Map as 🌐 MapManager<br/>(Three.js 3D)
+    participant Sim as 🧬 SimulationEngine<br/>(Biofísica)
+    end
+    box #451a03 🌱 Capa de Terreno
+    participant HW as ⚡ ESP32 & Sondas FDR<br/>(Hardware)
+    end
 
-    Operador->>UI: Clic en Sensor IOT-SN-02
-    UI->>Bus: emit('ENTITY_SELECTED', id)
-    Bus->>Map: Cámara cinemática (flyTo) + Pulso Verde
-    Bus->>UI: Despliega Drawer Lateral & Series Chart.js
+    rect rgba(56, 189, 248, 0.16)
+    note over Operador,Map: 🎯 1. ACCIÓN INTERACTIVA DEL USUARIO
+    Operador->>UI: 👆 Clic en Sensor IOT-SN-02 o Cuartel
+    UI->>Bus: 📡 emit('ENTITY_SELECTED', id)
+    Bus->>Map: 🎥 Vuelo cinemático (flyTo) + Pulso Verde
+    Bus->>UI: 📊 Abre Drawer Lateral & Curvas Chart.js
+    end
 
-    loop Cada 15s (Telemetría en Vivo)
-        HW->>Sim: Payload { moisture: 24.5%, temp: 18.2°C }
-        Sim->>Sim: Balance Hídrico FAO-56 & Riesgo Helada
-        Sim->>Bus: emit('TELEMETRY_UPDATED')
-        Bus->>Map: Actualiza shaders GLSL de humedad de suelo
-        Bus->>UI: Refresca Sparklines y Badges de Alerta
+    rect rgba(16, 185, 129, 0.16)
+    note over HW,UI: 🔄 2. CICLO CONTINUO DE TELEMETRÍA (CADA 15s)
+    loop Telemetría y Balance Biofísico
+        HW->>Sim: 📦 Payload: Humedad 24.5%, T 18.2°C, VPD 1.1 kPa
+        Sim->>Sim: 💧 Cálculo FAO-56 Penman-Monteith en 3 Estratos
+        Sim->>Bus: 🔔 emit('TELEMETRY_UPDATED')
+        Bus->>Map: 🎨 Actualiza gradientes GLSL de humedad en suelo
+        Bus->>UI: 📈 Refresca Sparklines en vivo & Alertas de Helada
+    end
     end`,
 
-      tech: `graph TD
-    classDef root fill:#0B2519,stroke:#10B981,stroke-width:3px,color:#FFF;
-    classDef branch fill:#071810,stroke:#F59E0B,stroke-width:2px,color:#FFF;
-    classDef leaf fill:#1E293B,stroke:#64748B,stroke-width:1px,color:#FFF;
+      tech: `%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Outfit, -apple-system, sans-serif",
+    "darkMode": true,
+    "background": "transparent",
+    "primaryColor": "#064e3b",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#10b981",
+    "lineColor": "#38bdf8"
+  }
+}}%%
+graph TB
+    classDef root fill:#064E3B,stroke:#10B981,stroke-width:3px,color:#FFF;
+    classDef cat fill:#180D06,stroke:#F59E0B,stroke-width:2px,color:#FDE68A;
+    classDef leaf fill:#0F172A,stroke:#38BDF8,stroke-width:1.5px,color:#E2E8F0;
 
-    ROOT["AgriTwin 3D Suite<br/>(Predio Meniel 3D)"]:::root
+    ROOT(["🌿 AgriTwin 3D Platform<br/><b>Motor Biofísico Fundo Meniels</b>"]):::root
 
-    ROOT --> M3D["Motores 3D & Shaders"]:::branch
-    ROOT --> DAT["Datos & Geoespacial"]:::branch
-    ROOT --> GUI["Interfaz & UX"]:::branch
-    ROOT --> IOT["Hardware IoT Terreno"]:::branch
-    ROOT --> SIS["Sistemas & Servidor"]:::branch
+    subgraph G_CORE["🎨 1. Core Gráfico, 3D & Geoespacial"]
+        direction LR
+        subgraph M3D_BOX["🎨 Motores 3D & Shaders"]
+            T1["Three.js r128 WebGL 2.0 @ 60 FPS"]:::leaf
+            T2["CesiumJS Ortofoto Esri & DEM"]:::leaf
+            T3["React Three Fiber (R3F)"]:::leaf
+            T4["Shaders GLSL Sobel & PBR"]:::leaf
+        end
+        subgraph DAT_BOX["🗺️ Datos & Modelos"]
+            D1["Modelos 3D GLTF / GLB 2.0"]:::leaf
+            D2["Polígonos GeoJSON WGS84"]:::leaf
+            D3["Shapefiles (.shp) shpjs Parser"]:::leaf
+            D4["Ecosistema Maestro JSON"]:::leaf
+        end
+    end
 
-    M3D --> T1["Three.js r128 (WebGL 2.0)"]:::leaf
-    M3D --> T2["CesiumJS (Ortofoto Abierta Esri)"]:::leaf
-    M3D --> T3["React Three Fiber (R3F)"]:::leaf
-    M3D --> T4["Shaders GLSL (Texturas Sobel PBR)"]:::leaf
+    subgraph G_OPS["⚡ 2. Operación, Hardware & C2"]
+        direction LR
+        subgraph IOT_BOX["🌱 Hardware IoT Maule"]
+            I1["ESP32 DevKit v1 / S3 (Dual Core)"]:::leaf
+            I2["C / C++ Embebido (Arduino)"]:::leaf
+            I3["Display SPI ILI9341 3.5'' Touch"]:::leaf
+            I4["Sondas FDR Multinivel & Relés"]:::leaf
+        end
+        subgraph VIS_BOX["🚁 Visión & Drones C2"]
+            V1["Postes Solares 4G a 33° N"]:::leaf
+            V2["Edge AI YOLOv8-Nano / TPU"]:::leaf
+            V3["WebRTC Streaming & Control PTZ"]:::leaf
+            V4["DJI Dock 2 & Misión Reactiva"]:::leaf
+        end
+    end
 
-    DAT --> D1["Modelos 3D GLTF / GLB 2.0"]:::leaf
-    DAT --> D2["Polígonos GeoJSON WGS84"]:::leaf
-    DAT --> D3["Shapefiles (.shp) via shpjs"]:::leaf
-    DAT --> D4["Ecosistema Maestro JSON"]:::leaf
+    ROOT ==> G_CORE
+    ROOT ==> G_OPS`,
 
-    GUI --> G1["Glassmorphism (Backdrop CSS)"]:::leaf
-    GUI --> G2["Chart.js & Canvas 2D"]:::leaf
-    GUI --> G3["Tipografías Inter & Outfit"]:::leaf
-    GUI --> G4["EventBus Desacoplado Pub/Sub"]:::leaf
+      vision: `%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Outfit, -apple-system, sans-serif",
+    "darkMode": true,
+    "background": "transparent",
+    "actorBkg": "#064e3b",
+    "actorBorder": "#10b981",
+    "actorTextColor": "#ffffff",
+    "actorLineColor": "#38bdf8",
+    "signalColor": "#38bdf8",
+    "signalTextColor": "#f8fafc",
+    "noteBkgColor": "#1c1917",
+    "noteTextColor": "#fde047",
+    "noteBorderColor": "#d97706",
+    "sequenceNumberColor": "#022c22",
+    "activationBorderColor": "#f59e0b",
+    "activationBkgColor": "#78350f"
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    box #064e3b 📹 Terreno & Edge AI (Postes Solares 4G)
+    participant CAM as 📹 CAM-02 DGA<br/>(Canal Maule)
+    participant EDGE as 🧠 Edge AI YOLOv8<br/>(Inferencia en Borde)
+    end
+    box #1e1b4b ⚡ Broker & Gemelo Digital 3D (C2)
+    participant MQTT as ⚡ Broker MQTT / TLS<br/>(Telemetría JSON)
+    participant TWIN as 🌐 AgriTwin 3D WebGL<br/>(Motor Three.js)
+    end
+    box #451a03 🚁 Estación Robótica Drone-in-a-Box
+    participant DOCK as 🏢 DJI Dock 2<br/>(Hangar Estanco IP55)
+    participant DRON as 🚁 Matrice 3D Quad<br/>(RGB + Térmica)
+    end
 
-    IOT --> I1["ESP32 DevKit v1 / S3"]:::leaf
-    IOT --> I2["C / C++ (Arduino Framework)"]:::leaf
-    IOT --> I3["Display TFT SPI ILI9341"]:::leaf
-    IOT --> I4["Sondas FDR & Relés Industriales"]:::leaf
+    rect rgba(239, 68, 68, 0.2)
+    note over CAM,EDGE: 🔴 FASE 1: DETECCIÓN PERIMETRAL EN EL BORDE
+    CAM->>EDGE: 📡 Video stream RTSP continuo (15 fps @ 4MP)
+    EDGE->>EDGE: ⚠️ Inferencia IA: Caída de caudal en canal (89% conf)
+    EDGE->>MQTT: 🚨 Alerta JSON: CAM-02 WATER_DROP CRITICAL
+    MQTT->>TWIN: ⚡ Push en tiempo real vía WebSocket / EventBus
+    TWIN->>TWIN: 🔴 Frustum 3D volumétrico pulsa en Rojo Alerta (#ef4444)
+    TWIN->>TWIN: 🎛️ OSD PiP activa badge de alerta y botón de intercepción
+    end
 
-    SIS --> S1["Node.js Nativo (server.cjs :7773)"]:::leaf
-    SIS --> S2["Acople Regional Cuenca (:7774)"]:::leaf
-    SIS --> S3["Electron Desktop App"]:::leaf
-    SIS --> S4["Binarios Swift & Scripts Bash"]:::leaf`
+    rect rgba(245, 158, 11, 0.2)
+    note over TWIN,DRON: 🟡 FASE 2: DESPACHO TÁCTICO E INTERCEPCIÓN REACTIVA (<90s)
+    Note over TWIN: 👤 Operador pulsa [🚁 Despachar Dron a este Punto] en visor PiP
+    TWIN->>MQTT: 🎯 Comando MISSION_DISPATCH(Target_XYZ)
+    MQTT->>DOCK: 🚀 Trigger misión: Apertura domo + Posicionamiento RTK
+    DOCK->>DRON: 🛫 Despegue vertical autónomo hasta 22m AGL (Takeoff)
+    DRON->>TWIN: 💨 Vuelo directo de crucero a 12 m/s hacia CAM-02
+    TWIN->>TWIN: 📍 Proyecta Haz Láser Táctico 3D entre dron y cámara
+    end
+
+    rect rgba(16, 185, 129, 0.2)
+    note over TWIN,DRON: 🟢 FASE 3: INSPECCIÓN CENITAL EN ÓRBITA Y RETORNO SEGURO
+    DRON->>TWIN: 🔄 Órbita circular 360° con gimbal inclinado 45°
+    DRON->>TWIN: 🎥 Transmisión en vivo de Feed Cenital estabilizado en PiP
+    Note over TWIN,DRON: ✅ Verificación visual confirmada por operador / Incidencia resuelta
+    DRON->>DOCK: 🛬 Return-to-Home (RTH) con navegación centimétrica
+    DOCK->>DOCK: 🔌 Aterrizaje asistido, cierre de compuerta y recarga LiFePO4
+    TWIN->>TWIN: 🌾 Shader PBR actualiza ortomosaico NDVI en caliente sin recargas
+    end`
     };
 
     const code = diagrams[this.selectedVaultDiagram] || diagrams.arch;
@@ -2210,6 +2347,29 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
           if (svgEl) {
             svgEl.style.maxWidth = '100%';
             svgEl.style.height = 'auto';
+            svgEl.style.borderRadius = '12px';
+            svgEl.style.filter = 'drop-shadow(0 14px 32px rgba(0, 0, 0, 0.75))';
+
+            // Inyectar estilos CSS avanzados para embellecer nodos, tipografías, gradientes y sombras del SVG
+            const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+            style.textContent = `
+              .actor { rx: 12px !important; ry: 12px !important; stroke-width: 2px !important; stroke: #34d399 !important; fill: #064e3b !important; filter: drop-shadow(0 6px 14px rgba(6,78,59,0.6)) !important; font-weight: 700 !important; font-size: 12px !important; }
+              .actor text { fill: #f0fdf4 !important; font-family: 'Outfit', -apple-system, sans-serif !important; font-weight: 700 !important; }
+              .actor-line { stroke: rgba(56, 189, 248, 0.4) !important; stroke-dasharray: 4 4 !important; stroke-width: 1.5px !important; }
+              .messageLine0, .messageLine1 { stroke: #38bdf8 !important; stroke-width: 2px !important; filter: drop-shadow(0 2px 6px rgba(56, 189, 248, 0.6)) !important; }
+              .messageText { font-family: 'Outfit', -apple-system, sans-serif !important; font-size: 11.5px !important; font-weight: 600 !important; fill: #f8fafc !important; text-shadow: 0 1px 4px rgba(0,0,0,0.9) !important; }
+              .note { rx: 10px !important; ry: 10px !important; stroke: #f59e0b !important; stroke-width: 1.8px !important; fill: #1c1917 !important; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.7)) !important; }
+              .noteText { font-family: 'Outfit', sans-serif !important; font-weight: 700 !important; font-size: 11.5px !important; fill: #fef08a !important; }
+              .node rect, .node circle, .node polygon { rx: 12px !important; ry: 12px !important; stroke-width: 2px !important; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.5)) !important; }
+              .node .label { font-family: 'Outfit', -apple-system, sans-serif !important; font-size: 12px !important; font-weight: 600 !important; }
+              .cluster rect { rx: 16px !important; ry: 16px !important; stroke-width: 1.8px !important; fill-opacity: 0.3 !important; stroke: rgba(52, 211, 153, 0.5) !important; stroke-dasharray: 6 3 !important; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4)) !important; }
+              .cluster .nodeLabel { font-family: 'Outfit', sans-serif !important; font-size: 13px !important; font-weight: 800 !important; fill: #fde047 !important; letter-spacing: 0.5px !important; }
+              .edgeLabel { font-family: 'Outfit', sans-serif !important; font-size: 11px !important; font-weight: 700 !important; color: #fef08a !important; background-color: rgba(15,23,42,0.92) !important; padding: 3px 8px !important; border-radius: 6px !important; border: 1px solid rgba(245, 158, 11, 0.4) !important; }
+              .edgePath path { stroke: #38bdf8 !important; stroke-width: 2px !important; filter: drop-shadow(0 2px 6px rgba(56, 189, 248, 0.4)) !important; }
+              .marker { fill: #38bdf8 !important; stroke: #38bdf8 !important; }
+              .sequenceNumber { font-weight: 900 !important; font-size: 10.5px !important; fill: #042f2e !important; }
+            `;
+            svgEl.prepend(style);
           }
         }).catch(err => {
           console.warn('[Mermaid render error]', err);
@@ -2228,14 +2388,16 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
         e.stopPropagation();
         document.querySelectorAll('.btn-mermaid-tab').forEach(b => {
           b.classList.remove('active');
-          b.style.background = '#27150c';
+          b.style.background = '#221209';
           b.style.borderColor = '#78350f';
           b.style.color = '#cbd5e1';
+          b.style.boxShadow = 'none';
         });
         btn.classList.add('active');
-        btn.style.background = 'rgba(245,158,11,0.2)';
+        btn.style.background = 'rgba(245,158,11,0.25)';
         btn.style.borderColor = '#f59e0b';
-        btn.style.color = '#fde68a';
+        btn.style.color = '#fef08a';
+        btn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
         this.selectedVaultDiagram = btn.dataset.diagram;
         this.initMermaidInVault();
       };

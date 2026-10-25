@@ -1,112 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<style id="iframe-hide">
-  /* Base transitions */
-  .app-header, .workshop-header { transition: transform 0.3s ease; }
-
-  /* Toolbar Container & Hammer Toggle */
-  .toolbar-container {
-    position: absolute;
-    left: 14px;
-    bottom: 16px;
-    z-index: 35;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    pointer-events: auto;
-  }
-  .btn-hammer-toggle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(13, 19, 34, 0.95);
-    border: 1px solid rgba(245, 158, 11, 0.5);
-    color: #fde047;
-    padding: 8px 14px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-    transition: all 0.25s ease;
-    white-space: nowrap;
-    z-index: 36;
-  }
-  .btn-hammer-toggle:hover {
-    background: rgba(245, 158, 11, 0.2);
-    border-color: #f59e0b;
-    transform: scale(1.03);
-  }
-  .hammer-arrow {
-    font-size: 10px;
-    transition: transform 0.3s ease;
-    color: #fbbf24;
-  }
-  .toolbar-container.toolbar-open .hammer-arrow {
-    transform: rotate(180deg);
-  }
-
-  /* When collapsed (default), controls-bar slides away to the side */
-  .toolbar-container .controls-bar {
-    position: relative !important;
-    left: auto !important;
-    bottom: auto !important;
-    max-width: 0 !important;
-    opacity: 0 !important;
-    padding: 0 !important;
-    pointer-events: none !important;
-    overflow: hidden !important;
-    transform: translateX(-15px);
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    margin: 0 !important;
-  }
-  /* When toolbar-open, controls-bar expands to the side! */
-  .toolbar-container.toolbar-open .controls-bar {
-    max-width: calc(100vw - 220px) !important;
-    opacity: 1 !important;
-    padding: 4px 8px !important;
-    pointer-events: auto !important;
-    overflow: visible !important;
-    transform: translateX(0);
-  }
-
-  /* Floating House Button (Volver al Galpón / Casa) */
-  .floating-house-btn {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    z-index: 40;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(13, 19, 34, 0.95);
-    border: 1px solid rgba(245, 158, 11, 0.5);
-    color: #fbbf24;
-    padding: 8px 14px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-    transition: all 0.25s ease;
-  }
-  .floating-house-btn:hover {
-    background: rgba(245, 158, 11, 0.25);
-    transform: scale(1.04);
-  }
-
-
-  /* Menús superiores antiguos eliminados permanentemente */
-  .app-header { display: none !important; }
-  .is-embedded .app-header { display: none !important; }
-  .workshop-header { display: none !important; }
-  .is-embedded .workshop-header { display: none !important; }
-  .is-embedded .workshop-overlay { padding-top: 0 !important; }
-  .is-embedded #workshopOverlay .workshop-scene { top: 0 !important; }
-</style>
+  <!-- Core Modular Stylesheets -->
+  <link rel="stylesheet" href="css/hud-toolbar.css">
+  <link rel="stylesheet" href="css/placement-dock.css">
 <script>
   if (window.self !== window.top) {
     document.documentElement.classList.add('is-embedded');
@@ -121,94 +18,6 @@
       }
     });
   }
-
-  // Cross-frame messaging from AgroTwin Hub
-  window.addEventListener('message', (event) => {
-    if (!event.data) return;
-    if (event.data.action === 'setPredioDualMode') {
-      if (typeof window.setPredioDualMode === 'function') {
-        window.setPredioDualMode(event.data.mode);
-      }
-    } else if (event.data.action === 'whatif') {
-      if (typeof window.triggerWhatIfStorm === 'function') {
-        window.triggerWhatIfStorm();
-      }
-    } else if (event.data.action === 'toggleYeomans') {
-      if (typeof window.toggleYeomansPanel === 'function') {
-        window.toggleYeomansPanel();
-      }
-    } else if (event.data.action === 'dossier') {
-      if (typeof window.openDossierPlanMaestroModal === 'function') {
-        window.openDossierPlanMaestroModal();
-      }
-    } else if (event.data.action === 'toggleWorkshop') {
-      if (typeof window.toggleGalponWorkshop === 'function') {
-        window.toggleGalponWorkshop();
-      }
-    }
-  });
-
-  window.openGalponWorkshop = function(branch = null) {
-    if (window.agriTwinApp?.workshopOverlay) {
-      window.agriTwinApp.workshopOverlay.open();
-      if (branch) {
-        window.agriTwinApp.workshopOverlay.selectedEnclosureBranch = branch;
-        window.agriTwinApp.workshopOverlay.openStationModal('station_b');
-      } else {
-        window.agriTwinApp.workshopOverlay.showCampaignBoard = true;
-        window.agriTwinApp.workshopOverlay.closeStationModal();
-        window.agriTwinApp.workshopOverlay.render();
-      }
-    } else {
-      const w = document.getElementById('workshopOverlay');
-      if (w) {
-        w.style.display = 'flex';
-        w.classList.add('active');
-      }
-    }
-  };
-  window.closeGalponWorkshop = function() {
-    const w = document.getElementById('workshopOverlay');
-    if (w) {
-      w.classList.remove('active');
-      w.style.display = 'none';
-    }
-    window.agriTwinApp?.workshopOverlay?.close?.();
-    window.agriTwinApp?.mapManager?.flyToPreset('overview');
-    window.agriTwinApp?.mapManager?.onWindowResize?.();
-  };
-  window.toggleGalponWorkshop = function() {
-    const w = document.getElementById('workshopOverlay');
-    if (w && (w.classList.contains('active') || w.style.display !== 'none')) {
-      window.closeGalponWorkshop();
-    } else {
-      window.openGalponWorkshop();
-    }
-  };
-  window.inspectPredioHouse = function() {
-    window.openGalponWorkshop();
-  };
-  window.resetPredioOverview = function() {
-    window.closeGalponWorkshop();
-  };
-  window.returnToHub = function() {
-    if (window.parent && window.parent !== window && typeof window.parent.switchMasterView === 'function') {
-      window.parent.switchMasterView('landing');
-    } else {
-      window.location.href = '/#landing';
-    }
-  };
-  window.toggleControlsToolbar = function() {
-    const c = document.getElementById('toolbarContainer');
-    if (c) c.classList.toggle('toolbar-open');
-  };
-  window.toggleSideDrawer = function() {
-    if (document.body.classList.contains('drawer-collapsed')) {
-      window.agriTwinApp?.uiController?.expandDrawer?.();
-    } else {
-      window.agriTwinApp?.uiController?.collapseDrawer?.();
-    }
-  };
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -244,79 +53,77 @@
   </script>
 
   <!-- Application CSS Stylesheets -->
-  <link rel="stylesheet" href="css/main.css?v=3.0.0">
-  <link rel="stylesheet" href="css/glassmorphism.css?v=3.0.0">
-  <link rel="stylesheet" href="css/components.css?v=3.0.0">
-  <link rel="stylesheet" href="css/drawing-tools.css?v=3.0.0">
-  <link rel="stylesheet" href="css/workshop.css?v=3.2.0">
+  <link rel="stylesheet" href="css/main.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/glassmorphism.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/components.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/drawing-tools.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/workshop.css?v=3.9.9-expanded-drawer-menus">
+  <link rel="stylesheet" href="css/operator-notes.css?v=3.9.9-clean">
+  <link rel="stylesheet" href="css/windy-basin.css?v=1.0.0">
 </head>
-<body class="drawer-collapsed">
+<body>
   <div id="app">
     <!-- 3D Globe Canvas Container -->
     <div id="cesiumContainer"></div>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         BOTÓN FLOTANTE PLAN MAESTRO (ACTIVA / DESACTIVA 18 PUNTOS & DOSSIER)
-         ═══════════════════════════════════════════════════════════════════════ -->
-    <div id="floatingPlanMaestroBar" class="floating-plan-maestro-bar">
-      <button id="btn_toggle_plan_maestro" class="plan-maestro-toggle-btn" title="Activar / Desactivar Plan Maestro de Permacultura (18 Puntos Yeomans)">
-        <span>🌿</span> <span id="label_plan_maestro">Plan Maestro</span>
-      </button>
-      <button id="btn_float_dossier" class="float-action-pill dossier-pill" style="display: none;" onclick="window.openDossierPlanMaestroModal && window.openDossierPlanMaestroModal()" title="Abrir y Exportar Dossier Ejecutivo de Obra (18.500 m³ y Estacas de Replanteo)">
-        <span>📐</span> <span>Dossier Obra</span>
-      </button>
-      <button id="btn_float_workshop_toggle" class="float-action-pill workshop-pill" onclick="window.toggleGalponWorkshop && window.toggleGalponWorkshop()" title="Alternar entre Fundo 3D y Taller/Mesa de Trabajo">
-        <span>🏡</span> <span>Taller Galpón</span>
+    <!-- HUD FLOATING PILLS FOR CAMERA MODES -->
+    <!-- 1. Cinematic Tour HUD -->
+    <div id="hud_cinematic_tour" class="camera-hud-pill glass-panel" style="display: none;">
+      <div class="hud-pill-icon pulse-blue">🚁</div>
+      <div class="hud-pill-content">
+        <div class="hud-pill-title" id="hud_tour_title">Tour Guiado: Caserío Patrimonial</div>
+        <div class="hud-pill-subtitle" id="hud_tour_subtitle">Parada 1 de 7 • Arquitectura agrícola tradicional</div>
+      </div>
+      <button id="btn_stop_tour_hud" class="hud-pill-close-btn" title="Detener Tour">
+        <span>⏹</span> Detener
       </button>
     </div>
 
-    <!-- PANEL MAESTRO: Rosa de los Vientos, Sun Location Tracker & Escala (Top Left Collapsible Panel) -->
-    <div id="panelMaestro" class="panel-maestro glass-panel">
-      <div id="panelMaestroHeader" class="panel-maestro-header" title="Haz clic para enrollar/desplegar el Panel Maestro">
-        <div class="panel-header-title-group">
-          <span class="panel-icon">🧭</span>
-          <span class="panel-maestro-title">Panel Maestro</span>
-        </div>
-        <span id="panelMaestroChevron" class="panel-maestro-chevron">▲</span>
-      </div>
-
-      <div id="panelMaestroBody" class="panel-maestro-body">
-        <div class="panel-maestro-row">
-          <!-- 1. Rosa de los Vientos -->
-          <div class="compass-box">
-            <div class="compass-dial">
-              <span class="cardinal N">N</span>
-              <span class="cardinal E">E</span>
-              <span class="cardinal S">S</span>
-              <span class="cardinal W">O</span>
-              <div class="compass-needle" id="compassNeedle"></div>
-            </div>
-            <div class="compass-degree" id="compassDegree">0°</div>
-          </div>
-
-          <!-- 2. Tracker Solar -->
-          <div class="sun-tracker-box">
-            <div class="sun-tracker-header">
-              <span>☀️ Posición Solar (-36.14°S)</span>
-            </div>
-            <div class="sun-arc-container">
-              <div class="sun-arc-line"></div>
-              <div class="sun-orb" id="sunOrbWidget">☀️</div>
-            </div>
-            <div class="sun-metrics">
-              <span id="sunAzimuthVal" class="metric-val">42° Az</span>
-              <span id="sunElevationVal" class="metric-val">38° Alt</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Escala de Espacialidad -->
-        <div class="scale-bar-box">
-          <span class="scale-label">Escala:</span>
-          <div class="scale-bar-line" id="scaleBarLine"></div>
-          <span class="scale-bar-text" id="scaleBarText">50 m</span>
+    <!-- 2. Walkthrough Mode HUD -->
+    <div id="hud_walkthrough" class="camera-hud-pill glass-panel" style="display: none;">
+      <div class="hud-pill-icon pulse-green">🚶</div>
+      <div class="hud-pill-content">
+        <div class="hud-pill-title">Modo Paseo a Pie (1.75 m)</div>
+        <div class="hud-pill-subtitle">
+          <span class="hud-key">W A S D</span> Caminar • 
+          <span class="hud-key">Shift</span> Correr • 
+          <span class="hud-key">Arrastrar Mouse</span> Mirar
         </div>
       </div>
+      <button id="btn_stop_walk_hud" class="hud-pill-close-btn" title="Salir de Modo Paseo">
+        <span>✕</span> Salir (ESC)
+      </button>
+    </div>
+
+    <!-- 3. Solar Timelapse HUD -->
+    <div id="hud_solar_timelapse" class="camera-hud-pill glass-panel" style="display: none;">
+      <div class="hud-pill-icon pulse-amber">🌅</div>
+      <div class="hud-pill-content">
+        <div class="hud-pill-title" id="hud_timelapse_title">Timelapse Solar 24h: 12:00 hrs</div>
+        <div class="hud-pill-subtitle" id="hud_timelapse_subtitle">Luz solar dinámica • Sombras en tiempo real</div>
+      </div>
+      <button id="btn_stop_timelapse_hud" class="hud-pill-close-btn" title="Detener Timelapse">
+        <span>⏹</span> Detener
+      </button>
+    </div>
+
+    <!-- Rosa de los Vientos (Always visible at top-left, standalone) -->
+    <div id="standaloneCompass" class="standalone-compass" title="Rosa de los Vientos (Orientación 3D del Predio)">
+      <div class="compass-dial">
+        <span class="cardinal N">N</span>
+        <span class="cardinal E">E</span>
+        <span class="cardinal S">S</span>
+        <span class="cardinal W">O</span>
+        <div class="compass-needle" id="compassNeedle"></div>
+      </div>
+      <div class="compass-degree" id="compassDegree">0°</div>
+    </div>
+
+    <!-- Escala de Espacialidad (Pegada al inferior de la página) -->
+    <div id="standaloneScaleBar" class="scale-bar-box pinned-bottom" title="Escala gráfica calibrada">
+      <span class="scale-label">Escala:</span>
+      <div class="scale-bar-line" id="scaleBarLine"></div>
+      <span class="scale-bar-text" id="scaleBarText">50 m</span>
     </div>
 
     <!-- PANEL GUÍA 18 PUNTOS ESCALA DE YEOMANS (Visible en Modo Plan Maestro) -->
@@ -474,44 +281,7 @@
       <!-- Bottom Toolbar Controls Bar -->
       <div class="controls-bar glass-panel">
 
-      <!-- BOTÓN PLAN MAESTRO (ACTIVA O DESACTIVA) -->
-      <button id="btn_toggle_plan_maestro_tb" class="btn-dropdown" onclick="window.togglePlanMaestro && window.togglePlanMaestro()" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde047; font-weight: 700;" title="Activar / Desactivar Capa de Plan Maestro (18 Puntos Yeomans)">
-        <span>🌿</span> <span id="label_plan_maestro_tb">Plan Maestro</span>
-      </button>
-
-      <button id="btn_open_dossier_tb" onclick="window.openDossierPlanMaestroModal && window.openDossierPlanMaestroModal()" class="btn-dropdown" style="display: none; background: rgba(245, 158, 11, 0.25); border: 1px solid rgba(245, 158, 11, 0.5); color: #fbbf24; font-weight: bold;" title="Exportar Dossier Ejecutivo de Obra">
-        <span>📐</span> Dossier Obra
-      </button>
-
-      <div class="toolbar-divider"></div>
-
-      <!-- Group 1: Simulation Controls Dropdown -->
-      <div class="dropdown-group" id="dropdown_sim">
-        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Controles de Simulación">
-          <span class="btn-dropdown-icon">⏱️</span>
-          <span class="btn-dropdown-label">Simulación:</span>
-          <span class="btn-dropdown-value" id="trigger_sim_label">1x</span>
-          <span class="dropdown-chevron">▾</span>
-        </button>
-        <div class="dropdown-menu glass-panel">
-          <div class="dropdown-header">⏱️ Simulación IoT</div>
-          <div class="dropdown-body">
-            <button id="simToggleBtn" class="btn-tool active" style="width: 100%; justify-content: center; margin-bottom: 8px;">
-              <span>⏸ Pausar</span>
-            </button>
-            <div class="dropdown-field-label">Velocidad de Tiempo:</div>
-            <div class="speed-selector" style="justify-content: center;">
-              <button id="btn_speed_1x" class="btn-tool-sm active">1x</button>
-              <button id="btn_speed_2x" class="btn-tool-sm">2x</button>
-              <button id="btn_speed_5x" class="btn-tool-sm">5x</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <!-- Group 2: View Mode Dropdown -->
+      <!-- Group 1: View Mode Dropdown (Modos 3D & Relieve) -->
       <div class="dropdown-group" id="dropdown_view">
         <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Modo de Visualización 3D">
           <span class="btn-dropdown-icon">🗺️</span>
@@ -519,7 +289,7 @@
           <span class="btn-dropdown-value" id="trigger_view_label">Híbrido</span>
           <span class="dropdown-chevron">▾</span>
         </button>
-        <div class="dropdown-menu glass-panel">
+        <div class="dropdown-menu glass-panel" style="min-width: 240px;">
           <div class="dropdown-header">🗺️ Modo de Terreno 3D</div>
           <div class="dropdown-menu-list">
             <button id="btn_mode_sat" class="dropdown-item-btn">
@@ -535,57 +305,9 @@
               <span>🏔️</span> Relieve & DEM
             </button>
           </div>
-        </div>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <!-- Group: Relief & Depth Tool (Exageración Topográfica) -->
-      <div class="dropdown-group" id="dropdown_relief">
-        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Exageración de Relieve y Profundidad 3D">
-          <span class="btn-dropdown-icon">⛰️</span>
-          <span class="btn-dropdown-label">Relieve:</span>
-          <span class="btn-dropdown-value" id="trigger_relief_label">1.0x</span>
-          <span class="dropdown-chevron">▾</span>
-        </button>
-        <div class="dropdown-menu glass-panel" style="min-width: 260px;">
-          <div class="dropdown-header">⛰️ Esculpir & Profundidad 3D</div>
-
-          <!-- Esculpido Manual (Hacedores de Relieve y Profundidad) -->
-          <div style="padding: 8px 12px 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">🛠️ Esculpir Terreno (Pincel Casa):</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <button id="btn_sculpt_raise" class="btn-sculpt" title="Hacedor de Relieves (+ ⛰️): Mantén presionado sobre el mapa para elevar progresivamente el terreno al porte de una casa">
-                <span style="font-size: 1.15rem;">➕⛰️</span>
-                <span>Elevar (+Relieve)</span>
-              </button>
-              <button id="btn_sculpt_lower" class="btn-sculpt" title="Hacedor de Profundidades (- ⛰️): Mantén presionado sobre el mapa para excavar progresivamente hondonadas o quebradas">
-                <span style="font-size: 1.15rem;">➖⛰️</span>
-                <span>Excavar (-Hondo)</span>
-              </button>
-            </div>
-            <div id="sculpt_active_hint" style="display: none; margin-top: 6px; font-size: 0.7rem; color: var(--accent-cyan); text-align: center;">
-              ⚡ Mantén presionado en el mapa para esculpir. [ESC para salir]
-            </div>
-          </div>
-
-          <div class="dropdown-menu-list">
-            <button id="btn_relief_flat" class="dropdown-item-btn" data-scale="0.3">
-              <span>📏</span> Suave (0.3x)
-            </button>
-            <button id="btn_relief_normal" class="dropdown-item-btn active" data-scale="1.0">
-              <span>🌱</span> Natural (1.0x)
-            </button>
-            <button id="btn_relief_elevated" class="dropdown-item-btn" data-scale="1.8">
-              <span>⛰️</span> Pronunciado (1.8x)
-            </button>
-            <button id="btn_relief_extreme" class="dropdown-item-btn" data-scale="2.8">
-              <span>🏔️</span> Montañoso DEM (2.8x)
-            </button>
-          </div>
           <div style="padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.08);">
             <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px;">
-              <span>Ajuste continuo:</span>
+              <span>Exageración Relieve:</span>
               <strong id="reliefSliderVal" style="color: var(--accent-cyan);">1.0x</strong>
             </div>
             <input type="range" id="slider_relief_scale" min="0.2" max="3.2" step="0.1" value="1.0" class="slider-glass" style="width: 100%; cursor: pointer;">
@@ -595,70 +317,59 @@
 
       <div class="toolbar-divider"></div>
 
-      <!-- Group 3: Camera Presets Dropdown -->
+      <!-- Group 3: Camera Presets & Dynamic Tour Dropdown -->
       <div class="dropdown-group" id="dropdown_cam">
-        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Presets de Cámara 3D">
+        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Presets de Cámara 3D & Modos Dinámicos">
           <span class="btn-dropdown-icon">🎥</span>
           <span class="btn-dropdown-label">Cámara:</span>
           <span class="btn-dropdown-value" id="trigger_cam_label">General</span>
           <span class="dropdown-chevron">▾</span>
         </button>
-        <div class="dropdown-menu glass-panel">
-          <div class="dropdown-header">🎥 Enfoque de Cámara</div>
+        <div class="dropdown-menu glass-panel" style="min-width: 270px;">
+          <div class="dropdown-header">🎥 Enfoques de Interés (Presets)</div>
           <div class="dropdown-menu-list">
             <button id="cam_overview" class="dropdown-item-btn active">
-              <span>🌐</span> Vista General
+              <span>🌐</span> Vista General del Predio
             </button>
-            <button id="cam_orchard" class="dropdown-item-btn">
-              <span>🍎</span> Cuartel A
+            <button id="cam_house" class="dropdown-item-btn">
+              <span>🏡</span> Caserío & Galpón Patrimonial
+            </button>
+            <button id="cam_solar" class="dropdown-item-btn">
+              <span>☀️</span> Parque Agrovoltaico 6.6 kWp
+            </button>
+            <button id="cam_tractor" class="dropdown-item-btn">
+              <span>🚜</span> Maquinaria Guiada RTK
+            </button>
+            <button id="cam_livestock" class="dropdown-item-btn">
+              <span>🐑</span> Rebaño & Manejo Holístico
+            </button>
+            <button id="cam_tranque" class="dropdown-item-btn">
+              <span>💧</span> Tranque Yeomans 18.5k m³
+            </button>
+            <button id="cam_condor" class="dropdown-item-btn">
+              <span>🦅</span> Vuelo de Cóndor (Cuenca)
             </button>
             <button id="cam_sensors" class="dropdown-item-btn">
-              <span>📡</span> Nodos IoT
+              <span>📡</span> Nodos IoT & Telemetría
             </button>
           </div>
-        </div>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <!-- Group 4: Risk Layers Dropdown (Incluye Riesgo Incendios) -->
-      <div class="dropdown-group" id="dropdown_risk">
-        <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Capas de Diagnóstico de Riesgo">
-          <span class="btn-dropdown-icon">⚠️</span>
-          <span class="btn-dropdown-label">Riesgo:</span>
-          <span class="btn-dropdown-value" id="trigger_risk_label">Normal</span>
-          <span class="dropdown-chevron">▾</span>
-        </button>
-        <div class="dropdown-menu glass-panel">
-          <div class="dropdown-header">⚠️ Capas de Diagnóstico</div>
+          <div style="border-top: 1px solid rgba(255,255,255,0.12); margin: 6px 0;"></div>
+          <div class="dropdown-header">🎬 Modos Dinámicos Especiales</div>
           <div class="dropdown-menu-list">
-            <button id="btn_risk_none" class="dropdown-item-btn active">
-              <span class="icon-dot"></span> PBR Suelo Normal
+            <button id="btn_toggle_tour" class="dropdown-item-btn" style="color: #60a5fa;">
+              <span>🚁</span> Tour Drone Automático <kbd class="hud-key" style="margin-left:auto;">C</kbd>
             </button>
-            <button id="btn_risk_ndvi" class="dropdown-item-btn">
-              <span class="icon-dot emerald"></span> Vigor NDVI (Sentinel-2)
+            <button id="btn_toggle_walk" class="dropdown-item-btn" style="color: #34d399;">
+              <span>🚶</span> Paseo a Pie (1.75m) <kbd class="hud-key" style="margin-left:auto;">P</kbd>
             </button>
-            <button id="btn_risk_dem" class="dropdown-item-btn">
-              <span class="icon-dot amber"></span> Relieve DEM & Curvas
-            </button>
-            <button id="btn_risk_ndwi" class="dropdown-item-btn">
-              <span class="icon-dot cyan"></span> Humedad NDWI (Agua)
-            </button>
-            <button id="btn_risk_nbr" class="dropdown-item-btn">
-              <span class="icon-dot orange"></span> Biomasa NBR (Combustible)
-            </button>
-            <button id="btn_risk_water" class="dropdown-item-btn">
-              <span class="icon-dot blue"></span> Estrés Hídrico Cultivo
-            </button>
-            <button id="btn_risk_fire" class="dropdown-item-btn">
-              <span class="icon-dot rose"></span> Riesgo Incendios (FWI)
-            </button>
-            <button id="btn_risk_frost" class="dropdown-item-btn">
-              <span class="icon-dot purple"></span> Riesgo Heladas
+            <button id="btn_toggle_timelapse" class="dropdown-item-btn" style="color: #fbbf24;">
+              <span>🌅</span> Timelapse Solar 24h <kbd class="hud-key" style="margin-left:auto;">T</kbd>
             </button>
           </div>
         </div>
       </div>
+
+
 
       <div class="toolbar-divider"></div>
 
@@ -667,7 +378,7 @@
         <button class="btn-dropdown" aria-haspopup="true" aria-expanded="false" title="Diagramas de Flujo Geomórficos & Estratigráficos">
           <span class="btn-dropdown-icon">📐</span>
           <span class="btn-dropdown-label">Flujos:</span>
-          <span class="btn-dropdown-value" id="trigger_geomorph_label">Geomorfología</span>
+          <span class="btn-dropdown-value" id="trigger_geomorph_label">Desactivado</span>
           <span class="dropdown-chevron">▾</span>
         </button>
         <div class="dropdown-menu glass-panel" style="min-width: 270px;">
@@ -682,16 +393,16 @@
             
             <!-- Sub-corrientes orográficas dominantes -->
             <div style="padding: 4px 6px 2px 6px; font-size: 9px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Corrientes Dominantes Cuenca:</div>
-            <button id="btn_geo_wind_puelche" class="dropdown-item-btn active" style="padding-left: 14px; font-size: 10px;" title="Viento Puelche / Raco E-NE (Cálido y Desecante, Alerta FWI)">
+            <button id="btn_geo_wind_puelche" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Viento Puelche / Raco E-NE (Cálido y Desecante, Alerta FWI)">
               <span style="color: #ef4444;">🔴</span> Puelche E-NE (Desecante)
             </button>
-            <button id="btn_geo_wind_breeze" class="dropdown-item-btn active" style="padding-left: 14px; font-size: 10px;" title="Brisa Marina Diurna SW (Fresco del Pacífico)">
+            <button id="btn_geo_wind_breeze" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Brisa Marina Diurna SW (Fresco del Pacífico)">
               <span style="color: #38bdf8;">🔵</span> Brisa Marina SW (Fresco)
             </button>
-            <button id="btn_geo_wind_catabatic" class="dropdown-item-btn active" style="padding-left: 14px; font-size: 10px;" title="Drenaje Catabático Nocturno (Aire Frío en Hondonadas)">
+            <button id="btn_geo_wind_catabatic" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Drenaje Catabático Nocturno (Aire Frío en Hondonadas)">
               <span style="color: #a855f7;">🟣</span> Drenaje Catabático (Heladas)
             </button>
-            <button id="btn_geo_wind_talweg" class="dropdown-item-btn active" style="padding-left: 14px; font-size: 10px;" title="Canalización por Quebrada y Estero (Efecto Venturi)">
+            <button id="btn_geo_wind_talweg" class="dropdown-item-btn" style="padding-left: 14px; font-size: 10px;" title="Canalización por Quebrada y Estero (Efecto Venturi)">
               <span style="color: #10b981;">🟢</span> Chorro Quebrada (Venturi)
             </button>
 
@@ -699,7 +410,7 @@
             <button id="btn_geo_hazard_zones" class="dropdown-item-btn" title="Zonificación delimitada de inundación T=10/T=100 y piro-riesgo">
               <span>📐</span> Zonas Demarcadas
             </button>
-            <button id="btn_geo_all_toggle" class="dropdown-item-btn active" title="Alternar visualización geomorfológica completa">
+            <button id="btn_geo_all_toggle" class="dropdown-item-btn" title="Alternar visualización geomorfológica completa">
               <span>🗺️</span> Activar Modo Estratigráfico
             </button>
           </div>
@@ -708,7 +419,7 @@
 
       <div class="toolbar-divider"></div>
 
-      <!-- Group: IoT Sensor Cards Visibility Toggle (Pregunta 2 del usuario) -->
+      <!-- Group: IoT Sensor Cards Visibility Toggle -->
       <div class="dropdown-group" id="dropdown_sensor_cards">
         <button class="btn-dropdown" id="trigger_sensor_cards_btn" aria-haspopup="true" aria-expanded="false" title="Visualización de Paneles Flotantes de Sensores 3D">
           <span class="btn-dropdown-icon">🏷️</span>
@@ -716,37 +427,75 @@
           <span class="btn-dropdown-value" id="trigger_sensor_cards_label">Hover</span>
           <span class="dropdown-chevron">▾</span>
         </button>
-        <div class="dropdown-menu glass-panel" style="min-width: 210px;">
-          <div class="dropdown-header">📡 Paneles IoT en 3D</div>
+        <div class="dropdown-menu glass-panel" style="min-width: 215px;">
+          <div class="dropdown-header">📡 Paneles Sensores 3D</div>
           <div class="dropdown-menu-list">
-            <button id="btn_sensor_cards_hover" class="dropdown-item-btn active" data-mode="hover" title="Solo se muestran al interactuar (Vista limpia sin saturar)">
+            <button id="btn_sensor_cards_hover" class="dropdown-item-btn active" data-mode="hover" title="Solo al interactuar con sensores (exclusivo, desactiva polígonos)">
               <span>✨</span> Al Interactuar (Hover)
             </button>
-            <button id="btn_sensor_cards_all" class="dropdown-item-btn" data-mode="all" title="Mostrar todas las tarjetas a la vez">
-              <span>👀</span> Ver Todas a la vez
+            <button id="btn_sensor_cards_all" class="dropdown-item-btn" data-mode="all" title="Mostrar todos los sensores a la vez">
+              <span>👀</span> Ver Todos a la vez
             </button>
-            <button id="btn_sensor_cards_none" class="dropdown-item-btn" data-mode="none" title="Ocultar completamente las tarjetas flotantes">
+            <button id="btn_sensor_cards_none" class="dropdown-item-btn" data-mode="none" title="Ocultar paneles de sensores">
               <span>🚫</span> Ocultar Paneles
             </button>
           </div>
         </div>
       </div>
 
+      <!-- Group: Polygon / Parcel Hover Cards Toggle (Exclusivo con Sensores) -->
+      <div class="dropdown-group" id="dropdown_polygon_cards">
+        <button class="btn-dropdown" id="trigger_polygon_cards_btn" aria-haspopup="true" aria-expanded="false" title="Visualización de Paneles Flotantes de Polígonos y Parcelas 3D">
+          <span class="btn-dropdown-icon">🌾</span>
+          <span class="btn-dropdown-label">Polígonos:</span>
+          <span class="btn-dropdown-value" id="trigger_polygon_cards_label">Oculto</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 250px;">
+          <div class="dropdown-header">🌾 Polígonos & Cuarteles 3D</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_toggle_parcel_geometry" class="dropdown-item-btn" title="Alternar polígonos coloreados de cuarteles en el terreno">
+              <span>🗺️</span> Ver Polígonos de Cuarteles
+            </button>
+            <button id="btn_polygon_cards_hover" class="dropdown-item-btn" data-mode="polygons" title="Hover exclusivo para Polígonos y Parcelas (oculta sensores)">
+              <span>✨</span> Al Interactuar (Hover)
+            </button>
+            <button id="btn_polygon_cards_none" class="dropdown-item-btn active" data-mode="none" title="Desactivar paneles de polígonos">
+              <span>🚫</span> Ocultar Paneles
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group: Objetos 3D (Editor AoE III) -->
+      <div class="dropdown-group" id="dropdown_objects">
+        <button class="btn-dropdown" id="trigger_objects_btn" style="color: #fbbf24;" title="Insertar Objetos 3D, Estructuras GLB, Animales y Sensores (Editor Age of Empires III)">
+          <span class="btn-dropdown-icon">🏛️</span>
+          <span class="btn-dropdown-label">Objetos</span>
+        </button>
+      </div>
+
       <div class="toolbar-divider"></div>
 
-      <!-- Group 5: Herramientas de Dibujo (Pincel & Polígonos Tool) -->
+      <!-- Group 5: Herramientas de Dibujo & Esculpir (Pincel & Polígonos Tool) -->
       <div class="dropdown-group" id="dropdown_drawing">
-        <button class="btn-dropdown" id="trigger_draw_btn" title="Herramienta Pincel & Dibujo Vectorial 3D">
+        <button class="btn-dropdown" id="trigger_draw_btn" title="Herramienta Pincel, Dibujo Vectorial & Esculpido 3D">
           <span class="btn-dropdown-icon">🎨</span>
           <span class="btn-dropdown-label">Dibujar:</span>
           <span class="btn-dropdown-value" id="trigger_draw_label">Pincel</span>
           <span class="dropdown-chevron">▾</span>
         </button>
-        <div class="dropdown-menu glass-panel align-right">
-          <div class="dropdown-header">🎨 Herramientas de Polígonos</div>
+        <div class="dropdown-menu glass-panel align-right" style="min-width: 260px;">
+          <div class="dropdown-header">🎨 Herramientas de Polígonos & Suelos</div>
           <div class="dropdown-menu-list">
+            <button id="btn_open_objects_dock" class="dropdown-item-btn" style="color: #fde047; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.08);">
+              <span>🏛️</span> Insertar Objetos GLB (AoE III)
+            </button>
             <button id="btn_draw_polygon" class="dropdown-item-btn">
               <span>✏️</span> Dibujar Polígono
+            </button>
+            <button id="btn_move_objects" class="dropdown-item-btn" title="Tomar y mover cualquier objeto 3D por el terreno (paneles, casas, viñedos, tractor, cultivos)">
+              <span>✋</span> Mano / Mover Objetos
             </button>
             <button id="btn_erase_polygon" class="dropdown-item-btn">
               <span>🗑️</span> Borrar Elemento
@@ -754,6 +503,24 @@
             <button id="btn_clear_canvas" class="dropdown-item-btn">
               <span>🧹</span> Limpiar Dibujos
             </button>
+          </div>
+
+          <!-- Esculpido Manual (Hacedores de Relieve y Profundidad dentro del Pincel) -->
+          <div style="padding: 8px 12px 10px 12px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.2);">
+            <div style="font-size: 0.72rem; color: var(--accent-cyan); margin-bottom: 6px; font-weight: 700;">🛠️ Esculpir Terreno (Pincel 3D):</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <button id="btn_sculpt_raise" class="btn-sculpt" title="Hacedor de Relieves (+ ⛰️): Mantén presionado sobre el mapa para elevar progresivamente el terreno al porte de una casa">
+                <span style="font-size: 1.15rem;">➕⛰️</span>
+                <span>Elevar (+Relieve)</span>
+              </button>
+              <button id="btn_sculpt_lower" class="btn-sculpt" title="Hacedor de Profundidades (- ⛰️): Mantén presionado sobre el mapa para excavar progresivamente hondonadas o quebradas">
+                <span style="font-size: 1.15rem;">➖⛰️</span>
+                <span>Excavar (-Hondo)</span>
+              </button>
+            </div>
+            <div id="sculpt_active_hint" style="display: none; margin-top: 6px; font-size: 0.7rem; color: var(--accent-cyan); text-align: center;">
+              ⚡ Mantén presionado en el mapa para esculpir. [ESC para salir]
+            </div>
           </div>
         </div>
       </div>
@@ -784,6 +551,49 @@
         </div>
       </div>
 
+      <!-- Group: Visión & Drones Autónomos (Cámaras PTZ, Frustums 3D, Vuelos DJI) -->
+      <div class="dropdown-group" id="dropdown_vision">
+        <button class="btn-dropdown" id="trigger_vision_btn" aria-haspopup="true" aria-expanded="false" title="Cámaras Solares 4G, Frustums 3D y Drones Autónomos DJI">
+          <span class="btn-dropdown-icon">📹</span>
+          <span class="btn-dropdown-label">Visión:</span>
+          <span class="btn-dropdown-value" id="trigger_vision_label">Inactivo</span>
+          <span class="dropdown-chevron">▾</span>
+        </button>
+        <div class="dropdown-menu glass-panel" style="min-width: 275px;">
+          <div class="dropdown-header">📹 Cámaras Solares & Frustums 3D</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_toggle_vision_cameras" class="dropdown-item-btn" style="color: #fbbf24; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 4px; background: rgba(245, 158, 11, 0.12);">
+              <span id="icon_toggle_vision_cameras">👁️</span> <span id="label_toggle_vision_cameras">Activar Cámaras Visoras</span>
+            </button>
+            <button id="btn_cam_01_norte" class="dropdown-item-btn">
+              <span>🚨</span> CAM-01 • Acceso Norte (YOLO)
+            </button>
+            <button id="btn_cam_02_dga" class="dropdown-item-btn">
+              <span>🌊</span> CAM-02 • Compuerta DGA (Aforo)
+            </button>
+            <button id="btn_cam_03_fauna" class="dropdown-item-btn">
+              <span>🦊</span> CAM-03 • Fauna Nativa (ESG)
+            </button>
+            <button id="btn_cam_04_prv" class="dropdown-item-btn">
+              <span>🐄</span> CAM-04 • Potrero PRV (Ganado)
+            </button>
+          </div>
+          <div style="border-top: 1px solid rgba(255,255,255,0.08); margin: 6px 0;"></div>
+          <div class="dropdown-header">🚁 Drones Autónomos (DJI Dock 2)</div>
+          <div class="dropdown-menu-list">
+            <button id="btn_drone_start_mission" class="dropdown-item-btn" style="color: #38bdf8;">
+              <span>🚀</span> Despegar Misión Fotogrametría
+            </button>
+            <button id="btn_drone_update_ortho" class="dropdown-item-btn" style="color: #4ade80;">
+              <span>🗺️</span> Actualizar Ortomosaico Terreno
+            </button>
+            <button id="btn_vision_sim_alert" class="dropdown-item-btn" style="color: #f87171;">
+              <span>⚡</span> Simular Alerta Edge AI (Intruso)
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="toolbar-divider"></div>
 
       <!-- Group 6: Proyectos & Archivos (.agritwin / .shp) -->
@@ -808,6 +618,9 @@
             <button id="btn_open_report_dropdown" class="dropdown-item-btn" onclick="window.openReporteTecnicoModal && window.openReporteTecnicoModal()" title="Generar Informe Técnico Oficial y Auditoría Agronómica">
               <span>📑</span> Informe Técnico (SAG/DGA)
             </button>
+            <button id="btn_open_dossier_dropdown" class="dropdown-item-btn" onclick="window.open('dossier.html', '_blank')" title="Abrir Dossier Estratégico de Teledetección e IA (14 Láminas)">
+              <span>📚</span> Dossier Satelital & IA (14 Láminas)
+            </button>
           </div>
         </div>
       </div>
@@ -823,7 +636,7 @@
 
 
     <!-- Interactive Right Side Detail Panel -->
-    <aside id="sideDrawer" class="side-drawer glass-panel collapsed">
+    <aside id="sideDrawer" class="side-drawer glass-panel">
       <!-- Pestaña / Asa integrada al borde del panel para desplegar y replegar -->
       <button id="btnDrawerOpen" class="drawer-handle-tab" title="Métricas del Predio (Clic para desplegar / replegar)">
         <span class="tab-arrow">◀</span>
@@ -837,9 +650,6 @@
           <div id="drawerSubtitle" class="drawer-subtitle">Selecciona un elemento en el mapa 3D</div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <a target="_top" href="http://localhost:7777/#telemetry" style="padding: 4px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 11px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 4px;" title="Abrir Telemetry Deep-Dive Studio en pantalla completa">
-            <span>📊</span> <span style="display: inline-block;">Telemetry Studio</span>
-          </a>
           <button id="btnToggleDrawerCollapse" class="close-btn" title="Ocultar panel y ver mapa en pantalla completa" aria-label="Minimizar Panel">▶</button>
           <button id="closeDrawerBtn" class="close-btn" title="Cerrar selección y volver a vista general" aria-label="Cerrar Panel">&times;</button>
         </div>
@@ -851,6 +661,19 @@
         </div>
       </div>
     </aside>
+  </div>
+
+  <!-- HUD: Píldoras flotantes para dibujo y modo mover -->
+  <div id="drawingHudPill" style="display: none; position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(15, 23, 42, 0.94); border: 1px solid var(--accent-cyan); border-radius: 9999px; padding: 8px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(12px); align-items: center; gap: 12px; color: white; font-size: 0.88rem;">
+    <span id="drawingHudText">✏️ Trazando polígono (haz clic en el terreno)...</span>
+    <button id="btnHudFinishPoly" class="btn-primary" style="padding: 5px 14px; font-size: 0.8rem; border-radius: 9999px; display: none;">✅ Finalizar Polígono</button>
+    <button id="btnHudCancelPoly" class="btn-secondary" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 9999px;">Cancelar [ESC]</button>
+  </div>
+
+  <div id="moveHudPill" style="display: none; position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(15, 23, 42, 0.94); border: 1px solid #38bdf8; border-radius: 9999px; padding: 8px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(12px); align-items: center; gap: 12px; color: white; font-size: 0.88rem;">
+    <span id="moveHudText">✋ <strong>Modo Mover:</strong> 1. Haz clic en el objeto o cultivo a mover.</span>
+    <button id="btnHudDeselectMove" class="btn-secondary" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 9999px; display: none;">Deseleccionar</button>
+    <button id="btnHudExitMove" class="btn-secondary" style="padding: 5px 14px; font-size: 0.8rem; border-radius: 9999px;">Salir [ESC]</button>
   </div>
 
   <!-- MODAL: Asignar Ítem del Catálogo de Ítems a Polígono 3D -->
@@ -2103,76 +1926,12 @@ SUITE AGRITWIN 1 (NIVEL PREDIAL) • MAULE SUR, CHILE
     </div>
   </div>
 
-  <script>
-    window.openAgriPredioAdvisorsModal = function() {
-      const m = document.getElementById('predioAdvisorsModalAgri');
-      if (m) m.style.display = 'flex';
-    };
-    window.closeAgriPredioAdvisorsModal = function() {
-      const m = document.getElementById('predioAdvisorsModalAgri');
-      if (m) m.style.display = 'none';
-    };
 
-    window.openAgriEstabloAdvisorsModal = function() {
-      const m = document.getElementById('establoAdvisorsModalAgri');
-      if (m) m.style.display = 'flex';
-    };
-    window.closeAgriEstabloAdvisorsModal = function() {
-      const m = document.getElementById('establoAdvisorsModalAgri');
-      if (m) m.style.display = 'none';
-    };
-
-    window.openAgriInvernaderoAdvisorsModal = function() {
-      const m = document.getElementById('invernaderoAdvisorsModalAgri');
-      if (m) m.style.display = 'flex';
-    };
-    window.closeAgriInvernaderoAdvisorsModal = function() {
-      const m = document.getElementById('invernaderoAdvisorsModalAgri');
-      if (m) m.style.display = 'none';
-    };
-
-    window.openAgriExcursionAdvisorsModal = function() {
-      const m = document.getElementById('excursionAdvisorsModalAgri');
-      if (m) m.style.display = 'flex';
-    };
-    window.closeAgriExcursionAdvisorsModal = function() {
-      const m = document.getElementById('excursionAdvisorsModalAgri');
-      if (m) m.style.display = 'none';
-    };
-
-    // Principio Árbol: Sincronización del Predio con el Tronco Hub (Suite)
-    window.syncPredioWithHub = function() {
-      const syncPayload = {
-        type: 'SYNC_BRANCH_STATE',
-        branch: 'predio',
-        source: 'agritwin_3d',
-        data: {
-          aforoDgaLps: 28.0,
-          tranqueKeylineM3: 18500,
-          soilMoistureVwc: 36.2,
-          fwiLocal: 24,
-          biomasaKgMsHa: 4820,
-          potrerosPrv: 8,
-          timestamp: new Date().toISOString()
-        }
-      };
-      
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage(syncPayload, '*');
-      }
-      
-      const toast = document.createElement('div');
-      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(5,150,105,0.95);color:white;padding:12px 20px;border-radius:12px;font-family:Plus Jakarta Sans,sans-serif;font-size:12px;font-weight:700;box-shadow:0 10px 25px rgba(0,0,0,0.5);border:1px solid #34d399;z-index:99999;display:flex;align-items:center;gap:8px;backdrop-filter:blur(8px);';
-      toast.innerHTML = '<span>🌳</span> <span>Predio sincronizado con el Tronco Hub (Suite): Aforos DGA 28 L/s, Tranque 18.5k m³ y FDR exportados.</span>';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3500);
-    };
-  </script>
 
   <!-- Container for Possibilities Catalog & Welcome Project Modals -->
   <div id="modalsContainer"></div>
 
   <!-- Entry Script (ES6 Module) con Cache Buster -->
-  <script type="module" src="js/app.js?v=3.2.0"></script>
+  <script type="module" src="js/app.js?v=3.9.9-clean-view-dynamic-drone"></script>
 </body>
 </html>

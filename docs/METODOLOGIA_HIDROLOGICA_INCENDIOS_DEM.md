@@ -136,3 +136,39 @@ Inspirado en los tratados de geomorfología (Arthur Holmes, Tarbuck & Lutgens) y
 1. **Líneas de Contorno / Curvas de Nivel**: Estilizadas matemáticamente con líneas secundarias suaves y maestras destacadas en blanco/grafito.
 2. **Flechas Vectoriales 3D de Drenaje**: Símbolos hidrológicos limpios que fluyen a lo largo de los ejes de vaguada indicando magnitud y sentido de la escorrentía gravitatoria.
 3. **Zonas Demarcadas de Riesgo Hidráulico y Piro-Riesgo**: Envolventes poligonales de estilo cartográfico con contornos sutiles, códigos de color normados y transparencias calibradas para no ocultar la topografía del terreno.
+
+---
+
+## 6. Doctrina Táctica de Mando (C2): Superación del Enfoque Lineal hacia Unidades de Riesgo y Maniobra Multiamenaza
+
+### 6.1 Limitación de los Flujos Lineales y Necesidad de Áreas de Influencia
+La modelación hidrológica tradicional centrada en isolíneas de tirante o vectores unidimensionales de viento no logra representar la interacción espacial con la vulnerabilidad antrópica y productiva. En AgriTwin se adopta una **Doctrina C2 (Command & Control)** inspirada en los gráficos de maniobra militar operativa (frentes, escalones y líneas de contención):
+
+1. **Unidades Tácticas de Riesgo (UD):** Delimitadas mediante polígonos permeables con borde segmentado (`dashArray: '10, 8'`) y trama de puntos estipulados (*stippled SVG*), distinguiendo unidades en avance activo frente a áreas estáticas de shapefile:
+   - **UD-01 (Frente Fluvial):** Cabecera Quilaimo ➔ Desborde R5 Sur (Azul Cian `#0ea5e9`).
+   - **UD-02 (Foco Pirogénico):** Ladera Bullileo ➔ Salto de Pavesas 1.5 km WUI (Rojo `#ef4444`).
+   - **UD-03 (Deslizamiento A110):** Escarpe 34° ➔ Cono Runout 420m (Naranja `#f97316`).
+
+2. **Vectores de Maniobra Multi-Fase:**
+   - **Fase 1 (0-2h):** Contención inmediata en cabecera de quebrada o foco primario.
+   - **Fase 2 (2-6h):** Propagación a lo largo de llanuras y activación de defensas pasivas.
+   - **Fase 3 (6-12h):** Envolvente crítica hacia ejes vitales (Ruta 5 Sur, bocatomas y pozos APR).
+
+3. **Líneas de Defensa Activa:**
+   - **Línea Keyline (~18.5k m³):** Red de tranques y zanjas en cota clave (Cian `#06b6d4`, línea sólida).
+   - **Faja Cortafuegos WUI 45m:** 28 km continuos con 90% de quórum de predios vecinos (Esmeralda `#10b981`, línea segmentada).
+
+### 6.2 Ecuación Cuantitativa Canónica $R = (H \times V) / 100$
+El riesgo no es un concepto cualitativo difuso, sino un producto matemático normalizado:
+
+$$R = \frac{\text{Amenaza Física }(H) \times \text{Vulnerabilidad Expuesta }(V)}{100}$$
+
+Con una escala unificada de 5 clases de riesgo:
+- **Clase 1 (0 - 20%):** Muy Bajo (`#10b981`).
+- **Clase 2 (20 - 40%):** Bajo (`#84cc16`).
+- **Clase 3 (40 - 60%):** Moderado (`#f59e0b`).
+- **Clase 4 (60 - 80%):** Alto / Severo (`#f97316`).
+- **Clase 5 (80 - 100%):** Muy Alto / Crítico (`#ef4444`).
+
+Para una especificación exhaustiva de las matrices, capas SIG acopladas (Colonia, CAL FIRE FHSZ, Austin WUI, Remoción en Masa A110) y leyendas cromáticas completas, consultar [ENFOQUE_TACTICO_C2_RIESGO_CUENCA.md](file:///Users/danielsantander/Documents/Agrotech/agritwin/docs/ENFOQUE_TACTICO_C2_RIESGO_CUENCA.md).
+

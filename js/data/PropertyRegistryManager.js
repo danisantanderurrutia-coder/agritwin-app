@@ -227,6 +227,68 @@ export const INITIAL_PROPERTIES_DATA = [
         verificado: true,
         hashSha256: 'f7a8b9c0d1e2345678901234abcdef5678901234abcdef5678901234abcdef06',
         nota: 'Especificación integral de lenguajes (C++, GLSL, JS ESM, Node), diagramas Mermaid y telemetría biofísica.'
+      },
+      {
+        id: 'doc-007',
+        nombre: 'METODO_VISION_Y_DRONES_AUTONOMOS.md',
+        tipo: 'Dossier de Visión Computacional & Robótica Aérea',
+        emisor: 'AgroTech Computer Vision & Drone Labs',
+        fecha: '2026-10-11',
+        tamano: '18.6 KB',
+        verificado: true,
+        hashSha256: 'a1b2c3d4e5f6789012345678abcdef1234567890abcdef1234567890abcdef07',
+        nota: 'Documentación del método: Red de cámaras solares 4G Edge AI, conos frustum 3D volumétricos, streaming PiP dual WebRTC y orquestación reactiva con DJI Dock 2.',
+        dataUrl: `# METODOLOGÍA Y ARQUITECTURA: AGRITWIN VISION & DRONES AUTÓNOMOS
+========================================================================
+Fecha de Certificación: 2026-10-11 | Versión: 1.0 (Producción)
+Emisor: AgroTech Labs & Nanobanana 3D Engine • Fundo Meniels, Maule
+========================================================================
+
+1. DESCRIPCIÓN DEL MÉTODO
+------------------------------------------------------------------------
+AgriTwin Vision & Drones Autónomos implementa la convergencia ciberfísica
+entre una red de vigilancia fija de bajo consumo y una estación robótica
+aérea "Drone-in-a-Box" (DJI Dock 2), orquestada bidireccionalmente por el
+gemelo digital 3D (Three.js WebGL).
+
+2. ARQUITECTURA DE DATOS Y PROTOCOLOS
+------------------------------------------------------------------------
+- Streaming Video: WebRTC ultra-baja latencia (<500ms) sobre 4G rural.
+- Inferencia Edge AI: YOLOv8 / Edge TPU en poste (15 fps continuo).
+- Telemetría y Alertas: Broker MQTT sobre TLS (Mosquitto/AWS IoT).
+- Fotogrametría Aérea: NodeODM / WebODM para ortomosaicos multiespectrales (NDVI).
+
+3. REPRESENTACIÓN DIEGÉTICA EN EL GEMELO 3D
+------------------------------------------------------------------------
+- Postes Físicos 3D: Modelos georreferenciados con paneles solares a 33° N.
+- Conos Frustum 3D: Geometría cónica volumétrica con mallas alámbricas CAD
+  que pulsa en cian normal y cambia a rojo de emergencia ante alerta.
+- Ventana Flotante PiP Dual: Selector de [Feed Terrestre] y [Feed Gimbal Dron]
+  con joystick PTZ interactivo y retícula cenital.
+- Widget Táctico: Pastilla diegética anclada en la barra superior con el
+  sprite histórico 'sprite_cerro_drone.png'.
+
+4. ALGORITMO DE ORQUESTACIÓN REACTIVA (CÁMARA -> DRON)
+------------------------------------------------------------------------
+1. Detección en tierra (intrusión, fuga compuerta DGA, corte cerco PRV).
+2. Publicación de alerta JSON en tópico agritwin/alerts/{camId}.
+3. Cono de la cámara se tiñe de rojo en el canvas 3D y despliega alerta PiP.
+4. Activación de misión: El operador presiona [Despachar Dron] en el PiP
+   (o disparo automático por regla de criticidad).
+5. Despegue vertical en <90s desde hangar DJI Dock 2 hasta 22m AGL.
+6. Vuelo de crucero directo a 12 m/s hacia el punto exacto de la alerta.
+7. Proyección de haz láser táctico 3D y órbita de 360° con streaming en vivo.
+8. Retorno a base (RTH) y recarga rápida LiFePO4 tras verificación.
+
+5. ACTUALIZACIÓN EN CALIENTE DE ORTOMOSAICOS NDVI
+------------------------------------------------------------------------
+Al completar misiones de fotogrametría, la textura del terreno se actualiza
+inmediatamente sobre el shader PBR de Three.js sin recargar la sesión:
+material.map = canvasOrtho;
+material.map.needsUpdate = true;
+
+Firma Digital: 0x8f2d4a19c6e3b7fa99d140e-AGRITWIN-VISION-DOCK2
+========================================================================`
       }
     ]
   },

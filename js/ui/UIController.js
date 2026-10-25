@@ -13,11 +13,18 @@ import { ChartManager } from './ChartManager.js';
 import { LivestockView } from './views/LivestockView.js?v=3.5.0';
 import { ClimateScenarioModel } from '../sim/ClimateScenarioModel.js?v=3.0.0';
 import { OpenMeteoForecastService } from '../sim/OpenMeteoForecastService.js?v=3.0.0';
+import { PermacultureWhatIfEngine } from '../sim/PermacultureWhatIfEngine.js?v=4.0.0';
 
+import { DashboardsView } from './drawers/DashboardsView.js';
+import { EntityDetailPanels } from './panels/EntityDetailPanels.js';
+import { solarAstroEngine } from '../utils/solar/SolarAstroEngine.js';
 export class UIController {
   constructor(dataSource, simulationEngine) {
     this.dataSource = dataSource;
     this.simulationEngine = simulationEngine;
+    this.solarAstroEngine = solarAstroEngine;
+    this.dashboardsView = new DashboardsView(this);
+    this.detailPanels = new EntityDetailPanels(this);
 
     this.sideDrawer = document.getElementById('sideDrawer');
     this.drawerTitle = document.getElementById('drawerTitle');
@@ -41,6 +48,8 @@ export class UIController {
     this.selectedSensorId = 'IOT-SN-01';
     this.currentAgroTwinMode = 'enterprise'; // enterprise | territorial | esg
     this.livestockView = new LivestockView(this);
+    this.permacultureEngine = new PermacultureWhatIfEngine();
+    window.permacultureWhatIfEngine = this.permacultureEngine;
   }
 
   init() {
@@ -60,9 +69,10 @@ export class UIController {
     this.setupDualModePredio();
     this.setupWindyControls();
 
-    // Render Enterprise Dashboard on startup and collapse into edge tab
-    this.renderEnterpriseDashboard();
-    this.collapseDrawer();
+    // Render Predio Dashboard on startup and keep drawer expanded
+    this.activeHouseTab = 'metabolism';
+    this.renderMainHouseDashboard();
+    this.expandDrawer();
 
     bus.on('entity:selected', (data) => this.onEntitySelected(data));
     bus.on('entity:deselected', () => {
@@ -78,6 +88,17 @@ export class UIController {
       }
     });
     bus.on('sensor:telemetry_updated', (sensor) => this.onSensorUpdated(sensor));
+
+    bus.on('object:placed', () => {
+      if (this.activeHouseTab === 'permaculture' || this.activeHouseTab === 'metabolism') {
+        this.renderMainHouseDashboard();
+      }
+    });
+    bus.on('object:removed', () => {
+      if (this.activeHouseTab === 'permaculture' || this.activeHouseTab === 'metabolism') {
+        this.renderMainHouseDashboard();
+      }
+    });
 
     bus.on('simulation:tick', (data) => {
       if (this.simTimeEl) this.simTimeEl.textContent = data.simulatedHour;
@@ -312,6 +333,23 @@ export class UIController {
     window.triggerSimPuelcheFire = () => this.triggerSimPuelcheFire();
     window.triggerSimFloodEstero = () => this.triggerSimFloodEstero();
     window.triggerSimGrazingAlliance = () => this.triggerSimGrazingAlliance();
+
+    // Permaculture What-If Dossier Download
+    window.downloadPermacultureReport = () => {
+      const placed = window.objectPlacementManager?.placedObjects || [];
+      const polys = this.drawingManager?.customPolygons || [];
+      const parcels = this.parcelManager?.parcels || [];
+      const metrics = this.permacultureEngine.evaluate(placed, polys, parcels);
+      const md = this.permacultureEngine.generateMarkdownReport(metrics);
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Memoria_WhatIf_Permacultura_AgriTwin_${Date.now()}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+      bus.emit('ui:show_toast', '📥 Memoria técnica What-If descargada con éxito.');
+    };
   }
 
   openReporteTecnicoModal() {
@@ -904,11 +942,36 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   /**
-   * Vincula el Dock Flotante Rápido de Capas estilo Windy, el Timeline Scrubber con Open-Meteo Real 7D vs Simulado,
-   * y la botonera 1-click de los 8 Momentos Climáticos.
+   * Vincula el Dock Flotante Rápido de Capas estilo Windy, el Timeline Scrubber con Open-Meteo Real 7D,
+   * y sincroniza los estados del motor GPU con los menús de la HUD.
    */
   setupWindyControls() {
-    // Windy and Basin Scenarios are exclusively handled in Cuenca Master View (122k ha)
+    const triggerLabel = document.getElementById('trigger_geomorph_label');
+    const btnWind = document.getElementById('btn_geo_windy_stream');
+
+    bus.on('windy:state_changed', ({ enabled, layer }) => {
+      if (btnWind) {
+        btnWind.classList.toggle('active', enabled);
+      }
+      if (triggerLabel) {
+        if (!enabled) {
+          triggerLabel.textContent = 'Desactivado';
+          triggerLabel.style.color = '';
+        } else {
+          const names = {
+            wind_10m: 'Viento 10m',
+            wind_gusts: 'Ráfagas',
+            runoff_d8: 'Escorrentía',
+            catabatic: 'Catabático',
+            temp: 'Temperatura',
+            precip: 'Lluvia',
+            fwi: 'FWI Piro'
+          };
+          triggerLabel.textContent = names[layer] || 'Viento GPU';
+          triggerLabel.style.color = '#38bdf8';
+        }
+      }
+    });
   }
 
   /**
@@ -1002,51 +1065,149 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   setupSensorCardsButtons() {
-    const cardModes = [
-      { id: 'btn_sensor_cards_hover', mode: 'hover', label: 'Hover' },
-      { id: 'btn_sensor_cards_all', mode: 'all', label: 'Todas' },
-      { id: 'btn_sensor_cards_none', mode: 'none', label: 'Ocultas' }
-    ];
+    const triggerSensorLabel = document.getElementById('trigger_sensor_cards_label');
+    const triggerPolyLabel = document.getElementById('trigger_polygon_cards_label');
 
-    const triggerLabel = document.getElementById('trigger_sensor_cards_label');
+    const btnSensorHover = document.getElementById('btn_sensor_cards_hover');
+    const btnSensorAll = document.getElementById('btn_sensor_cards_all');
+    const btnSensorNone = document.getElementById('btn_sensor_cards_none');
 
-    const setCardMode = (mode, label) => {
-      cardModes.forEach(c => {
-        const el = document.getElementById(c.id);
-        if (el) el.classList.toggle('active', c.mode === mode);
-      });
-      if (triggerLabel) triggerLabel.textContent = label;
+    const btnPolyHover = document.getElementById('btn_polygon_cards_hover');
+    const btnPolyNone = document.getElementById('btn_polygon_cards_none');
+
+    const activateSensors = (mode = 'hover') => {
+      if (btnSensorHover) btnSensorHover.classList.toggle('active', mode === 'hover');
+      if (btnSensorAll) btnSensorAll.classList.toggle('active', mode === 'all');
+      if (btnSensorNone) btnSensorNone.classList.toggle('active', mode === 'none');
+
+      if (btnPolyHover) btnPolyHover.classList.remove('active');
+      if (btnPolyNone) btnPolyNone.classList.add('active');
+
+      if (triggerSensorLabel) triggerSensorLabel.textContent = mode === 'all' ? 'Todas' : (mode === 'none' ? 'Ocultas' : 'Hover');
+      if (triggerPolyLabel) triggerPolyLabel.textContent = 'Oculto';
+
+      bus.emit('hover_mode:set', mode === 'none' ? 'none' : 'sensors');
       bus.emit('sensor_cards:set_mode', mode);
     };
 
-    cardModes.forEach(({ id, mode, label }) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.addEventListener('click', () => {
-          setCardMode(mode, label);
-          bus.emit('ui:show_toast', `📡 Tarjetas IoT 3D: ${label}`);
-          if (this.closeAllDropdowns) this.closeAllDropdowns();
-        });
-      }
-    });
+    const activatePolygons = () => {
+      if (btnPolyHover) btnPolyHover.classList.add('active');
+      if (btnPolyNone) btnPolyNone.classList.remove('active');
+
+      if (btnSensorHover) btnSensorHover.classList.remove('active');
+      if (btnSensorAll) btnSensorAll.classList.remove('active');
+      if (btnSensorNone) btnSensorNone.classList.add('active');
+
+      if (triggerPolyLabel) triggerPolyLabel.textContent = 'Hover';
+      if (triggerSensorLabel) triggerSensorLabel.textContent = 'Ocultas';
+
+      bus.emit('hover_mode:set', 'polygons');
+      bus.emit('sensor_cards:set_mode', 'none');
+    };
+
+    const deactivateAll = () => {
+      if (btnSensorHover) btnSensorHover.classList.remove('active');
+      if (btnSensorAll) btnSensorAll.classList.remove('active');
+      if (btnSensorNone) btnSensorNone.classList.add('active');
+
+      if (btnPolyHover) btnPolyHover.classList.remove('active');
+      if (btnPolyNone) btnPolyNone.classList.add('active');
+
+      if (triggerSensorLabel) triggerSensorLabel.textContent = 'Ocultas';
+      if (triggerPolyLabel) triggerPolyLabel.textContent = 'Oculto';
+
+      bus.emit('hover_mode:set', 'none');
+      bus.emit('sensor_cards:set_mode', 'none');
+    };
+
+    if (btnSensorHover) {
+      btnSensorHover.addEventListener('click', () => {
+        activateSensors('hover');
+        bus.emit('ui:show_toast', '📡 Hovers de Sensores activados (Polígonos pausados para vista limpia).');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    if (btnSensorAll) {
+      btnSensorAll.addEventListener('click', () => {
+        activateSensors('all');
+        bus.emit('ui:show_toast', '📡 Todas las tarjetas de sensores visibles.');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    if (btnSensorNone) {
+      btnSensorNone.addEventListener('click', () => {
+        deactivateAll();
+        bus.emit('ui:show_toast', '🚫 Paneles de sensores ocultos.');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    if (btnPolyHover) {
+      btnPolyHover.addEventListener('click', () => {
+        activatePolygons();
+        bus.emit('ui:show_toast', '🌾 Hovers de Polígonos activados (Sensores pausados para evitar saturación).');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    if (btnPolyNone) {
+      btnPolyNone.addEventListener('click', () => {
+        deactivateAll();
+        bus.emit('ui:show_toast', '🚫 Hovers de polígonos desactivados.');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    // Toggle de geometría de polígonos de cuarteles
+    const btnToggleParcelGeo = document.getElementById('btn_toggle_parcel_geometry');
+    if (btnToggleParcelGeo) {
+      let parcelsVisible = false;
+      btnToggleParcelGeo.addEventListener('click', () => {
+        parcelsVisible = !parcelsVisible;
+        btnToggleParcelGeo.classList.toggle('active', parcelsVisible);
+        btnToggleParcelGeo.innerHTML = parcelsVisible 
+          ? '<span>🗺️</span> Ocultar Polígonos de Cuarteles' 
+          : '<span>🗺️</span> Ver Polígonos de Cuarteles';
+        bus.emit('layer:parcels', parcelsVisible);
+        bus.emit('ui:show_toast', parcelsVisible ? '🗺️ Polígonos de cuarteles visibles.' : '🌱 Terreno limpio (Polígonos de cuarteles ocultos).');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    // Direct click on dropdown triggers (convenient 1-click toggle)
+    const triggerSensorBtn = document.getElementById('trigger_sensor_cards_btn');
+    const triggerPolyBtn = document.getElementById('trigger_polygon_cards_btn');
 
     // Support cycling or external synchronization
     bus.on('sensor_cards:cycle', () => {
-      const current = cardModes.find(c => document.getElementById(c.id)?.classList.contains('active')) || cardModes[0];
-      const nextIdx = (cardModes.indexOf(current) + 1) % cardModes.length;
-      const next = cardModes[nextIdx];
-      setCardMode(next.mode, next.label);
-      bus.emit('ui:show_toast', `📡 Tarjetas IoT 3D: ${next.label}`);
+      const isSensorHover = btnSensorHover && btnSensorHover.classList.contains('active');
+      if (isSensorHover) {
+        activatePolygons();
+        bus.emit('ui:show_toast', '🌾 Hovers de Polígonos activados.');
+      } else {
+        activateSensors('hover');
+        bus.emit('ui:show_toast', '📡 Hovers de Sensores activados.');
+      }
     });
 
     bus.on('sensor_cards:mode_changed', (mode) => {
-      const target = cardModes.find(c => c.mode === mode);
-      if (target) {
-        cardModes.forEach(c => {
-          const el = document.getElementById(c.id);
-          if (el) el.classList.toggle('active', c.mode === mode);
-        });
-        if (triggerLabel) triggerLabel.textContent = target.label;
+      if (mode === 'none') {
+        if (btnSensorNone) btnSensorNone.classList.add('active');
+        if (btnSensorHover) btnSensorHover.classList.remove('active');
+        if (btnSensorAll) btnSensorAll.classList.remove('active');
+        if (triggerSensorLabel) triggerSensorLabel.textContent = 'Ocultas';
+      } else if (mode === 'hover') {
+        if (btnSensorHover) btnSensorHover.classList.add('active');
+        if (btnSensorNone) btnSensorNone.classList.remove('active');
+        if (btnSensorAll) btnSensorAll.classList.remove('active');
+        if (triggerSensorLabel) triggerSensorLabel.textContent = 'Hover';
+      } else if (mode === 'all') {
+        if (btnSensorAll) btnSensorAll.classList.add('active');
+        if (btnSensorHover) btnSensorHover.classList.remove('active');
+        if (btnSensorNone) btnSensorNone.classList.remove('active');
+        if (triggerSensorLabel) triggerSensorLabel.textContent = 'Todas';
       }
     });
   }
@@ -1080,13 +1241,34 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
 
   setupCameraButtons() {
     const presets = [
-      { id: 'cam_overview', preset: 'overview', label: 'General' },
-      { id: 'cam_orchard', preset: 'orchard', label: 'Cuartel A' },
-      { id: 'cam_sensors', preset: 'sensors', label: 'Nodos' }
+      { id: 'cam_overview',  preset: 'overview',  label: 'General' },
+      { id: 'cam_house',     preset: 'house',     label: 'Caserío' },
+      { id: 'cam_solar',     preset: 'solar',     label: 'Agrovoltaico' },
+      { id: 'cam_tractor',   preset: 'tractor',   label: 'Tractor RTK' },
+      { id: 'cam_livestock', preset: 'livestock', label: 'Rebaño' },
+      { id: 'cam_tranque',   preset: 'tranque',   label: 'Tranque Yeomans' },
+      { id: 'cam_condor',    preset: 'condor',    label: 'Cóndor (Cuenca)' },
+      { id: 'cam_sensors',   preset: 'sensors',   label: 'Nodos IoT' }
     ];
 
     const triggerCamLabel = document.getElementById('trigger_cam_label');
+    const hudTour         = document.getElementById('hud_cinematic_tour');
+    const hudTourTitle    = document.getElementById('hud_tour_title');
+    const hudTourSub      = document.getElementById('hud_tour_subtitle');
+    const btnStopTourHud  = document.getElementById('btn_stop_tour_hud');
 
+    const hudWalk         = document.getElementById('hud_walkthrough');
+    const btnStopWalkHud  = document.getElementById('btn_stop_walk_hud');
+
+    const hudTimelapse    = document.getElementById('hud_solar_timelapse');
+    const hudTimeTitle    = document.getElementById('hud_timelapse_title');
+    const btnStopTimeHud  = document.getElementById('btn_stop_timelapse_hud');
+
+    const btnToggleTour   = document.getElementById('btn_toggle_tour');
+    const btnToggleWalk   = document.getElementById('btn_toggle_walk');
+    const btnToggleTime   = document.getElementById('btn_toggle_timelapse');
+
+    // Preset buttons binding
     presets.forEach(({ id, preset, label }) => {
       const btn = document.getElementById(id);
       if (btn) {
@@ -1100,6 +1282,119 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
           bus.emit('map:flyto', preset);
           if (this.closeAllDropdowns) this.closeAllDropdowns();
         });
+      }
+    });
+
+    // Dynamic mode buttons binding
+    if (btnToggleTour) {
+      btnToggleTour.addEventListener('click', () => {
+        bus.emit('map:toggle_tour');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    if (btnToggleWalk) {
+      btnToggleWalk.addEventListener('click', () => {
+        bus.emit('map:toggle_walkthrough');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    if (btnToggleTime) {
+      btnToggleTime.addEventListener('click', () => {
+        bus.emit('map:toggle_timelapse');
+        if (this.closeAllDropdowns) this.closeAllDropdowns();
+      });
+    }
+
+    // HUD close buttons
+    if (btnStopTourHud) btnStopTourHud.onclick = () => bus.emit('map:stop_tour');
+    if (btnStopWalkHud) btnStopWalkHud.onclick = () => bus.emit('map:stop_walkthrough');
+    if (btnStopTimeHud) btnStopTimeHud.onclick = () => bus.emit('map:stop_timelapse');
+
+    // Bus events for Cinematic Tour
+    bus.on('tour:started', () => {
+      if (hudTour) hudTour.style.display = 'flex';
+      if (hudWalk) hudWalk.style.display = 'none';
+      if (hudTimelapse) hudTimelapse.style.display = 'none';
+      if (triggerCamLabel) triggerCamLabel.textContent = 'Tour 🚁';
+      if (btnToggleTour) btnToggleTour.classList.add('active');
+    });
+
+    bus.on('tour:step', ({ spot, index, total }) => {
+      if (hudTourTitle) hudTourTitle.textContent = `Tour Guiado: ${spot.label}`;
+      if (hudTourSub) hudTourSub.textContent = `Parada ${index} de ${total} • ${spot.desc}`;
+      presets.forEach(p => {
+        const el = document.getElementById(p.id);
+        if (el) {
+          if (p.preset === spot.id) el.classList.add('active');
+          else el.classList.remove('active');
+        }
+      });
+    });
+
+    bus.on('tour:stopped', () => {
+      if (hudTour) hudTour.style.display = 'none';
+      if (btnToggleTour) btnToggleTour.classList.remove('active');
+      if (triggerCamLabel) triggerCamLabel.textContent = 'General';
+    });
+
+    // Bus events for Walkthrough Mode
+    bus.on('walkthrough:started', () => {
+      if (hudWalk) hudWalk.style.display = 'flex';
+      if (hudTour) hudTour.style.display = 'none';
+      if (hudTimelapse) hudTimelapse.style.display = 'none';
+      if (triggerCamLabel) triggerCamLabel.textContent = 'Paseo 🚶';
+      if (btnToggleWalk) btnToggleWalk.classList.add('active');
+    });
+
+    bus.on('walkthrough:stopped', () => {
+      if (hudWalk) hudWalk.style.display = 'none';
+      if (btnToggleWalk) btnToggleWalk.classList.remove('active');
+      if (triggerCamLabel) triggerCamLabel.textContent = 'General';
+    });
+
+    // Bus events for Solar Timelapse
+    bus.on('timelapse:started', () => {
+      if (hudTimelapse) hudTimelapse.style.display = 'flex';
+      if (hudTour) hudTour.style.display = 'none';
+      if (triggerCamLabel) triggerCamLabel.textContent = 'Timelapse 🌅';
+      if (btnToggleTime) btnToggleTime.classList.add('active');
+    });
+
+    bus.on('timelapse:tick', ({ hour }) => {
+      const h = Math.floor(hour);
+      const m = Math.floor((hour - h) * 60);
+      const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} hrs`;
+      const isDay = (hour >= 6.8 && hour <= 19.2);
+
+      if (hudTimeTitle) {
+        hudTimeTitle.textContent = `Timelapse Solar 24h: ${timeStr} (${isDay ? 'Luz Día' : 'Noche Estrellada'})`;
+      }
+
+      const hourSlider = document.getElementById('slider_hour');
+      if (hourSlider) {
+        hourSlider.value = hour.toFixed(1);
+        const valHour = document.getElementById('val_hour');
+        if (valHour) valHour.textContent = timeStr;
+      }
+    });
+
+    bus.on('timelapse:stopped', () => {
+      if (hudTimelapse) hudTimelapse.style.display = 'none';
+      if (btnToggleTime) btnToggleTime.classList.remove('active');
+      if (triggerCamLabel) triggerCamLabel.textContent = 'General';
+    });
+
+    // Keyboard Shortcuts (C: Tour, P: Paseo a Pie, T: Timelapse, ESC: Detener)
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (e.key === 'c' || e.key === 'C') {
+        bus.emit('map:toggle_tour');
+      } else if (e.key === 'p' || e.key === 'P') {
+        bus.emit('map:toggle_walkthrough');
+      } else if (e.key === 't' || e.key === 'T') {
+        bus.emit('map:toggle_timelapse');
       }
     });
   }
@@ -1434,1123 +1729,33 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   renderStudioDashboard() {
-    this.currentSelectedEntityId = 'studio_dashboard';
-    this.drawerTitle.textContent = '🛠️ Modo Estudio / Maestro';
-    this.drawerSubtitle.textContent = 'Laboratorio de Riesgos a Escala Cuenca & Sandbox';
-
-    this.drawerBody.innerHTML = `
-      <div class="glass-card" style="border-left: 4px solid var(--accent-purple); padding: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; font-family: monospace; color: #c084fc; font-weight: 700;">[LABORATORIO CIENTÍFICO DE CUENCA]</span>
-          <span style="font-size: 10px; color: var(--text-muted);">Cuenca Río Perquilauquén - Andes</span>
-        </div>
-        <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;">Modelación de Riesgos Territoriales</div>
-      </div>
-
-      <!-- Quick Metrics Grid -->
-      <div class="metrics-grid" style="margin-top: 10px;">
-        <div class="glass-card metric-card">
-          <div class="metric-label">Escala Territorial</div>
-          <div class="metric-value" style="color: var(--accent-purple);">Cuenca<span class="metric-unit">Andina</span></div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Nevados de Longaví a Parral</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Satélites Activos</div>
-          <div class="metric-value" style="color: var(--accent-cyan);">S2+ERA5<span class="metric-unit">MSI</span></div>
-          <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">10m píxel / NBR / NDII</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Motor Hidráulico</div>
-          <div class="metric-value" style="color: var(--accent-emerald);">2D<span class="metric-unit">Saint-Venant</span></div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Tirantes & Cota Desborde</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Piro-Riesgo FWI</div>
-          <div class="metric-value" style="color: var(--accent-amber);">30-30-30<span class="metric-unit">Viento</span></div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Puelche / Raco E-NE</div>
-        </div>
-      <!-- CONSEJO CIENTÍFICO DE CUENCA (3 ASESORES DE CUENCA / EL CERRO) -->
-      <div class="glass-card" style="margin-top: 12px; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <div class="metric-label" style="color: #38bdf8; font-weight: 800; font-size: 11px;">
-            🎓 CONSEJO CIENTÍFICO DE CUENCA (3 ASESORES DEL CERRO)
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <a target="_top" href="http://localhost:7777/#cerro" style="text-decoration: none; font-size: 9px; font-family: monospace; color: #7dd3fc; background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(14,165,233,0.3);" title="Abrir Consejo en Modo Cumbre">
-              122.070 ha • Ver Fichas ↗
-            </a>
-          </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <!-- Asesor 1: Dr. Fernando Albornoz -->
-          <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(56, 189, 248, 0.2); border-left: 3px solid #0284c7; padding: 8px 10px; border-radius: 8px;">
-            <img src="assets/advisors/avatar_cuenca_fernando.jpg" alt="Dr. Fernando Albornoz" style="width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid #38bdf8; flex-shrink: 0;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22><rect width=%2242%22 height=%2242%22 fill=%22%230284c7%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2220%22>🗺️</text></svg>'">
-            <div style="flex: 1; min-width: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <strong style="color: #7dd3fc; font-size: 11px;">Dr. Fernando Albornoz</strong>
-                <span style="font-size: 8px; font-family: monospace; color: #38bdf8;">HEC-RAS • TWI • D8</span>
-              </div>
-              <div style="font-size: 9.5px; color: #cbd5e1; font-weight: 600;">Geógrafo & Geomorfólogo de Cuencas</div>
-              <div style="font-size: 9px; color: var(--text-muted); margin-top: 2px; line-height: 1.35;">
-                <em>"Los tranques Keyline en cota media retienen 4.2% del pico de crecida T=100."</em>
-              </div>
-              <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button id="btnAdvisorAlbornozTrigger" class="btn-tool" style="padding: 3px 8px; font-size: 9px; background: rgba(2, 132, 199, 0.2); border-color: rgba(56, 189, 248, 0.4); color: #7dd3fc;">
-                  🌊 Activar Hidrograma & D8
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Asesora 2: Dra. Natalia Oyarzún -->
-          <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(245, 158, 11, 0.2); border-left: 3px solid #f59e0b; padding: 8px 10px; border-radius: 8px;">
-            <img src="assets/advisors/avatar_cuenca_natalia.jpg" alt="Dra. Natalia Oyarzún" style="width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid #fbbf24; flex-shrink: 0;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22><rect width=%2242%22 height=%2242%22 fill=%22%23f59e0b%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2220%22>🌤️</text></svg>'">
-            <div style="flex: 1; min-width: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <strong style="color: #fde047; font-size: 11px;">Dra. Natalia Oyarzún</strong>
-                <span style="font-size: 8px; font-family: monospace; color: #fbbf24;">FWI 48 • PUELCHE</span>
-              </div>
-              <div style="font-size: 9.5px; color: #cbd5e1; font-weight: 600;">Meteoróloga & Piro-Climatóloga</div>
-              <div style="font-size: 9px; color: var(--text-muted); margin-top: 2px; line-height: 1.35;">
-                <em>"El viento catabático baja por Bullileo y seca el pasto a 8% en 4 horas."</em>
-              </div>
-              <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button id="btnAdvisorOyarzunTrigger" class="btn-tool" style="padding: 3px 8px; font-size: 9px; background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); color: #fde047;">
-                  🌪️ Proyectar Viento Windy & FWI
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Asesor 3: Dr. Marcelo Lagos Riquelme -->
-          <div style="display: flex; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.2); border-left: 3px solid #10b981; padding: 8px 10px; border-radius: 8px;">
-            <img src="assets/advisors/avatar_cuenca_marcelo.jpg" alt="Dr. Marcelo Lagos Riquelme" style="width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid #34d399; flex-shrink: 0;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22><rect width=%2242%22 height=%2242%22 fill=%22%2310b981%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2220%22>🌿</text></svg>'">
-            <div style="flex: 1; min-width: 0;">
-              <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <strong style="color: #6ee7b7; font-size: 11px;">Dr. Marcelo Lagos Riquelme</strong>
-                <span style="font-size: 8px; font-family: monospace; color: #34d399;">BIOMASA • RIPARIO</span>
-              </div>
-              <div style="font-size: 9.5px; color: #cbd5e1; font-weight: 600;">Biólogo Ecólogo del Paisaje</div>
-              <div style="font-size: 9px; color: var(--text-muted); margin-top: 2px; line-height: 1.35;">
-                <em>"El dosel de peumos y boldos disipa el 42% de la energía destructiva del agua."</em>
-              </div>
-              <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button id="btnAdvisorLagosTrigger" class="btn-tool" style="padding: 3px 8px; font-size: 9px; background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;">
-                  🌿 Ver Corredor Ripario & NBR
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SIMULADOR INTERACTIVO DE ESCENARIOS Y MOMENTOS CLIMÁTICOS -->
-      <div class="glass-card" style="margin-top: 12px; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.06);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <div class="metric-label" style="color: #fbbf24; font-weight: 700;">⚡ SIMULADOR DE MOMENTOS Y ESCENARIOS (3D LIVE)</div>
-          <span style="font-size: 10px; color: var(--text-muted);">9 Momentos Calibrados</span>
-        </div>
-
-        <!-- Selector de Momento Climático -->
-        <div style="margin-bottom: 10px;">
-          <label style="font-size: 10px; font-weight: 700; color: #cbd5e1; display: block; margin-bottom: 4px;">Seleccionar Momento / Temporada:</label>
-          <select id="selectClimateMoment" style="width: 100%; padding: 8px 10px; border-radius: 8px; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde047; font-size: 11px; font-weight: 600; cursor: pointer; outline: none;">
-            <option value="CURRENT_LIVE">🟢 1. Momento Actual / Calibrado (Línea Base)</option>
-            <option value="SUMMER_NORMAL">☀️ 2. Verano Normal (Base Estival Mediterránea)</option>
-            <option value="HEATWAVE_ONLY">🔥 3. Solo Ola de Calor (37.2°C • Sin Puelche)</option>
-            <option value="DROUGHT_ONLY">☀️ 4. Solo Megasequía (La Niña • Napa -11.2m)</option>
-            <option value="COMPOUND_EXTREME">🌪️ 5. Megasequía + Ola Calor + Viento Puelche (Alerta FWI 52)</option>
-            <option value="WINTER_DRY">❄️ 6. Invierno Seco & Heladas Polares (-3.8°C)</option>
-            <option value="WINTER_RAINY_T10">🌧️ 7. Invierno Lluvioso Ordinario (65mm • T=10 años)</option>
-            <option value="ATMOSPHERIC_RIVER">🌊 8. Río Atmosférico • Isoterma 0 Alta (140mm • Desborde T=100)</option>
-            <option value="WHATIF_TORRENTIAL">⛈️ 9. Tormenta Torrencial What-If (60mm en 4h • Keyline & Escorrentía)</option>
-          </select>
-        </div>
-
-        <div id="climateMomentInfoBox" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); padding: 8px 10px; border-radius: 8px; margin-bottom: 10px; font-size: 10px; line-height: 1.4; color: #e2e8f0;">
-          <span id="momentBadge" style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; background: rgba(16,185,129,0.2); color: #34d399; margin-bottom: 4px;">En Vivo</span>
-          <div id="momentDesc" style="color: #cbd5e1;">Condiciones de régimen equilibrado. Caudal base y balance hídrico bajo parámetros normales.</div>
-        </div>
-
-        <!-- Ajustes Finos Hidrológicos & Eólicos (Sliders Reactivos) -->
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-          <div style="font-size: 10px; font-weight: 700; color: #38bdf8; margin-bottom: 8px;">🎛️ CONTROLES DINÁMICOS CONTINUOS:</div>
-
-          <!-- Slider 1: Precipitación 24h -->
-          <div style="margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #cbd5e1; margin-bottom: 2px;">
-              <span>🌧️ Lluvia Acumulada 24h:</span>
-              <strong id="sliderRainVal" style="color: #38bdf8; font-family: monospace;">0 mm</strong>
-            </div>
-            <input type="range" id="sliderRainMm" min="0" max="160" step="5" value="0" style="width: 100%; accent-color: #0284c7; cursor: pointer;">
-          </div>
-
-          <!-- Slider 2: Cota Isoterma 0°C -->
-          <div style="margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #cbd5e1; margin-bottom: 2px;">
-              <span>🏔️ Cota Isoterma 0°C:</span>
-              <strong id="sliderIsothermVal" style="color: #a78bfa; font-family: monospace;">2.600 m</strong>
-            </div>
-            <input type="range" id="sliderIsothermM" min="1200" max="3800" step="100" value="2600" style="width: 100%; accent-color: #8b5cf6; cursor: pointer;">
-          </div>
-
-          <!-- Slider 3: Velocidad de Viento -->
-          <div style="margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #cbd5e1; margin-bottom: 2px;">
-              <span>🌪️ Viento (Windy Speed):</span>
-              <strong id="sliderWindVal" style="color: #fbbf24; font-family: monospace;">14 km/h</strong>
-            </div>
-            <input type="range" id="sliderWindKmH" min="0" max="80" step="2" value="14" style="width: 100%; accent-color: #f59e0b; cursor: pointer;">
-          </div>
-
-          <!-- Selector de Dirección de Viento -->
-          <div style="margin-bottom: 4px;">
-            <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #cbd5e1; margin-bottom: 2px;">
-              <span>🧭 Dirección del Viento:</span>
-              <strong id="sliderWindDirLabel" style="color: #fdba74; font-family: monospace;">220° (SW • Brisa Valle)</strong>
-            </div>
-            <select id="selectWindDirection" style="width: 100%; padding: 5px 8px; border-radius: 6px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 10px; cursor: pointer;">
-              <option value="65">65° E-NE (Viento Puelche / Raco • Cordillera)</option>
-              <option value="225" selected>225° SW (Brisa Marina Diurna • Valle)</option>
-              <option value="315">315° NW (Frente de Temporal de Lluvia)</option>
-              <option value="160">160° S (Viento Frío Polar Antártico)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Botones de Acción de Escenario -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button id="btnApplyMomentSim" class="btn-tool" style="justify-content: center; background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.6); color: #fde047; font-weight: bold; padding: 7px 8px;">
-            ⚡ Aplicar al Gemelo 3D
-          </button>
-          <button id="btnResetMomentSim" class="btn-tool" style="justify-content: center; padding: 7px 8px;">
-            🔄 Restaurar Normal
-          </button>
-        </div>
-
-        <button id="btnOpenVecinosFromTerritorial" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 9px 12px; border-color: rgba(202, 138, 4, 0.5); background: linear-gradient(135deg, rgba(202, 138, 4, 0.18), rgba(120, 53, 15, 0.25)); margin-top: 8px;">
-          <span style="font-size: 16px;">🎲</span>
-          <div style="text-align: left; margin-left: 6px;">
-            <div style="font-weight: 800; color: #fde047; font-size: 11px;">Abrir Vista Vecinal & Predios Contiguos (Modo Territorial)</div>
-            <div style="font-size: 9px; color: #fef08a;">Análisis de riesgo compartido con predios vecinos de Las Camelias</div>
-          </div>
-        </button>
-      </div>
-
-      <!-- TELEDETECCIÓN MULTIESPECTRAL & TOPOGRAFÍA DEM -->
-      <div class="glass-card" style="margin-top: 12px; border-color: rgba(6, 182, 212, 0.4); background: rgba(6, 182, 212, 0.06);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <div class="metric-label" style="color: #38bdf8; font-weight: 700;">🛰️ TELEDETECCIÓN & MODELO DIGITAL DE TERRENO (DEM)</div>
-          <span style="font-size: 9px; color: #7dd3fc; font-family: monospace;">SENTINEL-2 / DEM</span>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button id="btnStudioSpectralNdvi" class="btn-tool" style="justify-content: center; font-size: 11px; padding: 7px 6px;">
-            <span>🌱 NDVI (Vigor)</span>
-          </button>
-          <button id="btnStudioSpectralDem" class="btn-tool" style="justify-content: center; font-size: 11px; padding: 7px 6px;">
-            <span>🏔️ DEM (Curvas)</span>
-          </button>
-          <button id="btnStudioSpectralNdwi" class="btn-tool" style="justify-content: center; font-size: 11px; padding: 7px 6px;">
-            <span>💧 NDWI (Humedad)</span>
-          </button>
-          <button id="btnStudioSpectralNbr" class="btn-tool" style="justify-content: center; font-size: 11px; padding: 7px 6px;">
-            <span>🔥 NBR (Biomasa)</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- FLUJOS ESTRATIGRÁFICOS & GEOMÓRFICOS -->
-      <div class="glass-card" style="margin-top: 12px; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.06);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <div class="metric-label" style="color: #34d399; font-weight: 700;">📐 FLUJOS GEOMÓRFICOS & ESTRATIGRAFÍA (3D)</div>
-          <span style="font-size: 9px; color: #6ee7b7; font-family: monospace;">TARBUCK / D8</span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <button id="btnStudioGeoWaterFlow" class="btn-tool" style="justify-content: flex-start; padding: 8px 10px;">
-            <span>🌊</span>
-            <div style="text-align: left; margin-left: 6px;">
-              <div style="font-weight: 700; color: #38bdf8; font-size: 11px;">Flechas de Flujo Hidráulico (D8 Talwegs)</div>
-              <div style="font-size: 9px; color: var(--text-muted);">Vectores de máxima pendiente hacia el estero</div>
-            </div>
-          </button>
-          <button id="btnStudioGeoWindyStream" class="btn-tool" style="justify-content: flex-start; padding: 8px 10px;">
-            <span>🌪️</span>
-            <div style="text-align: left; margin-left: 6px;">
-              <div style="font-weight: 700; color: #fbbf24; font-size: 11px;">Campo de Viento Animado (Maestro)</div>
-              <div style="font-size: 9px; color: var(--text-muted);">Todas las corrientes orográficas 3D</div>
-            </div>
-          </button>
-          
-          <!-- Sub-corrientes de aire independientes en Studio -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding-left: 10px;">
-            <button id="btnStudioWindPuelche" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🔴</span> Puelche E-NE
-            </button>
-            <button id="btnStudioWindBreeze" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🔵</span> Brisa SW
-            </button>
-            <button id="btnStudioWindCatabatic" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🟣</span> Catabático (Helada)
-            </button>
-            <button id="btnStudioWindTalweg" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🟢</span> Chorro Quebrada
-            </button>
-          </div>
-
-          <button id="btnStudioGeoHazardZones" class="btn-tool" style="justify-content: flex-start; padding: 8px 10px;">
-            <span>📐</span>
-            <div style="text-align: left; margin-left: 6px;">
-              <div style="font-weight: 700; color: #f472b6; font-size: 11px;">Zonas Delimitadas de Inundación & Fuego</div>
-              <div style="font-size: 9px; color: var(--text-muted);">Envolventes T=10, T=100 y sector piro-riesgo</div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- DOSSIER METODOLÓGICO: CÓMO ELABORAR MAPAS DE RIESGO -->
-      <div class="glass-card" style="margin-top: 12px;">
-        <div class="metric-label" style="color: var(--accent-cyan); font-weight: 700; margin-bottom: 8px;">
-          📚 METODOLOGÍA CIENTÍFICA: CÓMO ELABORAR MAPAS DE RIESGO
-        </div>
-
-        <!-- Metodología 1: Incendios -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(239, 68, 68, 0.25); border-left: 3px solid #ef4444; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: #f87171; font-size: 11px;">1. Mapas de Piro-Riesgo & FWI (Incendios)</strong>
-            <span style="font-size: 9px; font-family: monospace; color: #fca5a5;">SENTINEL-2 / ERA5</span>
-          </div>
-          <div style="font-size: 10px; color: var(--text-secondary); margin-top: 5px; line-height: 1.45;">
-            • <strong>Índice Espectral NBR:</strong> <code style="color: #67e8f9;">(B8A - B12) / (B8A + B12)</code> para detectar humedad de follaje seco vs verde.<br>
-            • <strong>Contenido de Humedad del Combustible (FMC):</strong> Determina la inflamabilidad del dosel vivo.<br>
-            • <strong>Fórmula FWI Canadiense:</strong> Acoplamiento de <span style="color:#fde047;">FFMC</span> (combustible fino superficial), <span style="color:#fde047;">DMC</span> (materia orgánica media) y <span style="color:#fde047;">DC</span> (sequedad profunda) $\\rightarrow$ <span style="color:#fb923c;">ISI</span> (velocidad propagación por viento) $\\rightarrow$ <strong>FWI Final</strong>.<br>
-            • <strong>El Viento Puelche / Raco:</strong> Viento catabático cálido y seco desde la Cordillera de los Andes que activa la regla crítica <strong>30-30-30</strong> (>30°C, <30% HR, >30 km/h).
-          </div>
-        </div>
-
-        <!-- Metodología 2: Inundaciones -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(2, 132, 199, 0.25); border-left: 3px solid #0284c7; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: #38bdf8; font-size: 11px;">2. Mapas de Inundación Fluvial & Isoterma 0 Alta</strong>
-            <span style="font-size: 9px; font-family: monospace; color: #7dd3fc;">LiDAR 5cm / SAINT-VENANT</span>
-          </div>
-          <div style="font-size: 10px; color: var(--text-secondary); margin-top: 5px; line-height: 1.45;">
-            • <strong>Modelación 2D Saint-Venant:</strong> Simula velocidades de flujo, tirantes de agua y envolventes de inundación en el meandro del Estero Colliguay.<br>
-            • <strong>Fenómeno de Isoterma 0 Alta:</strong> Ríos atmosféricos cálidos que precipitan agua líquida sobre nieve andina acumulada (>3.000m), quintuplicando el caudal instantáneo en la cuenca baja de Parral/Retiro.<br>
-            • <strong>Períodos de Retorno:</strong> T=10 años (crecida ordinaria), T=50 años (desborde de riberas bajas) y T=100 años (evento catastrófico como junio 2023).<br>
-            • <strong>Bioingeniería:</strong> El corredor ribereño de Quillay y Sauces reduce la velocidad del agua en un 42% por fricción biológica rugosa.
-          </div>
-        </div>
-
-        <!-- Metodología 3: Sequía & Balance Acuífero -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.25); border-left: 3px solid #10b981; padding: 10px 12px; border-radius: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: #34d399; font-size: 11px;">3. Sequía & Balance Acuífero Subterráneo</strong>
-            <span style="font-size: 9px; font-family: monospace; color: #6ee7b7;">GRACE / FAO-56</span>
-          </div>
-          <div style="font-size: 10px; color: var(--text-secondary); margin-top: 5px; line-height: 1.45;">
-            • <strong>Balance en 3 Estratos:</strong> 0-20 cm (evaporación directa), 20-60 cm (absorción radicular activa de cerezos y vides) y 60-100 cm (recarga de napa).<br>
-            • <strong>Penman-Monteith FAO-56:</strong> Evapotranspiración real del cultivo acoplada a déficit de presión de vapor (VPD).<br>
-            • <strong>Piezometría DGA en Tiempo Real:</strong> Monitoreo continuo de pozos inscritos en la cuenca del Perquilauquén para evitar la sobreexplotación hídrica.
-          </div>
-        </div>
-      </div>
-
-      <!-- Acciones de Estudio Espaciales -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="metric-label">🛠️ Herramientas Espaciales del Gemelo 3D</div>
-        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
-          <button id="btnQuickDrawFromStudio" class="btn-tool" style="width: 100%; justify-content: center;">
-            <span>🎨 Abrir Pincel Vectorial 3D</span>
-          </button>
-          <button id="btnQuickSculptFromStudio" class="btn-tool" style="width: 100%; justify-content: center;">
-            <span>⛰️ Esculpir Terreno (Hacedor de Relieve DEM)</span>
-          </button>
-          <button id="btnQuickCatalogFromStudio" class="btn-tool" style="width: 100%; justify-content: center;">
-            <span>ℹ️ Ver Catálogo Botánico de 35 Ítems</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    // Wire Climate Moment Selector & Sliders (8 Calibrated Moments)
-    const selectMoment = document.getElementById('selectClimateMoment');
-    const momentBadge = document.getElementById('momentBadge');
-    const momentDesc = document.getElementById('momentDesc');
-
-    const sliderRain = document.getElementById('sliderRainMm');
-    const sliderRainVal = document.getElementById('sliderRainVal');
-
-    const sliderIsotherm = document.getElementById('sliderIsothermM');
-    const sliderIsothermVal = document.getElementById('sliderIsothermVal');
-
-    const sliderWind = document.getElementById('sliderWindKmH');
-    const sliderWindVal = document.getElementById('sliderWindVal');
-
-    const selectWindDir = document.getElementById('selectWindDirection');
-    const sliderWindDirLabel = document.getElementById('sliderWindDirLabel');
-
-    const updateMomentUI = (momentKey) => {
-      const scenario = ClimateScenarioModel.SCENARIOS[momentKey];
-      if (!scenario) return;
-
-      if (momentBadge) {
-        momentBadge.textContent = scenario.badge;
-        momentBadge.style.color = scenario.badgeColor;
-        momentBadge.style.background = `${scenario.badgeColor}22`;
-      }
-      if (momentDesc) {
-        momentDesc.textContent = scenario.description;
-      }
-
-      // Sincronizar sliders
-      if (sliderRain && sliderRainVal) {
-        sliderRain.value = scenario.weather.precip24h;
-        sliderRainVal.textContent = `${scenario.weather.precip24h} mm`;
-      }
-      if (sliderIsotherm && sliderIsothermVal) {
-        sliderIsotherm.value = scenario.weather.isothermZeroM;
-        sliderIsothermVal.textContent = `${scenario.weather.isothermZeroM.toLocaleString()} m`;
-      }
-      if (sliderWind && sliderWindVal) {
-        sliderWind.value = scenario.weather.windSpeed;
-        sliderWindVal.textContent = `${scenario.weather.windSpeed} km/h`;
-      }
-      if (selectWindDir && sliderWindDirLabel) {
-        selectWindDir.value = scenario.weather.windDirection;
-        const opt = selectWindDir.options[selectWindDir.selectedIndex];
-        sliderWindDirLabel.textContent = opt ? opt.textContent : `${scenario.weather.windDirection}°`;
-      }
-    };
-
-    selectMoment?.addEventListener('change', (e) => {
-      updateMomentUI(e.target.value);
-    });
-
-    sliderRain?.addEventListener('input', (e) => {
-      if (sliderRainVal) sliderRainVal.textContent = `${e.target.value} mm`;
-    });
-
-    sliderIsotherm?.addEventListener('input', (e) => {
-      if (sliderIsothermVal) sliderIsothermVal.textContent = `${parseInt(e.target.value).toLocaleString()} m`;
-    });
-
-    sliderWind?.addEventListener('input', (e) => {
-      if (sliderWindVal) sliderWindVal.textContent = `${e.target.value} km/h`;
-    });
-
-    selectWindDir?.addEventListener('change', (e) => {
-      if (sliderWindDirLabel) {
-        const opt = selectWindDir.options[selectWindDir.selectedIndex];
-        sliderWindDirLabel.textContent = opt ? opt.textContent : `${e.target.value}°`;
-      }
-    });
-
-    // Botón: Aplicar al Gemelo 3D
-    document.getElementById('btnApplyMomentSim')?.addEventListener('click', () => {
-      const momentKey = selectMoment?.value || 'CURRENT_LIVE';
-      const scenario = ClimateScenarioModel.SCENARIOS[momentKey];
-
-      const rainMm = parseFloat(sliderRain?.value || (scenario ? scenario.weather.precip24h : 0));
-      const isothermM = parseFloat(sliderIsotherm?.value || (scenario ? scenario.weather.isothermZeroM : 2600));
-      const windSpeed = parseFloat(sliderWind?.value || (scenario ? scenario.weather.windSpeed : 15));
-      const windDir = parseFloat(selectWindDir?.value || (scenario ? scenario.weather.windDirection : 220));
-
-      // 1. Evaluar hidrología de inundación
-      const hydro = ClimateScenarioModel.computeHydrology(rainMm, isothermM, 0.5);
-      bus.emit('basin:flood_level', hydro.floodLevel);
-
-      // 2. Evaluar y aplicar campo de viento dinámico (Windy Style)
-      bus.emit('geomorph:set_wind_params', { speed: windSpeed, direction: windDir });
-      bus.emit('geomorph:toggle_wind_streamlines', true);
-
-      // Si el viento es Puelche (>30 km/h y E-NE), activar modo Puelche
-      const isPuelche = (windDir >= 30 && windDir <= 110 && windSpeed > 25);
-      bus.emit('basin:puelche_wind', isPuelche);
-
-      // 3. Evaluar riesgo de incendios y estrés de acuífero
-      if (scenario.id === 'WHATIF_TORRENTIAL') {
-        bus.emit('risk:set_mode', 'water');
-        bus.emit('geomorph:toggle_water_flows', true);
-        if (window.agriTwinApp?.geomorphicFlowManager) {
-          window.agriTwinApp.geomorphicFlowManager.startTorrentialStorm({ mm: 60, hours: 4 });
-        }
-      } else if (isPuelche || scenario.category.includes('fire')) {
-        bus.emit('risk:set_mode', 'fire');
-        bus.emit('map:set_layer_mode', 'nbr');
-      } else if (hydro.isOverflow || rainMm > 40) {
-        bus.emit('risk:set_mode', 'water');
-        bus.emit('geomorph:toggle_water_flows', true);
-      } else if (scenario.category.includes('drought')) {
-        bus.emit('basin:aquifer_stress', true);
-        bus.emit('risk:set_mode', 'water');
-      }
-
-      this.showAlert(`⚡ Momento Aplicado: ${scenario.name} • Caudal est: ${hydro.flowRateM3s} m³/s • Viento: ${windSpeed} km/h`);
-    });
-
-    // Botón: Restaurar Normal
-    document.getElementById('btnResetMomentSim')?.addEventListener('click', () => {
-      if (selectMoment) selectMoment.value = 'CURRENT_LIVE';
-      updateMomentUI('CURRENT_LIVE');
-      bus.emit('basin:reset_scenarios');
-      bus.emit('risk:set_mode', 'none');
-      bus.emit('geomorph:set_wind_params', { speed: 14, direction: 220 });
-      if (window.agriTwinApp?.geomorphicFlowManager?.resetTorrentialStorm) {
-        window.agriTwinApp.geomorphicFlowManager.resetTorrentialStorm();
-      }
-      this.showAlert('✅ Escenario Normal Restablecido: Sensores y caudales en rango óptimo.');
-    });
-
-    document.getElementById('btnOpenVecinosFromTerritorial')?.addEventListener('click', () => {
-      this.openVecinosCatanModal();
-    });
-
-    // Wire Quick Tools
-    document.getElementById('btnQuickDrawFromStudio')?.addEventListener('click', () => {
-      this.drawingManager?.toggleDrawingMode(true);
-    });
-    document.getElementById('btnQuickSculptFromStudio')?.addEventListener('click', () => {
-      document.getElementById('dropdown_relief')?.classList.add('open');
-    });
-    document.getElementById('btnQuickCatalogFromStudio')?.addEventListener('click', () => {
-      const modal = document.getElementById('infoModalOverlay');
-      if (modal) modal.style.display = 'flex';
-    });
-
-    // Wire Multispectral & DEM buttons in Studio
-    document.getElementById('btnStudioSpectralNdvi')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'ndvi');
-      this.showAlert('🛰️ Teledetección NDVI: Vigor de vegetación activo (Sentinel-2 B8/B4)');
-    });
-    document.getElementById('btnStudioSpectralDem')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'dem');
-      this.showAlert('🏔️ Topografía DEM: Modelo Hipsométrico con Curvas de Nivel maestras y secundarias');
-    });
-    document.getElementById('btnStudioSpectralNdwi')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'ndwi');
-      this.showAlert('💧 Hidrología NDWI: Detección de estero, zonas anegables y drenaje');
-    });
-    document.getElementById('btnStudioSpectralNbr')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'nbr');
-      this.showAlert('🔥 Biomasa NBR: Carga de combustible forestal esclerófilo / pino');
-    });
-
-    // Wire Geomorphic Flow buttons in Studio
-    let studioWater = false;
-    let studioWind  = false;
-    let studioZones = false;
-
-    document.getElementById('btnStudioGeoWaterFlow')?.addEventListener('click', () => {
-      studioWater = !studioWater;
-      bus.emit('geomorph:toggle_water_flows', studioWater);
-    });
-    document.getElementById('btnStudioGeoWindyStream')?.addEventListener('click', () => {
-      studioWind = !studioWind;
-      bus.emit('geomorph:toggle_wind_streamlines', studioWind);
-    });
-
-    const studioWindToggles = [
-      { id: 'btnStudioWindPuelche', currentId: 'puelche' },
-      { id: 'btnStudioWindBreeze', currentId: 'breeze' },
-      { id: 'btnStudioWindCatabatic', currentId: 'catabatic' },
-      { id: 'btnStudioWindTalweg', currentId: 'talweg' }
-    ];
-
-    studioWindToggles.forEach(item => {
-      const btn = document.getElementById(item.id);
-      if (btn) {
-        let isAct = true;
-        btn.addEventListener('click', () => {
-          isAct = !isAct;
-          btn.classList.toggle('active', isAct);
-          bus.emit('geomorph:toggle_wind_current', { currentId: item.currentId, active: isAct });
-          if (isAct && !studioWind) {
-            studioWind = true;
-            bus.emit('geomorph:toggle_wind_streamlines', true);
-          }
-        });
-      }
-    });
-
-    document.getElementById('btnStudioGeoHazardZones')?.addEventListener('click', () => {
-      studioZones = !studioZones;
-      bus.emit('geomorph:toggle_hazard_zones', studioZones);
-    });
-
-    // Wire Cuenca Advisors Direct Directives
-    document.getElementById('btnAdvisorAlbornozTrigger')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'dem');
-      bus.emit('geomorph:toggle_water_flows', true);
-      this.showAlert('🗺️ Dr. Fernando Albornoz: Activando análisis geomorfológico HEC-RAS, curvas de nivel y vectores de drenaje D8.');
-    });
-
-    document.getElementById('btnAdvisorOyarzunTrigger')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'nbr');
-      bus.emit('geomorph:toggle_wind_streamlines', true);
-      bus.emit('basin:puelche_wind', true);
-      bus.emit('risk:set_mode', 'fire');
-      this.showAlert('🌤️ Dra. Natalia Oyarzún: Proyección de ráfagas de Viento Puelche 65 km/h y mapa de combustible FWI 48 activo.');
-    });
-
-    document.getElementById('btnAdvisorLagosTrigger')?.addEventListener('click', () => {
-      bus.emit('map:set_layer_mode', 'ndvi');
-      bus.emit('geomorph:toggle_hazard_zones', true);
-      this.showAlert('🌿 Dr. Marcelo Lagos: Zonificación de corredor ripario, biofiltro macrófitas y amortiguación de crecidas.');
-    });
+    return this.dashboardsView.renderStudioDashboard();
   }
 
   renderEnterpriseDashboard() {
-    this.currentSelectedEntityId = 'enterprise_dashboard';
-    this.drawerTitle.textContent = '🍇 AgroTwin Enterprise Suite';
-    this.drawerSubtitle.textContent = 'Viñedos & Frutales de Exportación • Maule';
-
-    this.drawerBody.innerHTML = `
-      <div class="glass-card" style="border-left: 4px solid var(--accent-emerald); padding: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; font-family: monospace; color: var(--accent-emerald); font-weight: 700;">[SIMULADO • FAO-56 CALIBRADO]</span>
-          <span style="font-size: 10px; color: var(--text-muted);">Cuartel A • Brotes</span>
-        </div>
-        <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;">Balance Hídrico & Turno de Riego</div>
-      </div>
-
-      <div class="metrics-grid" style="margin-top: 10px;">
-        <div class="glass-card metric-card">
-          <div class="metric-label">Estrés Hídrico (CWSI)</div>
-          <div class="metric-value" style="color: var(--accent-cyan);">0.26<span class="metric-unit">CWSI</span></div>
-          <div style="font-size: 10px; color: var(--accent-emerald); margin-top: 2px;">Óptimo turgencia</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Lámina de Riego</div>
-          <div class="metric-value" style="color: var(--accent-amber);">5.8<span class="metric-unit">mm</span></div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">42 min de bombeo</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Humedad Radicular (20-60cm)</div>
-          <div class="metric-value">36.2<span class="metric-unit">%</span></div>
-          <div style="font-size: 10px; color: var(--text-secondary); margin-top: 2px;">Capacidad de Campo: 38%</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Alerta Helada Nocturna</div>
-          <div class="metric-value" style="color: #38bdf8; font-size: 16px;">1.4°C<span class="metric-unit">mínima</span></div>
-          <div style="font-size: 10px; color: #38bdf8; margin-top: 2px;">06:15 AM (En el bajo)</div>
-        </div>
-      </div>
-
-      <!-- Soil Profile 3 Layers -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="metric-label">💧 Perfil de Suelo por Estratos (Modelo de Cubetas)</div>
-        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px; font-size: 11px;">
-          <div style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 6px 10px; border-radius: 6px;">
-            <span>0 - 20 cm (Evaporación directa):</span>
-            <strong style="color: var(--accent-amber);">24.8%</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(6,182,212,0.08); padding: 6px 10px; border-radius: 6px; border-left: 2px solid var(--accent-cyan);">
-            <span>20 - 60 cm (Zona Radicular Activa):</span>
-            <strong style="color: var(--accent-cyan);">36.2%</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between; background: rgba(16,185,129,0.08); padding: 6px 10px; border-radius: 6px; border-left: 2px solid var(--accent-emerald);">
-            <span>60 - 100 cm (Reserva Subterránea):</span>
-            <strong style="color: var(--accent-emerald);">42.5%</strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- WhatsApp Action -->
-      <div class="glass-card" style="margin-top: 10px; background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-weight: 700; font-size: 12px; color: #fff;">Canal de Despacho Inmediato</div>
-            <div style="font-size: 11px; color: var(--text-muted);">Envío autónomo a WhatsApp del Administrador</div>
-          </div>
-          <button id="btnTriggerWhatsAppFromDrawer" class="btn-primary" style="padding: 6px 12px; font-size: 11px; background: #059669;">
-            📲 Ver WhatsApp
-          </button>
-        </div>
-      </div>
-    `;
-
-    const btnWs = document.getElementById('btnTriggerWhatsAppFromDrawer');
-    if (btnWs) {
-      btnWs.addEventListener('click', () => {
-        const modal = document.getElementById('whatsAppAlertModal');
-        if (modal) modal.style.display = 'flex';
-      });
-    }
+    return this.dashboardsView.renderEnterpriseDashboard();
   }
 
   renderTerritorialDashboard(selectedHex = null) {
-    this.currentSelectedEntityId = 'territorial_dashboard';
-    this.drawerTitle.textContent = '🗺️ AgroTwin Territorial & Vecinal';
-    this.drawerSubtitle.textContent = 'Matriz Catan de Predios Acoplados • Retiro / Maule';
-
-    const hex = selectedHex || this.selectedTerritorialHex || this.territorialCatanManager?.getHex(0, 0) || {
-      q: 0, r: 0,
-      biome: 'fundo_colliguay',
-      name: 'Fundo Estero Colliguay',
-      owner: 'Familia Meniels',
-      surfaceHa: 12.8,
-      dice: 8,
-      isCenter: true,
-      fwi: 18,
-      waterRightsLs: 45,
-      permacultureRole: 'Núcleo Central: Tranque Keyline, 8 potreros PRV y huerto biointensivo',
-      yieldStr: '+5 🌾 +4 💧 +3 ⚡'
-    };
-
-    const isCenter = hex.isCenter || (hex.q === 0 && hex.r === 0);
-    const allHexes = this.territorialCatanManager?.getAllHexes() || [];
-    const activeLens = this.territorialCatanManager?.activeLens || 'lulc';
-
-    // Biome metadata lookup
-    const biomeIcons = {
-      fundo_colliguay: '🏰',
-      monoculture: '🌲',
-      forest_pine: '🌲',
-      vineyard: '🍇',
-      native_forest: '🌳',
-      river_wetland: '💧',
-      pasture: '🌾',
-      precordillera: '🏔️',
-      wheat: '🌾'
-    };
-    const biomeNames = {
-      fundo_colliguay: 'Fundo Central (Regenerativo)',
-      monoculture: 'Plantación Pino / Eucalipto',
-      forest_pine: 'Plantación Forestal',
-      vineyard: 'Viñedo Patrimonial',
-      native_forest: 'Reserva Bosque Esclerófilo',
-      river_wetland: 'Ribera & Humedal Fluvial',
-      pasture: 'Pradera Agroecológica / PRV',
-      precordillera: 'Precordillera Andina',
-      wheat: 'Cereal de Secano'
-    };
-
-    const bIcon = biomeIcons[hex.biome] || '🗺️';
-    const bName = biomeNames[hex.biome] || hex.biome;
-
-    // FWI risk presentation
-    const fwiVal = hex.fwi || 20;
-    const fwiColor = fwiVal > 60 ? '#ef4444' : (fwiVal > 30 ? '#f59e0b' : '#10b981');
-    const fwiLevel = fwiVal > 60 ? 'Crítico (Puelche)' : (fwiVal > 30 ? 'Moderado / Alerta' : 'Bajo / Resiliente');
-
-    this.drawerBody.innerHTML = `
-      <!-- 1. Multi-Scale Zoom Switcher -->
-      <div class="glass-card" style="padding: 10px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); margin-bottom: 12px;">
-        <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
-          🔭 Escala de Observación (Acople Continuo 3D)
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <button onclick="window.flyToColliguayLocal()" class="btn-action-primary" style="padding: 8px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #6ee7b7; border-radius: 6px; cursor: pointer; font-weight: 700;">
-            <span>🏡 Zoom In: Predio (12.8 ha)</span>
-          </button>
-          <button onclick="window.flyToTerritorialVecinal()" class="btn-action-primary" style="padding: 8px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #7dd3fc; border-radius: 6px; cursor: pointer; font-weight: 700;">
-            <span>🗺️ Zoom Out: Matriz Catan</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Consejo Consultivo de la Mesa Vecinal (3 Asesores) -->
-      <div class="glass-card" style="padding: 10px; margin-bottom: 12px; background: rgba(6, 78, 59, 0.25); border: 1px solid rgba(16, 185, 129, 0.4);">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <span style="font-size: 16px;">🤝</span>
-            <div>
-              <div style="font-size: 11px; font-weight: 800; color: #34d399;">Consejo Consultivo Vecinal (3 Asesores)</div>
-              <div style="font-size: 9px; color: #a7f3d0; font-family: monospace;">Dra. Camila • Mg. Patricia • Don Silvestre</div>
-            </div>
-          </div>
-          <a target="_top" href="http://localhost:7777/#mesa" style="text-decoration: none; padding: 4px 8px; background: rgba(16, 185, 129, 0.25); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 6px; color: #86efac; font-size: 10px; font-weight: 700; font-family: monospace; cursor: pointer;" title="Abrir Consejo en La Mesa Vecinal">
-            Ver Fichas ↗
-          </a>
-        </div>
-      </div>
-
-      <!-- 2. Catan Tactical Lenses -->
-      <div class="glass-card" style="padding: 10px; margin-bottom: 12px; background: rgba(30, 41, 59, 0.5);">
-        <div style="font-size: 11px; font-weight: 700; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between;">
-          <span>🔍 Capas Tácticas de Información</span>
-          <span style="color: #fde047; font-size: 10px; font-family: monospace;">[Civ VI / Catan Matrix]</span>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
-          <button onclick="window.setCatanLens('lulc')" class="tab-btn ${activeLens === 'lulc' ? 'active' : ''}" style="font-size: 10.5px; padding: 6px; text-align: left;">
-            🗺️ Biomas & Usos (LULC)
-          </button>
-          <button onclick="window.setCatanLens('fire')" class="tab-btn ${activeLens === 'fire' ? 'active' : ''}" style="font-size: 10.5px; padding: 6px; text-align: left; color: #f87171;">
-            🔥 Piro-Riesgo (FWI)
-          </button>
-          <button onclick="window.setCatanLens('flood')" class="tab-btn ${activeLens === 'flood' ? 'active' : ''}" style="font-size: 10.5px; padding: 6px; text-align: left; color: #38bdf8;">
-            💧 Hídrico & TWI
-          </button>
-          <button onclick="window.setCatanLens('permaculture')" class="tab-btn ${activeLens === 'permaculture' ? 'active' : ''}" style="font-size: 10.5px; padding: 6px; text-align: left; color: #4ade80;">
-            🌀 Permacultura Inter-Sistemas
-          </button>
-        </div>
-      </div>
-
-      <!-- 3. Selected Hexagon Dossier -->
-      <div class="glass-card" style="border-left: 4px solid ${isCenter ? '#10b981' : '#f59e0b'}; padding: 14px; margin-bottom: 12px; background: rgba(15, 23, 42, 0.85);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 20px;">${bIcon}</span>
-              <span style="font-size: 15px; font-weight: 800; color: #fff;">${hex.name}</span>
-            </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">
-              Propietario: <strong style="color: #cbd5e1;">${hex.owner}</strong> • ${hex.surfaceHa} ha
-            </div>
-          </div>
-          <span style="font-size: 11px; font-family: monospace; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 4px; color: #fde047; font-weight: 700;">
-            Casilla [${hex.q}, ${hex.r}]
-          </span>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
-          <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Uso de Suelo / Bioma</div>
-            <div style="font-size: 12px; font-weight: 700; color: #e2e8f0; margin-top: 2px;">${bName}</div>
-          </div>
-          <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-            <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Ficha Catan & Producción</div>
-            <div style="font-size: 12px; font-weight: 700; color: #fde047; margin-top: 2px;">
-              🎲 Dado ${hex.dice || 7} • ${hex.yieldStr || 'Estándar'}
-            </div>
-          </div>
-        </div>
-
-        <!-- Risk & Hydro stats -->
-        <div style="margin-top: 10px; background: rgba(0,0,0,0.25); padding: 10px; border-radius: 6px;">
-          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-            <span style="color: #94a3b8;">🔥 Piro-Riesgo FWI:</span>
-            <strong style="color: ${fwiColor};">${hex.fwi} • ${fwiLevel}</strong>
-          </div>
-          <div style="height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
-            <div style="height: 100%; width: ${Math.min(100, hex.fwi)}%; background: ${fwiColor};"></div>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; font-size: 11px;">
-            <span style="color: #94a3b8;">💧 Derechos Hídricos DGA:</span>
-            <strong style="color: #38bdf8;">${hex.waterRightsLs || 15} L/s</strong>
-          </div>
-        </div>
-
-        <!-- Inter-System Permaculture Coupling -->
-        <div style="margin-top: 10px; padding: 10px; background: rgba(6, 78, 59, 0.3); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 6px;">
-          <div style="font-size: 11px; font-weight: 700; color: #34d399; display: flex; align-items: center; gap: 5px;">
-            <span>🌀 Acople Permacultural Inter-Sistemas:</span>
-          </div>
-          <div style="font-size: 11px; color: #e2e8f0; margin-top: 5px; line-height: 1.45;">
-            ${hex.permacultureRole}
-          </div>
-          <div style="font-size: 10px; color: #a7f3d0; margin-top: 6px; border-top: 1px dashed rgba(52, 211, 153, 0.3); padding-top: 5px; line-height: 1.4;">
-            • <strong>Corredor Biológico:</strong> Conexión de polinizadores y fauna nativa con la Zona 5 del predio.<br>
-            • <strong>Infiltración Keyline:</strong> Amortiguación de escorrentía evitando cárcavas aguas abajo.<br>
-            • <strong>Bio-Cortafuegos:</strong> Pradera silvopastoril buffer frente a monocultivos vecinos.
-          </div>
-        </div>
-
-        <!-- 3.1 Expediente Legal de Límites & CBR -->
-        <div style="margin-top: 10px; padding: 10px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 6px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <strong style="font-size: 11px; color: #fde047;">⚖️ Registro de Límites & Régimen de Suelo:</strong>
-            <span style="font-size: 9px; font-family: monospace; color: #34d399; background: rgba(0,0,0,0.4); padding: 1px 5px; border-radius: 3px;">DL 3516 • CBR</span>
-          </div>
-          <div style="font-size: 10.5px; color: #cbd5e1; line-height: 1.4;">
-            Límite mínimo 0.5 ha ($5.000\text{ m}^2$) • Excepción construcciones Art. 55 LGUC (IFC).
-          </div>
-          <button onclick="window.app?.agroWorkshopOverlay?.openStationModal?.(window.app?.agroWorkshopOverlay?.constructor?.WORKSHOP_STATIONS_DATA?.find(s => s.id === 'station_map') || {id: 'station_map'})" style="margin-top: 6px; width: 100%; padding: 6px; background: rgba(245,158,11,0.25); border: 1px solid #f59e0b; color: #fef08a; border-radius: 4px; font-size: 10.5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <span>📜 Ver Título CBR, Deslindes & Bóveda Documental</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. Client Tool: + Agregar Predio / Casilla Vecina -->
-      <div class="glass-card" style="margin-bottom: 12px; padding: 12px; border: 1px dashed rgba(245, 158, 11, 0.6); background: rgba(30, 41, 59, 0.4);">
-        <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="window.toggleAddNeighborForm()">
-          <span style="font-size: 12px; font-weight: 800; color: #fde047; display: flex; align-items: center; gap: 6px;">
-            <span>➕ Registrar Nuevo Predio Vecino (Cliente)</span>
-          </span>
-          <span id="addNeighborToggleIcon" style="font-size: 12px; color: #fde047;">▼</span>
-        </div>
-        <div style="font-size: 10px; color: #94a3b8; margin-top: 3px;">
-          Crea hexágonos contiguos para monitorear riesgos (incendios, inundaciones, derechos de agua) y acoplamiento permacultural.
-        </div>
-
-        <div id="addNeighborFormContainer" style="display: none; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div>
-              <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Nombre del Predio / Vecino:</label>
-              <input id="newHexName" type="text" placeholder="Ej: Fundo San José de Longaví" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <div>
-                <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Propietario / Contacto:</label>
-                <input id="newHexOwner" type="text" placeholder="Ej: Sucesión Pinochet" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-              </div>
-              <div>
-                <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Superficie (ha):</label>
-                <input id="newHexSurface" type="number" value="30" step="0.5" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-              </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <div>
-                <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Bioma / Uso:</label>
-                <select id="newHexBiome" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-                  <option value="pasture">🌾 Pradera / Pastizal</option>
-                  <option value="wheat">🌾 Trigo / Cereal Secano</option>
-                  <option value="vineyard">🍇 Viñedo Patrimonial</option>
-                  <option value="monoculture">🌲 Plantación Pino / Eucalipto</option>
-                  <option value="native_forest">🌳 Bosque Nativo / Quebrada</option>
-                  <option value="river_wetland">💧 Ribera / Estero / Humedal</option>
-                </select>
-              </div>
-              <div>
-                <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Ubicación Contigua:</label>
-                <select id="newHexDirection" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-                  <option value="0,-2">Norte [0, -2]</option>
-                  <option value="1,-2">Nor-Este [1, -2]</option>
-                  <option value="2,-1">Este-Norte [2, -1]</option>
-                  <option value="2,0">Este [2, 0]</option>
-                  <option value="1,1">Sur-Este [1, 1]</option>
-                  <option value="0,2">Sur [0, 2]</option>
-                  <option value="-1,2">Sur-Oeste [-1, 2]</option>
-                  <option value="-2,1">Oeste-Sur [-2, 1]</option>
-                  <option value="-2,0">Oeste [-2, 0]</option>
-                  <option value="-1,-1">Nor-Oeste [-1, -1]</option>
-                </select>
-              </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <div>
-                <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Riesgo Incendio FWI (1-100):</label>
-                <input id="newHexFwi" type="number" value="35" min="5" max="95" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-              </div>
-              <div>
-                <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Derechos DGA (L/s):</label>
-                <input id="newHexWater" type="number" value="18" min="0" max="500" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-              </div>
-            </div>
-
-            <div>
-              <label style="font-size: 10px; color: #cbd5e1; display: block; margin-bottom: 2px;">Rol Permacultural & Acople:</label>
-              <input id="newHexPerma" type="text" value="Cortafuegos silvopastoril con ganado y recarga de napa freática" style="width: 100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 4px;">
-            </div>
-
-            <button onclick="window.submitAddNeighborForm()" style="margin-top: 4px; padding: 8px; font-size: 12px; font-weight: 700; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; border-radius: 6px; cursor: pointer;">
-              🚀 Acoplar Predio al Gemelo 3D
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. Dynamic Contiguous Simulators -->
-      <div class="glass-card" style="margin-bottom: 12px; padding: 12px; background: rgba(15, 23, 42, 0.7);">
-        <div style="font-size: 11px; font-weight: 700; color: #cbd5e1; margin-bottom: 8px;">
-          ⚡ Simulación de Dinámicas Transfronterizas
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <button onclick="window.triggerSimPuelcheFire()" class="btn-action-primary" style="padding: 7px 10px; font-size: 11px; text-align: left; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-            <span>🔥 Viento Puelche (Propagación Incendio)</span>
-            <span style="font-size: 9px; background: rgba(239,68,68,0.3); padding: 2px 5px; border-radius: 3px;">Simular</span>
-          </button>
-          <button onclick="window.triggerSimFloodEstero()" class="btn-action-primary" style="padding: 7px 10px; font-size: 11px; text-align: left; background: rgba(2, 132, 199, 0.15); border: 1px solid #0284c7; color: #7dd3fc; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-            <span>🌊 Crecida Fluvial Estero (Amortiguación TWI)</span>
-            <span style="font-size: 9px; background: rgba(2,132,199,0.3); padding: 2px 5px; border-radius: 3px;">Simular</span>
-          </button>
-          <button onclick="window.triggerSimGrazingAlliance()" class="btn-action-primary" style="padding: 7px 10px; font-size: 11px; text-align: left; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #86efac; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-            <span>🐄 Alianza de Pastoreo Rotativo (PRV Vecinal)</span>
-            <span style="font-size: 9px; background: rgba(16,185,129,0.3); padding: 2px 5px; border-radius: 3px;">Simular</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 6. Neighborhood Matrix Quick Jump -->
-      <div class="glass-card" style="padding: 10px; background: rgba(15, 23, 42, 0.6);">
-        <div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase;">
-          🗺️ Red Territorial de Predios Acoplados (${allHexes.length})
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 4px; max-height: 140px; overflow-y: auto;">
-          ${allHexes.map(h => `
-            <button onclick="window.selectNeighborHex(${h.q}, ${h.r})" style="font-size: 10px; padding: 4px 7px; border-radius: 4px; background: ${(hex.q === h.q && hex.r === h.r) ? 'rgba(253, 224, 71, 0.3)' : 'rgba(255,255,255,0.06)'}; border: 1px solid ${(hex.q === h.q && hex.r === h.r) ? '#fde047' : 'rgba(255,255,255,0.1)'}; color: #fff; cursor: pointer; white-space: nowrap;">
-              ${biomeIcons[h.biome] || '📍'} ${h.name.split(':')[0]} [${h.q},${h.r}]
-            </button>
-          `).join('')}
-        </div>
-      </div>
-    `;
+    return this.dashboardsView.renderTerritorialDashboard(selectedHex);
   }
 
   renderEsgDashboard() {
-    this.currentSelectedEntityId = 'esg_dashboard';
-    this.drawerTitle.textContent = '🌿 AgroTwin ESG / MRV Ledger';
-    this.drawerSubtitle.textContent = 'Auditoría Ambiental • GIZ, BID & Taxonomía UE';
-
-    this.drawerBody.innerHTML = `
-      <div class="glass-card" style="border-left: 4px solid var(--accent-amber); padding: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; font-family: monospace; color: var(--accent-amber); font-weight: 700;">[BLOCKCHAIN & SENTINEL-2 EUDR]</span>
-          <span style="font-size: 10px; color: var(--text-muted);">Hash: 0x8f2d...4a1</span>
-        </div>
-        <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;">Pasaporte Verde & Cero Deforestación</div>
-      </div>
-
-      <div class="metrics-grid" style="margin-top: 10px;">
-        <div class="glass-card metric-card">
-          <div class="metric-label">Captura Neta de Carbono</div>
-          <div class="metric-value" style="color: var(--accent-emerald);">4.8<span class="metric-unit">tCO2e/ha</span></div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Metodología Tier 2 IPCC</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Integridad Ecológica (IEI)</div>
-          <div class="metric-value" style="color: var(--accent-cyan);">0.88<span class="metric-unit">/1.0</span></div>
-          <div style="font-size: 10px; color: var(--accent-emerald); margin-top: 2px;">Bosque esclerófilo nativo</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Compliance EUDR</div>
-          <div class="metric-value" style="color: var(--accent-emerald); font-size: 16px;">100% Cero Def.</div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Línea base post-2020 verificada</div>
-        </div>
-
-        <div class="glass-card metric-card">
-          <div class="metric-label">Créditos de Biodiversidad</div>
-          <div class="metric-value" style="color: var(--accent-amber);">128<span class="metric-unit">PBC</span></div>
-          <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Listo para mercado UE</div>
-        </div>
-      </div>
-
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="metric-label">📜 Auditoría de Deforestación en Polígono</div>
-        <div style="font-size: 11px; margin-top: 6px; color: var(--text-secondary); line-height: 1.5;">
-          Serie temporal multiespectral 2015-2026: <strong>0.00 ha</strong> de tala rasa detectada. Conservación de especies protegidas: Peumo, Quillay y Boldo con trazabilidad satelital inmutable.
-        </div>
-      </div>
-    `;
+    return this.dashboardsView.renderEsgDashboard();
   }
 
   renderDefaultCreatorView() {
-    this.currentSelectedEntityId = null;
-    this.drawerTitle.textContent = 'AgriTwin 3D Digital Twin';
-    this.drawerSubtitle.textContent = 'Predio Meniels | Parral, Región del Maule';
-
-    this.drawerBody.innerHTML = `
-      <!-- 1. Full Creator Brand & Official Logo Card -->
-      <div class="creator-card" style="text-align: center;">
-        <div class="brand-logo-container" style="margin-bottom: 12px;">
-          <img src="assets/agritwin_logo_full.png" alt="AgriTwin 3D Digital Twin" style="width: 100%; max-width: 240px; height: auto; border-radius: 12px; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.5));">
-        </div>
-        <div class="creator-name">Daniel Santander Urrutia</div>
-        <div class="creator-titles">
-          Geofísico • Permacultor<br>
-          Manejador Ambiental • Protector Ambiental
-        </div>
-        <div class="creator-bio">
-          Diseñador del Gemelo Digital Agroecológico para Predio Meniels en Parral, Maule.
-        </div>
-      </div>
-
-      <!-- 2. Active Ground-Truth Simulation Status Banner (FAO-56 / ERA5) -->
-      <div class="glass-card" style="background: rgba(16, 185, 129, 0.12); border-left: 4px solid var(--accent-emerald); padding: 12px 14px; margin-top: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; font-family: monospace; color: var(--accent-emerald); font-weight: 700;">● MODO GROUND-TRUTH SIMULADO</span>
-          <span style="font-size: 10px; color: var(--accent-amber); font-weight: 600;">FAO-56 / ERA5</span>
-        </div>
-        <div style="font-size: 12px; color: #fff; margin-top: 4px; font-weight: 600;">
-          Operando con telemetría sintética calibrada mientras no hay despliegue físico total de sensores.
-        </div>
-      </div>
-
-      <!-- 3. Quick Selector for the 3 AgroTwin B2B Modules -->
-      <div class="glass-card" style="padding: 12px; margin-top: 10px;">
-        <div class="future-title" style="color: #6ee7b7; margin-bottom: 8px; font-size: 11px;">🌱 Selecciona el Módulo Operativo:</div>
-        <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
-          <button id="btn_quick_enterprise" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 8px 12px; font-size: 11px;">
-            <span>🍇</span>
-            <div style="text-align: left; margin-left: 8px;">
-              <strong style="color: #fff; display: block;">1. AgroTwin Enterprise</strong>
-              <span style="font-size: 10px; color: var(--text-muted);">Viñedos: Riego mm, CWSI y Alertas de Helada</span>
-            </div>
-          </button>
-
-          <button id="btn_quick_territorial" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 8px 12px; font-size: 11px;">
-            <span>🏛️</span>
-            <div style="text-align: left; margin-left: 8px;">
-              <strong style="color: #fff; display: block;">2. AgroTwin Territorial</strong>
-              <span style="font-size: 10px; color: var(--text-muted);">Municipios/APRs: Recarga de Napa & FWI Incendios</span>
-            </div>
-          </button>
-
-          <button id="btn_quick_esg" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 8px 12px; font-size: 11px;">
-            <span>🌿</span>
-            <div style="text-align: left; margin-left: 8px;">
-              <strong style="color: #fff; display: block;">3. AgroTwin ESG / MRV</strong>
-              <span style="font-size: 10px; color: var(--text-muted);">Fondos: Captura de Carbono & Cero Deforestación EUDR</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. Ecosystem Family Card (AgroTech Chile • Rewild • AgriTwin 3D) -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="future-title" style="color: var(--accent-cyan); display: flex; align-items: center; gap: 8px;">
-          <span>🌐</span> Ecosistema AgroTech Chile
-        </div>
-        <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
-          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-cyan);">
-            <strong style="color: #fff;">1. AgroTech Chile</strong><br>
-            Plataforma madre de tecnología agrícola de precisión & sensorización IoT.
-          </div>
-          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);">
-            <strong style="color: #fff;">2. Rewild</strong><br>
-            Aplicación de terreno enfocada en ecología, curvas topográficas & restauración de suelos.
-          </div>
-          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
-            <strong style="color: #fff;">3. AgriTwin 3D</strong><br>
-            Gemelo Digital 3D, simulación predictiva, mallas de datos espaciales & capas de riesgo.
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. Vision & Mission Card -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="future-title" style="color: var(--accent-emerald);">🎯 Visión & Misión del Proyecto</div>
-        <div class="future-desc" style="margin-top: 6px; line-height: 1.5; font-size: 11px; color: var(--text-secondary);">
-          <strong style="color: #fff;">Visión:</strong> Transformar la agricultura chilena mediante gemelos digitales 3D para la autonomía alimentaria, eficiencia hídrica y soberanía energética.<br><br>
-          <strong style="color: #fff;">Misión:</strong> Proporcionar herramientas de simulación en tiempo real para optimizar la producción de alimento, biomasa y conservación ambiental.
-        </div>
-      </div>
-
-      <!-- 6. Spatial Inspection Guide -->
-      <div class="glass-card" style="text-align: center; color: var(--text-muted); padding: 14px; margin-top: 10px; font-size: 11px;">
-        💡 Haz clic en la <strong>Casa Principal 3D</strong>, <strong>Parcelas</strong> o <strong>Nodos IoT</strong> para inspeccionar telemetría y diagnósticos de riesgo.
-      </div>
-    `;
-
-    // Bind quick module selectors
-    const qEnt = document.getElementById('btn_quick_enterprise');
-    const qTer = document.getElementById('btn_quick_territorial');
-    const qEsg = document.getElementById('btn_quick_esg');
-
-    if (qEnt) qEnt.addEventListener('click', () => this.renderEnterpriseDashboard());
-    if (qTer) qTer.addEventListener('click', () => this.renderTerritorialDashboard());
-    if (qEsg) qEsg.addEventListener('click', () => this.renderEsgDashboard());
+    return this.dashboardsView.renderDefaultCreatorView();
   }
+
 
   onEntitySelected(data) {
     this.currentSelectedEntityId = data.id;
     const props = data.properties || {};
 
-    if (props.isCustom || props.type === 'custom_polygon') {
+    if (props.type === 'placed_aoe_object') {
+      this.renderPlacedObjectPanel(props);
+    } else if (props.isCustom || props.type === 'custom_polygon') {
       this.renderCustomPolygonPanel(props);
     } else if (props.type === 'livestock_animal') {
       this.selectedAnimalId = props.id || props.animalId;
@@ -2599,8 +1804,7 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
     this.drawerSubtitle.textContent = 'Fundo Estero Colliguay | Lat -36.14°S';
 
     const tabHeader = `
-      <div class="panel-tab-bar" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; padding-bottom: 2px;">
-        <span class="panel-id-tag" style="font-size: 8px; padding: 2px 4px; background: rgba(0,0,0,0.5); border: 1px solid rgba(245,158,11,0.4); color: #f59e0b; border-radius: 4px; font-family: monospace; font-weight: bold; white-space: nowrap;">[PANEL-PREDIO-TABS]</span>
+      <div class="panel-tab-bar">
         <button id="tab_btn_meta" data-tab="metabolism" onclick="window.selectPredioHouseTab && window.selectPredioHouseTab('metabolism')" class="tab-btn ${this.activeHouseTab === 'metabolism' ? 'active' : ''}">🏡 Predio</button>
         <button id="tab_btn_livestock" data-tab="livestock" onclick="window.selectPredioHouseTab && window.selectPredioHouseTab('livestock')" class="tab-btn ${this.activeHouseTab === 'livestock' ? 'active' : ''}">🐄 Ganadería</button>
         <button id="tab_btn_perma" data-tab="permaculture" onclick="window.selectPredioHouseTab && window.selectPredioHouseTab('permaculture')" class="tab-btn ${this.activeHouseTab === 'permaculture' ? 'active' : ''}">🌱 Permacultura</button>
@@ -2677,6 +1881,26 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
         });
       }
 
+      window.setSolarDay = (day) => {
+        this.selectedDayOfYear = day;
+        if (daySlider) daySlider.value = day;
+        this.updateSunSimulation();
+      };
+
+      window.setSolarHour = (hour) => {
+        if (hour === 'sunrise' || hour === 'sunset') {
+          const m = this.calculateSolarMetrics(this.selectedDayOfYear, 12);
+          const h = hour === 'sunrise' ? Math.floor(parseFloat(m.sunriseTime.split(':')[0])) : Math.floor(parseFloat(m.sunsetTime.split(':')[0]));
+          this.selectedHourOfDay = h;
+        } else {
+          this.selectedHourOfDay = hour;
+        }
+        if (hourSlider) hourSlider.value = this.selectedHourOfDay;
+        this.updateSunSimulation();
+      };
+
+      window.getTodayDayOfYear = () => this.getTodayDayOfYear();
+
       // Tidal Simulation Controls
       const tideSlider = document.getElementById('slider_tide_level');
       const tideVal = document.getElementById('tideLevelVal');
@@ -2704,6 +1928,8 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
       });
 
       setTimeout(() => {
+        const sunCanvas = document.getElementById('sunPathHorizonCanvas');
+        if (sunCanvas) this.drawSunPathHorizon(sunCanvas, this.selectedDayOfYear, this.selectedHourOfDay);
         const starCanvas = document.getElementById('starMapCanvas');
         if (starCanvas) this.drawStarMap(starCanvas, this.selectedDayOfYear, this.selectedHourOfDay);
       }, 40);
@@ -2715,6 +1941,12 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   renderMetabolismTab() {
+    const placed = window.objectPlacementManager?.placedObjects || [];
+    const polys = this.drawingManager?.customPolygons || [];
+    const parcels = this.parcelManager?.parcels || [];
+    const metrics = this.permacultureEngine ? this.permacultureEngine.evaluate(placed, polys, parcels) : null;
+    const strategicLandingHTML = metrics ? this.permacultureEngine.renderStrategicLandingHTML(metrics) : '';
+
     return `
       <!-- 0. [ATMÓSFERA UNIFICADA]: OpenWeatherMap API + Simulación Maule (Macro-Predio & Casa) -->
       <div class="glass-card" style="border-left: 4px solid var(--accent-cyan); padding: 12px; margin-bottom: 12px; background: rgba(6, 182, 212, 0.06);">
@@ -2783,6 +2015,56 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
           🪵 Calefacción Leña: <strong>4.5 m³ / temporada invernal</strong>
         </div>
       </div>
+
+      <!-- Proyección Estratégica Permacultural (Landing Principal Predio) -->
+      ${strategicLandingHTML}
+
+      <!-- Ground-Truth Simulation Status Banner (FAO-56 / ERA5) -->
+      <div class="glass-card" style="background: rgba(16, 185, 129, 0.12); border-left: 4px solid var(--accent-emerald); padding: 12px 14px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-family: monospace; color: var(--accent-emerald); font-weight: 700;">● MODO GROUND-TRUTH SIMULADO</span>
+          <span style="font-size: 10px; color: var(--accent-amber); font-weight: 600;">FAO-56 / ERA5</span>
+        </div>
+        <div style="font-size: 11.5px; color: #fff; margin-top: 4px; font-weight: 600;">
+          Telemetría calibrada con balances hídricos Penman-Monteith y series agroclimáticas ERA5-Land.
+        </div>
+      </div>
+
+      <!-- Creator Brand & Direction Card -->
+      <div class="creator-card" style="text-align: center; margin-top: 10px; padding: 14px;">
+        <div class="brand-logo-container" style="margin-bottom: 10px;">
+          <img src="assets/agritwin_logo_full.png" alt="AgriTwin 3D Digital Twin" style="width: 100%; max-width: 220px; height: auto; border-radius: 10px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));">
+        </div>
+        <div class="creator-name" style="font-size: 14px; font-weight: 800; color: #fff;">Daniel Santander Urrutia</div>
+        <div class="creator-titles" style="font-size: 11px; color: var(--accent-amber); margin-top: 4px; line-height: 1.4;">
+          Geofísico • Permacultor<br>
+          Manejador & Protector Ambiental
+        </div>
+        <div class="creator-bio" style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">
+          Diseñador del Gemelo Digital Agroecológico para Predio Meniels en Parral, Región del Maule.
+        </div>
+      </div>
+
+      <!-- Ecosystem Family Card (AgroTech Chile • Rewild • AgriTwin 3D) -->
+      <div class="glass-card" style="margin-top: 10px;">
+        <div class="future-title" style="color: var(--accent-cyan); display: flex; align-items: center; gap: 8px; font-size: 12px;">
+          <span>🌐</span> Ecosistema AgroTech Chile
+        </div>
+        <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-cyan);">
+            <strong style="color: #fff;">1. AgroTech Chile</strong><br>
+            Plataforma madre de tecnología agrícola de precisión & sensorización IoT.
+          </div>
+          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);">
+            <strong style="color: #fff;">2. Rewild</strong><br>
+            Aplicación de terreno enfocada en ecología, curvas topográficas & restauración de suelos.
+          </div>
+          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
+            <strong style="color: #fff;">3. AgriTwin 3D</strong><br>
+            Gemelo Digital 3D, simulación predictiva, mallas de datos espaciales & capas de riesgo.
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -2798,7 +2080,23 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
    * Pestaña: Transición Permacultural & Keyline Yeomans
    */
   renderPermacultureTab() {
+    const placed = window.objectPlacementManager?.placedObjects || [];
+    const polys = this.drawingManager?.customPolygons || [];
+    const parcels = this.parcelManager?.parcels || [];
+    const metrics = this.permacultureEngine ? this.permacultureEngine.evaluate(placed, polys, parcels) : null;
+    const whatIfTacticalHTML = metrics ? this.permacultureEngine.renderTacticalDeckHTML(metrics) : '';
+
     return `
+      <!-- BOTÓN PLAN MAESTRO 18 PUNTOS & DOSSIER (Integrado en el Menú Desplegable) -->
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+        <button id="btn_toggle_plan_maestro_drawer" onclick="window.togglePlanMaestro && window.togglePlanMaestro()" style="width: 100%; padding: 12px 16px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(16, 185, 129, 0.25)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 10px; color: #fde047; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2); transition: all 0.2s ease;" title="Activar / Desactivar Capa de Plan Maestro (18 Puntos Yeomans)">
+          <span style="font-size: 17px;">🌿</span> <span>Plan Maestro 18 puntos</span>
+        </button>
+        <button onclick="window.openDossierPlanMaestroModal && window.openDossierPlanMaestroModal()" style="width: 100%; padding: 8px 12px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; color: #fbbf24; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <span>📐</span> <span>Dossier Ejecutivo de Obra (18.500 m³)</span>
+        </button>
+      </div>
+
       <!-- 1. Permaculture Overview Banner -->
       <div class="glass-card" style="border-left: 4px solid var(--accent-emerald); padding: 14px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2821,6 +2119,9 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
           </button>
         </div>
       </div>
+
+      <!-- SIMULADOR WHAT-IF TÁCTICO PERMACULTURA (AOE III) -->
+      ${whatIfTacticalHTML}
 
       <!-- 1b. [ATMÓSFERA UNIFICADA]: OpenWeatherMap API + Simulación Maule (Sub-rama Agrícola / Cuarteles) -->
       <div class="glass-card" style="border-left: 4px solid #10b981; padding: 12px; margin-top: 10px; background: rgba(16, 185, 129, 0.05);">
@@ -3030,12 +2331,33 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   /**
-   * Pestaña 2: Sol y Orientación (Trayectoria Solar, Visor Estelar, Luna 3D, Simulador de Mareas)
+   * Cálculos astronómicos y solares de alta precisión para Parral, Maule (Lat -36.14°S)
+   */
+  calculateSolarMetrics(dayOfYear, hourOfDay, latDeg = -36.14) {
+    return this.solarAstroEngine.calculateSolarMetrics(dayOfYear, hourOfDay, latDeg);
+  }
+
+  getDayOfYearDateString(dayOfYear) {
+    return this.solarAstroEngine.getDayOfYearDateString(dayOfYear);
+  }
+
+  getTodayDayOfYear() {
+    return this.solarAstroEngine.getTodayDayOfYear();
+  }
+
+  drawSunPathHorizon(canvas, dayOfYear, hourOfDay) {
+    return this.solarAstroEngine.drawSunPathHorizon(canvas, dayOfYear, hourOfDay);
+  }
+
+  /**
+   * Pestaña 2: Sol, Orientación & Agrovoltaica (Trayectoria Solar en Horizonte, Radiación, Energía FV, Bóveda Celeste)
    */
   renderAstroOrientationTab() {
-    const solarHours = (12.3 + Math.sin((this.selectedDayOfYear - 81) * (2 * Math.PI / 365)) * 2.8).toFixed(1);
+    const dayOfYear = this.selectedDayOfYear || 172;
+    const hourOfDay = this.selectedHourOfDay !== undefined ? this.selectedHourOfDay : 12;
+    const m = this.calculateSolarMetrics(dayOfYear, hourOfDay);
 
-    const moonAge = ((this.selectedDayOfYear + this.selectedHourOfDay / 24 + 14) % 29.53).toFixed(1);
+    const moonAge = ((dayOfYear + hourOfDay / 24 + 14) % 29.53).toFixed(1);
     const moonIllum = Math.round((1 - Math.cos((moonAge / 29.53) * 2 * Math.PI)) / 2 * 100);
 
     let moonPhaseName = 'Luna Llena';
@@ -3051,47 +2373,182 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
     else { moonPhaseName = 'Menguante Cóncava'; moonEmoji = '🌘'; }
 
     return `
-      <!-- Solar Tracker & Sliders -->
-      <div class="glass-card">
-        <div class="future-title">☀️ Trayectoria Solar 3D (Parral -36.14°S)</div>
+      <!-- 1. Trayectoria Solar en el Horizonte (Canvas Unificado) -->
+      <div class="glass-card" style="border-left: 4px solid var(--accent-amber); padding: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #fff;">☀️ Trayectoria Solar en el Horizonte</div>
+            <div style="font-size: 10.5px; color: var(--text-muted);">Proyección diurna sobre el horizonte local • Lat -36.14°S (Parral)</div>
+          </div>
+          <span class="status-badge optimal" style="font-size: 9.5px; padding: 2px 7px;">Maule Sur</span>
+        </div>
+
         <div style="margin-top: 8px;">
-          <div style="display: flex; justify-content: space-between; font-size: 11px;">
-            <span>Día del Año (1 - 365):</span>
-            <strong id="label_day" style="color: var(--accent-amber);">Día ${this.selectedDayOfYear}</strong>
-          </div>
-          <input type="range" id="slider_day" min="1" max="365" value="${this.selectedDayOfYear}" style="width: 100%; margin-top: 4px;" class="slider-glass">
+          <canvas id="sunPathHorizonCanvas" width="460" height="195" style="width: 100%; height: auto; border-radius: 8px; background: rgba(5, 10, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); display: block;"></canvas>
         </div>
 
-        <div style="margin-top: 10px;">
-          <div style="display: flex; justify-content: space-between; font-size: 11px;">
-            <span>Hora del Día (00:00 - 23:00):</span>
-            <strong id="label_hour" style="color: var(--accent-cyan);">${this.selectedHourOfDay}:00 hrs</strong>
-          </div>
-          <input type="range" id="slider_hour" min="0" max="23" value="${this.selectedHourOfDay}" style="width: 100%; margin-top: 4px;" class="slider-glass">
+        <!-- Leyenda de trayectorias estacionales -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between; margin-top: 8px; font-size: 9.5px; font-family: monospace; padding: 4px 6px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+          <span style="color: #fb923c;">☀️ Verano (77° máx)</span>
+          <span style="color: #34d399;">🌱 Equinoccio (54° máx)</span>
+          <span style="color: #38bdf8;">❄️ Invierno (30° máx)</span>
+          <span style="color: #fde047; font-weight: bold;">🟡 Día Activo</span>
         </div>
 
-        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 10px; color: var(--accent-amber);">
-          <span>☀️ Horas Luz: <strong>${solarHours} hrs/día</strong></span>
-          <span>🧭 Azimut Solar: <strong>${Math.round(((this.selectedHourOfDay - 12) * 15 + 360) % 360)}°</strong></span>
+        <!-- Sliders Interactivos con Accesos Rápidos -->
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <!-- Slider Día -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+              <span style="color: #cbd5e1; font-weight: 600;">📅 Día del Año (1 - 365):</span>
+              <strong id="label_day" style="color: var(--accent-amber); font-family: monospace;">Día ${dayOfYear} • ${this.getDayOfYearDateString(dayOfYear)}</strong>
+            </div>
+            <input type="range" id="slider_day" min="1" max="365" value="${dayOfYear}" style="width: 100%; margin-top: 4px;" class="slider-glass">
+            
+            <!-- Botones Rápidos Estacionales -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 5px;">
+              <button onclick="window.setSolarDay && window.setSolarDay(172)" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(56,189,248,0.3); background: rgba(56,189,248,0.1); color: #7dd3fc; cursor: pointer;">❄️ Invierno (21J)</button>
+              <button onclick="window.setSolarDay && window.setSolarDay(80)" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(52,211,153,0.3); background: rgba(52,211,153,0.1); color: #6ee7b7; cursor: pointer;">🌱 Equinoccio</button>
+              <button onclick="window.setSolarDay && window.setSolarDay(355)" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(251,146,60,0.3); background: rgba(251,146,60,0.1); color: #fdba74; cursor: pointer;">☀️ Verano (21D)</button>
+              <button onclick="window.setSolarDay && window.setSolarDay(window.getTodayDayOfYear && window.getTodayDayOfYear())" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.4); background: rgba(245,158,11,0.15); color: #fde047; cursor: pointer; font-weight: bold;">📍 Hoy</button>
+            </div>
+          </div>
+
+          <!-- Slider Hora -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+              <span style="color: #cbd5e1; font-weight: 600;">⏰ Hora del Día (00 - 23 hrs):</span>
+              <strong id="label_hour" style="color: var(--accent-cyan); font-family: monospace;">${hourOfDay}:00 hrs (${m.isDay ? 'Luz Día' : 'Noche'})</strong>
+            </div>
+            <input type="range" id="slider_hour" min="0" max="23" value="${hourOfDay}" style="width: 100%; margin-top: 4px;" class="slider-glass">
+            
+            <!-- Botones Rápidos de Horas Clave -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 5px;">
+              <button onclick="window.setSolarHour && window.setSolarHour('sunrise')" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #fde68a; cursor: pointer;">🌅 Salida</button>
+              <button onclick="window.setSolarHour && window.setSolarHour(12)" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #38bdf8; cursor: pointer;">☀️ Mediodía</button>
+              <button onclick="window.setSolarHour && window.setSolarHour('sunset')" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #fb923c; cursor: pointer;">🌇 Puesta</button>
+              <button onclick="window.setSolarHour && window.setSolarHour(22)" style="padding: 4px 6px; font-size: 9.5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #cbd5e1; cursor: pointer;">🌙 Noche</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ficha de Geometría Solar Instantánea -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px;">
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 6px 8px;">
+            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase;">Elevación Solar</div>
+            <div id="val_sun_elev" style="font-size: 13px; font-weight: 800; color: #fde047; margin-top: 2px;">${m.elevDeg}° Alt</div>
+            <div style="font-size: 8.5px; color: #64748b;">Ángulo sobre horizonte</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 6px 8px;">
+            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase;">Azimut Solar</div>
+            <div id="val_sun_az" style="font-size: 13px; font-weight: 800; color: #38bdf8; margin-top: 2px;">${m.azDeg}° Az (${m.cardinalDir})</div>
+            <div style="font-size: 8.5px; color: #64748b;">Norte = 0° / 360°</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 6px 8px;">
+            <div style="font-size: 9px; color: #94a3b8; text-transform: uppercase;">Horas Luz Día</div>
+            <div id="val_sun_daylight" style="font-size: 13px; font-weight: 800; color: #34d399; margin-top: 2px;">${m.daylightHours} h/d</div>
+            <div id="val_sun_rise_set" style="font-size: 8.5px; color: #94a3b8;">🌅 ${m.sunriseTime} | 🌇 ${m.sunsetTime}</div>
+          </div>
         </div>
       </div>
 
-      <!-- Southern Hemisphere Sky & Constellations Viewer -->
-      <div class="glass-card">
+      <!-- 2. Radiación Solar Disponible en Parral (Recurso Solar) -->
+      <div class="glass-card" style="border-left: 4px solid #38bdf8; padding: 12px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div>
+            <div style="font-size: 12.5px; font-weight: 800; color: #fff;">📡 Radiación Solar Disponible</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Índices de irradiancia atmosférica para Parral (Maule Sur)</div>
+          </div>
+          <span style="font-size: 9px; font-family: monospace; background: rgba(56,189,248,0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.3); padding: 2px 6px; border-radius: 4px;">RECURSO SOLAR</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="color: #94a3b8; font-size: 9.5px; text-transform: uppercase;">Radiación Global Instantánea (GHI)</div>
+            <div id="val_ghi_instant" style="font-size: 17px; font-weight: 800; color: #fde047; margin-top: 2px;">${m.ghiInstant} W/m²</div>
+            <div style="font-size: 9px; color: #94a3b8; margin-top: 2px;">
+              DNI: <span id="val_dni_instant" style="color: #fff;">${m.dniInstant} W/m²</span> • DHI: <span id="val_dhi_instant" style="color: #67e8f9;">${m.dhiInstant} W/m²</span>
+            </div>
+          </div>
+          <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="color: #94a3b8; font-size: 9.5px; text-transform: uppercase;">Radiación Acumulada Diaria</div>
+            <div id="val_ghi_daily" style="font-size: 17px; font-weight: 800; color: #38bdf8; margin-top: 2px;">${m.dailyGhiKwh} <span style="font-size: 11px;">kWh/m²/día</span></div>
+            <div style="font-size: 9px; color: #34d399; margin-top: 2px;">
+              ⚡ <strong id="val_hsp">${m.hsp} Horas Sol Pico (HSP)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Energía Capturable & Generación Fotovoltaica (Predio Meniels) -->
+      <div class="glass-card" style="border-left: 4px solid #10b981; padding: 12px; margin-top: 10px; background: rgba(16, 185, 129, 0.04);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div>
+            <div style="font-size: 12.5px; font-weight: 800; color: #fff;">⚡ Energía Capturable (Paneles Fundo Meniels)</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Instalación Agrovoltaica: 12x 550W Mono-PERC Bifaciales</div>
+          </div>
+          <span style="font-size: 9px; font-family: monospace; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 6px; border-radius: 4px;">6.6 kWp INSTALADOS</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <!-- Potencia Instantánea -->
+          <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.25);">
+            <div style="color: #94a3b8; font-size: 9.5px; text-transform: uppercase;">Potencia Instantánea Capturada</div>
+            <div id="val_pv_power" style="font-size: 17px; font-weight: 800; color: #10b981; margin-top: 2px;">${m.instantPowerKw} kW</div>
+            <!-- Barra de capacidad instantánea -->
+            <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 6px; overflow: hidden;">
+              <div id="val_pv_power_bar" style="width: ${m.instantPowerPercent}%; height: 100%; background: linear-gradient(90deg, #10b981, #fde047); transition: width 0.3s ease;"></div>
+            </div>
+            <div style="font-size: 8.5px; color: #6ee7b7; margin-top: 4px;">${m.instantPowerPercent}% de potencia nominal</div>
+          </div>
+
+          <!-- Generación Diaria Estimada -->
+          <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.25);">
+            <div style="color: #94a3b8; font-size: 9.5px; text-transform: uppercase;">Generación Diaria Estimada</div>
+            <div id="val_pv_daily" style="font-size: 17px; font-weight: 800; color: #fde047; margin-top: 2px;">${m.dailyGenKwh} <span style="font-size: 11px;">kWh/día</span></div>
+            <div style="font-size: 9px; color: #cbd5e1; margin-top: 4px;">
+              Proyección mes: <strong id="val_pv_month" style="color: #fbbf24;">${(m.dailyGenKwh * 30).toFixed(0)} kWh/mes</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desglose de uso y aplicaciones de la energía -->
+        <div style="display: flex; flex-direction: column; gap: 5px; font-size: 10.5px; color: var(--text-secondary); padding: 6px 8px; background: rgba(0,0,0,0.25); border-radius: 6px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>🔋 <strong>Banco Baterías LiFePO4:</strong> 15 kWh</span>
+            <span style="color: #10b981;">100% autónomo noche verano</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>💧 <strong>Bombeo Solar al Tranque (18.500 m³):</strong></span>
+            <span id="val_pv_water" style="color: #38bdf8; font-weight: bold;">${m.waterPumpM3} m³/día</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>📐 <strong>Inclinación & Rendimiento:</strong> 32° Norte</span>
+            <span style="color: #fde047;">PR: 82% (Pérdidas 18%)</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>🌱 <strong>Compensación CO₂e:</strong></span>
+            <span id="val_pv_co2" style="color: #34d399; font-weight: bold;">${m.co2SavedKg} kg CO₂e/mes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Southern Hemisphere Sky & Constellations Viewer -->
+      <div class="glass-card" style="margin-top: 10px;">
         <div class="future-title" style="display: flex; justify-content: space-between;">
           <span>🌌 Visor Celeste & Constelaciones Australes</span>
           <span style="font-size: 0.7rem; color: var(--accent-cyan);">Lat -36.14°S</span>
         </div>
         <div style="margin-top: 8px; text-align: center;">
-          <canvas id="starMapCanvas" width="460" height="250" style="width: 100%; height: auto; border-radius: 8px;"></canvas>
+          <canvas id="starMapCanvas" width="460" height="230" style="width: 100%; height: auto; border-radius: 8px;"></canvas>
         </div>
         <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; text-align: center;">
           ✨ Incluye <strong>Cruz del Sur</strong>, <strong>Punteros Centauro</strong>, <strong>Orión</strong>, <strong>Escorpio</strong>, <strong>Sirio</strong> y <strong>Canopus</strong> sincronizados con el día y la hora.
         </div>
       </div>
 
-      <!-- Lunar Cycle & Moon in Sky -->
-      <div class="glass-card">
+      <!-- 5. Lunar Cycle & Moon in Sky -->
+      <div class="glass-card" style="margin-top: 10px;">
         <div class="future-title">🌙 Ciclo Lunar & Fases (Parral)</div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding: 4px 6px;">
           <div style="display: flex; align-items: center; gap: 12px;">
@@ -3110,8 +2567,8 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
         </div>
       </div>
 
-      <!-- Tidal / Ocean Simulation -->
-      <div class="glass-card">
+      <!-- 6. Tidal / Ocean Simulation -->
+      <div class="glass-card" style="margin-top: 10px;">
         <div class="future-title" style="display: flex; justify-content: space-between; align-items: center;">
           <span>🌊 Simulador de Mareas & Cota Hídrica</span>
           <span style="font-size: 0.72rem; color: var(--accent-cyan);" id="tideLevelVal">0.0m</span>
@@ -3146,237 +2603,12 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
    * Dibuja el climograma anual en canvas (Precipitaciones mm vs Temperatura °C)
    */
   drawClimogram(canvas, dayOfYear) {
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.clearRect(0, 0, width, height);
-
-    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    const rain = [14, 18, 25, 62, 148, 238, 215, 138, 76, 46, 26, 16];
-    const temp = [21.5, 20.8, 18.2, 14.5, 11.2, 8.9, 8.4, 9.8, 12.1, 14.8, 17.5, 20.1];
-
-    const currentMonth = Math.min(11, Math.floor(((dayOfYear - 1) / 365) * 12));
-
-    const padLeft = 36;
-    const padRight = 36;
-    const padTop = 26;
-    const padBottom = 30;
-    const chartW = width - padLeft - padRight;
-    const chartH = height - padTop - padBottom;
-
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.lineWidth = 1;
-    for (let r = 0; r <= 4; r++) {
-      const y = padTop + (chartH / 4) * r;
-      ctx.beginPath();
-      ctx.moveTo(padLeft, y);
-      ctx.lineTo(width - padRight, y);
-      ctx.stroke();
-
-      ctx.fillStyle = 'rgba(14, 165, 233, 0.7)';
-      ctx.font = '9px system-ui';
-      ctx.textAlign = 'right';
-      const rainVal = Math.round(250 - (r * 250) / 4);
-      ctx.fillText(`${rainVal}`, padLeft - 6, y + 3);
-
-      ctx.fillStyle = 'rgba(249, 115, 22, 0.7)';
-      ctx.textAlign = 'left';
-      const tempVal = Math.round(30 - (r * 30) / 4);
-      ctx.fillText(`${tempVal}°`, width - padRight + 6, y + 3);
-    }
-
-    const barWidth = (chartW / 12) * 0.58;
-    for (let i = 0; i < 12; i++) {
-      const x = padLeft + (i + 0.5) * (chartW / 12) - barWidth / 2;
-      const barH = (rain[i] / 250) * chartH;
-      const y = padTop + chartH - barH;
-
-      const grad = ctx.createLinearGradient(0, y, 0, y + barH);
-      if (i === currentMonth) {
-        grad.addColorStop(0, '#38bdf8');
-        grad.addColorStop(1, '#0284c7');
-      } else {
-        grad.addColorStop(0, 'rgba(56, 189, 248, 0.6)');
-        grad.addColorStop(1, 'rgba(2, 132, 199, 0.25)');
-      }
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.roundRect ? ctx.roundRect(x, y, barWidth, barH, [4, 4, 0, 0]) : ctx.rect(x, y, barWidth, barH);
-      ctx.fill();
-
-      ctx.fillStyle = (i === currentMonth) ? '#38bdf8' : 'rgba(255, 255, 255, 0.5)';
-      ctx.font = (i === currentMonth) ? 'bold 10px system-ui' : '9px system-ui';
-      ctx.textAlign = 'center';
-      ctx.fillText(months[i], x + barWidth / 2, height - 12);
-    }
-
-    ctx.strokeStyle = '#f97316';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    for (let i = 0; i < 12; i++) {
-      const cx = padLeft + (i + 0.5) * (chartW / 12);
-      const cy = padTop + chartH - (temp[i] / 30) * chartH;
-      if (i === 0) ctx.moveTo(cx, cy);
-      else ctx.lineTo(cx, cy);
-    }
-    ctx.stroke();
-
-    for (let i = 0; i < 12; i++) {
-      const cx = padLeft + (i + 0.5) * (chartW / 12);
-      const cy = padTop + chartH - (temp[i] / 30) * chartH;
-      ctx.fillStyle = (i === currentMonth) ? '#ffffff' : '#fb923c';
-      ctx.beginPath();
-      ctx.arc(cx, cy, (i === currentMonth) ? 4.5 : 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    ctx.font = '10px system-ui';
-    ctx.fillStyle = '#38bdf8';
-    ctx.textAlign = 'left';
-    ctx.fillText('■ Precipitaciones (mm)', padLeft + 10, padTop - 10);
-    ctx.fillStyle = '#f97316';
-    ctx.fillText('● Temperatura (°C)', padLeft + 150, padTop - 10);
+    return this.solarAstroEngine.drawClimogram(canvas, dayOfYear);
   }
 
-  /**
-   * Dibuja la bóveda celeste austral con constelaciones principales
-   */
   drawStarMap(canvas, dayOfYear, hourOfDay) {
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.clearRect(0, 0, width, height);
-
-    const cx = width / 2;
-    const cy = height / 2;
-    const radius = Math.min(width, height) * 0.44;
-
-    ctx.fillStyle = '#030712';
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 9px system-ui';
-    ctx.textAlign = 'center';
-    ctx.fillText('S (Sur)', cx, cy + radius + 12);
-    ctx.fillText('N (Norte)', cx, cy - radius - 4);
-    ctx.fillText('E (Este)', cx + radius + 14, cy + 3);
-    ctx.fillText('O (Oeste)', cx - radius - 14, cy + 3);
-
-    const siderealDeg = (dayOfYear * (360 / 365) + hourOfDay * 15) % 360;
-    const rot = (siderealDeg * Math.PI) / 180;
-
-    const crux = [
-      { name: 'Acrux', r: radius * 0.38, a: rot + 0.1, mag: 4.5 },
-      { name: 'Mimosa', r: radius * 0.42, a: rot - 0.12, mag: 4.0 },
-      { name: 'Gacrux', r: radius * 0.52, a: rot + 0.08, mag: 4.2 },
-      { name: 'Imai', r: radius * 0.47, a: rot + 0.28, mag: 3.2 }
-    ];
-
-    const centaurus = [
-      { name: 'Alfa Centauri', r: radius * 0.48, a: rot - 0.42, mag: 5.2 },
-      { name: 'Hadar', r: radius * 0.44, a: rot - 0.28, mag: 4.4 }
-    ];
-
-    const orion = [
-      { name: 'Betelgeuse', r: radius * 0.75, a: rot + Math.PI - 0.22, mag: 4.8 },
-      { name: 'Rigel', r: radius * 0.72, a: rot + Math.PI + 0.24, mag: 5.0 },
-      { name: 'Alnitak', r: radius * 0.68, a: rot + Math.PI - 0.05, mag: 3.5 },
-      { name: 'Alnilam', r: radius * 0.68, a: rot + Math.PI, mag: 3.6 },
-      { name: 'Mintaka', r: radius * 0.68, a: rot + Math.PI + 0.05, mag: 3.5 }
-    ];
-
-    const scorpio = [
-      { name: 'Antares', r: radius * 0.58, a: rot + 1.6, mag: 5.0 },
-      { name: 'Shaula', r: radius * 0.64, a: rot + 1.85, mag: 3.8 }
-    ];
-
-    const siriusCanopus = [
-      { name: 'Sirio', r: radius * 0.66, a: rot + Math.PI + 0.62, mag: 6.0 },
-      { name: 'Canopus', r: radius * 0.42, a: rot + Math.PI * 0.7, mag: 5.5 }
-    ];
-
-    const getXY = (item) => ({
-      x: cx + item.r * Math.cos(item.a),
-      y: cy + item.r * Math.sin(item.a)
-    });
-
-    ctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
-    ctx.lineWidth = 1.2;
-
-    const pAcrux = getXY(crux[0]);
-    const pGacrux = getXY(crux[2]);
-    const pMimosa = getXY(crux[1]);
-    const pImai = getXY(crux[3]);
-
-    ctx.beginPath();
-    ctx.moveTo(pAcrux.x, pAcrux.y);
-    ctx.lineTo(pGacrux.x, pGacrux.y);
-    ctx.moveTo(pMimosa.x, pMimosa.y);
-    ctx.lineTo(pImai.x, pImai.y);
-    ctx.stroke();
-
-    const pAlfa = getXY(centaurus[0]);
-    const pHadar = getXY(centaurus[1]);
-    ctx.beginPath();
-    ctx.moveTo(pAlfa.x, pAlfa.y);
-    ctx.lineTo(pHadar.x, pHadar.y);
-    ctx.stroke();
-
-    const p1 = getXY(orion[2]);
-    const p2 = getXY(orion[3]);
-    const p3 = getXY(orion[4]);
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.lineTo(p3.x, p3.y);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-    for (let i = 0; i < 40; i++) {
-      const r = ((i * 37) % 100) / 100 * radius * 0.95;
-      const a = rot + (i * 2.4);
-      ctx.fillRect(cx + r * Math.cos(a), cy + r * Math.sin(a), 1.2, 1.2);
-    }
-
-    const allStars = [...crux, ...centaurus, ...orion, ...scorpio, ...siriusCanopus];
-    allStars.forEach(s => {
-      const pos = getXY(s);
-      const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, s.mag * 2);
-      glow.addColorStop(0, '#ffffff');
-      glow.addColorStop(0.5, '#67e8f9');
-      glow.addColorStop(1, 'rgba(6, 182, 212, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, s.mag * 2, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, s.mag * 0.6, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.font = '8px system-ui';
-      ctx.textAlign = 'left';
-      ctx.fillText(s.name, pos.x + 6, pos.y + 3);
-    });
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 9px system-ui';
-    ctx.textAlign = 'center';
-    ctx.fillText('✨ Cruz del Sur', pAcrux.x, pAcrux.y + 14);
-    ctx.fillText('✨ Punteros', pAlfa.x, pAlfa.y + 14);
-    ctx.fillText('✨ Orión', p2.x, p2.y - 10);
+    return this.solarAstroEngine.drawStarMap(canvas, dayOfYear, hourOfDay);
   }
-
   /**
    * Tab 3: Dedicated IoT Sensor Inventory & Highlight Controller
    */
@@ -3827,18 +3059,58 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   updateSunSimulation() {
+    const dayOfYear = this.selectedDayOfYear || 172;
+    const hourOfDay = this.selectedHourOfDay !== undefined ? this.selectedHourOfDay : 12;
+    const m = this.calculateSolarMetrics(dayOfYear, hourOfDay);
+
+    // 1. Text Labels
     const dayLabel = document.getElementById('label_day');
     const hourLabel = document.getElementById('label_hour');
+    if (dayLabel) {
+      const dateStr = this.getDayOfYearDateString(dayOfYear);
+      dayLabel.textContent = `Día ${dayOfYear} • ${dateStr}`;
+    }
+    if (hourLabel) {
+      hourLabel.textContent = `${hourOfDay}:00 hrs (${m.isDay ? 'Luz Día' : 'Noche'})`;
+    }
 
-    if (dayLabel) dayLabel.textContent = `Día ${this.selectedDayOfYear}`;
-    if (hourLabel) hourLabel.textContent = `${this.selectedHourOfDay}:00 hrs`;
+    // 2. Solar Position Grid Values
+    const setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setT('val_sun_elev', `${m.elevDeg}° Alt`);
+    setT('val_sun_az', `${m.azDeg}° Az (${m.cardinalDir})`);
+    setT('val_sun_dec', `${m.declinationDeg}°`);
+    setT('val_sun_daylight', `${m.daylightHours} h/d`);
+    setT('val_sun_rise_set', `🌅 ${m.sunriseTime} | 🌇 ${m.sunsetTime}`);
+
+    // 3. Radiation Values
+    setT('val_ghi_instant', `${m.ghiInstant} W/m²`);
+    setT('val_dni_instant', `${m.dniInstant} W/m²`);
+    setT('val_dhi_instant', `${m.dhiInstant} W/m²`);
+    setT('val_ghi_daily', `${m.dailyGhiKwh} kWh/m²/d`);
+    setT('val_hsp', `${m.hsp} HSP`);
+
+    // 4. PV Energy Capture Values
+    setT('val_pv_power', `${m.instantPowerKw} kW`);
+    setT('val_pv_daily', `${m.dailyGenKwh} kWh/día`);
+    setT('val_pv_month', `${(m.dailyGenKwh * 30).toFixed(0)} kWh/mes`);
+    setT('val_pv_water', `${m.waterPumpM3} m³/día`);
+    setT('val_pv_co2', `${m.co2SavedKg} kg/mes`);
+
+    const powerBar = document.getElementById('val_pv_power_bar');
+    if (powerBar) powerBar.style.width = `${m.instantPowerPercent}%`;
+
+    // 5. Redraw Canvases
+    const sunCanvas = document.getElementById('sunPathHorizonCanvas');
+    if (sunCanvas) {
+      this.drawSunPathHorizon(sunCanvas, dayOfYear, hourOfDay);
+    }
 
     const starCanvas = document.getElementById('starMapCanvas');
     if (starCanvas) {
-      this.drawStarMap(starCanvas, this.selectedDayOfYear, this.selectedHourOfDay);
+      this.drawStarMap(starCanvas, dayOfYear, hourOfDay);
     }
 
-    bus.emit('map:update_sun', { day: this.selectedDayOfYear, hour: this.selectedHourOfDay });
+    bus.emit('map:update_sun', { day: dayOfYear, hour: hourOfDay });
   }
 
   renderSensorPanel(props) {
@@ -3848,211 +3120,13 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
   }
 
   renderParcelPanel(props) {
-    this.drawerTitle.textContent = `Parcela ${props.parcelId}`;
-    this.drawerSubtitle.textContent = `Cultivo: ${props.crop} | Predio Meniels (Parral)`;
-
-    let waterRiskBadge = `<span class="status-badge optimal"><span class="status-dot"></span> Suficiente</span>`;
-    let frostRiskBadge = `<span class="status-badge optimal"><span class="status-dot"></span> Bajo</span>`;
-    let fireRiskBadge = `<span class="status-badge optimal"><span class="status-dot"></span> Bajo (FWI 12)</span>`;
-    let recText = 'Humedad en rango óptimo. No requiere riego ni alerta de fuego inmediata.';
-
-    if (props.parcelId === 'A101') {
-      waterRiskBadge = `<span class="status-badge critical"><span class="status-dot"></span> Crítico (<25%)</span>`;
-      fireRiskBadge = `<span class="status-badge critical"><span class="status-dot"></span> Extremo (FWI 54)</span>`;
-      recText = '🔥 <strong>Alerta de Incendio & Estrés:</strong> Zona de Pino y rastrojo seco. Mantener cortafuegos despejados y activar goteo 45 m³/ha a las 21:00 hrs.';
-    } else if (props.parcelId === 'B102') {
-      waterRiskBadge = `<span class="status-badge warning"><span class="status-dot"></span> Moderado (31%)</span>`;
-      fireRiskBadge = `<span class="status-badge warning"><span class="status-dot"></span> Moderado (FWI 28)</span>`;
-      recText = '💡 <strong>Sugerencia:</strong> Monitorear humedad y rastrojo seco. Riego preventivo recomendado en 12h.';
-    } else if (props.parcelId === 'C103') {
-      frostRiskBadge = `<span class="status-badge critical"><span class="status-dot"></span> Alerta Helada (Estero)</span>`;
-      recText = '❄️ <strong>Riesgo de Helada Invernal:</strong> Bolsón de aire frío en lecho de estero. Activar asperjadores anti-helada si T° baja de 1°C.';
-    }
-
-    this.drawerBody.innerHTML = `
-      <div class="metrics-grid">
-        <div class="glass-card metric-card"><div class="metric-label">Superficie</div><div class="metric-value">${props.areaHa}<span class="metric-unit">ha</span></div></div>
-        <div class="glass-card metric-card"><div class="metric-label">Índice Vigor (NDVI)</div><div class="metric-value" style="color: var(--accent-emerald);">${props.ndvi}</div></div>
-        <div class="glass-card metric-card"><div class="metric-label">Tipo de Suelo</div><div class="metric-value" style="font-size: 14px;">${props.soilType || 'Franco-Arcilloso'}</div></div>
-        <div class="glass-card metric-card"><div class="metric-label">Sistema Riego</div><div class="metric-value" style="font-size: 14px;">${props.irrigationType || 'Goteo Solar'}</div></div>
-      </div>
-
-      <!-- Risk Diagnostics Panel -->
-      <div class="glass-card">
-        <div class="future-title" style="color: var(--accent-cyan);">📊 Diagnóstico de Riesgo 3D</div>
-        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-            <span>💧 Riesgo Hídrico:</span>
-            ${waterRiskBadge}
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-            <span>❄️ Riesgo de Helada:</span>
-            ${frostRiskBadge}
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-            <span>🔥 Riesgo Incendio (FWI):</span>
-            ${fireRiskBadge}
-          </div>
-        </div>
-      </div>
-
-      <!-- Operational Recommendation -->
-      <div class="glass-card" style="border-left: 3px solid var(--accent-amber);">
-        <div class="future-title" style="color: var(--accent-amber);">🚜 Recomendación Agronómica</div>
-        <div style="font-size: 11px; margin-top: 6px; color: var(--text-primary); line-height: 1.5;">
-          ${recText}
-        </div>
-      </div>
-    `;
+    return this.detailPanels.renderParcelPanel(props);
   }
 
   renderCropPanel(props) {
-    this.drawerTitle.textContent = props.name || 'Plantación';
-    this.drawerSubtitle.textContent = `Especie: ${props.species} | Categoría: ${props.cropCategory || 'Agroecológico'}`;
-
-    this.drawerBody.innerHTML = `
-      <!-- Acceso Directo a Caja de Terreno & Microclima Cuarteles -->
-      <div class="glass-card" style="border-left: 4px solid #10b981; padding: 12px; margin-bottom: 10px; background: rgba(16, 185, 129, 0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span style="font-size: 11px; font-weight: 800; color: #34d399; font-family: monospace; letter-spacing: 0.05em;">[ATMÓSFERA UNIFICADA] • Cuarteles & Frutales</span>
-          <span style="font-size: 9px; font-family: monospace; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.4);">MANEJO AGRÍCOLA 72H</span>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; margin-bottom: 8px;">
-          <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);">
-            <div style="color: #94a3b8; font-size: 9px; font-family: monospace;">VENTANA FITOSANITARIA</div>
-            <div style="font-size: 13px; font-weight: 800; color: #10b981; margin-top: 2px;">Viento: 5.2 km/h ENE</div>
-            <div style="font-size: 9.5px; color: #34d399; margin-top: 2px;">🟢 Deriva segura (&lt; 10 km/h) hasta 11:30h</div>
-          </div>
-          <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3);">
-            <div style="color: #fde047; font-size: 9px; font-family: monospace;">RIESGO CRACKING EN CEREZAS</div>
-            <div style="font-size: 13px; font-weight: 800; color: #fbbf24; margin-top: 2px;">14.5 mm en 72h (75%)</div>
-            <div style="font-size: 9.5px; color: #fef08a; margin-top: 2px;">⚠️ Activar sellador cuticular / techos</div>
-          </div>
-        </div>
-        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button onclick="window.openGalponWorkshop && window.openGalponWorkshop('cuarteles')" style="flex: 1; min-width: 140px; padding: 7px 10px; background: rgba(16, 185, 129, 0.25); border: 1px solid #10b981; color: #6ee7b7; border-radius: 6px; font-size: 10.5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-            <span>📟</span> Abrir Caja de Terreno (Sub-Caja Cuarteles)
-          </button>
-          <button onclick="window.triggerSimRain && window.triggerSimRain()" style="padding: 7px 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-            <span>🌧️</span> Probar Lluvia 3D
-          </button>
-        </div>
-      </div>
-
-      <div class="metrics-grid">
-        <div class="glass-card metric-card"><div class="metric-label">Rendimiento Est.</div><div class="metric-value">${props.estimatedYieldKg || 12500} kg</div></div>
-        <div class="glass-card metric-card"><div class="metric-label">Año Plantación</div><div class="metric-value">${props.plantedYear || 2021}</div></div>
-      </div>
-
-      <!-- Visor Fenológico y PBR del Fruto en 3D (Avocado.glb) -->
-      <div class="glass-card" style="margin-top: 10px; padding: 12px; border: 1px solid rgba(16, 185, 129, 0.35); background: rgba(6, 15, 25, 0.7);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 11px; font-weight: 800; color: #34d399; font-family: monospace;">🥑 INSPECCIÓN BOTÁNICA 3D (CALIDAD PBR)</span>
-          <span style="font-size: 9px; font-family: monospace; background: rgba(52, 211, 153, 0.15); color: #a7f3d0; padding: 2px 6px; border-radius: 4px;">GLB • INTERACTIVO</span>
-        </div>
-        <div style="position: relative; width: 100%; height: 160px; background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, rgba(0,0,0,0.65) 85%); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;" id="fruit_3d_container">
-          <canvas id="fruit_3d_canvas" style="width: 100%; height: 100%; display: block; cursor: grab;"></canvas>
-          <div id="fruit_3d_loading" style="position: absolute; font-size: 10px; color: #94a3b8; font-family: monospace; pointer-events: none;">Cargando modelo PBR...</div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 10px; margin-top: 8px; font-family: monospace;">
-          <div style="background: rgba(255,255,255,0.04); padding: 5px 8px; border-radius: 4px; color: #cbd5e1;">Calibre: <strong style="color: #6ee7b7;">18-20 (Export)</strong></div>
-          <div style="background: rgba(255,255,255,0.04); padding: 5px 8px; border-radius: 4px; color: #cbd5e1;">Materia Seca: <strong style="color: #fde047;">24.2%</strong></div>
-          <div style="background: rgba(255,255,255,0.04); padding: 5px 8px; border-radius: 4px; color: #cbd5e1;">Cutícula: <strong style="color: #6ee7b7;">Rugosa Hass</strong></div>
-          <div style="background: rgba(255,255,255,0.04); padding: 5px 8px; border-radius: 4px; color: #cbd5e1;">Grado Brix: <strong style="color: #38bdf8;">14.5° Bx</strong></div>
-        </div>
-      </div>
-    `;
-
-    // Initialize the interactive 3D Fruit Viewer
-    setTimeout(() => this._initFruit3DViewer(), 60);
+    return this.detailPanels.renderCropPanel(props);
   }
 
-  _initFruit3DViewer() {
-    const canvas = document.getElementById('fruit_3d_canvas');
-    const container = document.getElementById('fruit_3d_container');
-    const loadingEl = document.getElementById('fruit_3d_loading');
-    if (!canvas || !container || typeof THREE === 'undefined') return;
-
-    if (this._fruitViewerAnimId) {
-      cancelAnimationFrame(this._fruitViewerAnimId);
-      this._fruitViewerAnimId = null;
-    }
-
-    const width = container.clientWidth || 280;
-    const height = container.clientHeight || 160;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 50);
-    camera.position.set(0, 0, 3.2);
-
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const ambLight = new THREE.AmbientLight(0xffffff, 1.4);
-    scene.add(ambLight);
-
-    const dirLight = new THREE.DirectionalLight(0xfffbeb, 2.0);
-    dirLight.position.set(3, 4, 3);
-    scene.add(dirLight);
-
-    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.8);
-    fillLight.position.set(-3, -2, -2);
-    scene.add(fillLight);
-
-    let fruitMesh = null;
-    let isDragging = false;
-    let prevMouseX = 0;
-    let prevMouseY = 0;
-
-    canvas.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-      canvas.style.cursor = 'grabbing';
-    });
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-      if (canvas) canvas.style.cursor = 'grab';
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging || !fruitMesh) return;
-      const dx = e.clientX - prevMouseX;
-      const dy = e.clientY - prevMouseY;
-      fruitMesh.rotation.y += dx * 0.015;
-      fruitMesh.rotation.x += dy * 0.015;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    });
-
-    const loader = (typeof THREE.GLTFLoader !== 'undefined') ? new THREE.GLTFLoader() : null;
-    if (loader) {
-      loader.load(
-        'assets/models/Avocado.glb',
-        (gltf) => {
-          fruitMesh = gltf.scene;
-          fruitMesh.scale.set(28, 28, 28);
-          fruitMesh.position.set(0, -0.85, 0);
-          scene.add(fruitMesh);
-          if (loadingEl) loadingEl.style.display = 'none';
-        },
-        undefined,
-        (err) => {
-          if (loadingEl) loadingEl.textContent = 'Fruta PBR Procedural';
-        }
-      );
-    }
-
-    const animate = () => {
-      if (!document.getElementById('fruit_3d_canvas')) return;
-      this._fruitViewerAnimId = requestAnimationFrame(animate);
-      if (fruitMesh && !isDragging) {
-        fruitMesh.rotation.y += 0.012;
-      }
-      renderer.render(scene, camera);
-    };
-    animate();
-  }
 
   onSensorUpdated(sensor) {
     // Live refresh if on sensor tab
@@ -4078,80 +3152,10 @@ AgriTwin Master Plan v1.0 • Hash MRV: 0xKEY-COLLIGUAY-18`;
    * to change the item type or delete the polygon.
    */
   renderCustomPolygonPanel(props) {
-    const icon = props.icon || '📍';
-    const name = props.name || 'Polígono 3D';
-    const itemName = props.itemName || props.name;
-    const category = props.category || 'Catálogo de Ítems';
-    const areaHa = props.areaHa || 0.0;
-    const details = props.itemDetails || {};
+    return this.detailPanels.renderCustomPolygonPanel(props);
+  }
 
-    this.drawerTitle.textContent = `${icon} ${name}`;
-    this.drawerSubtitle.textContent = `${itemName} | ${areaHa} ha | Catálogo de Ítems`;
-
-    this.drawerBody.innerHTML = `
-      <div class="metrics-grid">
-        <div class="glass-card metric-card">
-          <div class="metric-label">Superficie</div>
-          <div class="metric-value">${areaHa}<span class="metric-unit">ha</span></div>
-        </div>
-        <div class="glass-card metric-card">
-          <div class="metric-label">Ítem Asignado</div>
-          <div class="metric-value" style="font-size: 13px; color: var(--accent-cyan);">${itemName}</div>
-        </div>
-        <div class="glass-card metric-card">
-          <div class="metric-label">Agua / Riego</div>
-          <div class="metric-value" style="font-size: 13px; color: #38bdf8;">${details.water || 'Adecuado'}</div>
-        </div>
-        <div class="glass-card metric-card">
-          <div class="metric-label">Riesgo Incendio</div>
-          <div class="metric-value" style="font-size: 13px; color: var(--accent-amber);">${details.fireRisk || 'Bajo'}</div>
-        </div>
-      </div>
-
-      <!-- Item Specification Card -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="future-title" style="color: var(--accent-emerald);">🌿 Especificación del Catálogo de Ítems</div>
-        <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin-top: 6px;">
-          ${details.desc || 'Elemento trazado interactivamente en el gemelo digital con modelo 3D asignado.'}
-        </p>
-        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
-          ${details.family ? `<span class="tag blue">Familia: ${details.family}</span>` : ''}
-          ${details.frost ? `<span class="tag purple">Helada: ${details.frost}</span>` : ''}
-          ${details.material ? `<span class="tag amber">Material: ${details.material}</span>` : ''}
-          ${details.flow ? `<span class="tag blue">Caudal: ${details.flow}</span>` : ''}
-        </div>
-      </div>
-
-      <!-- Action Buttons: Change item type or delete -->
-      <div class="custom-poly-action-bar">
-        <button id="btnChangeCustomPolyItem" class="btn-change-item">
-          🔄 Cambiar Tipo de Ítem
-        </button>
-        <button id="btnDeleteCustomPoly" class="btn-delete-poly" title="Eliminar este polígono">
-          🗑️ Eliminar
-        </button>
-      </div>
-    `;
-
-    const changeBtn = document.getElementById('btnChangeCustomPolyItem');
-    if (changeBtn) {
-      changeBtn.addEventListener('click', () => {
-        bus.emit('drawing:reclassify_polygon', {
-          polyId: props.id,
-          currentName: props.name,
-          currentItem: props.itemName || props.name,
-          areaHa: props.areaHa
-        });
-      });
-    }
-
-    const deleteBtn = document.getElementById('btnDeleteCustomPoly');
-    if (deleteBtn && this.drawingManager) {
-      deleteBtn.addEventListener('click', () => {
-        if (confirm(`¿Deseas eliminar el polígono "${props.name}"?`)) {
-          this.drawingManager.deletePolygonById(props.id);
-        }
-      });
-    }
+  renderPlacedObjectPanel(props) {
+    return this.detailPanels.renderPlacedObjectPanel(props);
   }
 }

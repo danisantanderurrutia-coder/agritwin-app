@@ -26,6 +26,11 @@ export class IoTHtmlOverlayManager {
     this.displayMode = 'hover';
     this.hoveredSensorId = null;
     this.selectedSensorId = null;
+
+    // Mutually exclusive hover mode: 'sensors' | 'polygons' | 'none'
+    this.hoverMode = 'sensors';
+    this.hoveredPolygon = null;
+    this.polygonCardEl = null;
   }
 
   init() {
@@ -39,6 +44,14 @@ export class IoTHtmlOverlayManager {
       parent.appendChild(overlay);
     }
     this.container = overlay;
+
+    // Create Polygon 3D Floating Hover Card (mutually exclusive with sensors)
+    const polyCard = document.createElement('div');
+    polyCard.className = 'polygon-3d-floating-card';
+    polyCard.id = 'polygon3dHoverCard';
+    polyCard.style.display = 'none';
+    this.container.appendChild(polyCard);
+    this.polygonCardEl = polyCard;
 
     // Listen for layer toggles & sensor telemetry updates
     bus.on('layer:sensors', (visible) => this.toggleVisibility(visible));
@@ -61,7 +74,12 @@ export class IoTHtmlOverlayManager {
     });
     bus.on('entity:deselected', () => this.setSelectedSensor(null));
 
+    // Listen for polygon hover/unhover events
+    bus.on('polygon:hover', (payload) => this.onPolygonHover(payload));
+    bus.on('polygon:unhover', () => this.onPolygonUnhover());
+
     // Listen for external mode switches
+    bus.on('hover_mode:set', (mode) => this.setHoverMode(mode));
     bus.on('sensor_cards:set_mode', (mode) => this.setDisplayMode(mode));
     bus.on('sensor_cards:toggle_cycle', () => this.cycleDisplayMode());
   }
@@ -248,26 +266,60 @@ export class IoTHtmlOverlayManager {
    * Maps 3D world coordinates to CSS pixel coordinates on the overlay canvas.
    */
   update() {
-    if (!this.visible || !this.markers.length || !this.mapManager.camera || !this.mapManager.container) return;
-
-    // If completely hidden, hide all elements
-    if (this.displayMode === 'none') {
-      for (let i = 0; i < this.markers.length; i++) {
-        this.markers[i].element.style.display = 'none';
-      }
-      return;
-    }
+    if (!this.visible || !this.mapManager.camera || !this.mapManager.container) return;
 
     const camera = this.mapManager.camera;
     const width = this.mapManager.container.clientWidth || window.innerWidth;
     const height = this.mapManager.container.clientHeight || window.innerHeight;
-
     const tempV = new THREE.Vector3();
+
+    // 1. MODO POLÍGONOS EXCLUSIVO: Proyectar tarjeta flotante de polígono / parcela, silenciar sensores
+    if (this.hoverMode === 'polygons') {
+      for (let i = 0; i < this.markers.length; i++) {
+        this.markers[i].element.style.display = 'none';
+      }
+
+      if (this.hoveredPolygon && this.polygonCardEl && this.hoveredPolygon.worldPos) {
+        tempV.copy(this.hoveredPolygon.worldPos).add(new THREE.Vector3(0, 1.4, 0));
+        tempV.project(camera);
+
+        const isBehind = tempV.z > 1.0;
+        if (isBehind) {
+          this.polygonCardEl.style.display = 'none';
+        } else {
+          const screenX = (tempV.x * 0.5 + 0.5) * width;
+          let screenY = (-(tempV.y * 0.5) + 0.5) * height;
+
+          // Evitar colisión con header superior
+          if (screenY < 85 && screenX > 14 && screenX < (width - 195)) {
+            screenY = 92;
+          }
+
+          this.polygonCardEl.style.display = 'block';
+          this.polygonCardEl.style.transform = `translate(-50%, -100%) translate3d(${screenX}px, ${screenY}px, 0px)`;
+        }
+      } else if (this.polygonCardEl) {
+        this.polygonCardEl.style.display = 'none';
+      }
+      return;
+    }
+
+    // 2. MODO DESACTIVADO ('none'): Ocultar todo
+    if (this.hoverMode === 'none' || this.displayMode === 'none') {
+      for (let i = 0; i < this.markers.length; i++) {
+        this.markers[i].element.style.display = 'none';
+      }
+      if (this.polygonCardEl) this.polygonCardEl.style.display = 'none';
+      return;
+    }
+
+    // 3. MODO SENSORES: Ocultar polígonos y proyectar tarjetas de sensores
+    if (this.polygonCardEl) this.polygonCardEl.style.display = 'none';
 
     for (let i = 0; i < this.markers.length; i++) {
       const m = this.markers[i];
 
-      // In 'hover' mode (clean), only display if hovered or selected!
+      // En modo 'hover', solo mostrar si está bajo hover o seleccionado
       if (this.displayMode === 'hover') {
         const isHovered = (m.id === this.hoveredSensorId || `sensor_${m.id}` === this.hoveredSensorId);
         const isSelected = (m.id === this.selectedSensorId || `sensor_${m.id}` === this.selectedSensorId);
@@ -277,15 +329,11 @@ export class IoTHtmlOverlayManager {
         }
       }
 
-      // Elevate target above physical 3D pole
+      // Elevar punto de proyección sobre el poste físico
       tempV.copy(m.worldPos).add(new THREE.Vector3(0, 3.8, 0));
-
       const dist = camera.position.distanceTo(tempV);
 
-      // Frustum & distance culling
       tempV.project(camera);
-
-      // Behind the camera plane or out of viewing bounds
       const isBehind = tempV.z > 1.0;
       const isTooFar = dist > 145;
 
@@ -294,25 +342,114 @@ export class IoTHtmlOverlayManager {
         continue;
       }
 
-      // Normalized Device Coordinates (-1 to 1) -> Screen Pixel Coordinates
       const screenX = (tempV.x * 0.5 + 0.5) * width;
       let screenY = (-(tempV.y * 0.5) + 0.5) * height;
 
-      // Collision avoidance with top header bar (height 75px):
-      // If it overlaps with the top header, adjust screenY down slightly so it doesn't obstruct menu items
       if (screenY < 85 && screenX > 14 && screenX < (width - 195)) {
         screenY = 92;
       }
 
       m.element.style.display = 'block';
-
-      // Distance scaling factor (closer = 1.0, far = 0.72)
       const scale = Math.max(0.70, Math.min(1.0, 38.0 / dist));
       const opacity = dist > 105 ? Math.max(0.2, 1.0 - (dist - 105) / 40) : 1.0;
 
       m.element.style.transform = `translate(-50%, -100%) translate3d(${screenX}px, ${screenY}px, 0px) scale(${scale})`;
       m.element.style.opacity = opacity.toFixed(2);
     }
+  }
+
+  setHoverMode(mode) {
+    if (['sensors', 'polygons', 'none'].includes(mode)) {
+      this.hoverMode = mode;
+      if (mode === 'polygons') {
+        for (let i = 0; i < this.markers.length; i++) {
+          this.markers[i].element.style.display = 'none';
+        }
+        bus.emit('sensor_labels:toggle', false);
+      } else if (mode === 'sensors') {
+        if (this.polygonCardEl) this.polygonCardEl.style.display = 'none';
+        this.hoveredPolygon = null;
+        bus.emit('sensor_labels:toggle', true);
+      } else if (mode === 'none') {
+        for (let i = 0; i < this.markers.length; i++) {
+          this.markers[i].element.style.display = 'none';
+        }
+        if (this.polygonCardEl) this.polygonCardEl.style.display = 'none';
+        this.hoveredPolygon = null;
+        bus.emit('sensor_labels:toggle', false);
+      }
+      console.log(`🏷️ Modo de hover exclusivo fijado a: ${mode}`);
+    }
+  }
+
+  onPolygonHover(payload) {
+    if (this.hoverMode !== 'polygons' || !this.polygonCardEl) return;
+    if (!payload || !payload.data) return;
+
+    this.hoveredPolygon = payload;
+    this.polygonCardEl.innerHTML = this.renderPolygonCardHtml(payload.data);
+    this.polygonCardEl.style.display = 'block';
+  }
+
+  onPolygonUnhover() {
+    this.hoveredPolygon = null;
+    if (this.polygonCardEl) {
+      this.polygonCardEl.style.display = 'none';
+    }
+  }
+
+  renderPolygonCardHtml(data) {
+    const name = data.name || data.cropType || 'Polígono de Cultivo';
+    const cropType = data.cropType || data.itemName || 'Cultivo Agrícola';
+    const rawArea = data.areaHa !== undefined ? data.areaHa : (data.properties?.areaHa);
+    const area = rawArea !== undefined && !isNaN(rawArea) ? `${Number(rawArea).toFixed(2)} ha` : '—';
+    const ndvi = data.ndvi || data.properties?.ndvi || '0.78 (Óptimo)';
+    const soil = data.soilType || data.properties?.soilType || 'Franco-Arcilloso';
+    const irrigation = data.irrigationType || data.properties?.irrigationType || 'Goteo Tecnificado';
+    const status = data.variety || data.status || data.properties?.status || 'Vigor Alto';
+    const color = data.color || data.baseColor || '#10b981';
+
+    let icon = data.icon || '🌾';
+    const lower = (cropType + ' ' + name).toLowerCase();
+    if (lower.includes('cerezo')) icon = '🍒';
+    else if (lower.includes('trigo')) icon = '🌾';
+    else if (lower.includes('avellano')) icon = '🌰';
+    else if (lower.includes('solar') || lower.includes('agrovoltaico')) icon = '☀️';
+    else if (lower.includes('agua') || lower.includes('tranque') || lower.includes('estanque')) icon = '💧';
+    else if (lower.includes('pastura') || lower.includes('voisin')) icon = '🌱';
+
+    return `
+      <div class="poly-card-inner" style="border-left: 4px solid ${color};">
+        <div class="poly-card-header">
+          <span class="poly-card-icon" style="background: ${color}22; border-color: ${color}66;">${icon}</span>
+          <div class="poly-card-title-group">
+            <div class="poly-card-name">${name}</div>
+            <div class="poly-card-crop" style="color: ${color};">${cropType.toUpperCase()}</div>
+          </div>
+          <div class="poly-card-badge" style="background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">
+            ${status}
+          </div>
+        </div>
+        <div class="poly-card-metrics">
+          <div class="poly-metric-item">
+            <span class="poly-metric-lbl">📐 Superficie</span>
+            <span class="poly-metric-val" style="color: var(--accent-cyan); font-weight: bold;">${area}</span>
+          </div>
+          <div class="poly-metric-item">
+            <span class="poly-metric-lbl">🌿 Vigor NDVI</span>
+            <span class="poly-metric-val" style="color: #4ade80; font-weight: bold;">${ndvi}</span>
+          </div>
+          <div class="poly-metric-item">
+            <span class="poly-metric-lbl">💧 Riego</span>
+            <span class="poly-metric-val" style="color: #38bdf8;">${irrigation}</span>
+          </div>
+          <div class="poly-metric-item">
+            <span class="poly-metric-lbl">🪨 Suelo</span>
+            <span class="poly-metric-val" style="color: #cbd5e1;">${soil}</span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   setDisplayMode(mode) {

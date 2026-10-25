@@ -9,7 +9,6 @@
 
 import { bus } from '../utils/EventBus.js';
 import { MapManager } from '../map/MapManager.js';
-import { PBRArchitecturalMaterialFactory } from '../map/PBRArchitecturalMaterialFactory.js';
 
 export class ParcelManager {
   constructor(mapManager) {
@@ -21,7 +20,8 @@ export class ParcelManager {
 
     this.scene.add(this.parcelGroup);
     this.scene.add(this.permacultureGroup);
-    this.visible = true;
+    this.visible = false; // Desactivado por defecto para visión limpia y fotorrealista
+    this.parcelGroup.visible = false;
     this.parcelMeshes = [];
     this.gltfLoader = (typeof THREE.GLTFLoader !== 'undefined') ? new THREE.GLTFLoader() : null;
 
@@ -33,11 +33,6 @@ export class ParcelManager {
     bus.on('entity:deselected', () => this.setSelectedParcel(null));
     bus.on('parcel:hover', (id) => this.setHoveredParcel(id));
     bus.on('parcel:unhover', () => this.setHoveredParcel(null));
-    bus.on('environment:time_of_day', (env) => {
-      if (this.porchLight) {
-        this.porchLight.intensity = env.isNight ? 1.8 : 0.05;
-      }
-    });
 
     // Register smooth spring-damper Y-axis hover animation loop
     this.mapManager.addAnimated(this.parcelGroup, (time) => this.updateParcelAnimations(time));
@@ -73,7 +68,7 @@ export class ParcelManager {
       let baseColor = '#15803d'; // Default verde follaje
 
       if (cropType === 'trigo') baseColor = '#ca8a04'; // Trigo dorado
-      else if (cropType === 'agrovoltaico') baseColor = '#1e3a8a'; // Azul cobalto tecnológico
+      else if (cropType === 'agrovoltaico') baseColor = '#16a34a'; // Pradera natural verde
       else if (cropType === 'tranque') baseColor = '#0284c7'; // Azul hídrico
       else if (cropType === 'biofabrica') baseColor = '#059669'; // Verde biofábrica
       else if (cropType === 'vinedo') baseColor = '#6b21a8'; // Púrpura uva
@@ -87,16 +82,17 @@ export class ParcelManager {
 
       const material = new THREE.MeshStandardMaterial({
         color: baseColor,
-        roughness: 0.65,
-        metalness: 0.08,
+        roughness: 0.88,
+        metalness: 0.02,
         transparent: true,
-        opacity: 0.72,
-        emissive: new THREE.Color(baseColor),
-        emissiveIntensity: 0.08
+        opacity: 0.48,
+        emissive: new THREE.Color(0x000000),
+        emissiveIntensity: 0.0
       });
 
       const fieldMesh = new THREE.Mesh(geometry, material);
-      fieldMesh.position.y = 0.45;
+      const baseElev = this.mapManager.getTerrainElevation ? this.mapManager.getTerrainElevation(centerX, centerZ) : 0.45;
+      fieldMesh.position.y = baseElev + 0.08;
       fieldMesh.castShadow = true;
       fieldMesh.receiveShadow = true;
 
@@ -260,234 +256,67 @@ export class ParcelManager {
   }
 
   /**
-   * Builds High-Detail Tudor Style Farmhouse with Realistic PBR Textures
-   * (Artisan brick plinth, weathered timber beams, terracotta pantiles, chiseled stone chimney)
+   * Builds Main Farmhouse (FarmHouse.glb - Camino 2 real 3D model)
+   * Connected directly to drawer inspection and metabolism dashboard.
    */
   addDetailedTudorFarmhouse(x, z, entityData) {
     const houseGroup = new THREE.Group();
-    houseGroup.position.set(x, 0.5, z);
+    const elev = this.mapManager.getTerrainElevation ? this.mapManager.getTerrainElevation(x, z) : 0.45;
+    houseGroup.position.set(x, elev, z);
+    houseGroup.userData = entityData;
+    this.houseGroup = houseGroup;
+    this.scene.add(houseGroup); // Añadido directamente a la escena para que la casa realista siempre se vea
 
-    // PBR Material Suite
-    const brickMat = PBRArchitecturalMaterialFactory.getBrickMaterial(3);
-    const roofMat  = PBRArchitecturalMaterialFactory.getTerracottaRoofMaterial(4);
-    const timberMat = PBRArchitecturalMaterialFactory.getTimberMaterial(2);
-    const stoneMat  = PBRArchitecturalMaterialFactory.getStoneMasonryMaterial(2);
-
-    // 1. Lower Level: Ground Floor Plinth in Exposed Artisan Brickwork
-    const brickBaseGeo = new THREE.BoxGeometry(4.7, 1.3, 3.5);
-    const brickBaseMesh = new THREE.Mesh(brickBaseGeo, brickMat);
-    brickBaseMesh.position.y = 0.65;
-    brickBaseMesh.castShadow = true;
-    brickBaseMesh.receiveShadow = true;
-    houseGroup.add(brickBaseMesh);
-
-    // 2. Upper Level: Traditional Tudor Whitewashed Plaster Facade
-    const upperWallGeo = new THREE.BoxGeometry(4.6, 1.4, 3.4);
-    const plasterMat = new THREE.MeshStandardMaterial({
-      color: '#f8fafc',
-      roughness: 0.85,
-      metalness: 0.02
-    });
-    const upperWallMesh = new THREE.Mesh(upperWallGeo, plasterMat);
-    upperWallMesh.position.y = 2.0;
-    upperWallMesh.castShadow = true;
-    upperWallMesh.receiveShadow = true;
-    houseGroup.add(upperWallMesh);
-
-    // 3. Exposed Heavy Oak Timber Framing (Vertical Studs & Horizontal Plates)
-    // Horizontal Jetty Beam separating lower brick and upper floor
-    const jettyBeamGeo = new THREE.BoxGeometry(4.74, 0.16, 3.54);
-    const jettyBeam = new THREE.Mesh(jettyBeamGeo, timberMat);
-    jettyBeam.position.y = 1.3;
-    jettyBeam.castShadow = true;
-    houseGroup.add(jettyBeam);
-
-    // Vertical Timber Studs
-    for (let bx = -2.25; bx <= 2.25; bx += 0.9) {
-      const vBeamGeo = new THREE.BoxGeometry(0.14, 1.42, 3.46);
-      const vBeamMesh = new THREE.Mesh(vBeamGeo, timberMat);
-      vBeamMesh.position.set(bx, 2.0, 0);
-      vBeamMesh.castShadow = true;
-      houseGroup.add(vBeamMesh);
-    }
-
-    // Diagonal Tudor Knee Braces
-    [-1.6, 1.6].forEach(dx => {
-      const braceGeo = new THREE.BoxGeometry(0.12, 1.2, 0.08);
-      const brace = new THREE.Mesh(braceGeo, timberMat);
-      brace.position.set(dx, 2.0, 1.72);
-      brace.rotation.z = (dx < 0 ? 1 : -1) * Math.PI / 4;
-      houseGroup.add(brace);
-    });
-
-    // 4. Terracotta Curved Tile Gabled Roof (Dual Sloped Pitched Roof)
-    const roofSlopeLGeo = new THREE.BoxGeometry(2.7, 0.14, 3.9);
-    const roofSlopeL = new THREE.Mesh(roofSlopeLGeo, roofMat);
-    roofSlopeL.position.set(-1.0, 3.5, 0);
-    roofSlopeL.rotation.z = Math.PI / 5.2; // ~35 degree pitch
-    roofSlopeL.castShadow = true;
-    roofSlopeL.receiveShadow = true;
-    houseGroup.add(roofSlopeL);
-
-    const roofSlopeRGeo = new THREE.BoxGeometry(2.7, 0.14, 3.9);
-    const roofSlopeR = new THREE.Mesh(roofSlopeRGeo, roofMat);
-    roofSlopeR.position.set(1.0, 3.5, 0);
-    roofSlopeR.rotation.z = -Math.PI / 5.2;
-    roofSlopeR.castShadow = true;
-    roofSlopeR.receiveShadow = true;
-    houseGroup.add(roofSlopeR);
-
-    // Roof Ridge Cap (Caballete de tejas)
-    const ridgeCapGeo = new THREE.CylinderGeometry(0.14, 0.14, 4.0, 8);
-    ridgeCapGeo.rotateX(Math.PI / 2);
-    const ridgeCap = new THREE.Mesh(ridgeCapGeo, roofMat);
-    ridgeCap.position.set(0, 4.35, 0);
-    houseGroup.add(ridgeCap);
-
-    // Dormer Window with Tiled Roof
-    const dormerGeo = new THREE.ConeGeometry(1.2, 1.1, 4);
-    const dormerMesh = new THREE.Mesh(dormerGeo, roofMat);
-    dormerMesh.position.set(0, 3.8, 1.3);
-    dormerMesh.rotation.y = Math.PI / 4;
-    dormerMesh.castShadow = true;
-    houseGroup.add(dormerMesh);
-
-    // 5. Massive Chiseled Stone Chimney with Terracotta Clay Pots
-    const chimneyGeo = new THREE.BoxGeometry(0.9, 4.8, 0.9);
-    const chimneyMesh = new THREE.Mesh(chimneyGeo, stoneMat);
-    chimneyMesh.position.set(-2.1, 2.7, -1.2);
-    chimneyMesh.castShadow = true;
-    chimneyMesh.receiveShadow = true;
-    houseGroup.add(chimneyMesh);
-
-    // Dual Chimney Clay Pots
-    [-0.2, 0.2].forEach(offZ => {
-      const potGeo = new THREE.CylinderGeometry(0.14, 0.16, 0.6, 12);
-      const potMesh = new THREE.Mesh(potGeo, roofMat);
-      potMesh.position.set(-2.1, 5.25, -1.2 + offZ);
-      potMesh.castShadow = true;
-      houseGroup.add(potMesh);
-    });
-
-    // 6. Rooftop Solar Photovoltaic Array (12x High-Efficiency Monocrystalline Panels)
-    const solarArrayGroup = new THREE.Group();
-    const cellMat = new THREE.MeshStandardMaterial({
-      color: '#0f172a',
-      metalness: 0.85,
-      roughness: 0.15
-    });
-    for (let r = 0; r < 2; r++) {
-      for (let c = 0; c < 6; c++) {
-        const panelFrame = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.04, 0.9), timberMat);
-        const cellMesh = new THREE.Mesh(new THREE.BoxGeometry(0.51, 0.045, 0.86), cellMat);
-        const singlePanel = new THREE.Group();
-        singlePanel.add(panelFrame);
-        singlePanel.add(cellMesh);
-
-        singlePanel.position.set(-1.4 + c * 0.58, 3.5 + (1 - r) * 0.35, -0.6 + r * 1.0);
-        singlePanel.rotation.x = -Math.PI / 5.5;
-        solarArrayGroup.add(singlePanel);
-      }
-    }
-    houseGroup.add(solarArrayGroup);
-
-    // 7. Leaded Glass Windows with Diamond Pattern & Reflections
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: '#bfdbfe',
-      roughness: 0.1,
-      metalness: 0.1,
-      transmission: 0.6,
-      transparent: true,
-      opacity: 0.85
-    });
-    // Ground Floor Front Windows
-    [-1.2, 1.4].forEach(wx => {
-      const winGeo = new THREE.BoxGeometry(0.8, 0.7, 0.08);
-      const winMesh = new THREE.Mesh(winGeo, glassMat);
-      winMesh.position.set(wx, 0.85, 1.76);
-      houseGroup.add(winMesh);
-
-      // Wooden Window Frame
-      const frameGeo = new THREE.BoxGeometry(0.88, 0.78, 0.06);
-      const frameMesh = new THREE.Mesh(frameGeo, timberMat);
-      frameMesh.position.set(wx, 0.85, 1.74);
-      houseGroup.add(frameMesh);
-    });
-
-    // 8. Heavy Plank Oak Door with Forged Iron Hardware
-    const doorGeo = new THREE.BoxGeometry(0.9, 1.7, 0.1);
-    const doorMesh = new THREE.Mesh(doorGeo, timberMat);
-    doorMesh.position.set(0.1, 0.85, 1.73);
-    houseGroup.add(doorMesh);
-
-    // Forged Iron Latch
-    const handleGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.16);
-    const ironMat = new THREE.MeshStandardMaterial({ color: '#18181b', metalness: 0.9, roughness: 0.3 });
-    const handleMesh = new THREE.Mesh(handleGeo, ironMat);
-    handleMesh.position.set(0.42, 0.85, 1.8);
-    houseGroup.add(handleMesh);
-
-    // 9. Rainwater Harvesting Oak Barrel with Iron Hoops
-    const barrelGeo = new THREE.CylinderGeometry(0.42, 0.46, 1.05, 14);
-    const barrelMesh = new THREE.Mesh(barrelGeo, timberMat);
-    barrelMesh.position.set(2.4, 0.52, 1.5);
-    barrelMesh.castShadow = true;
-    houseGroup.add(barrelMesh);
-
-    // Barrel Iron Rings
-    [-0.3, 0.3].forEach(ringY => {
-      const ringGeo = new THREE.TorusGeometry(0.45, 0.02, 8, 16);
-      ringGeo.rotateX(Math.PI / 2);
-      const ringMesh = new THREE.Mesh(ringGeo, ironMat);
-      ringMesh.position.set(2.4, 0.52 + ringY, 1.5);
-      houseGroup.add(ringMesh);
-    });
-
-    // 10. Rustic Porch Barn Lantern (GLTF AnisotropyBarnLamp.glb) with Warm Amber Point Light
     if (this.gltfLoader) {
       this.gltfLoader.load(
-        'assets/models/AnisotropyBarnLamp.glb',
+        'assets/models/FarmHouse.glb',
         (gltf) => {
-          const lamp = gltf.scene;
-          lamp.name = 'tudor_porch_barn_lamp';
-          lamp.position.set(-0.55, 1.85, 1.76);
-          lamp.scale.set(3.2, 3.2, 3.2);
-          lamp.rotation.y = Math.PI;
-
-          lamp.traverse((child) => {
+          const house = gltf.scene;
+          house.scale.set(0.24, 0.24, 0.24); // Extent is ~25m -> scale to ~6.0m realistic farmhouse
+          house.rotation.y = Math.PI / 4;
+          house.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
+              if (child.material) {
+                child.material.roughness = 0.75;
+                child.material.metalness = 0.05;
+              }
+              this.mapManager.addPickable(child, entityData);
             }
           });
-
-          // Warm ambient porch illumination
-          const porchLight = new THREE.PointLight(0xfbbf24, 1.6, 14, 1.6);
-          porchLight.position.set(-0.55, 1.75, 1.95);
-          porchLight.castShadow = true;
-          porchLight.shadow.bias = -0.002;
-          this.porchLight = porchLight;
-          houseGroup.add(porchLight);
-          houseGroup.add(lamp);
-
-          console.log('💡 Tudor Porch Barn Lamp loaded: AnisotropyBarnLamp.glb');
+          houseGroup.add(house);
+          console.log('🏡 Casa Principal (FarmHouse.glb) conectada con éxito al panel interactivo.');
         },
         undefined,
-        (err) => console.warn('Could not load AnisotropyBarnLamp.glb:', err)
+        (err) => {
+          console.warn('⚠️ Error loading FarmHouse.glb, fallback to procedural house:', err);
+          this._buildProceduralHouse(houseGroup, entityData);
+        }
       );
+    } else {
+      this._buildProceduralHouse(houseGroup, entityData);
     }
+  }
 
-    houseGroup.userData = entityData;
-    this.parcelGroup.add(houseGroup);
+  _buildProceduralHouse(houseGroup, entityData) {
+    const wallGeo = new THREE.BoxGeometry(4.6, 2.6, 3.4);
+    const wallMat = new THREE.MeshStandardMaterial({ color: '#fef3c7', roughness: 0.8, flatShading: true });
+    const wallMesh = new THREE.Mesh(wallGeo, wallMat);
+    wallMesh.position.y = 1.3;
+    wallMesh.castShadow = true;
+    houseGroup.add(wallMesh);
 
-    // Enable raycasting picking on all house elements
-    this.mapManager.addPickable(brickBaseMesh, entityData);
-    this.mapManager.addPickable(roofSlopeL, entityData);
-    this.mapManager.addPickable(roofSlopeR, entityData);
+    const roofGeo = new THREE.ConeGeometry(4.0, 2.4, 4);
+    const roofMat = new THREE.MeshStandardMaterial({ color: '#b91c1c', roughness: 0.8, flatShading: true });
+    const roofMesh = new THREE.Mesh(roofGeo, roofMat);
+    roofMesh.position.y = 3.8;
+    roofMesh.rotation.y = Math.PI / 4;
+    roofMesh.castShadow = true;
+    houseGroup.add(roofMesh);
+
     houseGroup.traverse((child) => {
-      if (child.isMesh) {
-        this.mapManager.addPickable(child, entityData);
-      }
+      if (child.isMesh) this.mapManager.addPickable(child, entityData);
     });
   }
 

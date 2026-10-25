@@ -11,30 +11,39 @@
  *  7. Starts IoT Telemetry Simulation & Wildfire Risk Analytics
  */
 
-import { MapManager } from './map/MapManager.js?v=3.2.0';
-import { DataSource } from './data/DataSource.js?v=3.2.0';
-import { ParcelManager } from './entities/ParcelManager.js?v=3.2.0';
-import { SensorManager } from './entities/SensorManager.js?v=3.2.0';
-import { CropManager } from './entities/CropManager.js?v=3.2.0';
-import { LivestockManager } from './entities/LivestockManager.js?v=3.2.0';
-import { PermacultureManager } from './entities/PermacultureManager.js?v=3.2.0';
-import { TerritorialCatanManager } from './entities/TerritorialCatanManager.js?v=3.2.0';
-import { SimulationEngine } from './sim/SimulationEngine.js?v=3.2.0';
-import { UIController } from './ui/UIController.js?v=3.2.0';
-import { SpatialWidgets } from './map/SpatialWidgets.js?v=3.2.0';
-import { DrawingManager } from './map/DrawingManager.js?v=3.2.0';
-import { ProjectManager } from './data/ProjectManager.js?v=3.2.0';
-import { PossibilitiesCatalog } from './ui/PossibilitiesCatalog.js?v=3.2.0';
-import { WildfireRiskModel } from './sim/WildfireRiskModel.js?v=3.2.0';
-import { EngineInspectorModal } from './ui/EngineInspectorModal.js?v=3.2.0';
-import { AgroWorkshopOverlay } from './ui/AgroWorkshopOverlay.js?v=3.2.0';
+import { MapManager } from './map/MapManager.js?v=3.9.6';
+import { DataSource } from './data/DataSource.js?v=3.9.6';
+import { ParcelManager } from './entities/ParcelManager.js?v=3.9.6';
+import { SensorManager } from './entities/SensorManager.js?v=3.9.6';
+import { CropManager } from './entities/CropManager.js?v=3.9.6';
+import { LivestockManager } from './entities/LivestockManager.js?v=3.9.6';
+import { PermacultureManager } from './entities/PermacultureManager.js?v=3.9.6';
+import { TerritorialCatanManager } from './entities/TerritorialCatanManager.js?v=3.9.6';
+import { SimulationEngine } from './sim/SimulationEngine.js?v=3.9.6';
+import { UIController } from './ui/UIController.js?v=3.9.6';
+import { SpatialWidgets } from './map/SpatialWidgets.js?v=3.9.6';
+import { DrawingManager } from './map/DrawingManager.js?v=3.9.6';
+import { ProjectManager } from './data/ProjectManager.js?v=3.9.6';
+import { PossibilitiesCatalog } from './ui/PossibilitiesCatalog.js?v=3.9.6';
+import { WildfireRiskModel } from './sim/WildfireRiskModel.js?v=3.9.6';
+import { EngineInspectorModal } from './ui/EngineInspectorModal.js?v=3.9.6';
+import { AgroWorkshopOverlay } from './ui/AgroWorkshopOverlay.js?v=3.9.6';
 import { OperatorNotesManager } from './ui/OperatorNotesManager.js?v=3.2.0';
-import { bus } from './utils/EventBus.js?v=3.2.0';
+import { VisionManager } from './entities/VisionManager.js?v=1.0.0';
+import { DroneMissionManager } from './entities/DroneMissionManager.js?v=1.0.0';
+import { ObjectPlacementManager } from './map/ObjectPlacementManager.js?v=1.0.0';
+import { SuiteBridge } from './utils/SuiteBridge.js';
+import { bus } from './utils/EventBus.js';
 
 class AgriTwinApp {
   constructor() {
+    SuiteBridge.init();
     window.agriTwinApp = this;
+    window.app = this;
+    window.bus = bus;
+    this.bus = bus;
     this.mapManager = new MapManager('cesiumContainer');
+    window.mapManager = this.mapManager;
     this.dataSource = new DataSource();
   }
 
@@ -71,7 +80,15 @@ class AgriTwinApp {
       this.livestockManager = new LivestockManager(this.mapManager);
       this.permacultureManager = new PermacultureManager(this.mapManager);
       this.territorialCatanManager = new TerritorialCatanManager(this.mapManager);
+      this.visionManager = new VisionManager(this.mapManager);
+      this.droneMissionManager = new DroneMissionManager(this.mapManager);
+      this.objectPlacementManager = new ObjectPlacementManager(this.mapManager, this.drawingManager, this.parcelManager);
       window.livestockManager = this.livestockManager;
+      window.visionManager = this.visionManager;
+      window.droneMissionManager = this.droneMissionManager;
+      window.objectPlacementManager = this.objectPlacementManager;
+      window.drawingManager = this.drawingManager;
+      window.agroWorkshopOverlay = this.workshopOverlay;
 
       // 5. Instantiate simulation engine & UI controller
       this.simulationEngine = new SimulationEngine(this.dataSource);
@@ -105,6 +122,7 @@ class AgriTwinApp {
       await this.parcelManager.renderParcels(parcels);
       this.sensorManager.renderSensors(entities.sensors || []);
       this.cropManager.renderTrees(entities.trees || []);
+      this.visionManager.initCameras();
 
       // 9. Initial camera preset over farm site
       this.mapManager.flyToPreset('overview');
@@ -256,11 +274,20 @@ class AgriTwinApp {
       closeBrandBtn.addEventListener('click', () => brandModal.style.display = 'none');
     }
 
-    // 3. Herramientas de Dibujo (Pincel & Polígonos)
     const btnDrawPoly = document.getElementById('btn_draw_polygon');
+    const btnMoveObjects = document.getElementById('btn_move_objects');
     const btnErasePoly = document.getElementById('btn_erase_polygon');
     const btnClearCanvas = document.getElementById('btn_clear_canvas');
     const labelDraw = document.getElementById('trigger_draw_label');
+
+    if (btnMoveObjects) {
+      btnMoveObjects.addEventListener('click', () => {
+        const isActive = this.drawingManager.isMoveMode;
+        this.drawingManager.toggleMoveMode(!isActive);
+        if (labelDraw) labelDraw.textContent = !isActive ? 'Mano/Mover' : 'Pincel';
+        if (this.uiController.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
 
     if (btnDrawPoly) {
       btnDrawPoly.addEventListener('click', () => {
@@ -366,6 +393,90 @@ class AgriTwinApp {
           const fireMetrics = WildfireRiskModel.evaluateParcelRisk(sampleParcel, telemetry);
           bus.emit('ui:show_toast', `🔥 Capa de Riesgo Incendios (FWI): Índice ${fireMetrics.score}/100 [Riesgo ${fireMetrics.tier}]`);
         }
+      });
+    }
+
+    // 5B. Editor de Objetos 3D (Age of Empires III)
+    const btnTriggerObjects = document.getElementById('trigger_objects_btn');
+    const btnOpenObjDock = document.getElementById('btn_open_objects_dock');
+    if (btnTriggerObjects) {
+      btnTriggerObjects.addEventListener('click', () => {
+        this.objectPlacementManager.toggleDock();
+      });
+    }
+    if (btnOpenObjDock) {
+      btnOpenObjDock.addEventListener('click', () => {
+        this.objectPlacementManager.openDock();
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    // 6. Visión & Drones Autónomos Toolbar Event Listeners
+    const btnToggleCameras = document.getElementById('btn_toggle_vision_cameras');
+    const btnCamNorte = document.getElementById('btn_cam_01_norte');
+    const btnCamDga = document.getElementById('btn_cam_02_dga');
+    const btnCamFauna = document.getElementById('btn_cam_03_fauna');
+    const btnCamPrv = document.getElementById('btn_cam_04_prv');
+    const btnDroneMission = document.getElementById('btn_drone_start_mission');
+    const btnDroneOrtho = document.getElementById('btn_drone_update_ortho');
+    const btnVisionAlert = document.getElementById('btn_vision_sim_alert');
+
+    if (btnToggleCameras) {
+      btnToggleCameras.addEventListener('click', () => {
+        this.visionManager.toggleVisionCameras();
+      });
+    }
+
+    if (btnCamNorte) {
+      btnCamNorte.addEventListener('click', () => {
+        const cam = this.visionManager.cameras.find(c => c.id === 'CAM-01-NORTE');
+        if (cam) this.visionManager.openPip(cam);
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    if (btnCamDga) {
+      btnCamDga.addEventListener('click', () => {
+        const cam = this.visionManager.cameras.find(c => c.id === 'CAM-02-DGA');
+        if (cam) this.visionManager.openPip(cam);
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    if (btnCamFauna) {
+      btnCamFauna.addEventListener('click', () => {
+        const cam = this.visionManager.cameras.find(c => c.id === 'CAM-03-FAUNA');
+        if (cam) this.visionManager.openPip(cam);
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    if (btnCamPrv) {
+      btnCamPrv.addEventListener('click', () => {
+        const cam = this.visionManager.cameras.find(c => c.id === 'CAM-04-PRV');
+        if (cam) this.visionManager.openPip(cam);
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    if (btnDroneMission) {
+      btnDroneMission.addEventListener('click', () => {
+        this.droneMissionManager.startMission();
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    if (btnDroneOrtho) {
+      btnDroneOrtho.addEventListener('click', () => {
+        this.droneMissionManager.applyDroneOrthomosaic();
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
+      });
+    }
+
+    if (btnVisionAlert) {
+      btnVisionAlert.addEventListener('click', () => {
+        this.visionManager.triggerEdgeAiAlert('CAM-01-NORTE');
+        if (this.uiController?.closeAllDropdowns) this.uiController.closeAllDropdowns();
       });
     }
 

@@ -165,6 +165,9 @@ export class LivestockView {
           <button onclick="window.openAgriEstabloAdvisorsModal && window.openAgriEstabloAdvisorsModal()" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.4)); border: 1px solid #f59e0b; border-radius: 6px; color: #fde047; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(245, 158, 11, 0.5)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.4))'" title="Consultar Consejo de Asesores del Establo (Dra. Javiera Montecinos, Don Gastón Fuenzalida, Ignacio Subercaseaux)">
             <span>🧠</span> <strong>Consejo Asesor Establo (3)</strong>
           </button>
+        </div>
+      </div>
+
       <!-- 1b. [ATMÓSFERA UNIFICADA]: OpenWeatherMap API + Simulación Maule (Sub-rama Establo & Animales) -->
       <div class="glass-card" style="border-left: 4px solid #f59e0b; padding: 12px; margin-top: 10px; background: rgba(245, 158, 11, 0.06);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">

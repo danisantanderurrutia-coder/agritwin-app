@@ -39,16 +39,16 @@ export const BUNDLED_PARCELS = {
       "type": "Feature",
       "properties": {
         "id": "A102",
-        "name": "Parque Agrovoltaico Bifacial & Pastoreo Ovino",
-        "crop": "Agrivoltaics (Energía Solar 120 kWp) & Pastura Sombría",
-        "cropType": "agrovoltaico",
-        "symbol": "☀️",
+        "name": "Pradera Regenerativa & Pastoreo Ovino",
+        "crop": "Pradera Polifítica (Trébol, Ballica & Alfalfa) & Pastoreo Racional",
+        "cropType": "pradera",
+        "symbol": "🌱",
         "area_ha": 2.2,
-        "ndvi": 0.65,
+        "ndvi": 0.78,
         "soil_type": "Franco con Estructura Estable",
-        "irrigation_type": "Goteo Automatizado Bajo Panel",
+        "irrigation_type": "Secano con Riego Suplementario",
         "status": "Óptimo",
-        "zone": "Zona 5 - Energías Renovables & Clima"
+        "zone": "Zona 4 - Pastoreo & Forraje"
       },
       "geometry": {
         "type": "Polygon",
@@ -1089,14 +1089,14 @@ export const BUNDLED_ENTITIES = {
     },
     {
       "id": "CROP-AGRI-01",
-      "species": "Agrivoltaics Structure",
-      "variety": "Seguidor Solar Fotovoltaico Elevado 120 kWp",
-      "cropCategory": "Energía Limpia & Sombra Agrícola",
-      "plantedYear": 2023,
-      "heightMeters": 3.5,
-      "canopyDiameterMeters": 12.0,
+      "species": "Castanea sativa",
+      "variety": "Castaño Marrón de Lyon (Agroforestería)",
+      "cropCategory": "Frutales Mayores & Biomasa",
+      "plantedYear": 2021,
+      "heightMeters": 6.5,
+      "canopyDiameterMeters": 5.0,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 0.0,
+      "estimatedYieldKg": 420.0,
       "location": { "longitude": -122.0848, "latitude": 37.3882 }
     },
     {

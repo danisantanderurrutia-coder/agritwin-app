@@ -520,36 +520,50 @@ body:not(.drawer-collapsed) .btn-dropdown-label {
 /* Tab Bar Navigation */
 .panel-tab-bar {
   display: flex;
-  background: rgba(0, 0, 0, 0.2);
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-sm);
   padding: 4px;
   gap: 4px;
   margin-bottom: 12px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .tab-btn {
-  flex: 1;
+  flex: 1 1 calc(25% - 4px);
+  min-width: 82px;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-secondary);
-  padding: 8px 6px;
+  padding: 7px 6px;
   font-size: 11px;
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
 }
 
 .tab-btn:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .tab-btn.active {
-  background: var(--accent-cyan);
-  color: #042f2e;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+  background: rgba(6, 182, 212, 0.22);
+  border-color: rgba(6, 182, 212, 0.55);
+  color: #38bdf8;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.25);
 }
 
 /* Creator Profile Card */
@@ -883,6 +897,106 @@ body:not(.drawer-collapsed) .btn-dropdown-label {
   font-weight: 700;
   font-family: var(--font-mono);
   color: #f1f5f9;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   POLYGON / PARCEL 3D FLOATING HOVER CARD (Exclusivo contra Sensores)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.polygon-3d-floating-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform, opacity;
+  transform-origin: bottom center;
+  transition: opacity 0.18s ease-out;
+  z-index: 40;
+}
+
+.poly-card-inner {
+  background: rgba(11, 19, 36, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 210px;
+  max-width: 280px;
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.75), 0 0 18px rgba(16, 185, 129, 0.2);
+}
+
+.poly-card-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 6px;
+}
+
+.poly-card-icon {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 15px;
+  border: 1px solid;
+}
+
+.poly-card-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.poly-card-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.poly-card-crop {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+.poly-card-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.poly-card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.poly-metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.poly-metric-lbl {
+  font-size: 9px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.poly-metric-val {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  margin-top: 1px;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,54 @@
+/* AgriTwin 3D - Unified Design Tokens (Obsidian Dark / AgroTech Precision) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Color Palette - Obsidian Dark Precision Theme */
+  --bg-dark: #080c14;
+  --bg-panel: rgba(13, 19, 34, 0.94);
+  --bg-panel-solid: #0d1322;
+  --bg-card: rgba(18, 26, 42, 0.85);
+  --bg-card-hover: rgba(30, 41, 59, 0.92);
+  
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(56, 189, 248, 0.45);
+  --border-gold: rgba(245, 158, 11, 0.5);
+
+  /* Typography Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-gold: #fde047;
+
+  /* Accent Colors */
+  --accent-cyan: #0ea5e9;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-purple: #8b5cf6;
+
+  /* Status Colors */
+  --status-optimal: #10b981;
+  --status-warning: #f59e0b;
+  --status-critical: #ef4444;
+  --status-offline: #64748b;
+
+  /* Fonts */
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Dimensions & Spacing */
+  --header-height: 56px;
+  --panel-width: 420px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-main: 0 16px 36px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.9);
+}

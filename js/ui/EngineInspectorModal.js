@@ -154,13 +154,13 @@ export class EngineInspectorModal {
             </div>
 
             <div class="engine-card">
-              <div class="engine-card-badge" style="color: #6366f1; border-color: #6366f155;">REACT THREE FIBER</div>
-              <div class="engine-card-title">Suite R3F (js/r3f/)</div>
+              <div class="engine-card-badge" style="color: #6366f1; border-color: #6366f155;">MOTOR NATIVO THREE.JS</div>
+              <div class="engine-card-title">Arquitectura PBR & GLSL</div>
               <div class="engine-card-desc">
-                Suite modular completa en React Three Fiber: <code>AgroTwinCanvas.jsx</code>, <code>AtmosphereAndSun.jsx</code>, <code>TerrainPBR.jsx</code>, <code>VegetationInstances.jsx</code>, <code>InteractiveParcels.jsx</code>, <code>IoTSensorNodes.jsx</code> y <code>PostProcessingPipeline.jsx</code> lista para migrar o empaquetar en Vite / Next.js.
+                Pipeline modular nativo Three.js: <code>MapManager.js</code>, <code>BiophysicalTerrainShader.js</code>, <code>InstancedVegetationManager.js</code>, <code>SolarAstroEngine.js</code> y <code>DrawingManager.js</code> con renderizado en tiempo real sin sobrecarga de frameworks.
               </div>
               <div class="engine-card-tags">
-                <span>@react-three/fiber</span><span>@react-three/drei</span><span>PostProcessing</span>
+                <span>Three.js r128</span><span>GLSL Custom Shaders</span><span>InstancedMesh GPU</span>
               </div>
             </div>
 

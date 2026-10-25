@@ -65,9 +65,11 @@ Agritwin/
 │   ├── data/
 │   │   └── DataSource.js        # Proveedor abstracto de datos (carga GeoJSON/JSON e índices)
 │   ├── entities/
-│   │   ├── ParcelManager.js     # Parcelas 3D extruidas y coloreado por estado NDVI
-│   │   ├── SensorManager.js     # Pines 3D IoT con anillos de pulso animado y cambio de color
-│   │   └── CropManager.js       # Árboles 3D/geometría de dosel en el predio
+│   │   ├── ParcelManager.js        # Parcelas 3D extruidas y coloreado por estado NDVI
+│   │   ├── SensorManager.js        # Pines 3D IoT con anillos de pulso animado y cambio de color
+│   │   ├── CropManager.js          # Árboles 3D/geometría de dosel en el predio
+│   │   ├── VisionManager.js        # Red de cámaras solares 4G, Frustums 3D volumétricos y visor PiP dual
+│   │   └── DroneMissionManager.js  # Hangar DJI Dock 2, orquestación reactiva y actualización NDVI
 │   ├── ui/
 │   │   ├── UIController.js      # Control de paneles laterales, toggles de capas y alertas
 │   │   └── ChartManager.js     # Renderizador de gráficos de tendencia en Canvas 2D

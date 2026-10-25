@@ -740,15 +740,15 @@
     },
     {
       "id": "CROP-AGRI-01",
-      "species": "Agrivoltaics Structure",
-      "variety": "Seguidor Solar Fotovoltaico Elevado 120 kWp",
+      "species": "Agrivoltaic Array",
+      "variety": "Parque Agrovoltaico Elevado 120 kWp Bifacial",
       "cropCategory": "Energía Limpia & Sombra Agrícola",
       "plantedYear": 2023,
       "heightMeters": 3.5,
-      "canopyDiameterMeters": 12.0,
+      "canopyDiameterMeters": 14.0,
       "healthStatus": "optimal",
       "estimatedYieldKg": 0.0,
-      "location": { "longitude": -122.0848, "latitude": 37.3882 }
+      "location": { "longitude": -122.0838, "latitude": 37.3882 }
     },
     {
       "id": "CROP-TRANQUE-01",

@@ -538,11 +538,16 @@ export class ProjectManager {
   }
 
   exportProject() {
+    const movedRaw = localStorage.getItem('agritwin_moved_objects') || '{}';
+    let movedObjects = {};
+    try { movedObjects = JSON.parse(movedRaw); } catch (e) {}
+
     const projectData = {
       ...this.currentProject,
       exportedAt: new Date().toISOString(),
       version: '2.0.0',
-      customPolygons: this.app?.drawingManager ? this.app.drawingManager.customPolygons : []
+      customPolygons: this.app?.drawingManager ? this.app.drawingManager.customPolygons : [],
+      movedObjects: movedObjects
     };
 
     const jsonStr = JSON.stringify(projectData, null, 2);
@@ -563,6 +568,25 @@ export class ProjectManager {
       const text = await file.text();
       const projectData = JSON.parse(text);
       this.currentProject = projectData;
+
+      // Restore custom polygons into scene
+      if (Array.isArray(projectData.customPolygons) && this.app?.drawingManager) {
+        this.app.drawingManager.clearAllPolygons();
+        projectData.customPolygons.forEach(item => {
+          if (item.points && item.points.length >= 3) {
+            const pts = item.points.map(p => new THREE.Vector3(p.x, p.y, p.z));
+            this.app.drawingManager.renderFinal3DPolygon(pts, item.itemDetails || item, item.areaHa);
+          }
+        });
+      }
+
+      // Restore moved objects
+      if (projectData.movedObjects) {
+        localStorage.setItem('agritwin_moved_objects', JSON.stringify(projectData.movedObjects));
+        if (this.app?.drawingManager) {
+          this.app.drawingManager.restoreMovedObjectPositions();
+        }
+      }
 
       bus.emit('ui:show_toast', `📂 Proyecto '${projectData.name}' cargado correctamente.`);
       const modal = document.getElementById('welcomeProjectModal');

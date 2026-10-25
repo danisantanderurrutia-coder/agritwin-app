@@ -33,16 +33,16 @@
       "type": "Feature",
       "properties": {
         "id": "A102",
-        "name": "Parque Agrovoltaico Bifacial & Pastoreo Ovino",
-        "crop": "Agrivoltaics (Energía Solar 120 kWp) & Pastura Sombría",
-        "cropType": "agrovoltaico",
-        "symbol": "☀️",
+        "name": "Pradera Regenerativa & Pastoreo Ovino",
+        "crop": "Pradera Polifítica (Trébol, Ballica & Alfalfa) & Pastoreo Racional",
+        "cropType": "pradera",
+        "symbol": "🌱",
         "area_ha": 2.2,
-        "ndvi": 0.65,
+        "ndvi": 0.78,
         "soil_type": "Franco con Estructura Estable",
-        "irrigation_type": "Goteo Automatizado Bajo Panel",
+        "irrigation_type": "Secano con Riego Suplementario",
         "status": "Óptimo",
-        "zone": "Zona 5 - Energías Renovables & Clima"
+        "zone": "Zona 4 - Pastoreo & Forraje"
       },
       "geometry": {
         "type": "Polygon",

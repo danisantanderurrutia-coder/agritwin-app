@@ -163,6 +163,19 @@ class ActuatorManager {
   constructor() {
     this.storageKey = 'agritwin_actuators_state_v1';
     this.actuators = this.loadState();
+    this.setupReactiveListeners();
+  }
+
+  setupReactiveListeners() {
+    bus.on('weather:updated', (data) => {
+      this.evaluateInterlocks(data, null);
+    });
+    bus.on('telemetry:updated', (telemetry) => {
+      this.evaluateInterlocks(null, telemetry);
+    });
+    bus.on('sim:step', (simData) => {
+      this.evaluateInterlocks(simData?.weather, simData?.sensors);
+    });
   }
 
   loadState() {
@@ -178,7 +191,9 @@ class ActuatorManager {
           });
         }
       }
-    } catch (_) {}
+    } catch (err) {
+      console.warn('[ActuatorManager] Error leyendo estado desde localStorage, usando predeterminados:', err);
+    }
     return JSON.parse(JSON.stringify(ACTUATORS_DEFINITION));
   }
 
@@ -186,7 +201,9 @@ class ActuatorManager {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.actuators));
       bus.emit('actuators:updated', this.actuators);
-    } catch (_) {}
+    } catch (err) {
+      console.warn('[ActuatorManager] Error persistiendo actuadores en localStorage:', err);
+    }
   }
 
   getAll() {
@@ -287,7 +304,19 @@ class ActuatorManager {
       changed = true;
     }
 
-    if (changed) this.saveState();
+    if (changed) {
+      this.saveState();
+      const activeLockouts = this.actuators.filter(a => a.lockoutReason);
+      if (activeLockouts.length > 0 && (!this._lastAlertTime || Date.now() - this._lastAlertTime > 60000)) {
+        this._lastAlertTime = Date.now();
+        const first = activeLockouts[0];
+        bus.emit('ui:show_toast', `⚡ Interbloqueo Automático: ${first.name} (${first.lockoutReason.split('.')[0]})`);
+      }
+      bus.emit('actuators:lockout_changed', {
+        lockoutsCount: activeLockouts.length,
+        actuators: this.actuators
+      });
+    }
   }
 }
 

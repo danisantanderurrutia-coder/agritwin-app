@@ -15,6 +15,7 @@
  */
 
 import { bus } from '../utils/EventBus.js';
+import { AnimalMeshFactory } from './factories/AnimalMeshFactory.js';
 
 export class LivestockManager {
   constructor(mapManager) {
@@ -396,6 +397,94 @@ export class LivestockManager {
       }
     ];
 
+    if (this.gltfLoader) {
+      this.gltfLoader.load(
+        'assets/models/Cow.glb',
+        (gltf) => {
+          const baseCowScene = gltf.scene;
+
+          cowDefs.forEach((def, i) => {
+            const cowMesh = baseCowScene.clone(true);
+            const elev = this.getElev(def.x, def.z, 0.05);
+            cowMesh.position.set(def.x, elev, def.z);
+            cowMesh.scale.set(0.011, 0.011, 0.011);
+            cowMesh.rotation.y = (i * 1.1) + 0.3;
+
+            cowMesh.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                if (child.material) {
+                  child.material = child.material.clone();
+                  if (def.breed.includes('Colorado') || def.breed.includes('Clavel')) {
+                    child.material.color = new THREE.Color('#92400e');
+                  }
+                  child.material.roughness = 0.7;
+                  child.material.metalness = 0.05;
+                }
+              }
+            });
+
+            const animalData = {
+              id: def.id,
+              name: def.name,
+              tag: def.tag,
+              type: 'livestock_animal',
+              animalType: 'cow',
+              icon: '🐄',
+              species: 'Bovino (Modelo 3D GLB)',
+              breed: def.breed,
+              category: def.category || 'Vaca de Pastoreo PRV',
+              weightKg: def.weight,
+              dailyGainKg: def.dailyGainKg || '+0.85 kg/d',
+              ageMonths: def.ageMonths || 36,
+              birthDate: def.birthDate || '2023-04-10',
+              waterLDay: def.waterLDay || 48,
+              dryMatterKgDay: def.dryMatterKgDay || 15.2,
+              freshForageKgDay: def.freshForageKgDay || 50.0,
+              bodyCondition: def.bodyCondition || '3.5 / 5.0 (Óptima PRV)',
+              diioSag: def.diioSag || `CL-07-28491-0${i+1}`,
+              rumenTempC: def.rumenTempC || 38.6,
+              ruminationMinDay: def.ruminationMinDay || 500,
+              reproductiveStatus: def.reproductiveStatus || 'Activo',
+              vaccines: def.vaccines ? [...def.vaccines] : [],
+              medicalProcedures: def.medicalProcedures ? [...def.medicalProcedures] : [],
+              health: def.health,
+              paddockId: 'P3',
+              locationSector: 'Esquina Sur-Oeste (PRV)',
+              x: def.x,
+              z: def.z,
+              y: elev,
+              notes: def.notes || 'Alimentación 100% pastizal polifítico. Cero antibióticos ni granos concentrados.',
+              mesh: cowMesh
+            };
+
+            this.animals.set(def.id, animalData);
+            cowMesh.userData = animalData;
+            cowMesh.userData.animOffset = i * 1.3;
+            this.cowsGroup.add(cowMesh);
+            this.cows.push(cowMesh);
+
+            cowMesh.traverse((child) => {
+              if (child.isMesh) {
+                this.mapManager.addPickable(child, animalData);
+              }
+            });
+          });
+          console.log('🐄 GLTF Cows (Cow.glb) cargadas con éxito en el Potrero P3');
+        },
+        undefined,
+        (err) => {
+          console.warn('⚠️ Could not load Cow.glb, using procedural cows:', err);
+          this._spawnProceduralCows(cowDefs);
+        }
+      );
+    } else {
+      this._spawnProceduralCows(cowDefs);
+    }
+  }
+
+  _spawnProceduralCows(cowDefs) {
     cowDefs.forEach((def, i) => {
       const cowMesh = this.buildCowMesh(i, def.breed.includes('Colorado'));
       const elev = this.getElev(def.x, def.z, 0.05);
@@ -434,7 +523,7 @@ export class LivestockManager {
         x: def.x,
         z: def.z,
         y: elev,
-        notes: def.notes || 'Alimentación 100% pastizal polifítico. Cero antibióticos ni granos concentrados.',
+        notes: def.notes || 'Alimentación 100% pastizal polifítico.',
         mesh: cowMesh
       };
 
@@ -445,82 +534,7 @@ export class LivestockManager {
   }
 
   buildCowMesh(index, isBrown = false) {
-    const cow = new THREE.Group();
-    const bodyGeo = new THREE.BoxGeometry(1.6, 0.9, 0.8);
-    const bodyMat = new THREE.MeshStandardMaterial({
-      color: isBrown ? '#854d0e' : '#18181b',
-      roughness: 0.75,
-      metalness: 0.05
-    });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.95;
-    body.castShadow = true;
-    cow.add(body);
-
-    const patchGeo = new THREE.BoxGeometry(0.7, 0.7, 0.82);
-    const patchMat = new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.8 });
-    const patch = new THREE.Mesh(patchGeo, patchMat);
-    patch.position.set(0.1, 0.95, 0);
-    cow.add(patch);
-
-    const headGroup = new THREE.Group();
-    headGroup.position.set(0.85, 1.25, 0);
-
-    const headGeo = new THREE.BoxGeometry(0.55, 0.5, 0.5);
-    const headMat = new THREE.MeshStandardMaterial({ color: isBrown ? '#854d0e' : '#18181b', roughness: 0.7 });
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.castShadow = true;
-    headGroup.add(head);
-
-    const muzzleGeo = new THREE.BoxGeometry(0.25, 0.28, 0.38);
-    const muzzleMat = new THREE.MeshStandardMaterial({ color: '#fda4af', roughness: 0.5 });
-    const muzzle = new THREE.Mesh(muzzleGeo, muzzleMat);
-    muzzle.position.set(0.3, -0.1, 0);
-    headGroup.add(muzzle);
-
-    const hornMat = new THREE.MeshStandardMaterial({ color: '#fef08a', roughness: 0.4 });
-    [-0.22, 0.22].forEach(z => {
-      const hornGeo = new THREE.ConeGeometry(0.05, 0.22, 4);
-      hornGeo.rotateZ(-Math.PI / 4);
-      const horn = new THREE.Mesh(hornGeo, hornMat);
-      horn.position.set(-0.05, 0.32, z);
-      headGroup.add(horn);
-
-      const earGeo = new THREE.BoxGeometry(0.12, 0.06, 0.2);
-      const earMat = new THREE.MeshStandardMaterial({ color: isBrown ? '#854d0e' : '#18181b' });
-      const ear = new THREE.Mesh(earGeo, earMat);
-      ear.position.set(-0.1, 0.15, z > 0 ? 0.32 : -0.32);
-      headGroup.add(ear);
-    });
-
-    cow.add(headGroup);
-    cow.userData.headGroup = headGroup;
-
-    const legGeo = new THREE.BoxGeometry(0.18, 0.75, 0.18);
-    const legMat = new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.8 });
-    [
-      [-0.55, -0.26],
-      [-0.55, 0.26],
-      [0.55, -0.26],
-      [0.55, 0.26]
-    ].forEach(([x, z]) => {
-      const leg = new THREE.Mesh(legGeo, legMat);
-      leg.position.set(x, 0.38, z);
-      leg.castShadow = true;
-      cow.add(leg);
-    });
-
-    const tailGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.6, 4);
-    const tailMat = new THREE.MeshStandardMaterial({ color: isBrown ? '#854d0e' : '#18181b' });
-    const tail = new THREE.Mesh(tailGeo, tailMat);
-    tail.position.set(-0.85, 0.8, 0);
-    tail.rotation.z = Math.PI / 6;
-    cow.add(tail);
-    cow.userData.tail = tail;
-
-    cow.scale.set(0.9, 0.9, 0.9);
-    cow.userData.animOffset = index * 1.3;
-    return cow;
+    return AnimalMeshFactory.buildCowMesh(index, isBrown);
   }
 
   // ─── 2. Ovejas en el Centro-Oeste ─────────────────────────────────────────────
@@ -591,6 +605,87 @@ export class LivestockManager {
       }
     ];
 
+    if (this.gltfLoader) {
+      this.gltfLoader.load(
+        'assets/models/Sheep.glb',
+        (gltf) => {
+          const baseSheepScene = gltf.scene;
+
+          sheepDefs.forEach((def, i) => {
+            const sMesh = baseSheepScene.clone(true);
+            const elev = this.getElev(def.x, def.z, 0.05);
+            sMesh.position.set(def.x, elev, def.z);
+            sMesh.scale.set(0.18, 0.18, 0.18);
+            sMesh.rotation.y = (i * 1.4) + 0.8;
+
+            sMesh.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                if (child.material) {
+                  child.material = child.material.clone();
+                  child.material.roughness = 0.85;
+                }
+              }
+            });
+
+            const animalData = {
+              id: def.id,
+              name: def.name,
+              tag: def.tag,
+              type: 'livestock_animal',
+              animalType: 'sheep',
+              icon: '🐑',
+              species: 'Ovino (Modelo 3D GLB)',
+              breed: def.breed,
+              category: def.category || 'Oveja de Lana & Pastoreo',
+              weightKg: def.weight,
+              dailyGainKg: def.dailyGainKg || '+0.18 kg/d',
+              ageMonths: def.ageMonths || 24,
+              birthDate: def.birthDate || '15/05/2024',
+              waterLDay: def.waterLDay || 7.0,
+              dryMatterKgDay: def.dryMatterKgDay || 2.5,
+              freshForageKgDay: def.freshForageKgDay || 8.0,
+              bodyCondition: def.bodyCondition || '3.5 / 5.0',
+              diioSag: def.diioSag || `CL-07-28491-OV${i+1}`,
+              vaccines: def.vaccines ? [...def.vaccines] : [],
+              medicalProcedures: def.medicalProcedures ? [...def.medicalProcedures] : [],
+              health: def.health || 'Excelente',
+              paddockId: 'P5',
+              locationSector: 'Centro-Oeste (PRV)',
+              x: def.x,
+              z: def.z,
+              y: elev,
+              notes: def.notes || 'Ramoneo bajo y control de malezas en bordes de viña.',
+              mesh: sMesh
+            };
+
+            this.animals.set(def.id, animalData);
+            sMesh.userData = animalData;
+            sMesh.userData.animOffset = i * 2.1;
+            this.sheepGroup.add(sMesh);
+            this.sheep.push(sMesh);
+
+            sMesh.traverse((child) => {
+              if (child.isMesh) {
+                this.mapManager.addPickable(child, animalData);
+              }
+            });
+          });
+          console.log('🐑 GLTF Sheep (Sheep.glb) cargadas con éxito en el Potrero P5');
+        },
+        undefined,
+        (err) => {
+          console.warn('⚠️ Could not load Sheep.glb, using procedural sheep:', err);
+          this._spawnProceduralSheep(sheepDefs);
+        }
+      );
+    } else {
+      this._spawnProceduralSheep(sheepDefs);
+    }
+  }
+
+  _spawnProceduralSheep(sheepDefs) {
     sheepDefs.forEach((def, i) => {
       const sMesh = this.buildSheepMesh(i);
       const elev = this.getElev(def.x, def.z, 0.05);
@@ -637,38 +732,7 @@ export class LivestockManager {
   }
 
   buildSheepMesh(index) {
-    const sheep = new THREE.Group();
-    const bodyGeo = new THREE.DodecahedronGeometry(0.52, 1);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: '#f5f5f4', roughness: 0.95 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.55;
-    body.castShadow = true;
-    sheep.add(body);
-
-    const headGeo = new THREE.BoxGeometry(0.32, 0.28, 0.26);
-    const headMat = new THREE.MeshStandardMaterial({ color: '#18181b', roughness: 0.8 });
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.position.set(0.48, 0.65, 0);
-    head.castShadow = true;
-    sheep.add(head);
-
-    const legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.4, 6);
-    const legMat = new THREE.MeshStandardMaterial({ color: '#18181b' });
-    [
-      [-0.24, -0.18],
-      [-0.24, 0.18],
-      [0.24, -0.18],
-      [0.24, 0.18]
-    ].forEach(([x, z]) => {
-      const leg = new THREE.Mesh(legGeo, legMat);
-      leg.position.set(x, 0.2, z);
-      sheep.add(leg);
-    });
-
-    sheep.scale.set(0.9, 0.9, 0.9);
-    sheep.userData.animOffset = index * 2.1;
-    sheep.userData.head = head;
-    return sheep;
+    return AnimalMeshFactory.buildSheepMesh(index);
   }
 
   // ─── 3. Caballos Sueltos y Libres ─────────────────────────────────────────────
@@ -858,97 +922,7 @@ export class LivestockManager {
   }
 
   buildHorseMesh(index, coatColor = '#c29858', maneColor = '#1c1917') {
-    const horse = new THREE.Group();
-
-    // 1. Torso muscular
-    const bodyGeo = new THREE.BoxGeometry(1.85, 0.95, 0.72);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: coatColor, roughness: 0.65, metalness: 0.1 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 1.25;
-    body.castShadow = true;
-    horse.add(body);
-
-    // 2. Cuello arqueado
-    const neckGroup = new THREE.Group();
-    neckGroup.position.set(0.85, 1.45, 0);
-
-    const neckGeo = new THREE.BoxGeometry(0.55, 1.05, 0.38);
-    const neckMesh = new THREE.Mesh(neckGeo, bodyMat);
-    neckMesh.position.set(0.18, 0.45, 0);
-    neckMesh.rotation.z = -Math.PI / 4.5;
-    neckMesh.castShadow = true;
-    neckGroup.add(neckMesh);
-
-    // Crin (Mane)
-    const maneGeo = new THREE.BoxGeometry(0.14, 1.0, 0.18);
-    const maneMat = new THREE.MeshStandardMaterial({ color: maneColor, roughness: 0.9 });
-    const maneMesh = new THREE.Mesh(maneGeo, maneMat);
-    maneMesh.position.set(0.08, 0.52, 0);
-    maneMesh.rotation.z = -Math.PI / 4.5;
-    neckGroup.add(maneMesh);
-
-    // Cabeza fina y noble
-    const headGeo = new THREE.BoxGeometry(0.68, 0.42, 0.34);
-    const headMesh = new THREE.Mesh(headGeo, bodyMat);
-    headMesh.position.set(0.48, 0.88, 0);
-    headMesh.castShadow = true;
-    neckGroup.add(headMesh);
-
-    // Hocico
-    const muzzleGeo = new THREE.BoxGeometry(0.32, 0.26, 0.28);
-    const muzzleMat = new THREE.MeshStandardMaterial({ color: '#1c1917', roughness: 0.7 });
-    const muzzleMesh = new THREE.Mesh(muzzleGeo, muzzleMat);
-    muzzleMesh.position.set(0.85, 0.78, 0);
-    neckGroup.add(muzzleMesh);
-
-    // Orejas alertas erguidas
-    const earGeo = new THREE.ConeGeometry(0.05, 0.22, 4);
-    [-0.1, 0.1].forEach(z => {
-      const ear = new THREE.Mesh(earGeo, bodyMat);
-      ear.position.set(0.32, 1.15, z);
-      neckGroup.add(ear);
-    });
-
-    horse.add(neckGroup);
-    horse.userData.neckGroup = neckGroup;
-
-    // 3. Patas esbeltas con cascos oscuros
-    const legGeo = new THREE.CylinderGeometry(0.08, 0.06, 0.95, 6);
-    const legMat = new THREE.MeshStandardMaterial({ color: coatColor, roughness: 0.7 });
-    const hoofGeo = new THREE.CylinderGeometry(0.07, 0.08, 0.15, 6);
-    const hoofMat = new THREE.MeshStandardMaterial({ color: '#171717', roughness: 0.5 });
-
-    [
-      [-0.65, -0.24],
-      [-0.65, 0.24],
-      [0.65, -0.24],
-      [0.65, 0.24]
-    ].forEach(([x, z]) => {
-      const legGroup = new THREE.Group();
-      legGroup.position.set(x, 0.55, z);
-
-      const leg = new THREE.Mesh(legGeo, legMat);
-      leg.castShadow = true;
-      legGroup.add(leg);
-
-      const hoof = new THREE.Mesh(hoofGeo, hoofMat);
-      hoof.position.y = -0.42;
-      legGroup.add(hoof);
-
-      horse.add(legGroup);
-    });
-
-    // 4. Cola larga y frondosa
-    const tailGeo = new THREE.CylinderGeometry(0.05, 0.14, 1.05, 6);
-    const tail = new THREE.Mesh(tailGeo, maneMat);
-    tail.position.set(-1.0, 1.1, 0);
-    tail.rotation.z = Math.PI / 7;
-    horse.add(tail);
-    horse.userData.tail = tail;
-
-    horse.scale.set(0.95, 0.95, 0.95);
-    horse.userData.animOffset = index * 1.8;
-    return horse;
+    return AnimalMeshFactory.buildHorseMesh(index, coatColor, maneColor);
   }
 
   // ─── 4. Gallinas & Egg Mobile al Nor-Este (Despejadas de Paneles) ─────────────
@@ -988,27 +962,36 @@ export class LivestockManager {
       coop.add(wheel);
     });
 
-    // Gallinas de pastoreo picoteando alrededor
+    // Gallinas de pastoreo picoteando alrededor (Real Hen.glb)
     this.chickens = [];
-    const chMat = new THREE.MeshStandardMaterial({ color: '#ea580c', roughness: 0.7 });
-    const beakMat = new THREE.MeshStandardMaterial({ color: '#facc15' });
-
-    for (let c = 0; c < 8; c++) {
-      const ch = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.35, 5), chMat);
-      body.rotation.x = Math.PI / 2;
-      ch.add(body);
-
-      const beak = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.1, 4), beakMat);
-      beak.position.set(0, 0, 0.2);
-      beak.rotation.x = -Math.PI / 2;
-      ch.add(beak);
-
-      const rad = 2.2 + (c * 0.4);
-      const angle = (c / 8) * Math.PI * 2;
-      ch.position.set(Math.cos(angle) * rad, 0.18, Math.sin(angle) * rad);
-      coop.add(ch);
-      this.chickens.push(ch);
+    if (this.gltfLoader) {
+      this.gltfLoader.load(
+        'assets/models/Hen.glb',
+        (gltf) => {
+          const baseHen = gltf.scene;
+          for (let c = 0; c < 8; c++) {
+            const ch = baseHen.clone(true);
+            ch.scale.set(0.0065, 0.0065, 0.0065);
+            ch.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+            const rad = 2.0 + (c * 0.35);
+            const angle = (c / 8) * Math.PI * 2;
+            ch.position.set(Math.cos(angle) * rad, 0.05, Math.sin(angle) * rad);
+            ch.rotation.y = Math.random() * Math.PI * 2;
+            coop.add(ch);
+            this.chickens.push(ch);
+          }
+          console.log('🐓 Gallinas reales (Hen.glb) añadidas al Egg Mobile');
+        },
+        undefined,
+        () => this._spawnProceduralChickens(coop)
+      );
+    } else {
+      this._spawnProceduralChickens(coop);
     }
 
     // Posición inicial: Nor-Este del predio (x: 6, z: -2)
@@ -1043,6 +1026,28 @@ export class LivestockManager {
     this.animals.set('coop_main', coopData);
     coop.userData = coopData;
     this.mapManager.addPickable(cart, coopData);
+  }
+
+  _spawnProceduralChickens(coop) {
+    const chMat = new THREE.MeshStandardMaterial({ color: '#ea580c', roughness: 0.7 });
+    const beakMat = new THREE.MeshStandardMaterial({ color: '#facc15' });
+    for (let c = 0; c < 8; c++) {
+      const ch = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.35, 5), chMat);
+      body.rotation.x = Math.PI / 2;
+      ch.add(body);
+
+      const beak = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.1, 4), beakMat);
+      beak.position.set(0, 0, 0.2);
+      beak.rotation.x = -Math.PI / 2;
+      ch.add(beak);
+
+      const rad = 2.2 + (c * 0.4);
+      const angle = (c / 8) * Math.PI * 2;
+      ch.position.set(Math.cos(angle) * rad, 0.18, Math.sin(angle) * rad);
+      coop.add(ch);
+      this.chickens.push(ch);
+    }
   }
 
   // ─── 5. Abrevadero Móvil ──────────────────────────────────────────────────────

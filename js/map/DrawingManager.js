@@ -37,6 +37,15 @@ export class DrawingManager {
     this.mapManager = mapManager;
     this.isDrawingActive = false;
     this.isEraseMode = false;
+    this.isMoveMode = false;
+    this.selectedMoveObject = null;
+    this.moveSelectionHelper = null;
+    this.pointerDownX = 0;
+    this.pointerDownY = 0;
+    this.pointerDownTime = 0;
+    this.draggedObject = null;
+    this.dragOffset = new THREE.Vector3();
+
     this.currentPoints = [];
     this.tempNodesGroup = new THREE.Group();
     this.drawnPolygonsGroup = new THREE.Group();
@@ -55,6 +64,12 @@ export class DrawingManager {
     }
 
     this.setupEventListeners();
+
+    // Auto-load previously saved custom polygons and moved object positions
+    setTimeout(() => {
+      this.loadFromLocalStorage();
+      this.restoreMovedObjectPositions();
+    }, 400);
   }
 
   setupEventListeners() {
@@ -63,6 +78,30 @@ export class DrawingManager {
 
     container.addEventListener('click', (e) => this.onMapClick(e));
     container.addEventListener('mousemove', (e) => this.onMouseMove(e));
+
+    // Double-click to close polygon instantly
+    container.addEventListener('dblclick', (e) => {
+      if (this.isDrawingActive && this.currentPoints.length >= 3) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.finishPolygon();
+      }
+    });
+
+    // Move / Hand tool drag listeners
+    container.addEventListener('pointerdown', (e) => this.onPointerDown(e));
+    window.addEventListener('pointermove', (e) => this.onPointerMove(e));
+    window.addEventListener('pointerup', (e) => this.onPointerUp(e));
+
+    // Floating HUD button listeners
+    const btnFinish = document.getElementById('btnHudFinishPoly');
+    if (btnFinish) btnFinish.addEventListener('click', () => this.finishPolygon());
+    const btnCancel = document.getElementById('btnHudCancelPoly');
+    if (btnCancel) btnCancel.addEventListener('click', () => this.cancelDrawing());
+    const btnDeselectMove = document.getElementById('btnHudDeselectMove');
+    if (btnDeselectMove) btnDeselectMove.addEventListener('click', () => this.deselectMoveObject());
+    const btnExitMove = document.getElementById('btnHudExitMove');
+    if (btnExitMove) btnExitMove.addEventListener('click', () => this.toggleMoveMode(false));
 
     // Soporte Táctil (Tap to place node on Mobile & Tablet)
     let touchStartTime = 0;
@@ -92,18 +131,42 @@ export class DrawingManager {
     });
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') this.cancelDrawing();
+      if (e.key === 'Escape') {
+        if (this.isDrawingActive) this.cancelDrawing();
+        if (this.selectedMoveObject) {
+          this.deselectMoveObject();
+        } else if (this.isMoveMode) {
+          this.toggleMoveMode(false);
+        }
+      } else if (e.key === 'Enter') {
+        if (this.isDrawingActive && this.currentPoints.length >= 3) {
+          this.finishPolygon();
+        }
+      }
     });
   }
 
   toggleDrawingMode(active) {
     this.isDrawingActive = active;
     this.isEraseMode = false;
+    this.isMoveMode = false;
 
     const container = document.getElementById(this.mapManager.containerId);
     if (container) {
       container.style.cursor = active ? 'crosshair' : 'default';
     }
+
+    const drawHud = document.getElementById('drawingHudPill');
+    if (drawHud) {
+      drawHud.style.display = active ? 'flex' : 'none';
+      const text = document.getElementById('drawingHudText');
+      if (text) text.textContent = '✏️ Trazando polígono (haz clic en el terreno)...';
+      const btnF = document.getElementById('btnHudFinishPoly');
+      if (btnF) btnF.style.display = 'none';
+    }
+
+    const moveHud = document.getElementById('moveHudPill');
+    if (moveHud) moveHud.style.display = 'none';
 
     if (!active) {
       this.clearTempNodes();
@@ -113,12 +176,308 @@ export class DrawingManager {
   toggleEraseMode(active) {
     this.isEraseMode = active;
     this.isDrawingActive = false;
+    this.isMoveMode = false;
 
     const container = document.getElementById(this.mapManager.containerId);
     if (container) {
       container.style.cursor = active ? 'not-allowed' : 'default';
     }
+
+    const drawHud = document.getElementById('drawingHudPill');
+    if (drawHud) drawHud.style.display = 'none';
+    const moveHud = document.getElementById('moveHudPill');
+    if (moveHud) moveHud.style.display = 'none';
+
     this.clearTempNodes();
+  }
+
+  toggleMoveMode(active) {
+    this.isMoveMode = active;
+    this.isDrawingActive = false;
+    this.isEraseMode = false;
+    this.deselectMoveObject();
+
+    const container = document.getElementById(this.mapManager.containerId);
+    if (container) {
+      container.style.cursor = active ? 'pointer' : 'default';
+    }
+
+    const moveHud = document.getElementById('moveHudPill');
+    if (moveHud) moveHud.style.display = active ? 'flex' : 'none';
+
+    const drawHud = document.getElementById('drawingHudPill');
+    if (drawHud) drawHud.style.display = 'none';
+
+    this.updateMoveHudText('✋ <strong>Modo Mover:</strong> 1. Haz clic sobre el objeto o cultivo a mover.', false);
+
+    if (active) {
+      bus.emit('ui:show_toast', '✋ Modo Mover: 1. Haz clic en el objeto a mover y 2. Haz clic en el terreno donde quieras dejarlo.');
+    }
+  }
+
+  deselectMoveObject() {
+    this.clearMoveSelectionHelper();
+    this.selectedMoveObject = null;
+    this.updateMoveHudText('✋ <strong>Modo Mover:</strong> 1. Haz clic sobre el objeto o cultivo a mover.', false);
+    const container = document.getElementById(this.mapManager.containerId);
+    if (container && this.isMoveMode) {
+      container.style.cursor = 'pointer';
+    }
+  }
+
+  updateMoveHudText(htmlText, hasSelected) {
+    const textEl = document.getElementById('moveHudText');
+    if (textEl) textEl.innerHTML = htmlText;
+    const btnDeselect = document.getElementById('btnHudDeselectMove');
+    if (btnDeselect) btnDeselect.style.display = hasSelected ? 'inline-block' : 'none';
+  }
+
+  showMoveSelectionHelper(target) {
+    this.clearMoveSelectionHelper();
+    if (!target || !this.mapManager?.scene) return;
+    try {
+      this.moveSelectionHelper = new THREE.BoxHelper(target, 0x38bdf8);
+      this.moveSelectionHelper.name = 'moveSelectionHelper';
+      this.moveSelectionHelper.renderOrder = 999;
+      if (this.moveSelectionHelper.material) {
+        this.moveSelectionHelper.material.depthTest = false;
+        this.moveSelectionHelper.material.transparent = true;
+        this.moveSelectionHelper.material.opacity = 0.95;
+      }
+      this.mapManager.scene.add(this.moveSelectionHelper);
+    } catch (e) {
+      console.warn('Could not create BoxHelper for move selection:', e);
+    }
+  }
+
+  clearMoveSelectionHelper() {
+    if (this.moveSelectionHelper) {
+      if (this.moveSelectionHelper.parent) {
+        this.moveSelectionHelper.parent.remove(this.moveSelectionHelper);
+      }
+      if (this.moveSelectionHelper.geometry) {
+        this.moveSelectionHelper.geometry.dispose();
+      }
+      if (this.moveSelectionHelper.material) {
+        if (Array.isArray(this.moveSelectionHelper.material)) {
+          this.moveSelectionHelper.material.forEach(m => m.dispose());
+        } else {
+          this.moveSelectionHelper.material.dispose();
+        }
+      }
+      this.moveSelectionHelper = null;
+    }
+  }
+
+  onPointerDown(event) {
+    if (!this.isMoveMode) return;
+    if (event.button !== 0) return; // Left click only
+    this.pointerDownX = event.clientX;
+    this.pointerDownY = event.clientY;
+    this.pointerDownTime = Date.now();
+  }
+
+  onPointerMove(event) {
+    // Note: BoxHelper.update() should not run on raw pointer movements when the object is stationary,
+    // to prevent heavy bounding-box recomputations and WebGL line buffer exhaustion.
+  }
+
+  onPointerUp(event) {
+    if (!this.isMoveMode) return;
+    if (event.button !== 0) return;
+    const dx = Math.abs(event.clientX - this.pointerDownX);
+    const dy = Math.abs(event.clientY - this.pointerDownY);
+    const dt = Date.now() - this.pointerDownTime;
+    // If the user was panning or orbiting the camera with OrbitControls, ignore
+    if (dx > 7 || dy > 7 || dt > 550) return;
+
+    this.handleMoveClick(event);
+  }
+
+  handleMoveClick(event) {
+    const container = document.getElementById(this.mapManager.containerId);
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    this.mapManager.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mapManager.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    this.mapManager.raycaster.setFromCamera(this.mapManager.mouse, this.mapManager.camera);
+
+    // PASO 2: Objeto ya seleccionado -> Clic en el terreno para colocarlo
+    if (this.selectedMoveObject) {
+      const groundHits = this.mapManager.groundMesh 
+        ? this.mapManager.raycaster.intersectObject(this.mapManager.groundMesh, false)
+        : [];
+
+      if (groundHits.length > 0) {
+        const hitPt = groundHits[0].point;
+        const obj = this.selectedMoveObject;
+        const parent = obj.parent;
+
+        if (parent) {
+          // World center of the whole entity (trunk + canopy together)
+          const box = new THREE.Box3().setFromObject(obj);
+          const centerWorld = new THREE.Vector3();
+          box.getCenter(centerWorld);
+
+          const targetY = this.mapManager.getTerrainElevation 
+            ? this.mapManager.getTerrainElevation(hitPt.x, hitPt.z) 
+            : hitPt.y;
+          const targetWorld = new THREE.Vector3(hitPt.x, targetY, hitPt.z);
+
+          // Convert hitPt and center to parent local space
+          const parentInv = parent.matrixWorld.clone().invert();
+          const localTarget = targetWorld.clone().applyMatrix4(parentInv);
+          const localCenter = centerWorld.clone().applyMatrix4(parentInv);
+
+          const deltaX = localTarget.x - localCenter.x;
+          const deltaZ = localTarget.z - localCenter.z;
+
+          obj.position.x += deltaX;
+          obj.position.z += deltaZ;
+          obj.position.y = localTarget.y;
+          obj.updateMatrixWorld?.(true);
+        } else {
+          obj.position.set(hitPt.x, hitPt.y, hitPt.z);
+          obj.updateMatrixWorld?.(true);
+        }
+
+        const objName = obj.userData?.name || obj.name || 'Objeto';
+        this.saveMovedObjectPosition(obj);
+
+        // Si es un polígono personalizado, actualizar también sus puntos guardados
+        if (obj.userData?.type === 'custom_polygon' || obj.userData?.isCustom) {
+          this.saveToLocalStorage();
+        }
+
+        bus.emit('ui:show_toast', `✅ "${objName}" reubicado con éxito en (${hitPt.x.toFixed(1)}, ${hitPt.z.toFixed(1)}).`);
+        this.deselectMoveObject();
+        return;
+      }
+    }
+
+    // PASO 1: Seleccionar objeto a mover
+    const candidates = [];
+    this.drawnPolygonsGroup.children.forEach(c => candidates.push(c));
+    if (this.mapManager.pickableObjects) {
+      this.mapManager.pickableObjects.forEach(p => {
+        if (p !== this.mapManager.groundMesh) candidates.push(p);
+      });
+    }
+    const objPlacementMgr = this.mapManager.objectPlacementManager;
+    if (objPlacementMgr && objPlacementMgr.placedObjectsGroup) {
+      objPlacementMgr.placedObjectsGroup.children.forEach(c => candidates.push(c));
+    }
+
+    const intersects = this.mapManager.raycaster.intersectObjects(candidates, true);
+    if (intersects.length > 0) {
+      const rawHit = intersects[0].object;
+      const target = this.resolveMoveTarget(rawHit);
+
+      if (!target) return;
+
+      // Si hace clic sobre el mismo ya seleccionado, deseleccionar
+      if (this.selectedMoveObject === target) {
+        this.deselectMoveObject();
+        return;
+      }
+
+      this.selectedMoveObject = target;
+      const objName = target.userData?.name || target.name || 'Elemento seleccionado';
+      this.showMoveSelectionHelper(target);
+      this.updateMoveHudText(`✋ <strong>Moviendo "${objName}":</strong> 2. Haz clic en el terreno donde deseas dejarlo.`, true);
+      container.style.cursor = 'crosshair';
+      bus.emit('ui:show_toast', `✋ "${objName}" seleccionado. Haz clic en el terreno donde deseas colocarlo.`);
+    } else if (this.selectedMoveObject) {
+      this.deselectMoveObject();
+    }
+  }
+
+  isContainerGroup(obj) {
+    if (!obj) return false;
+    if (obj === this.mapManager?.scene) return true;
+    if (obj === this.drawnPolygonsGroup) return true;
+    if (obj === this.tempNodesGroup) return true;
+    if (obj === this.mapManager?.groundMesh) return true;
+    if (obj === this.mapManager?.waterMesh) return true;
+    if (obj === this.mapManager?.skyMesh) return true;
+
+    const name = obj.name || '';
+    if (name === 'cropGroup' || 
+        name === 'sensorGroup' || 
+        name === 'placedObjectsGroup' ||
+        name === 'nativeForestGLBGroup' || 
+        name === 'real3DTreesGroup' ||
+        name === 'orchardGLBGroup' || 
+        name === 'realFarmsteadGLBGroup' ||
+        name === 'instancedVegetationRoot' || 
+        name === 'aoe3_batch_preview' ||
+        name === 'moveSelectionHelper') {
+      return true;
+    }
+
+    if (this.mapManager?.cropManager?.cropGroup && obj === this.mapManager.cropManager.cropGroup) return true;
+    if (this.mapManager?.sensorManager?.sensorGroup && obj === this.mapManager.sensorManager.sensorGroup) return true;
+    if (this.mapManager?.objectPlacementManager?.placedObjectsGroup && obj === this.mapManager.objectPlacementManager.placedObjectsGroup) return true;
+    if (this.mapManager?.parcelManager?.parcelGroup && obj === this.mapManager.parcelManager.parcelGroup) return true;
+
+    return false;
+  }
+
+  isEntityObject(obj) {
+    if (!obj || !obj.userData) return false;
+    const ud = obj.userData;
+    if (ud.type === 'crop' || 
+        ud.type === 'sensor' || 
+        ud.type === 'placed_aoe_object' || 
+        ud.type === 'custom_polygon' ||
+        ud.type === 'drone_dock' ||
+        ud.type === 'livestock') {
+      return true;
+    }
+    if (ud.isCustom && ud.id) return true;
+    if (ud.species || ud.variety || ud.cropCategory) return true;
+    return false;
+  }
+
+  resolveMoveTarget(object) {
+    if (!object) return null;
+    if (this.isContainerGroup(object)) return null;
+
+    // Si el objeto ya es hijo directo de polígonos dibujados:
+    if (this.drawnPolygonsGroup && this.drawnPolygonsGroup.children.includes(object)) {
+      return object;
+    }
+
+    // Si el objeto mismo ya es una entidad identificada
+    if (this.isEntityObject(object)) {
+      return object;
+    }
+
+    let cur = object;
+    let candidateEntity = null;
+
+    while (cur.parent) {
+      if (this.isEntityObject(cur)) {
+        candidateEntity = cur;
+      }
+
+      const p = cur.parent;
+
+      // Si el padre es un contenedor de nivel superior o la escena
+      if (this.isContainerGroup(p)) {
+        const target = candidateEntity || cur;
+        if (this.isContainerGroup(target)) return null;
+        return target;
+      }
+
+      cur = p;
+    }
+
+    if (candidateEntity && !this.isContainerGroup(candidateEntity)) {
+      return candidateEntity;
+    }
+
+    return this.isContainerGroup(cur) ? null : cur;
   }
 
   onMapClick(event) {
@@ -137,15 +496,29 @@ export class DrawingManager {
 
     if (this.currentPoints.length >= 3) {
       const firstPoint = this.currentPoints[0];
-      if (point.distanceTo(firstPoint) < 2.5) {
+      if (point.distanceTo(firstPoint) < 5.0) {
         this.finishPolygon();
         return;
+      }
+      for (let i = 0; i < this.currentPoints.length - 1; i++) {
+        if (point.distanceTo(this.currentPoints[i]) < 4.0) {
+          this.finishPolygon();
+          return;
+        }
       }
     }
 
     this.currentPoints.push(point);
     this.addNodeVisual(point);
     this.updateTempPolyline();
+
+    // Update floating HUD pill
+    const drawHud = document.getElementById('drawingHudPill');
+    const drawHudText = document.getElementById('drawingHudText');
+    const btnFinish = document.getElementById('btnHudFinishPoly');
+    if (drawHud) drawHud.style.display = 'flex';
+    if (drawHudText) drawHudText.textContent = `✏️ Trazando: ${this.currentPoints.length} vértices. [Haz clic en inicio, Enter o 'Finalizar']`;
+    if (btnFinish) btnFinish.style.display = this.currentPoints.length >= 3 ? 'inline-block' : 'none';
   }
 
   onMouseMove(event) {
@@ -162,9 +535,10 @@ export class DrawingManager {
 
   getTerrainIntersection(event) {
     const container = document.getElementById(this.mapManager.containerId);
+    if (!container) return null;
     const rect = container.getBoundingClientRect();
-    this.mapManager.mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
-    this.mapManager.mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+    this.mapManager.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mapManager.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     this.mapManager.raycaster.setFromCamera(this.mapManager.mouse, this.mapManager.camera);
 
@@ -221,6 +595,9 @@ export class DrawingManager {
     this.clearTempNodes();
     this.isDrawingActive = false;
 
+    const drawHud = document.getElementById('drawingHudPill');
+    if (drawHud) drawHud.style.display = 'none';
+
     const areaSqMeters = this.calculatePolygonArea(points);
     const areaHa = Math.round((areaSqMeters / 10000) * 100) / 100;
 
@@ -229,6 +606,15 @@ export class DrawingManager {
       areaHa,
       onSave: (elementMeta) => this.renderFinal3DPolygon(points, elementMeta, areaHa)
     });
+  }
+
+  cancelDrawing() {
+    this.clearTempNodes();
+    this.isDrawingActive = false;
+    const container = document.getElementById(this.mapManager.containerId);
+    if (container) container.style.cursor = 'default';
+    const drawHud = document.getElementById('drawingHudPill');
+    if (drawHud) drawHud.style.display = 'none';
   }
 
   calculatePolygonArea(points) {
@@ -260,7 +646,7 @@ export class DrawingManager {
       nameLower.includes('canal') ||
       nameLower.includes('río');
 
-    // 1. Extruded polygon shape
+    // 1. Extruded polygon shape adjusted to terrain height
     const shape = new THREE.Shape();
     shape.moveTo(points[0].x, points[0].z);
     for (let i = 1; i < points.length; i++) {
@@ -268,7 +654,8 @@ export class DrawingManager {
     }
     shape.closePath();
 
-    const extrudeHeight = isWater ? 0.4 : 0.6;
+    const avgY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+    const extrudeHeight = isWater ? 0.35 : 0.55;
     const extrudeSettings = { depth: extrudeHeight, bevelEnabled: false };
     const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     geo.rotateX(Math.PI / 2);
@@ -276,15 +663,15 @@ export class DrawingManager {
     const mainColor = isWater ? '#0284c7' : (elementMeta.color || '#10b981');
     const mat = new THREE.MeshStandardMaterial({
       color: mainColor,
-      roughness: isWater ? 0.05 : 0.45,
-      metalness: isWater ? 0.6 : 0.1,
+      roughness: isWater ? 0.04 : 0.45,
+      metalness: isWater ? 0.85 : 0.1,
       transparent: true,
-      opacity: isWater ? 0.85 : 0.78,
+      opacity: isWater ? 0.88 : 0.8,
       side: THREE.DoubleSide
     });
 
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.y = extrudeHeight + 0.3;
+    mesh.position.y = avgY + (isWater ? 0.15 : 0.25);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
@@ -307,8 +694,8 @@ export class DrawingManager {
 
     group.add(mesh);
 
-    // 2. Perimeter border line
-    const borderPoints = [...points, points[0]].map(p => new THREE.Vector3(p.x, extrudeHeight + 0.35, p.z));
+    // 2. Perimeter border line snapped to terrain elevation
+    const borderPoints = [...points, points[0]].map(p => new THREE.Vector3(p.x, p.y + (isWater ? 0.22 : 0.32), p.z));
     const borderGeo = new THREE.BufferGeometry().setFromPoints(borderPoints);
     const borderMat = new THREE.LineBasicMaterial({
       color: isWater ? '#38bdf8' : '#ffffff',
@@ -338,6 +725,8 @@ export class DrawingManager {
       areaHa,
       elementMeta
     });
+
+    this.saveToLocalStorage();
 
     bus.emit('ui:show_toast', `✅ Polígono ${elementMeta.icon || '🌾'} ${mesh.userData.name} (${areaHa} ha) generado con éxito.`);
     
@@ -407,6 +796,7 @@ export class DrawingManager {
     entry.elementMeta = newElementMeta;
 
     bus.emit('ui:show_toast', `🔄 Polígono actualizado a ${newElementMeta.icon || ''} ${newElementMeta.name}`);
+    this.saveToLocalStorage();
     bus.emit('entity:selected', {
       id: polyId,
       name: customName,
@@ -431,6 +821,7 @@ export class DrawingManager {
       this.mapManager.pickableObjects = this.mapManager.pickableObjects.filter(obj => obj !== entry.mesh);
     }
 
+    this.saveToLocalStorage();
     bus.emit('ui:show_toast', '🗑️ Polígono eliminado.');
     bus.emit('entity:deselected', {});
   }
@@ -446,7 +837,8 @@ export class DrawingManager {
     cz /= points.length;
 
     const group = new THREE.Group();
-    group.position.set(cx, 0.5, cz);
+    const cy = this.mapManager.getTerrainElevation ? this.mapManager.getTerrainElevation(cx, cz) : (points[0]?.y || 0.5);
+    group.position.set(cx, cy + 0.2, cz);
 
     const style = (elementMeta.style || '').toLowerCase();
     const nameLower = (elementMeta.name || '').toLowerCase();
@@ -1035,17 +1427,31 @@ export class DrawingManager {
   }
 
   handleEraseClick(event) {
-    const intersection = this.getTerrainIntersection(event);
-    if (!intersection) return;
+    const container = document.getElementById(this.mapManager.containerId);
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    this.mapManager.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mapManager.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    this.mapManager.raycaster.setFromCamera(this.mapManager.mouse, this.mapManager.camera);
 
-    let target = intersection.object;
-    while (target && target.parent && target.parent !== this.drawnPolygonsGroup) {
-      target = target.parent;
+    const candidates = [];
+    this.drawnPolygonsGroup.children.forEach(c => candidates.push(c));
+    const objMgr = this.mapManager.objectPlacementManager;
+    if (objMgr && objMgr.placedObjectsGroup) {
+      objMgr.placedObjectsGroup.children.forEach(c => candidates.push(c));
     }
 
-    if (target && target.parent === this.drawnPolygonsGroup) {
-      const polyId = target.name;
-      this.deletePolygonById(polyId);
+    const intersects = this.mapManager.raycaster.intersectObjects(candidates, true);
+    if (intersects.length > 0) {
+      const target = this.resolveMoveTarget(intersects[0].object);
+      if (!target) return;
+
+      if (target.parent === this.drawnPolygonsGroup) {
+        const polyId = target.name;
+        this.deletePolygonById(polyId);
+      } else if (objMgr && target.parent === objMgr.placedObjectsGroup) {
+        objMgr.removePlacedObjectById(target.name);
+      }
     }
   }
 
@@ -1076,7 +1482,113 @@ export class DrawingManager {
     });
     this.customPolygons = [];
     this.polygonsMap.clear();
+    this.saveToLocalStorage();
     bus.emit('ui:show_toast', '🧹 Todos los polígonos eliminados.');
     bus.emit('entity:deselected', {});
+  }
+
+  saveToLocalStorage() {
+    try {
+      const dataToSave = this.customPolygons.map(p => ({
+        id: p.id,
+        name: p.name,
+        itemName: p.itemName,
+        category: p.category,
+        cropType: p.cropType,
+        areaHa: p.areaHa,
+        color: p.color,
+        icon: p.icon,
+        style: p.style,
+        itemDetails: p.itemDetails,
+        points: p.points ? p.points.map(pt => ({ x: pt.x, y: pt.y, z: pt.z })) : []
+      }));
+      localStorage.setItem('agritwin_custom_polygons', JSON.stringify(dataToSave));
+      bus.emit('project:modified');
+    } catch (e) {
+      console.warn('Could not save custom polygons to localStorage:', e);
+    }
+  }
+
+  loadFromLocalStorage() {
+    try {
+      const raw = localStorage.getItem('agritwin_custom_polygons');
+      if (!raw) return;
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.length > 0) {
+        list.forEach(item => {
+          if (item.points && item.points.length >= 3 && !this.polygonsMap.has(item.id)) {
+            const pts = item.points.map(p => new THREE.Vector3(p.x, p.y, p.z));
+            this.renderFinal3DPolygon(pts, item.itemDetails || item, item.areaHa);
+          }
+        });
+        console.log(`💾 Restaurados ${list.length} polígonos personalizados guardados.`);
+      }
+    } catch (e) {
+      console.warn('Error loading custom polygons from localStorage:', e);
+    }
+  }
+
+  saveMovedObjectPosition(obj) {
+    if (!obj) return;
+    try {
+      const id = obj.userData?.id || obj.name || `moved_${Date.now()}`;
+      const movedRaw = localStorage.getItem('agritwin_moved_objects') || '{}';
+      const movedMap = JSON.parse(movedRaw);
+      movedMap[id] = {
+        x: obj.position.x,
+        y: obj.position.y,
+        z: obj.position.z,
+        rotY: obj.rotation ? obj.rotation.y : 0
+      };
+      localStorage.setItem('agritwin_moved_objects', JSON.stringify(movedMap));
+
+      // Si es un objeto de ObjectPlacementManager, actualizar su record interno
+      if (obj.userData?.type === 'placed_aoe_object' && this.mapManager?.objectPlacementManager) {
+        const mgr = this.mapManager.objectPlacementManager;
+        const rec = mgr.placedObjects.find(o => o.id === id);
+        if (rec) {
+          rec.x = obj.position.x;
+          rec.y = obj.position.y;
+          rec.z = obj.position.z;
+          if (obj.rotation) rec.rotationY = THREE.MathUtils.radToDeg(obj.rotation.y);
+          mgr.saveToLocalStorage();
+          mgr.updateDockStatusSummary();
+        }
+      }
+
+      bus.emit('project:modified');
+    } catch (e) {
+      console.warn('Error saving moved object:', e);
+    }
+  }
+
+  restoreMovedObjectPositions() {
+    try {
+      const movedRaw = localStorage.getItem('agritwin_moved_objects');
+      if (!movedRaw) return;
+      const movedMap = JSON.parse(movedRaw);
+      if (!this.mapManager?.scene) return;
+
+      // Clean any accidental container keys from past sessions
+      delete movedMap[''];
+      delete movedMap['cropGroup'];
+      delete movedMap['sensorGroup'];
+      delete movedMap['placedObjectsGroup'];
+      delete movedMap['nativeForestGLBGroup'];
+      delete movedMap['realFarmsteadGLBGroup'];
+
+      this.mapManager.scene.traverse((obj) => {
+        if (this.isContainerGroup(obj)) return;
+        const id = obj.userData?.id || obj.name;
+        if (id && movedMap[id]) {
+          const pos = movedMap[id];
+          obj.position.set(pos.x, pos.y, pos.z);
+          if (pos.rotY !== undefined) obj.rotation.y = pos.rotY;
+        }
+      });
+      console.log('✋ Restauradas posiciones de objetos movidos desde localStorage.');
+    } catch (e) {
+      console.warn('Error restoring moved objects:', e);
+    }
   }
 }

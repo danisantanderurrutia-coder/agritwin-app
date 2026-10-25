@@ -20,6 +20,7 @@ export class SensorManager {
     this.mapManager = mapManager;
     this.scene = mapManager.scene;
     this.sensorGroup = new THREE.Group();
+    this.sensorGroup.name = 'sensorGroup';
     this.scene.add(this.sensorGroup);
     this.sensorMap = new Map();
     this.visible = true;
@@ -39,6 +40,7 @@ export class SensorManager {
       );
 
       const sensorMeshGroup = new THREE.Group();
+      sensorMeshGroup.name = sensor.id;
       sensorMeshGroup.position.set(pos.x, pos.y, pos.z);
 
       // Determine sensor type & icon symbol
@@ -91,21 +93,12 @@ export class SensorManager {
       poleMesh.castShadow = true;
       sensorMeshGroup.add(poleMesh);
 
-      // Enclosure Box
-      const boxGeo = new THREE.BoxGeometry(0.7, 0.5, 0.4);
-      const boxMat = new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.2 });
-      const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-      boxMesh.position.set(0, 2.8, 0);
-      boxMesh.castShadow = true;
-      sensorMeshGroup.add(boxMesh);
-
-      // Solar Plate
-      const solarGeo = new THREE.BoxGeometry(0.9, 0.05, 0.6);
-      const solarMat = new THREE.MeshStandardMaterial({ color: '#1e1b4b', metalness: 0.9, roughness: 0.1 });
-      const solarMesh = new THREE.Mesh(solarGeo, solarMat);
-      solarMesh.position.set(0, 3.1, 0);
-      solarMesh.rotation.x = Math.PI / 6;
-      sensorMeshGroup.add(solarMesh);
+      // Sleek modern compact IoT antenna cap
+      const antennaGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.45, 8);
+      const antennaMat = new THREE.MeshStandardMaterial({ color: '#0f172a', metalness: 0.8, roughness: 0.2 });
+      const antennaMesh = new THREE.Mesh(antennaGeo, antennaMat);
+      antennaMesh.position.set(0, 3.25, 0);
+      sensorMeshGroup.add(antennaMesh);
 
       // Distinctive 3D Hardware attachments
       if (sensor.id.includes('WIND') || sensor.name.includes('Anemómetro')) {
@@ -244,11 +237,11 @@ export class SensorManager {
         iconSymbol: iconSymbol
       };
 
-      // this.addFloatingSensorBadge(sensorMeshGroup, iconSymbol, frameColor, entityData);
+      this.addFloatingSensorBadge(sensorMeshGroup, iconSymbol, frameColor, entityData);
 
       sensorMeshGroup.userData = entityData;
       this.sensorGroup.add(sensorMeshGroup);
-      this.mapManager.addPickable(boxMesh, entityData);
+      this.mapManager.addPickable(poleMesh, entityData);
 
       this.sensorMap.set(sensor.id, {
         group: sensorMeshGroup,
@@ -269,6 +262,13 @@ export class SensorManager {
     bus.on('layer:sensors', (visible) => this.toggleVisibility(visible));
     bus.on('profile:active_changed', (profile) => this.setProfile(profile));
     bus.on('simulation:tick', (simData) => this.onSimulationTick(simData));
+    bus.on('sensor_labels:toggle', (visible) => {
+      this.sensorMap.forEach(item => {
+        if (item.labelSprite) {
+          item.labelSprite.visible = visible;
+        }
+      });
+    });
 
     console.log(`Rendered ${this.sensorMap.size} IoT sensor posts with dynamic multi-profile billboards.`);
   }
@@ -334,6 +334,30 @@ export class SensorManager {
     topMesh.position.y = 0.16;
     hexGroup.add(topMesh);
 
+    // ─── Billboard Icon Sprite (Visible directly facing camera) ───
+    const iconCanvas = document.createElement('canvas');
+    iconCanvas.width = 128;
+    iconCanvas.height = 128;
+    const iconCtx = iconCanvas.getContext('2d');
+    iconCtx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+    iconCtx.beginPath();
+    iconCtx.arc(64, 64, 56, 0, Math.PI * 2);
+    iconCtx.fill();
+    iconCtx.strokeStyle = frameColor || '#10b981';
+    iconCtx.lineWidth = 6;
+    iconCtx.stroke();
+    iconCtx.font = '64px sans-serif';
+    iconCtx.textAlign = 'center';
+    iconCtx.textBaseline = 'middle';
+    iconCtx.fillText(symbol, 64, 64);
+
+    const iconTexture = new THREE.CanvasTexture(iconCanvas);
+    const iconMat = new THREE.SpriteMaterial({ map: iconTexture, transparent: true, depthWrite: false });
+    const iconSprite = new THREE.Sprite(iconMat);
+    iconSprite.position.set(0, 0.9, 0);
+    iconSprite.scale.set(2.4, 2.4, 1.0);
+    hexGroup.add(iconSprite);
+
     // ─── Etiqueta Flotante Dinámica Adaptada al viewMode ───
     const spriteCanvas = document.createElement('canvas');
     spriteCanvas.width = 384;
@@ -342,9 +366,9 @@ export class SensorManager {
     const spriteTexture = new THREE.CanvasTexture(spriteCanvas);
     const spriteMat = new THREE.SpriteMaterial({ map: spriteTexture, transparent: true, depthWrite: false });
     const labelSprite = new THREE.Sprite(spriteMat);
-    labelSprite.position.set(0, 2.2, 0);
-    labelSprite.scale.set(6.0, 1.5, 1.0);
-    labelSprite.visible = false; // Superseded by 3D Floating HTML Micro-Cards (Drei <Html>)
+    labelSprite.position.set(0, 2.6, 0);
+    labelSprite.scale.set(5.5, 1.4, 1.0);
+    labelSprite.visible = true; // Activo para lectura directa de métricas y símbolos
     hexGroup.add(labelSprite);
 
     const updateSpriteTexture = (profile, simData) => {
