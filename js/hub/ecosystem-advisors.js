@@ -4982,8 +4982,12 @@ window.handleHubAction = function(action) {
     } else if (action === 'juegos') {
         switchMasterView('juegos');
     } else if (action === 'dossier_satelital') {
-        if (typeof switchMasterView === 'function') switchMasterView('docs');
-        if (typeof switchDocsTab === 'function') switchDocsTab('docs-dossier');
+        if (typeof openDossierInHub === 'function') {
+            openDossierInHub();
+        } else {
+            if (typeof switchMasterView === 'function') switchMasterView('docs');
+            if (typeof switchDocsTab === 'function') switchDocsTab('docs-dossier');
+        }
     } else if (action === 'dossier') {
         switchMasterView('dashboard');
         switchAdminTab('advisors');

@@ -7247,8 +7247,14 @@
                     <button onclick="exportParcelsToCSV()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-xs font-bold text-stone-800 border border-[#E7DAC6] shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
                         <span>📥</span> <span>Exportar Catastro CSV</span>
                     </button>
-                    <a href="dossier.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                        <span>🛰️</span> <span>Dossier Satelital (14 Láminas)</span>
+                    <button onclick="openDossierInHub()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                        <span>🛰️</span> <span>Dossier en el Hub</span>
+                    </button>
+                    <button onclick="openDossierModal()" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-xs font-bold text-emerald-900 border border-emerald-300 shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                        <span>⛶</span> <span>Modal</span>
+                    </button>
+                    <a href="dossier.html" target="_blank" class="px-3 py-2 rounded-xl bg-white hover:bg-stone-50 text-xs font-bold text-stone-700 border border-[#E7DAC6] shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                        <span>↗️</span> <span>Pestaña Completa</span>
                     </a>
                     <button onclick="openModal()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-xs font-bold text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
                         <span>📜</span> <span>Dossier Completo</span>
@@ -7275,9 +7281,12 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-                    <button onclick="switchDocsTab('docs-dossier')" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <button onclick="openDossierInHub()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer">
                         <span>🚀 Ver Dossier en el Hub</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <button onclick="openDossierModal()" class="px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                        <span>⛶ Ver en Modal</span>
                     </button>
                     <a href="dossier.html" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
                         <span>↗️ Pestaña Completa</span>
@@ -7288,7 +7297,7 @@
             <!-- Subnavegación de Pestañas del Vault (Galpón Luminoso) -->
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
                 <span class="panel-id-tag text-[8px] font-mono font-bold text-stone-600 px-1 py-0.5 rounded bg-stone-200/70 border border-stone-300 select-none shrink-0">[PANEL-VAULT-TABS]</span>
-                <button onclick="switchDocsTab('docs-dossier')" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-emerald-50 text-emerald-950 border border-emerald-300 shadow-sm">
+                <button onclick="openDossierInHub()" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-emerald-50 text-emerald-950 border border-emerald-300 shadow-sm">
                     <span>🛰️</span> <span>Dossier Satelital & Benchmarking (14 Láminas)</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
@@ -7328,6 +7337,9 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2 font-mono text-xs shrink-0">
+                        <button onclick="openDossierModal()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
+                            <span>⛶</span> <span>Modo Modal Full</span>
+                        </button>
                         <a href="dossier.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center gap-1.5 transition-all shadow-sm">
                             <span>↗️ Abrir en Ventana Independiente</span>
                         </a>
@@ -7336,7 +7348,7 @@
 
                 <!-- Visor Interactivo Embebido Directo en el Hub -->
                 <div class="rounded-2xl border border-[#E7DAC6] overflow-hidden shadow-sm bg-white" style="height: 860px;">
-                    <iframe id="iframeDossier" src="dossier.html" class="w-full h-full border-0" allow="clipboard-write"></iframe>
+                    <iframe id="iframeDossier" src="dossier.html?v=3.5" class="w-full h-full border-0" allow="clipboard-write"></iframe>
                 </div>
             </div>
 
@@ -11569,7 +11581,38 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
         </div>
     </div>
 
-    <!-- MAIN SCRIPT -->
+    <!-- DOSSIER ESTRATÉGICO MODAL FULLSCREEN INTERACTIVO -->
+    <div id="dossier-modal" class="fixed inset-0 z-[120] hidden items-center justify-center p-2 sm:p-6 bg-black/70 backdrop-blur-sm">
+        <div class="relative w-full max-w-7xl h-[92vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-[#E7DAC6]">
+            <!-- Header Modal -->
+            <div class="px-5 py-3.5 border-b border-[#E7DAC6] bg-[#FAF7F2] flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🛰️</span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">DOSSIER INTERACTIVO</span>
+                            <span class="text-xs text-stone-400">•</span>
+                            <span class="text-xs font-mono text-stone-500 font-semibold">14 Láminas • 11+ Plataformas Satelitales e IA</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-stone-900 font-serif">Teledetección Satelital & Benchmarking Internacional</h3>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="dossier.html" target="_blank" class="px-3 py-1.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all">
+                        <span>↗️ Pestaña Completa</span>
+                    </a>
+                    <button onclick="closeDossierModal()" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-base transition-colors cursor-pointer" title="Cerrar Modal (Esc)">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Iframe Container -->
+            <div class="flex-1 w-full h-full bg-[#FAF7F2] overflow-hidden">
+                <iframe id="iframeDossierModal" src="dossier.html?v=3.5" class="w-full h-full border-0" allow="clipboard-write"></iframe>
+            </div>
+        </div>
+    </div>
     <!-- ─── AGROTWIN SUITE MODULAR JAVASCRIPT SYSTEM (FASE 2) ─── -->
     <script src="js/hub/geo-layers.js"></script>
     <script src="js/hub/hub-navigation.js"></script>

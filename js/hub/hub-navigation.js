@@ -1227,6 +1227,18 @@
             const btn = document.getElementById(btnId);
             if (btn) btn.classList.add('active');
 
+            if (tabId === 'docs-dossier') {
+                setTimeout(() => {
+                    const el = document.getElementById('docs-dossier');
+                    const viewDocs = document.getElementById('view-docs');
+                    if (viewDocs && el) {
+                        viewDocs.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
+                    } else if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 50);
+            }
+
             try {
                 if (tabId === 'docs-scripts') {
                     const geoJsonView = document.getElementById('geojsonCodeView');
@@ -1247,6 +1259,42 @@
             }
         }
         window.switchDocsTab = switchDocsTab;
+
+        window.openDossierInHub = function() {
+            if (typeof switchMasterView === 'function') switchMasterView('docs');
+            if (typeof switchDocsTab === 'function') switchDocsTab('docs-dossier');
+            setTimeout(() => {
+                const el = document.getElementById('docs-dossier');
+                const viewDocs = document.getElementById('view-docs');
+                if (viewDocs && el) {
+                    viewDocs.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
+                } else if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 80);
+        };
+
+        window.openDossierModal = function() {
+            const el = document.getElementById('dossier-modal');
+            if (el) {
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+            }
+        };
+
+        window.closeDossierModal = function() {
+            const el = document.getElementById('dossier-modal');
+            if (el) {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            }
+        };
+
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDossierModal();
+            }
+        });
 
         // Navegación Master-Detail de Arquitectura (6 Módulos con Mermaid & Tablas)
         window.switchArchModule = function(moduleId) {
