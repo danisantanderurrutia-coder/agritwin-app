@@ -1,0 +1,9 @@
+
+══════════════════════════════════════════════════════════
+🌟  AGROTWIN MASTER SUITE — PLATAFORMA UNIFICADA
+══════════════════════════════════════════════════════════
+🚀  Portal Unificado:   http://localhost:7777
+📡  Telemetría API:     http://localhost:7777/api/telemetry/summary
+💚  Health Check:       http://localhost:7777/api/health
+══════════════════════════════════════════════════════════
+

@@ -465,7 +465,7 @@
             const mapDock = document.getElementById('cuencaMapControlDock');
             if (mapDock) mapDock.style.display = 'flex';
             if (typeof selectSidebarTab === 'function') {
-                selectSidebarTab(tabId || 'tab-tactico');
+                selectSidebarTab(tabId || 'tab-tiempo');
             }
             const statusModeLabel = document.getElementById('statusModeLabel');
             if (statusModeLabel) {
@@ -475,8 +475,17 @@
             setTimeout(() => {
                 if (map) {
                     map.invalidateSize();
-                    map.flyTo([-36.2115, -71.6050], 14, { duration: 1.0 });
+                    map.flyTo([-36.2115, -71.6050], 12, { duration: 1.0 });
                 }
+                if (window.energyFlowEngine) {
+                    window.energyFlowEngine.toggles.wind = true;
+                    window.energyFlowEngine.resize();
+                    window.energyFlowEngine.render();
+                }
+                const topPill = document.getElementById('hubWindyTopPill');
+                if (topPill) topPill.style.display = 'flex';
+                const scrubber = document.getElementById('cuencaWindyTimelineScrubber');
+                if (scrubber) scrubber.style.display = 'block';
             }, 100);
         }
 
@@ -1322,6 +1331,25 @@
                     }
                 }, 50);
             }
+            if (moduleId === 'atmosferica') {
+                setTimeout(() => {
+                    if (typeof window.renderLatexInContainer === 'function') {
+                        window.renderLatexInContainer('arch-detail-atmosferica');
+                    } else if (typeof renderMathInElement === 'function' && targetDetail) {
+                        try {
+                            renderMathInElement(targetDetail, {
+                                delimiters: [
+                                    {left: '$$', right: '$$', display: true},
+                                    {left: '\\[', right: '\\]', display: true},
+                                    {left: '$', right: '$', display: false},
+                                    {left: '\\(', right: '\\)', display: false}
+                                ],
+                                throwOnError: false
+                            });
+                        } catch(e) {}
+                    }
+                }, 50);
+            }
         };
 
         // Renderizador de Diagramas Mermaid para el Vault de Arquitectura
@@ -2071,9 +2099,7 @@ function openIncursionModeDirect() {
 }
 
 function openCerroModeDirect() {
-    switchMasterView('cerro');
-    setCerroSubView('panorama');
-    openCerroCampaignBoard();
+    openCerroMapWithTab('tab-tiempo');
 }
 
 function openMesaModeDirect() {

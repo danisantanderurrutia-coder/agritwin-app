@@ -42,6 +42,11 @@
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- KaTeX for Scientific & Mathematical Equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');}"></script>
+
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -7384,7 +7389,7 @@
                                 <span class="panel-id-tag text-[8px] font-mono font-bold text-amber-800/80 px-1 py-0.5 rounded bg-amber-100/60 border border-amber-300 select-none">[PANEL-ARCH-MODULOS]</span>
                                 <span>Módulos del Sistema</span>
                             </span>
-                            <span class="text-stone-400">12 Módulos</span>
+                            <span class="text-stone-400">13 Módulos</span>
                         </div>
 
                         <!-- Item 1: Ingesta, Caja de Terreno IP67 & Jerarquía de Visores -->
@@ -7530,6 +7535,19 @@
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Inmutable (Cómo opera la app) vs Particular (Datos de cada predio).</p>
                             </div>
                         </button>
+
+                        <!-- Item 13: Física Atmosférica, Downscaling & Escenarios de Estrés (30m) -->
+                        <button onclick="switchArchModule('atmosferica')" id="arch-nav-atmosferica" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
+                            <span class="text-xl p-1.5 rounded-lg bg-sky-100/80 border border-sky-300">🌪️</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="font-bold text-xs text-stone-900 truncate">13. Física Atmosférica &amp; 30m</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-sky-100 text-sky-900 font-bold">Downscaling</span>
+                                </div>
+                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Modelos globales vs locales (30m), 6 capas, 8 momentos, ecuaciones y sesgos.</p>
+                            </div>
+                        </button>
+
                     </div>
 
                     <!-- PANEL DERECHO: Detalle Expandido con Diagrama Mermaid & Tablas -->
@@ -9224,6 +9242,169 @@
                             </div>
                         </div>
 
+
+                        <!-- MODULO 13: FÍSICA ATMOSFÉRICA, DOWNSCALING MICRO-OROGRÁFICO & ESCENARIOS DE ESTRÉS DE CUENCA -->
+                        <div id="arch-detail-atmosferica" class="arch-detail-panel hidden space-y-6 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm font-sans">
+                            <!-- Header del Módulo -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                                <div>
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="text-2xl p-1.5 rounded-xl bg-sky-50 border border-sky-200">🌪️</span>
+                                        <div>
+                                            <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">13. Dinámica Atmosférica, Downscaling Micro-Orográfico &amp; Escenarios de Estrés (30m DEM)</h3>
+                                            <p class="text-xs text-stone-500 font-mono mt-0.5">Modelado Físico Global (ECMWF/GFS) vs. Motor Territorial Local • 6 Capas • 8 Momentos • Cuenca Maule Sur</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="downloadAtmosphericSciencePdf()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                                        <span>📥</span> <span>Descargar Reporte PDF</span>
+                                    </button>
+                                    <button onclick="switchMasterView('cuenca')" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                                        <span>🗺️</span> <span>Ver en Mapa Cuenca</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Banner de Fundamento Epistemológico -->
+                            <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2">
+                                <b class="text-xs font-mono font-bold text-stone-800 uppercase tracking-wider flex items-center gap-2">
+                                    <span>🔬</span> Fundamento Epistemológico: ¿Por qué Downscaling a 30 Metros?
+                                </b>
+                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
+                                    Los modelos meteorológicos numéricos globales como el <b>ECMWF IFS (Centro Europeo, resolución ~9 km)</b> y el <b>GFS (NOAA, resolución ~22 km)</b> son la cúspide del pronóstico sinóptico planetario, resolviendo las ecuaciones primitivas de la hidrodinámica atmosférica tridimensional. No obstante, en la cuenca andina y precordillerana del Río Longaví (122.000 ha), una celda de 9×9 km promedia por completo una cumbre de 2.400 msnm, un cajón de río encajonado de 400 m de ancho y un huerto frutal plano en Retiro.
+                                </p>
+                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
+                                    El <b>Gemelo Digital Territorial AgriTwin</b> no descarta el modelo global: lo adopta como condición de contorno y ejecuta un <b>downscaling físico determinista de 30 metros</b> apoyado en el DEM satelital Copernicus/SRTM, la cobertura de suelo LULC (rugosidad aerodinámica de Prandtl $z_0$) y la ecuación de conservación de masa para encañonamientos Venturi, resolviendo con precisión de escala predial las corrientes de aire, heladas radiativas y riesgos aluviales.
+                                </p>
+                            </div>
+
+                            <!-- Tabla Exhaustiva: Las 6 Capas Atmosféricas -->
+                            <div class="space-y-3">
+                                <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
+                                    <span>🌪️</span> Especificación Detallada de las 6 Capas Atmosféricas Estilo Windy
+                                </h4>
+                                <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
+                                    <table class="w-full text-left text-xs font-mono border-collapse">
+                                        <thead>
+                                            <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
+                                                <th class="py-2.5 px-3">Capa / Fenómeno</th>
+                                                <th class="py-2.5 px-3">Variable API</th>
+                                                <th class="py-2.5 px-3">Modelo Global (9-22 km)</th>
+                                                <th class="py-2.5 px-3">Downscaling AgriTwin (30 m DEM)</th>
+                                                <th class="py-2.5 px-3">Ecuación Fisiomecánica</th>
+                                                <th class="py-2.5 px-3">Sesgo &amp; Mitigación en Tierra</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-bold text-sky-800">1. Viento a 10m</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><code>wind_speed_10m</code><br><code>wind_direction_10m</code></td>
+                                                <td class="py-2.5 px-3 text-stone-600">Campo de presión barotrópico a escala regional en malla 9 km.</td>
+                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Aceleración Venturi en quebradas andinas ($A_1 v_1 = A_2 v_2$) + rugosidad LULC + advección de 850 partículas lagrangianas.</td>
+                                                <td class="py-2.5 px-3 font-mono text-[10px]">$\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u} = -\frac{1}{\rho}\nabla p + \mathbf{F}_{\text{topo}}$</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><b>Sesgo:</b> Subestima catabáticos nocturnos.<br><b>Mitigación:</b> Calibración anemométrica con DMC Linares y Meniel.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-bold text-amber-800">2. Ráfagas (Gusts)</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><code>wind_gusts_10m</code></td>
+                                                <td class="py-2.5 px-3 text-stone-600">Parametrización PBL por energía cinética turbulenta ($u_{10m} + 3.0\sigma_u$).</td>
+                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Cálculo de número de Richardson crítico ($Ri < 0.25$) en laderas a sotavento con desprendimiento de vórtices (+45%).</td>
+                                                <td class="py-2.5 px-3 font-mono text-[10px]">$Ri = \frac{g}{\theta} \frac{\partial \theta/\partial z}{(\partial u/\partial z)^2}$</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><b>Sesgo:</b> Promedia picos instantáneos.<br><b>Mitigación:</b> Sensores ultrasónicos de ráfaga máxima en canopia.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-bold text-blue-800">3. Lluvia &amp; Escorrentía</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><code>precipitation</code><br><code>rain</code>, <code>showers</code></td>
+                                                <td class="py-2.5 px-3 text-stone-600">Microfísica de nube y esquemas de condensación de gran escala.</td>
+                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Ascenso orográfico adiabático en cordillera + enrutamiento hidráulico de Manning-Strickler sobre red vectorial del río.</td>
+                                                <td class="py-2.5 px-3 font-mono text-[10px]">$Q = \frac{1}{n} A R_h^{2/3} S_0^{1/2}$</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><b>Sesgo:</b> Desplaza cresta de lluvia 15 km.<br><b>Mitigación:</b> Pluviógrafos telemétricos DGA Bullileo y Digua.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-bold text-red-800">4. Temperatura a 2m</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><code>temperature_2m</code></td>
+                                                <td class="py-2.5 px-3 text-stone-600">Flujo de calor sensible macro-superficial sin micro-relieve.</td>
+                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Gradiente adiabático local ($0.0065\text{°C/m}$) + estancamiento catabático radiativo nocturno en fondos deprimidos (heladas).</td>
+                                                <td class="py-2.5 px-3 font-mono text-[10px]">$T(z) = T_{\text{ref}} - \alpha(z - z_{\text{ref}})$</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><b>Sesgo:</b> Oculta heladas en hondonadas (+3°C error).<br><b>Mitigación:</b> Red INIA Quilamapu y termohigrómetros KioT.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-bold text-purple-800">5. Nubes &amp; Radiación</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><code>cloud_cover</code><br><code>direct_radiation</code></td>
+                                                <td class="py-2.5 px-3 text-stone-600">Fracción nubosa por humedad relativa crítica en capas de presión.</td>
+                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Sombreado topográfico 3D (Klein-Theilacker) con ángulo cenital sobre cada celda 30m + cálculo Penman-Monteith FAO-56.</td>
+                                                <td class="py-2.5 px-3 font-mono text-[10px]">$ET_0 = \frac{0.408\Delta(R_n-G)+\dots}{\Delta+\gamma(1+0.34u_2)}$</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><b>Sesgo:</b> No detecta nieblas de fondo de río.<br><b>Mitigación:</b> Piranómetros INIA Cauquenes y GOES-16.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-bold text-cyan-800">6. Presión &amp; Isóbaras</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><code>surface_pressure</code><br><code>pressure_msl</code></td>
+                                                <td class="py-2.5 px-3 text-stone-600">Integración de la hidrostática a nivel medio del mar.</td>
+                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Reducción barométrica barotrópica exacta por cota DEM con curvas de nivel de presión y balance geostrófico local.</td>
+                                                <td class="py-2.5 px-3 font-mono text-[10px]">$\mathbf{v}_g = \frac{1}{\rho f}\mathbf{k}\times\nabla p$</td>
+                                                <td class="py-2.5 px-3 text-stone-600"><b>Sesgo:</b> Distorsión sobre terreno escarpado.<br><b>Mitigación:</b> Barómetros digitales de estación DGA Longaví.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Los 8 Momentos Climáticos -->
+                            <div class="space-y-3">
+                                <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
+                                    <span>🎯</span> Caracterización Fisiomecánica de los 8 Momentos Climáticos
+                                </h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-emerald-800">1. Actual Base:</b>
+                                        <p class="text-stone-600">Caudal 18.2 m³/s, Bullileo al 68%, viento WSW 12 kt, 22.4°C. Calibración directa contra aforos telemétricos en régimen normal.</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-amber-800">2. Verano Normal:</b>
+                                        <p class="text-stone-600">Régimen anticiclónico mediterráneo con brisa térmica valle-montaña (SW 15 kt), 28.5°C, $ET_0 = 6.2\text{ mm/día}$. Riego de reposición total.</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-orange-800">3. Ola de Calor Extrema:</b>
+                                        <p class="text-stone-600">Subsidencia adiabática con 37.8°C y HR 19%. Estrés térmico agudo en frutales caducifolios, detención de acumulación de azúcares.</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-stone-800">4. Megasequía Crónica:</b>
+                                        <p class="text-stone-600">Ciclo multianual La Niña. Precipitación -65%, Río Longaví a 2.4 m³/s, descenso de 11m en nivel piezométrico de acuíferos.</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-rose-800">5. Viento Puelche Catabático:</b>
+                                        <p class="text-stone-600">Efecto Foehn descendente del este (28 kt con rachas >55 kt), colapso de humedad a <16%, subida térmica de +8°C. Regla 30-30-30 activa.</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-red-800">6. Incendio Forestal (Rothermel):</b>
+                                        <p class="text-stone-600">Propagación a 1.8 km/h en plantaciones forestales andinas. Índice FWI >65 (Extremo). Simulación de pavesas a sotavento y cortafuegos.</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-blue-800">7. Temporal de Invierno:</b>
+                                        <p class="text-stone-600">Río atmosférico Cat 4 con isoterma 0°C a 2.900 msnm. Caudal instantáneo >380 m³/s en el río, arrastre de sedimentos (Shields $\theta > 0.08$).</p>
+                                    </div>
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                                        <b class="text-cyan-800">8. Helada Polar / Negra:</b>
+                                        <p class="text-stone-600">Enfriamiento radiativo en calma con -4.0°C y rocío bajo (-5.2°C). Inversión térmica severa en fondos de cuenca sin escarcha protectora.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones Footer de Vault -->
+                            <div class="p-4 rounded-xl bg-[#F5EFEB] border border-[#E7DAC6] flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
+                                <div class="text-stone-600">
+                                    Documento científico validado según protocolos de modelación hidrometeorológica territorial SDSS Maule Sur.
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="downloadAtmosphericSciencePdf()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-all shadow-sm">
+                                        📥 Descargar Reporte Completo (PDF)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -10354,9 +10535,228 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         BARRA FLOTANTE DE 8 MOMENTOS TRASLADADA DENTRO DEL PANEL TERRITORIAL DERECHO
-         ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         TOOLBAR DE CONTROL SUPERIOR UNIFICADO (RIESGOS, HERRAMIENTAS, ACCIONES RÁPIDAS, VIENTO)
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="cuencaMapControlDock" class="absolute top-28 left-6 z-30 flex items-center gap-1.5 p-1 px-2.5 rounded-2xl bg-[#060a14]/94 backdrop-blur-xl border border-sky-500/40 shadow-2xl transition-all select-none">
+        
+        <!-- Dropdown 1: Capas & Riesgos Tácticos (Desplegable hacia abajo) -->
+        <div class="relative group" id="cuencaDropdownRiesgos">
+            <button onclick="toggleCuencaRiesgosMenu()" id="btnDockRiesgosTrigger" class="px-2.5 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/35 text-sky-200 hover:text-white border border-sky-400/40 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Capas de Riesgo & Transectos Tácticos">
+                <span>⚡</span>
+                <span id="lblDockRiesgos">Riesgos & Capas</span>
+                <span id="dotDockRiesgosActive" class="w-1.5 h-1.5 rounded-full bg-amber-400 hidden animate-pulse"></span>
+                <span class="text-[9px] text-sky-300">▾</span>
+            </button>
+            <div id="cuencaRiesgosFlyout" class="hidden absolute top-full left-0 mt-2 w-72 rounded-2xl bg-[#070e1a]/98 backdrop-blur-2xl border border-sky-500/40 shadow-2xl p-2 space-y-1.5 z-50 text-slate-200 font-mono">
+                <div class="text-[9px] font-bold text-sky-400 uppercase tracking-wider px-2 py-1 border-b border-white/10 flex justify-between items-center">
+                    <span>Transectos de Amenaza</span>
+                    <span class="text-slate-400 font-normal">Celdas Orientadas</span>
+                </div>
+                
+                <button onclick="toggleTransectLayer('inundacion');" id="btnDockInundacion" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-sky-500/15 border border-white/5 hover:border-sky-500/30 flex items-center justify-between text-xs text-sky-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🌊</span>
+                        <span>Inundación Fluvial</span>
+                    </span>
+                    <span id="badgeDockInundacion" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
+                <button onclick="toggleTransectLayer('incendios');" id="btnDockIncendio" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/5 hover:border-rose-500/30 flex items-center justify-between text-xs text-rose-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🔥</span>
+                        <span>Incendio WUI & Puelche</span>
+                    </span>
+                    <span id="badgeDockIncendio" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
+                <button onclick="toggleTransectLayer('landslides');" id="btnDockRemocion" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-amber-500/15 border border-white/5 hover:border-amber-500/30 flex items-center justify-between text-xs text-amber-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>⛰️</span>
+                        <span>Remoción en Masa A110</span>
+                    </span>
+                    <span id="badgeDockRemocion" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
+                <div class="text-[9px] font-bold text-amber-400 uppercase tracking-wider px-2 pt-1.5 pb-0.5 border-t border-white/10 flex justify-between items-center">
+                    <span>Dinámica & Comunidad</span>
+                    <span class="text-slate-400 font-normal">Capas</span>
+                </div>
+
+                <button onclick="toggleWindEmergency();" id="btnDockViento" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-orange-500/15 border border-white/5 hover:border-orange-500/30 flex items-center justify-between text-xs text-orange-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🌪️</span>
+                        <span>Viento Puelche / Humo</span>
+                    </span>
+                    <span id="badgeDockViento" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
+                <button onclick="toggleVecinosLayer();" id="btnDockVecinos" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>👥</span>
+                        <span>Red Vecinal (9 Predios)</span>
+                    </span>
+                    <span id="badgeDockVecinos" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
+                <button onclick="toggleCuencaTacticalLegend();" id="btnDockTacticalLegend" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-purple-500/15 border border-white/5 hover:border-purple-500/30 flex items-center justify-between text-xs text-purple-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🗺️</span>
+                        <span>Leyendas Tácticas C2</span>
+                    </span>
+                    <span id="badgeDockLegend" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">HUD</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="h-4 w-px bg-white/15 mx-0.5"></div>
+
+        <!-- Dropdown 2: Menú de Herramientas de Análisis & Trazado (Desplegable hacia abajo) -->
+        <div class="relative group" id="cuencaDropdownHerramientas">
+            <button onclick="toggleCuencaHerramientasMenu()" id="btnDockHerramientasTrigger" class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 hover:text-white border border-amber-400/40 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Herramientas de Corte Topográfico & Trazo Vectorial GIS">
+                <span>🛠️</span>
+                <span>Herramientas</span>
+                <span class="text-[9px] text-amber-300">▾</span>
+            </button>
+            <div id="cuencaHerramientasFlyout" class="hidden absolute top-full left-0 mt-2 w-72 rounded-2xl bg-[#070e1a]/98 backdrop-blur-2xl border border-amber-500/40 shadow-2xl p-2 space-y-1.5 z-50 text-slate-200 font-mono">
+                <div class="text-[9px] font-bold text-amber-400 uppercase tracking-wider px-2 py-1 border-b border-white/10 flex justify-between items-center">
+                    <span>Cortes Biofísicos</span>
+                    <span class="text-slate-400 font-normal">Perfil Transversal</span>
+                </div>
+                
+                <button onclick="triggerBiophysicalTool('transect'); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-sky-500/15 border border-white/5 hover:border-sky-500/30 flex items-center justify-between text-xs text-sky-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>📐</span>
+                        <span>Transecto X-Y (1.400m - 145m)</span>
+                    </span>
+                    <span class="text-[9px] text-sky-400 font-bold">▶</span>
+                </button>
+
+                <button onclick="triggerBiophysicalTool('sediments'); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🌊</span>
+                        <span>Corte Sedimentos & Shields</span>
+                    </span>
+                    <span id="badgeBiophysSediments" class="text-[9px] text-emerald-400 font-bold">▶</span>
+                </button>
+
+                <button onclick="triggerBiophysicalTool('slope25d'); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-between text-xs text-yellow-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🏔️</span>
+                        <span>Bloque 2.5D Amenazas Ladera</span>
+                    </span>
+                    <span class="text-[9px] text-yellow-400 font-bold">▶</span>
+                </button>
+
+                <div class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider px-2 pt-1.5 pb-0.5 border-t border-white/10 flex justify-between items-center">
+                    <span>Trazado Vectorial GIS</span>
+                    <span class="text-slate-400 font-normal">Dibujo</span>
+                </div>
+
+                <button onclick="startDrawingCuencaPolygon(); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>✏️</span>
+                        <span>Trazar Polígono</span>
+                    </span>
+                    <span class="text-[9px] text-emerald-400 font-bold">Activar</span>
+                </button>
+
+                <button onclick="clearCuencaPolygons(); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/5 hover:border-rose-500/30 flex items-center justify-between text-xs text-rose-200 transition-all cursor-pointer">
+                    <span class="flex items-center gap-2">
+                        <span>🧹</span>
+                        <span>Limpiar Trazos</span>
+                    </span>
+                    <span class="text-[9px] text-rose-400 font-bold">Borrar</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="h-4 w-px bg-white/15 mx-0.5"></div>
+
+        <!-- Botones Rápidos -->
+        <button onclick="refreshAndAutoUpdateMap()" class="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-emerald-300 font-mono text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer" title="Refrescar Mapa">
+            <span>🔄</span>
+        </button>
+        <button onclick="centerMapToBasin()" class="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-200 font-mono text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer" title="Centrar Cuenca">
+            <span>🎯</span>
+        </button>
+
+        <!-- 🍃 ZONA HUD VIENTO Y CONDICIONES (WINDY STYLE INTEGRADO) -->
+        <div id="hubWindyTopPill" class="flex items-center gap-2.5 pl-1 font-mono text-xs select-none">
+            <div class="h-4 w-px bg-white/20 mx-0.5"></div>
+            <div class="flex items-center gap-1.5">
+                <span id="hubWindyIcon" class="text-base">🍃</span>
+                <span id="hubWindyLayerName" class="text-sky-300 font-bold whitespace-nowrap">Viento 10m</span>
+            </div>
+            <div class="h-3.5 w-px bg-white/20"></div>
+            <div class="flex items-center gap-1.5 font-bold text-white whitespace-nowrap">
+                <span id="hubWindySpeedVal" class="text-amber-300">24</span>
+                <button id="hubWindyUnitBtn" onclick="cycleHubWindyUnits()" class="px-1.5 py-0.5 rounded bg-sky-500/20 hover:bg-sky-500/40 text-[10px] text-sky-200 border border-sky-400/40 cursor-pointer transition-all" title="Cambiar unidades (kt, km/h, m/s)">kt ▾</button>
+            </div>
+            <div class="flex items-center gap-1 text-[11px] text-slate-300 whitespace-nowrap">
+                <span id="hubWindyVectorArrow" class="text-emerald-400 font-bold text-sm">↗</span>
+                <span id="hubWindyVectorDir">220° SO</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 ZONA 2: CURSOR INSPECTOR RETÍCULO Y TOOLTIP DINÁMICO -->
+    <div id="hubWindyCursorTooltip" class="hidden pointer-events-none fixed z-50 p-2.5 rounded-xl bg-[#070e1c]/95 border border-sky-400/50 shadow-2xl backdrop-blur-md text-xs font-mono text-slate-200 space-y-1">
+        <div class="flex items-center justify-between gap-3 text-[10px] text-slate-400 border-b border-white/10 pb-1">
+            <span id="hubWindyTooltipCota">📍 Cota: -- msnm</span>
+            <span id="hubWindyTooltipCoords">Lat/Lng</span>
+        </div>
+        <div class="flex items-center gap-2 font-bold text-sm">
+            <span id="hubWindyTooltipArrow" class="text-emerald-400">↗</span>
+            <span id="hubWindyTooltipSpeed" class="text-white">-- kt</span>
+            <span id="hubWindyTooltipVar" class="text-sky-300 font-normal text-xs">Viento</span>
+        </div>
+    </div>
+
+    <!-- ⏱️ ZONA 3: TIMELINE SCRUBBER FLOTANTE INFERIOR CON BARRA ESPECTRAL CONTINUA -->
+    <div id="cuencaWindyTimelineScrubber" class="absolute bottom-6 left-6 right-[450px] z-30 bg-[#070d18]/92 backdrop-blur-xl border border-sky-500/40 p-3 rounded-2xl shadow-2xl space-y-2 select-none" style="display: none;">
+        <div class="flex items-center justify-between text-xs font-mono">
+            <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold">LIVE 7D</span>
+                <span id="hubTimelineDateLabel" class="text-slate-300 font-bold">Lunes 26 Octubre — Pronóstico Open-Meteo</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-0.5 bg-black/60 p-0.5 rounded-lg border border-white/10 text-[10px]">
+                    <button class="hub-speed-pill active px-2 py-0.5 rounded cursor-pointer" onclick="setHubWindyPlaySpeed(1, this)">1x</button>
+                    <button class="hub-speed-pill px-2 py-0.5 rounded cursor-pointer text-slate-400 hover:text-white" onclick="setHubWindyPlaySpeed(2, this)">2x</button>
+                    <button class="hub-speed-pill px-2 py-0.5 rounded cursor-pointer text-slate-400 hover:text-white" onclick="setHubWindyPlaySpeed(4, this)">4x</button>
+                </div>
+                <button id="hubBtnWindyPlayPause" onclick="toggleHubWindyPlay()" class="w-7 h-7 rounded-full bg-sky-500/25 hover:bg-sky-500/40 border border-sky-400/60 text-sky-200 flex items-center justify-center cursor-pointer transition-all text-xs font-bold shadow" title="Reproducir / Pausar">
+                    ⏸
+                </button>
+            </div>
+        </div>
+
+        <!-- Track interactivo con días y cápsula amarilla de hora -->
+        <div class="relative w-full h-8 bg-black/50 rounded-xl border border-white/10 flex items-center px-1 overflow-hidden" id="hubScrubberTrack">
+            <div id="hubDaysGrid" class="absolute inset-0 flex items-center divide-x divide-white/10 text-[9.5px] font-mono text-slate-400 pointer-events-none"></div>
+            <input type="range" id="hubScrubberSlider" min="0" max="167" step="1" value="9" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20" oninput="onHubScrubberInput(this.value)">
+            <!-- Cabezal amarillo flotante de hora -->
+            <div id="hubScrubberHandle" class="absolute top-1 bottom-1 w-1 bg-amber-400 rounded-full pointer-events-none z-10 transition-all shadow-[0_0_10px_#f59e0b]" style="left: 6%;">
+                <div id="hubScrubberHourPill" class="absolute -top-7 -translate-x-1/2 px-2 py-0.5 rounded-lg bg-amber-400 text-stone-950 font-mono font-black text-[11px] shadow-lg whitespace-nowrap">
+                    09:00
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra continua espectral Windy con ticks numéricos -->
+        <div class="space-y-0.5 pt-1">
+            <div id="hubSpectralBar" class="w-full h-2 rounded-full" style="background: linear-gradient(to right, #38bdf8 0%, #22c55e 25%, #eab308 50%, #ef4444 75%, #d946ef 100%);"></div>
+            <div id="hubSpectralTicks" class="flex justify-between text-[9px] font-mono text-slate-400 px-0.5">
+                <span>0 kt</span>
+                <span>10</span>
+                <span>20</span>
+                <span>30</span>
+                <span>40</span>
+                <span>60+ kt</span>
+            </div>
+        </div>
+    </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          STUBS OCULTOS DE RETROCOMPATIBILIDAD (CERO WIDGETS FLOTANTES SOBRE EL MAPA)
@@ -10457,153 +10857,364 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
     </script>
 
 
-
-
-
-    <!-- DOCK COMPACTO TIPO TOOLBAR PREDIAL (INFERIOR IZQUIERDA MINIMALISTA CON MENÚS DESPLEGABLES) -->
-    <div id="cuencaMapControlDock" class="absolute bottom-11 left-14 z-30 flex items-center gap-1.5 p-1 px-2 rounded-2xl bg-[#060a14]/94 backdrop-blur-xl border border-sky-500/40 shadow-2xl transition-all select-none">
-        
-        <!-- Dropdown 1: Capas & Riesgos Tácticos (Desplegable) -->
-        <div class="relative group" id="cuencaDropdownRiesgos">
-            <button onclick="toggleCuencaRiesgosMenu()" id="btnDockRiesgosTrigger" class="px-2.5 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/35 text-sky-200 hover:text-white border border-sky-400/40 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Capas de Riesgo & Transectos Tácticos">
-                <span>⚡</span>
-                <span id="lblDockRiesgos">Riesgos & Capas</span>
-                <span id="dotDockRiesgosActive" class="w-1.5 h-1.5 rounded-full bg-amber-400 hidden animate-pulse"></span>
-                <span class="text-[9px] text-sky-300">▾</span>
-            </button>
-            <div id="cuencaRiesgosFlyout" class="hidden absolute bottom-full left-0 mb-2 w-72 rounded-2xl bg-[#070e1a]/98 backdrop-blur-2xl border border-sky-500/40 shadow-2xl p-2 space-y-1.5 z-50 text-slate-200 font-mono">
-                <div class="text-[9px] font-bold text-sky-400 uppercase tracking-wider px-2 py-1 border-b border-white/10 flex justify-between items-center">
-                    <span>Transectos de Amenaza</span>
-                    <span class="text-slate-400 font-normal">Celdas Orientadas</span>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         MODAL INTERACTIVO HD: ESPECIFICACIÓN CIENTÍFICO-TÉCNICA ATMOSFÉRICA
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="modalAtmosphericScience" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md hidden transition-opacity" onclick="if(event.target===this) closeAtmosphericScienceModal()">
+        <div class="relative w-full max-w-5xl bg-[#070e1a]/98 border border-sky-500/50 rounded-2xl shadow-[0_0_60px_rgba(0,180,255,0.25)] overflow-hidden flex flex-col max-h-[92vh]">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 px-6 border-b border-white/10 bg-black/50">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-xl shadow-inner">
+                        🌪️
+                    </div>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-mono font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
+                            Especificación Fisiomecánica &amp; Downscaling Atmosférico
+                            <span class="text-[9px] px-2 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-500/40 font-mono font-bold">30m DEM</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400 font-mono">
+                            Modelado Numérico Global (ECMWF/GFS) vs. Downscaling Territorial AgriTwin Cuenca Longaví • 6 Capas • 8 Momentos
+                        </p>
+                    </div>
                 </div>
-                
-                <button onclick="toggleTransectLayer('inundacion');" id="btnDockInundacion" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-sky-500/15 border border-white/5 hover:border-sky-500/30 flex items-center justify-between text-xs text-sky-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🌊</span>
-                        <span>Inundación Fluvial</span>
-                    </span>
-                    <span id="badgeDockInundacion" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
-                </button>
-
-                <button onclick="toggleTransectLayer('incendios');" id="btnDockIncendio" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/5 hover:border-rose-500/30 flex items-center justify-between text-xs text-rose-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🔥</span>
-                        <span>Incendio WUI & Puelche</span>
-                    </span>
-                    <span id="badgeDockIncendio" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
-                </button>
-
-                <button onclick="toggleTransectLayer('landslides');" id="btnDockRemocion" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-amber-500/15 border border-white/5 hover:border-amber-500/30 flex items-center justify-between text-xs text-amber-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>⛰️</span>
-                        <span>Remoción en Masa A110</span>
-                    </span>
-                    <span id="badgeDockRemocion" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
-                </button>
-
-                <div class="text-[9px] font-bold text-amber-400 uppercase tracking-wider px-2 pt-1.5 pb-0.5 border-t border-white/10 flex justify-between items-center">
-                    <span>Dinámica & Comunidad</span>
-                    <span class="text-slate-400 font-normal">Capas</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadAtmosphericSciencePdf()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 border border-emerald-400/50 text-xs font-mono font-bold cursor-pointer transition-all shadow-sm" title="Descargar Reporte Científico Oficial en PDF">
+                        <span>📥</span> <span>Reporte PDF</span>
+                    </button>
+                    <button onclick="openAtmosphericDocInVault()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/20 hover:bg-sky-500/35 text-sky-200 border border-sky-400/50 text-xs font-mono font-bold cursor-pointer transition-all shadow-sm" title="Abrir Módulo 13 en la Bóveda del Hub">
+                        <span>📚</span> <span>Bóveda ↗</span>
+                    </button>
+                    <button onclick="closeAtmosphericScienceModal()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold cursor-pointer transition-colors" title="Cerrar (Esc)">
+                        ✕
+                    </button>
                 </div>
+            </div>
 
-                <button onclick="toggleWindEmergency();" id="btnDockViento" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-orange-500/15 border border-white/5 hover:border-orange-500/30 flex items-center justify-between text-xs text-orange-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🌪️</span>
-                        <span>Viento Puelche / Humo</span>
-                    </span>
-                    <span id="badgeDockViento" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+            <!-- Selector de Pestañas del Modal -->
+            <div class="flex items-center gap-2 px-6 py-2.5 bg-black/40 border-b border-white/5 font-mono text-xs overflow-x-auto">
+                <span class="text-slate-400 text-[11px] mr-2">Sección Técnica:</span>
+                <button onclick="switchAtmoModalTab('layers')" id="btnAtmoTabLayers" class="px-3.5 py-1.5 rounded-lg bg-sky-500/30 text-sky-200 border border-sky-400 font-bold transition-all cursor-pointer whitespace-nowrap shadow-sm">
+                    🌪️ 1. 6 Capas Atmosféricas (Global vs 30m)
                 </button>
-
-                <button onclick="toggleVecinosLayer();" id="btnDockVecinos" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>👥</span>
-                        <span>Red Vecinal (9 Predios)</span>
-                    </span>
-                    <span id="badgeDockVecinos" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                <button onclick="switchAtmoModalTab('moments')" id="btnAtmoTabMoments" class="px-3.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer whitespace-nowrap">
+                    🎯 2. 8 Momentos Climáticos (Física &amp; Escenarios)
                 </button>
-
-                <button onclick="toggleCuencaTacticalLegend();" id="btnDockTacticalLegend" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-purple-500/15 border border-white/5 hover:border-purple-500/30 flex items-center justify-between text-xs text-purple-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🗺️</span>
-                        <span>Leyendas Tácticas C2</span>
-                    </span>
-                    <span id="badgeDockLegend" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">HUD</span>
+                <button onclick="switchAtmoModalTab('formulas')" id="btnAtmoTabFormulas" class="px-3.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer whitespace-nowrap">
+                    📐 3. Ecuaciones Matemáticas, Sesgos &amp; Mitigaciones
                 </button>
             </div>
-        </div>
 
-        <div class="h-4 w-px bg-white/15 mx-0.5"></div>
+            <!-- Cuerpo Scrolleable del Modal -->
+            <div class="p-5 sm:p-6 overflow-y-auto flex-1 bg-[#050b14] space-y-6">
 
-        <!-- Dropdown 2: Menú de Herramientas de Análisis & Trazado (Desplegable) -->
-        <div class="relative group" id="cuencaDropdownHerramientas">
-            <button onclick="toggleCuencaHerramientasMenu()" id="btnDockHerramientasTrigger" class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 hover:text-white border border-amber-400/40 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Herramientas de Corte Topográfico & Trazo Vectorial GIS">
-                <span>🛠️</span>
-                <span>Herramientas</span>
-                <span class="text-[9px] text-amber-300">▾</span>
-            </button>
-            <div id="cuencaHerramientasFlyout" class="hidden absolute bottom-full left-0 mb-2 w-72 rounded-2xl bg-[#070e1a]/98 backdrop-blur-2xl border border-amber-500/40 shadow-2xl p-2 space-y-1.5 z-50 text-slate-200 font-mono">
-                <div class="text-[9px] font-bold text-amber-400 uppercase tracking-wider px-2 py-1 border-b border-white/10 flex justify-between items-center">
-                    <span>Cortes Biofísicos</span>
-                    <span class="text-slate-400 font-normal">Perfil Transversal</span>
+                <!-- ════ PANE 1: 6 CAPAS ATMOSFÉRICAS ════ -->
+                <div id="atmoPaneLayers" class="space-y-5">
+                    <div class="p-4 rounded-xl bg-sky-950/40 border border-sky-500/30 text-xs font-mono text-sky-200 leading-relaxed">
+                        <b class="text-sky-300 uppercase tracking-wider block mb-1">💡 Principio Rector: ¿Por qué dos modelos?</b>
+                        Los modelos atmosféricos globales (<b>ECMWF IFS 9km</b> y <b>NOAA GFS 22km</b>) resuelven la circulación general sinóptica mediante ecuaciones primitivas de Navier-Stokes tridimensionales. Sin embargo, su malla de 9 a 22 km es incapaz de resolver quebradas, encañonamientos andinos, rugosidad de huertos frutales ni inversiones térmicas nocturnas en hondonadas de 200 metros. Nuestro <b>Motor de Downscaling Territorial AgriTwin (30m DEM)</b> toma los vectores globales como condición de borde macro y los modula físicamente mediante la topografía de alta resolución de la cuenca del Río Longaví.
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Capa 1: Viento 10m -->
+                        <div class="p-4 rounded-xl bg-black/60 border border-sky-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="font-bold text-sky-300 font-mono text-xs flex items-center gap-1.5">
+                                    <span>💨</span> 1. Viento a 10m (Velocidad &amp; Dirección)
+                                </span>
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-sky-900/60 text-sky-300 border border-sky-500/30">API: wind_speed_10m</span>
+                            </div>
+                            <div class="text-[11px] font-mono space-y-1.5 text-slate-300">
+                                <p><b class="text-slate-400">Modelo Global:</b> Campo sinóptico baroclínico en malla de 9 km (ECMWF) o 22 km (GFS).</p>
+                                <p><b class="text-emerald-400">Downscaling 30m:</b> Aceleración Venturi en cañones andinos ($v_2 = v_1 A_1/A_2$), rugosidad LULC según perfil logarítmico de Prandtl ($z_0=0.03\text{m}$ valle vs $0.8\text{m}$ bosque) y advección lagrangiana con 850 partículas activas.</p>
+                                <p><b class="text-amber-400">Sesgos:</b> Subestima vientos catabáticos nocturnos (Puelche) en valles estrechos (<3 km) si no se aplica encañonamiento local.</p>
+                                <p><b class="text-blue-400">Calibración Ground-Truth:</b> Estaciones meteorológicas automáticas DMC Linares y anemómetros sónicos en predio Meniel.</p>
+                            </div>
+                        </div>
+
+                        <!-- Capa 2: Ráfagas -->
+                        <div class="p-4 rounded-xl bg-black/60 border border-amber-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="font-bold text-amber-300 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🌪️</span> 2. Ráfagas de Viento (Gusts)
+                                </span>
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-900/60 text-amber-300 border border-amber-500/30">API: wind_gusts_10m</span>
+                            </div>
+                            <div class="text-[11px] font-mono space-y-1.5 text-slate-300">
+                                <p><b class="text-slate-400">Modelo Global:</b> Parametrización empírica de capa límite planetaria basada en energía cinética turbulenta (TKE): $u_{\text{gust}} = u_{10m} + 3.0\sigma_u$.</p>
+                                <p><b class="text-emerald-400">Downscaling 30m:</b> Detección de número de Richardson crítico ($Ri < 0.25$) en laderas a sotavento (>25° de pendiente), inyectando vórtices turbulentos de cizalladura de hasta +45% sobre la velocidad media local.</p>
+                                <p><b class="text-amber-400">Sesgos:</b> Pierde ráfagas convectivas localizadas de menos de 10 minutos de duración.</p>
+                                <p><b class="text-blue-400">Calibración Ground-Truth:</b> Ráfagas máximas horarias registradas en estaciones INIA Quilamapu y sensores en copa de árbol.</p>
+                            </div>
+                        </div>
+
+                        <!-- Capa 3: Lluvia y Escorrentía -->
+                        <div class="p-4 rounded-xl bg-black/60 border border-blue-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="font-bold text-blue-300 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🌧️</span> 3. Lluvia Acumulada &amp; Escorrentía
+                                </span>
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-500/30">API: precipitation, rain</span>
+                            </div>
+                            <div class="text-[11px] font-mono space-y-1.5 text-slate-300">
+                                <p><b class="text-slate-400">Modelo Global:</b> Esquemas de microfísica de nubes convectivas y estratiformes en columna atmosférica de 9 km.</p>
+                                <p><b class="text-emerald-400">Downscaling 30m:</b> Realce orográfico de condensación por ascenso adiabático forzado en cordillera ($\Gamma_s = -5.5\text{°C/km}$) + enrutamiento superficial cinemático de Manning-Strickler ($Q = \frac{1}{n} A R_h^{2/3} S_0^{1/2}$) sobre la hidrografía vectorial del Río Longaví con ecos de radar Doppler concéntricos.</p>
+                                <p><b class="text-amber-400">Sesgos:</b> Desplaza el baricentro de precipitación 15 km al este por el suavizado de cumbres andinas en mallas sinópticas.</p>
+                                <p><b class="text-blue-400">Calibración Ground-Truth:</b> Pluviógrafos telemétricos DGA en Embalses Bullileo y Digua.</p>
+                            </div>
+                        </div>
+
+                        <!-- Capa 4: Temperatura a 2m -->
+                        <div class="p-4 rounded-xl bg-black/60 border border-red-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="font-bold text-red-300 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🌡️</span> 4. Temperatura a 2m &amp; Heladas
+                                </span>
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-red-900/60 text-red-300 border border-red-500/30">API: temperature_2m</span>
+                            </div>
+                            <div class="text-[11px] font-mono space-y-1.5 text-slate-300">
+                                <p><b class="text-slate-400">Modelo Global:</b> Flujo de calor sensible de superficie y temperatura diagnóstica en capa superficial estándar.</p>
+                                <p><b class="text-emerald-400">Downscaling 30m:</b> Gradiente adiabático local corregido por DEM ($0.0065\text{°C/m}$) diurno. En noches de radiación neta negativa ($R_n < -40\text{ W/m}^2$), simula acumulación catabática de aire denso en fondos de cuenca (Retiro/Parral) con inversión térmica (+2 a +4°C en faldeos respecto al fondo deprimido).</p>
+                                <p><b class="text-amber-400">Sesgos:</b> No detecta heladas radiativas severas (-2°C) en hondonadas de frutales si la meseta promedia +2°C.</p>
+                                <p><b class="text-blue-400">Calibración Ground-Truth:</b> Sensores de temperatura y humedad foliar calibrados en Meniel y Red Agroclimática Nacional (RAN).</p>
+                            </div>
+                        </div>
+
+                        <!-- Capa 5: Nubes & Radiación -->
+                        <div class="p-4 rounded-xl bg-black/60 border border-purple-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="font-bold text-purple-300 font-mono text-xs flex items-center gap-1.5">
+                                    <span>☁️</span> 5. Cobertura Nubosa &amp; Radiación
+                                </span>
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-900/60 text-purple-300 border border-purple-500/30">API: cloud_cover, direct_radiation</span>
+                            </div>
+                            <div class="text-[11px] font-mono space-y-1.5 text-slate-300">
+                                <p><b class="text-slate-400">Modelo Global:</b> Fracción de cobertura diagnóstica por niveles de presión basada en humedad relativa crítica.</p>
+                                <p><b class="text-emerald-400">Downscaling 30m:</b> Modelo de sombras topográficas 3D y radiación incidente (Klein-Theilacker), computando ángulo cenital y azimut sobre cada celda DEM 30m para calcular evapotranspiración Penman-Monteith FAO-56 ($ET_0$) pixel a pixel.</p>
+                                <p><b class="text-amber-400">Sesgos:</b> Ignora nieblas de advección matinales encajonadas en el curso bajo del Río Longaví.</p>
+                                <p><b class="text-blue-400">Calibración Ground-Truth:</b> Piranómetros de estación INIA Cauquenes y satélite GOES-16 banda visible.</p>
+                            </div>
+                        </div>
+
+                        <!-- Capa 6: Presión & Isóbaras -->
+                        <div class="p-4 rounded-xl bg-black/60 border border-cyan-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <span class="font-bold text-cyan-300 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🔘</span> 6. Presión Barométrica &amp; Isóbaras
+                                </span>
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-900/60 text-cyan-300 border border-cyan-500/30">API: surface_pressure, pressure_msl</span>
+                            </div>
+                            <div class="text-[11px] font-mono space-y-1.5 text-slate-300">
+                                <p><b class="text-slate-400">Modelo Global:</b> Integración hipsométrica de la atmósfera hidrostática $\partial p/\partial z = -\rho g$.</p>
+                                <p><b class="text-emerald-400">Downscaling 30m:</b> Reducción barométrica barotrópica exacta por cota DEM, isolíneas isobáricas interpoladas por spline bicúbico y cálculo de balance geostrófico $\mathbf{v}_g = \frac{1}{\rho f}\mathbf{k}\times\nabla p$.</p>
+                                <p><b class="text-amber-400">Sesgos:</b> Distorsión en áreas de relieve escarpado por interpolación vertical sobre terreno virtual.</p>
+                                <p><b class="text-blue-400">Calibración Ground-Truth:</b> Barómetros digitales de alta precisión de la estación de referencia DGA Longaví.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <button onclick="triggerBiophysicalTool('transect'); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-sky-500/15 border border-white/5 hover:border-sky-500/30 flex items-center justify-between text-xs text-sky-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>📐</span>
-                        <span>Transecto X-Y (1.400m - 145m)</span>
-                    </span>
-                    <span class="text-[9px] text-sky-400 font-bold">▶</span>
-                </button>
 
-                <button onclick="triggerBiophysicalTool('sediments'); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🌊</span>
-                        <span>Corte Sedimentos & Shields</span>
-                    </span>
-                    <span class="text-[9px] text-emerald-400 font-bold">▶</span>
-                </button>
+                <!-- ════ PANE 2: 8 MOMENTOS CLIMÁTICOS ════ -->
+                <div id="atmoPaneMoments" class="space-y-4 hidden">
+                    <div class="p-4 rounded-xl bg-amber-950/40 border border-amber-500/30 text-xs font-mono text-amber-200 leading-relaxed">
+                        <b class="text-amber-300 uppercase tracking-wider block mb-1">🎯 Filosofía de los 8 Momentos Climáticos</b>
+                        Un gemelo digital no es solo un visor de datos pasivos: es un simulador de tensión biofísica territorial. Cada "Momento" representa un estado límite ambiental documentado en el historial hidrometeorológico de la cuenca del Maule Sur (1985–2026), permitiendo a tomadores de decisión y agricultores someter sus obras hidráulicas, cuarteles de cerezos y planes de cortafuego a pruebas de estrés con un solo clic.
+                    </div>
 
-                <button onclick="triggerBiophysicalTool('slope25d'); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-between text-xs text-yellow-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🏔️</span>
-                        <span>Bloque 2.5D Amenazas Ladera</span>
-                    </span>
-                    <span class="text-[9px] text-yellow-400 font-bold">▶</span>
-                </button>
+                    <div class="space-y-3">
+                        <!-- M1 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-emerald-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-emerald-300 flex items-center gap-1.5"><span>🌱</span> 1. Actual Base (Calibrado de Referencia)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">RÉGIMEN BASE</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Viento WSW 12 kt, Temp 22.4°C, Humedad 54%, Caudal Río Longaví 18.2 m³/s, Embalse Bullileo al 68%. Representa el régimen hidrológico calibrado contra aforos oficiales DGA y telemetría en tiempo real.</p>
+                        </div>
 
-                <div class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider px-2 pt-1.5 pb-0.5 border-t border-white/10 flex justify-between items-center">
-                    <span>Trazado Vectorial GIS</span>
-                    <span class="text-slate-400 font-normal">Dibujo</span>
+                        <!-- M2 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-yellow-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-yellow-300 flex items-center gap-1.5"><span>☀️</span> 2. Verano Normal (Brisa Térmica Mediterránea)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-yellow-950 text-yellow-300 border border-yellow-500/30">ALTA EVAPOTRANSPIRACIÓN</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Viento SW 15 kt (brisa valle-montaña vespertina), Temp 28.5°C, Humedad 38%, $ET_0 = 6.2\text{ mm/día}$. Riego presurizado al 100% de capacidad en Meniel para compensar déficit hídrico atmosférico.</p>
+                        </div>
+
+                        <!-- M3 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-orange-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-orange-300 flex items-center gap-1.5"><span>🔥</span> 3. Ola de Calor Extrema (>37°C)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-orange-950 text-orange-300 border border-orange-500/30">ESTRÉS TÉRMICO CRÍTICO</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Dorsal cálida en altura con subsidencia adiabática. Temperatura de 37.8°C en valle central, humedad al 19%. Cierre estomático total en cerezos Lapins, detención fotosintética y pulso de riego por pulsos de enfriamiento.</p>
+                        </div>
+
+                        <!-- M4 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-amber-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-amber-300 flex items-center gap-1.5"><span>🏜️</span> 4. Megasequía Crónica (La Niña, Acuífero -11m)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/30">DÉFICIT ESTRUCTURAL</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Precipitación anual acumulada inferior a 240 mm (-65%). Caudal del Río Longaví cae a 2.4 m³/s (estiaje severo). El nivel freático desciende de 8m a 19m en Retiro, comprometiendo sistemas APR y tranques de acumulación.</p>
+                        </div>
+
+                        <!-- M5 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-rose-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-rose-300 flex items-center gap-1.5"><span>💨</span> 5. Viento Puelche Catabático (Foehn Andino del Este)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/30">ALERTA ROJA MULTIAMENAZA</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Compresión adiabática seca ($\Gamma_d = 9.8\text{°C/km}$) descendiendo desde los pasos andinos. Viento ESE 28 kt con rachas >55 kt, humedad relativa colapsa a <16%, temperatura aumenta +8°C en 2 horas. Regla 30-30-30 activa.</p>
+                        </div>
+
+                        <!-- M6 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-red-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-red-300 flex items-center gap-1.5"><span>🌲🔥</span> 6. Incendio Forestal Activo (Puelche + Rothermel FWI >65)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-500/30">PROPAGACIÓN RÁPIDA</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Modelo de Rothermel computando propagación a 1.8 km/h en monocultivos de pino insigne y eucalipto en faldeo cordillerano. Pavesas incandescentes proyectadas a 1.2 km a sotavento. Activación de cortafuegos Keyline y aforo a tranques.</p>
+                        </div>
+
+                        <!-- M7 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-blue-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-blue-300 flex items-center gap-1.5"><span>🌊</span> 7. Temporal de Invierno (Río Atmosférico Desbordado)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-500/30">RIESGO ALUVIAL 380 m³/s</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Río atmosférico Categoría 4 con isoterma 0°C a 2.900 msnm (lluvia cálida sobre manto nival previo). Caudal pico en Río Longaví de 380 m³/s. Inundación de vegas fluviales, desborde de canales matrices y arrastre masivo de bolones (Shields $\theta > 0.08$).</p>
+                        </div>
+
+                        <!-- M8 -->
+                        <div class="p-3.5 rounded-xl bg-black/60 border border-cyan-500/30 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <b class="text-cyan-300 flex items-center gap-1.5"><span>❄️</span> 8. Helada Polar / Negra Radiativa (-4°C)</b>
+                                <span class="text-[9px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30">INVERSIÓN EN HONDO</span>
+                            </div>
+                            <p class="text-slate-300 text-[11px]">Masa antártica con cielo despejado y calma de viento. Enfriamiento radiativo extremo con punto de rocío a -5.2°C. Formación de lago de aire frío en hondonadas de Retiro con necrosis de yemas en frutales sin escarcha protectora. Activación de torres de viento.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <button onclick="startDrawingCuencaPolygon(); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>✏️</span>
-                        <span>Trazar Polígono</span>
-                    </span>
-                    <span class="text-[9px] text-emerald-400 font-bold">Activar</span>
-                </button>
+                <!-- ════ PANE 3: ECUACIONES & MITIGACIÓN ════ -->
+                <div id="atmoPaneFormulas" class="space-y-5 hidden">
+                    <div class="p-4 rounded-xl bg-purple-950/40 border border-purple-500/30 text-xs font-mono text-purple-200 leading-relaxed">
+                        <b class="text-purple-300 uppercase tracking-wider block mb-1">📐 Rigor Matemático del Motor Cuenca 3D</b>
+                        Todas las visualizaciones cartográficas y tabulares provienen de ecuaciones diferenciales y físicas implementadas en JavaScript y WebGL, garantizando coherencia dimensional y conservación de masa y energía.
+                    </div>
 
-                <button onclick="clearCuencaPolygons(); toggleCuencaHerramientasMenu(false);" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/5 hover:border-rose-500/30 flex items-center justify-between text-xs text-rose-200 transition-all cursor-pointer">
-                    <span class="flex items-center gap-2">
-                        <span>🧹</span>
-                        <span>Limpiar Trazos</span>
-                    </span>
-                    <span class="text-[9px] text-rose-400 font-bold">Borrar</span>
-                </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                        <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+                            <b class="text-sky-300">1. Navier-Stokes 2D con Forzante Orográfico</b>
+                            <div class="p-2.5 rounded bg-black/70 border border-sky-500/20 text-sky-200 text-xs text-center">
+                                $$\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2\mathbf{u} - \frac{C_d}{h}|\mathbf{u}|\mathbf{u} + \mathbf{F}_{\text{topo}}$$
+                            </div>
+                            <p class="text-[10px] text-slate-400">Resuelve el campo de velocidad horizontal integrando fricción por rugosidad LULC ($C_d$) y encañonamiento en el DEM ($\mathbf{F}_{\text{topo}}$).</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+                            <b class="text-emerald-300">2. Advección Lagrangiana Estilo Windy</b>
+                            <div class="p-2.5 rounded bg-black/70 border border-emerald-500/20 text-emerald-200 text-xs text-center">
+                                $$\mathbf{x}_{t+\Delta t} = \mathbf{x}_t + \mathbf{u}(\mathbf{x}_t, t)\Delta t + \sqrt{2D\Delta t}\,\boldsymbol{\xi}$$
+                            </div>
+                            <p class="text-[10px] text-slate-400">Transporta 850 partículas en tiempo real sobre el canvas HTML5 con difusión browniana estocástica ($\boldsymbol{\xi}$) y muerte por límite de vida útil.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+                            <b class="text-blue-300">3. Escorrentía Fluvial Manning-Strickler</b>
+                            <div class="p-2.5 rounded bg-black/70 border border-blue-500/20 text-blue-200 text-xs text-center">
+                                $$Q = \frac{1}{n} A R_h^{2/3} S_0^{1/2}$$
+                            </div>
+                            <p class="text-[10px] text-slate-400">Determina el gasto volumétrico instantáneo ($Q$) en m³/s a lo largo de las pendientes del lecho fluvial del Río Longaví y sus tributarios andinos.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+                            <b class="text-yellow-300">4. Evapotranspiración Penman-Monteith (FAO-56)</b>
+                            <div class="p-2.5 rounded bg-black/70 border border-yellow-500/20 text-yellow-200 text-xs text-center">
+                                $$ET_0 = \frac{0.408\Delta(R_n - G) + \gamma\frac{900}{T+273}u_2(e_s - e_a)}{\Delta + \gamma(1 + 0.34u_2)}$$
+                            </div>
+                            <p class="text-[10px] text-slate-400">Calcula la demanda de riego real integrando radiación neta modulada por sombras del relieve 3D y déficit de presión de vapor ($e_s - e_a$).</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+                            <b class="text-red-300">5. Propagación de Incendios de Rothermel (FWI)</b>
+                            <div class="p-2.5 rounded bg-black/70 border border-red-500/20 text-red-200 text-xs text-center">
+                                $$R = \frac{I_R \xi (1 + \phi_w + \phi_s)}{\rho_b \epsilon Q_{ig}}$$
+                            </div>
+                            <p class="text-[10px] text-slate-400">Predice la velocidad de propagación del frente de fuego ($R$) combinando viento local ($\phi_w$), pendiente del cerro ($\phi_s$) y humedad del combustible fino muerto.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2">
+                            <b class="text-cyan-300">6. Inversión Térmica Nocturna Catabática</b>
+                            <div class="p-2.5 rounded bg-black/70 border border-cyan-500/20 text-cyan-200 text-xs text-center">
+                                $$T(z, t) = T_0(z) - \frac{R_{\text{net}}}{\rho c_p h_{\text{pbl}}} \cdot t \cdot \left[1 - \left(\frac{z}{h_{\text{inv}}}\right)^2\right]$$
+                            </div>
+                            <p class="text-[10px] text-slate-400">Simula el drenaje de aire frío denso gravitacional que decanta en las partes bajas de la cuenca, creando pozas térmicas propensas a heladas severas.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Mitigación de Sesgos -->
+                    <div class="p-4 rounded-xl bg-black/60 border border-white/10 space-y-2 font-mono text-xs">
+                        <b class="text-amber-300 block">📊 Matriz de Sesgos y Calibración Sistemática</b>
+                        <table class="w-full text-left text-[10.5px] border-collapse">
+                            <thead>
+                                <tr class="border-b border-white/15 text-slate-400">
+                                    <th class="py-1.5 px-2">Variable</th>
+                                    <th class="py-1.5 px-2">Sesgo Típico Modelo Sinóptico (9km)</th>
+                                    <th class="py-1.5 px-2">Impacto Agronómico / Territorial</th>
+                                    <th class="py-1.5 px-2">Protocolo de Corrección AgriTwin</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-slate-300">
+                                <tr>
+                                    <td class="py-2 px-2 font-bold text-sky-300">Viento Puelche</td>
+                                    <td class="py-2 px-2">Subestimación del 40% en fondo de valle</td>
+                                    <td class="py-2 px-2">Falsa sensación de seguridad en cortafuegos</td>
+                                    <td class="py-2 px-2 text-emerald-300">Multiplicador orográfico por gradiente DEM 30m</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2 font-bold text-red-300">Temperatura Mínima</td>
+                                    <td class="py-2 px-2">Sobrestimación de +2.5°C a +4°C en hondonadas</td>
+                                    <td class="py-2 px-2">Pérdida imprevista de floración por helada</td>
+                                    <td class="py-2 px-2 text-emerald-300">Modelo de estancamiento catabático radiativo</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2 font-bold text-blue-300">Precipitación Andina</td>
+                                    <td class="py-2 px-2">Desplazamiento horizontal de 15 km</td>
+                                    <td class="py-2 px-2">Error en tiempo de concentración de crecidas</td>
+                                    <td class="py-2 px-2 text-emerald-300">Calibración telemétrica horaria con aforos DGA</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="p-3.5 px-6 bg-black/60 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[10.5px] text-slate-400">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Centro de Modelación Hidroclimática SDSS Maule Sur • DEM 30m • Open-Meteo &amp; ECMWF IFS</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadAtmosphericSciencePdf()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-200 border border-emerald-400/50 font-bold cursor-pointer transition-all">
+                        📥 Descargar Reporte PDF
+                    </button>
+                    <button onclick="closeAtmosphericScienceModal()" class="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 border border-white/15 font-bold cursor-pointer transition-all">
+                        Volver al Mapa
+                    </button>
+                </div>
             </div>
         </div>
-
-        <div class="h-4 w-px bg-white/15 mx-0.5"></div>
-
-        <!-- Botones Rápidos -->
-        <button onclick="refreshAndAutoUpdateMap()" class="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-emerald-300 font-mono text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer" title="Refrescar Mapa">
-            <span>🔄</span>
-        </button>
-        <button onclick="centerMapToBasin()" class="px-2 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-200 font-mono text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer" title="Centrar Cuenca">
-            <span>🎯</span>
-        </button>
     </div>
+
+
+
+
+
+
+
 
     <!-- SIDEBAR PANEL (NIVEL TÁCTICO AMPLIADO 20%: 432px) -->
     <div id="territorialSidebar" class="absolute right-0 top-14 bottom-0 w-full lg:w-[432px] glass-panel z-40 flex flex-col border-l border-white/10 shadow-2xl transition-transform duration-300">
@@ -10632,54 +11243,25 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
             <!-- ═══════════════════════════════════════════════════════════════
                  PESTAÑA 1: 🌦️ TIEMPO & HÍDRICO (ATMÓSFERA, SCRUBBER, 8 MOMENTOS, SEGURIDAD HÍDRICA)
                  ═══════════════════════════════════════════════════════════════ -->
+            <!-- ═══════════════════════════════════════════════════════════════
+                 PESTAÑA 1: 🌦️ TIEMPO & HÍDRICO (SUBPESTAÑAS: RESUMEN vs CONTROLES)
+                 ═══════════════════════════════════════════════════════════════ -->
             <div id="tab-tiempo" class="tab-content active space-y-4">
                 
-                <!-- Encabezado Atmósfera Windy -->
-                <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                    <div>
-                        <h2 class="text-xs text-sky-400 font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🌪️</span> Variables Atmosféricas Estilo Windy
-                        </h2>
-                        <p class="text-[9px] text-slate-400 font-mono">Curvas de nivel de influencia, isopletas y vectores</p>
-                    </div>
-                    <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/40 font-bold">LIVE DYNAMICS</span>
+                <!-- Subpestañas Tácticas Internas de Tiempo: Resumen vs Controles -->
+                <div class="flex items-center gap-1.5 p-1 bg-black/60 rounded-xl border border-sky-500/30 font-mono text-xs">
+                    <button id="btnSubTabTiempoResumen" onclick="switchTiempoSubTab('resumen')" class="flex-1 py-1.5 px-3 rounded-lg font-bold text-sky-300 bg-sky-500/20 border border-sky-400/50 shadow transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                        <span>📋</span> <span>Resumen</span>
+                    </button>
+                    <button id="btnSubTabTiempoControles" onclick="switchTiempoSubTab('controles')" class="flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-400 hover:text-white hover:bg-white/5 border border-transparent transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                        <span>🎛️</span> <span>Controles</span>
+                    </button>
                 </div>
 
-                <!-- SELECTOR DE VARIABLES TIPO WINDY -->
-                <div class="bg-black/40 p-2.5 rounded-xl border border-sky-500/30">
-                    <span class="text-[10px] text-slate-300 font-mono font-bold uppercase tracking-wide block mb-2">
-                        Variable Activa en Mapa:
-                    </span>
-                    <div class="grid grid-cols-2 gap-2 text-[11px] font-mono" id="cuencaWindyVariableSelector">
-                        <button onclick="setCuencaWindyVariable('wind')" id="btnWindyVar-wind" class="p-2.5 rounded-lg bg-sky-500/30 border border-sky-400 text-sky-200 font-bold text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>💨 Viento & Ráfagas</span>
-                            <span class="text-[9px] bg-sky-400/20 px-1.5 py-0.5 rounded text-sky-300">km/h</span>
-                        </button>
-                        <button onclick="setCuencaWindyVariable('temp')" id="btnWindyVar-temp" class="p-2.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🌡️ Temperatura</span>
-                            <span class="text-[9px] bg-red-400/20 px-1.5 py-0.5 rounded text-red-300">°C</span>
-                        </button>
-                        <button onclick="setCuencaWindyVariable('precip')" id="btnWindyVar-precip" class="p-2.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🌧️ Lluvia & Escorrentía</span>
-                            <span class="text-[9px] bg-blue-400/20 px-1.5 py-0.5 rounded text-blue-300">mm / m³s</span>
-                        </button>
-                        <button onclick="setCuencaWindyVariable('fwi')" id="btnWindyVar-fwi" class="p-2.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🔥 Frente de Fuego & FWI</span>
-                            <span class="text-[9px] bg-amber-400/20 px-1.5 py-0.5 rounded text-amber-300">FWI</span>
-                        </button>
-                    </div>
-
-                    <!-- Interruptor de Áreas de Influencia y Curvas de Nivel -->
-                    <div class="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] font-mono">
-                        <span class="text-slate-300 flex items-center gap-1.5">
-                            <span>🌐</span> Áreas de Influencia & Curvas:
-                        </span>
-                        <button onclick="toggleAtmosphericInfluenceSurfaces()" id="btnToggleInfluenceSurfaces" class="px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-400/60 text-emerald-300 font-bold cursor-pointer transition-all">
-                            <span>ON</span> (Isopletas Vivas)
-                        </button>
-                    </div>
-                </div>
-
+                <!-- ═══════════════════════════════════════════════════════════
+                     SUBPESTAÑA 1.A: 📋 RESUMEN (LÍNEA TEMPORAL, PRONÓSTICO 7D, SEGURIDAD HÍDRICA)
+                     ═══════════════════════════════════════════════════════════ -->
+                <div id="subtab-tiempo-resumen" class="space-y-4">
                 <!-- LÍNEA TEMPORAL / TIMELINE SCRUBBER ESTILO WINDY INTEGRADO -->
                 <div class="bg-[#08101e]/95 p-3 rounded-xl border border-sky-500/40 shadow-lg space-y-2.5">
                     <div class="flex items-center justify-between">
@@ -10727,15 +11309,193 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     </div>
                 </div>
 
+
+                <!-- SEGURIDAD HÍDRICA & BALANCE DE CUENCA -->
+                <div class="bg-[#08101e]/95 p-3.5 rounded-xl border border-sky-500/40 shadow-lg space-y-3 font-mono">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                        <h2 class="text-xs text-sky-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <span>💧</span> Seguridad Hídrica & Balance de Cuenca
+                        </h2>
+                        <span class="text-[9px] px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/30 font-bold">LONGAVÍ MATRIZ</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
+                            <div class="text-[9.5px] text-slate-400 uppercase">Infiltración Activa</div>
+                            <div class="text-base font-bold text-sky-400 data-mono">320 L/s</div>
+                        </div>
+                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
+                            <div class="text-[9.5px] text-slate-400 uppercase">Atenuación Crecida</div>
+                            <div class="text-base font-bold text-emerald-400 data-mono">-3.2%</div>
+                        </div>
+                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5 col-span-2">
+                            <div class="text-[9.5px] text-slate-400 uppercase flex justify-between">
+                                <span>Autonomía Tranque Keyline</span>
+                                <span class="text-emerald-400 font-bold">100% Operativo</span>
+                            </div>
+                            <div class="text-xl font-black text-white mt-0.5 data-mono">42 Días (~18.5k m³)</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-1">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-400">Precipitación 24h (mm)</span>
+                                <span class="text-white data-mono" id="val-precip">0 mm</span>
+                            </div>
+                            <input type="range" id="slide-precip" min="10" max="220" value="10" oninput="updateWater()" class="w-full accent-sky-400 cursor-pointer">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-400">Caudal Base Longaví (m³/s)</span>
+                                <span class="text-white data-mono" id="val-flow">125 m³/s</span>
+                            </div>
+                            <input type="range" id="slide-flow" min="30" max="650" value="125" oninput="updateWater()" class="w-full accent-sky-400 cursor-pointer">
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs text-slate-400 mb-2 font-semibold">Balance Hídrico Estacional (Simulado)</h3>
+                        <div class="h-36 bg-black/40 p-2 rounded-lg border border-white/5">
+                            <canvas id="waterChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Red de 5 APRs y Fuentes -->
+                    <div class="pt-2 border-t border-white/10 space-y-1.5 text-[10px]">
+                        <span class="text-slate-300 font-bold uppercase block text-[9.5px]">Red de Fuentes & Comités APR:</span>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <div class="p-1.5 rounded bg-black/30 border border-white/5">
+                                <strong class="text-sky-300 block">DGA Río Longaví</strong>
+                                <span class="text-slate-400">185 m³/s • Cota 2.15m</span>
+                            </div>
+                            <div class="p-1.5 rounded bg-black/30 border border-white/5">
+                                <strong class="text-sky-300 block">Embalse Bullileo</strong>
+                                <span class="text-slate-400">84.2 Hm³ • 78% Capacidad</span>
+                            </div>
+                            <div class="p-1.5 rounded bg-black/30 border border-white/5 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-300">5 Comités APR Abastecidos:</span>
+                                <span class="text-emerald-300 font-bold">Retiro • Quilaimo • Bullileo • Villaseca</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                </div> <!-- /#subtab-tiempo-resumen -->
+
+                <!-- ═══════════════════════════════════════════════════════════
+                     SUBPESTAÑA 1.B: 🎛️ CONTROLES (CAPAS ATMOSFÉRICAS, 8 MOMENTOS, MICROCLIMA)
+                     ═══════════════════════════════════════════════════════════ -->
+                <div id="subtab-tiempo-controles" class="space-y-4 hidden">
+                <!-- Encabezado Atmósfera Windy -->
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                    <div>
+                        <h2 class="text-xs text-sky-400 font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <span>🌪️</span> Variables Atmosféricas Estilo Windy
+                        </h2>
+                        <p class="text-[9px] text-slate-400 font-mono">Curvas de nivel de influencia, isopletas y vectores</p>
+                    </div>
+                    <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/40 font-bold">LIVE DYNAMICS</span>
+                </div>
+
+                <!-- SUITE DE CAPAS METEOROLÓGICAS ESTILO WINDY -->
+                <div class="bg-black/40 p-3 rounded-xl border border-sky-500/30 space-y-3 font-mono">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-sky-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <span>🌪️</span> Capas Atmosféricas
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[9px] text-slate-400">Escala 122k ha</span>
+                            <button onclick="openAtmosphericScienceModal('layers')" class="w-5 h-5 rounded-full bg-sky-500/20 hover:bg-sky-500/40 border border-sky-400/50 text-sky-300 text-[10px] font-bold font-mono flex items-center justify-center cursor-pointer transition-all shadow-sm" title="Ver Especificación Científica de Capas (Global vs Downscaling)">ℹ️</button>
+                        </div>
+                    </div>
+
+                    <!-- 6 Chips de Capas -->
+                    <div class="grid grid-cols-2 gap-1.5 text-[11px]" id="cuencaWindyVariableSelector">
+                        <button onclick="setCuencaWindyVariable('wind')" id="btnWindyVar-wind" class="p-2 rounded-lg bg-sky-500/30 border border-sky-400 text-sky-200 font-bold text-left flex items-center justify-between cursor-pointer transition-all shadow-md">
+                            <span>💨 Viento 10m</span>
+                            <span class="text-[9px] bg-sky-400/20 px-1 py-0.5 rounded text-sky-300">kt</span>
+                        </button>
+                        <button onclick="setCuencaWindyVariable('gusts')" id="btnWindyVar-gusts" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
+                            <span>🌪️ Ráfagas</span>
+                            <span class="text-[9px] bg-amber-400/20 px-1 py-0.5 rounded text-amber-300">Rachas</span>
+                        </button>
+                        <button onclick="setCuencaWindyVariable('precip')" id="btnWindyVar-precip" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
+                            <span>🌧️ Lluvia & Escorr.</span>
+                            <span class="text-[9px] bg-blue-400/20 px-1 py-0.5 rounded text-blue-300">mm</span>
+                        </button>
+                        <button onclick="setCuencaWindyVariable('temp')" id="btnWindyVar-temp" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
+                            <span>🌡️ Temperatura</span>
+                            <span class="text-[9px] bg-red-400/20 px-1 py-0.5 rounded text-red-300">°C</span>
+                        </button>
+                        <button onclick="setCuencaWindyVariable('clouds')" id="btnWindyVar-clouds" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
+                            <span>☁️ Nubes</span>
+                            <span class="text-[9px] bg-slate-400/20 px-1 py-0.5 rounded text-slate-300">%</span>
+                        </button>
+                        <button onclick="setCuencaWindyVariable('pressure')" id="btnWindyVar-pressure" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
+                            <span>🔘 Isóbaras</span>
+                            <span class="text-[9px] bg-purple-400/20 px-1 py-0.5 rounded text-purple-300">hPa</span>
+                        </button>
+                    </div>
+
+                    <!-- Slider de Altitud Barométrica -->
+                    <div class="bg-black/50 p-2.5 rounded-lg border border-white/5 space-y-1.5">
+                        <div class="flex items-center justify-between text-[10px]">
+                            <span class="text-slate-300">Altitud de Análisis:</span>
+                            <span id="labelHubAltitudeVal" class="text-sky-300 font-bold">Superficie (10m) ✈️</span>
+                        </div>
+                        <input type="range" id="sliderHubAltitude" min="0" max="4" step="1" value="0" class="w-full accent-sky-400 cursor-pointer" oninput="onHubAltitudeChange(this.value)">
+                        <div class="flex justify-between text-[8px] text-slate-500">
+                            <span>10m</span>
+                            <span>100m</span>
+                            <span>500m</span>
+                            <span>1.500m</span>
+                            <span>3.000m FL100</span>
+                        </div>
+                    </div>
+
+                    <!-- Selector de Modelo Numérico -->
+                    <div class="flex items-center justify-between bg-black/50 p-2 rounded-lg border border-white/5 text-[10px]">
+                        <span class="text-slate-300">Modelo:</span>
+                        <div class="flex items-center gap-1">
+                            <button id="btnHubModelEcmwf" onclick="setHubForecastModel('ecmwf')" class="px-2 py-0.5 rounded bg-sky-500/30 border border-sky-400 text-sky-200 font-bold cursor-pointer transition-all">ECMWF 9km</button>
+                            <button id="btnHubModelGfs" onclick="setHubForecastModel('gfs')" class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer transition-all">GFS 22km</button>
+                        </div>
+                    </div>
+
+                    <!-- Ajustes Dinámicos de Flujo (Velocidad & Opacidad) -->
+                    <div class="grid grid-cols-2 gap-2 text-[10px] bg-black/50 p-2 rounded-lg border border-white/5">
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-slate-400">
+                                <span>Velocidad:</span>
+                                <span id="valHubParticleSpeed" class="text-sky-300 font-bold">1.0x</span>
+                            </div>
+                            <input type="range" id="sliderHubParticleSpeed" min="0.2" max="3.0" step="0.2" value="1.0" class="w-full accent-sky-400 cursor-pointer" oninput="onHubParticleSpeedChange(this.value)">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-slate-400">
+                                <span>Opacidad:</span>
+                                <span id="valHubParticleOpacity" class="text-sky-300 font-bold">85%</span>
+                            </div>
+                            <input type="range" id="sliderHubParticleOpacity" min="0.2" max="1.0" step="0.1" value="0.85" class="w-full accent-sky-400 cursor-pointer" oninput="onHubParticleOpacityChange(this.value)">
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- 8 MOMENTOS CLIMÁTICOS DE CUENCA -->
                 <div class="bg-[#08101e]/90 p-3 rounded-xl border border-sky-500/40 shadow-lg">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-mono font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                             <span>🎯</span> 8 Momentos Climáticos (1-Click)
                         </span>
-                        <button id="btnToggleSimOverlayCuenca" onclick="toggleCuencaSimOverlays()" class="px-2 py-0.5 rounded text-[9.5px] font-mono font-bold bg-red-500/20 border border-red-500/50 text-red-300 cursor-pointer">
-                            Simulación: ON
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="openAtmosphericScienceModal('moments')" class="w-5 h-5 rounded-full bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/50 text-amber-300 text-[10px] font-bold font-mono flex items-center justify-center cursor-pointer transition-all shadow-sm" title="Ver Especificación Científica de los 8 Momentos (Fórmulas & Ecuaciones)">ℹ️</button>
+                            <button id="btnToggleSimOverlayCuenca" onclick="toggleCuencaSimOverlays()" class="px-2 py-0.5 rounded text-[9.5px] font-mono font-bold bg-red-500/20 border border-red-500/50 text-red-300 cursor-pointer">
+                                Simulación: ON
+                            </button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-2 gap-1.5" id="cuencaMomentsSidebarPills">
                         <button class="basin-moment-pill active w-full justify-start" onclick="applyCuencaClimatePreset('normal', this)" title="Momento 1: Calibrado y régimen de aforo base">
@@ -10875,76 +11635,8 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     </details>
                 </div>
 
-                <!-- SEGURIDAD HÍDRICA & BALANCE DE CUENCA -->
-                <div class="bg-[#08101e]/95 p-3.5 rounded-xl border border-sky-500/40 shadow-lg space-y-3 font-mono">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                        <h2 class="text-xs text-sky-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span>💧</span> Seguridad Hídrica & Balance de Cuenca
-                        </h2>
-                        <span class="text-[9px] px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/30 font-bold">LONGAVÍ MATRIZ</span>
-                    </div>
 
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
-                            <div class="text-[9.5px] text-slate-400 uppercase">Infiltración Activa</div>
-                            <div class="text-base font-bold text-sky-400 data-mono">320 L/s</div>
-                        </div>
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
-                            <div class="text-[9.5px] text-slate-400 uppercase">Atenuación Crecida</div>
-                            <div class="text-base font-bold text-emerald-400 data-mono">-3.2%</div>
-                        </div>
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5 col-span-2">
-                            <div class="text-[9.5px] text-slate-400 uppercase flex justify-between">
-                                <span>Autonomía Tranque Keyline</span>
-                                <span class="text-emerald-400 font-bold">100% Operativo</span>
-                            </div>
-                            <div class="text-xl font-black text-white mt-0.5 data-mono">42 Días (~18.5k m³)</div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3 pt-1">
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="text-slate-400">Precipitación 24h (mm)</span>
-                                <span class="text-white data-mono" id="val-precip">0 mm</span>
-                            </div>
-                            <input type="range" id="slide-precip" min="10" max="220" value="10" oninput="updateWater()" class="w-full accent-sky-400 cursor-pointer">
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="text-slate-400">Caudal Base Longaví (m³/s)</span>
-                                <span class="text-white data-mono" id="val-flow">125 m³/s</span>
-                            </div>
-                            <input type="range" id="slide-flow" min="30" max="650" value="125" oninput="updateWater()" class="w-full accent-sky-400 cursor-pointer">
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-xs text-slate-400 mb-2 font-semibold">Balance Hídrico Estacional (Simulado)</h3>
-                        <div class="h-36 bg-black/40 p-2 rounded-lg border border-white/5">
-                            <canvas id="waterChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Red de 5 APRs y Fuentes -->
-                    <div class="pt-2 border-t border-white/10 space-y-1.5 text-[10px]">
-                        <span class="text-slate-300 font-bold uppercase block text-[9.5px]">Red de Fuentes & Comités APR:</span>
-                        <div class="grid grid-cols-2 gap-1.5">
-                            <div class="p-1.5 rounded bg-black/30 border border-white/5">
-                                <strong class="text-sky-300 block">DGA Río Longaví</strong>
-                                <span class="text-slate-400">185 m³/s • Cota 2.15m</span>
-                            </div>
-                            <div class="p-1.5 rounded bg-black/30 border border-white/5">
-                                <strong class="text-sky-300 block">Embalse Bullileo</strong>
-                                <span class="text-slate-400">84.2 Hm³ • 78% Capacidad</span>
-                            </div>
-                            <div class="p-1.5 rounded bg-black/30 border border-white/5 col-span-2 flex justify-between items-center">
-                                <span class="text-slate-300">5 Comités APR Abastecidos:</span>
-                                <span class="text-emerald-300 font-bold">Retiro • Quilaimo • Bullileo • Villaseca</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div> <!-- /#subtab-tiempo-controles -->
 
             </div> <!-- /#tab-tiempo -->
 
@@ -10981,149 +11673,226 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     <!-- Populated dinámicamente por geo-layers.js -->
                 </div>
 
-                <!-- RED CENTINELA GROUND-TRUTH (9 ESTACIONES) -->
-                <div class="bg-[#08101e]/90 p-3.5 rounded-xl border border-emerald-500/30 space-y-3">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                        <h2 class="text-xs text-emerald-400 font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span>📡</span> Red Centinela Ground-Truth
-                        </h2>
-                        <span class="text-[9px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40 font-bold">9 NODOS</span>
-                    </div>
+                <!-- ═══════════════════════════════════════════════════════════════
+                     GRUPO 1 CONSOLIDADO: RED DE TELEMETRÍA & MONITOREO HÍDRICO-CLIMÁTICO (GROUND-TRUTH & PÚBLICA)
+                     ═══════════════════════════════════════════════════════════════ -->
+                <details class="group bg-[#08101e]/90 rounded-xl border border-emerald-500/30 overflow-hidden transition-all duration-200" open>
+                    <summary class="flex items-center justify-between p-3.5 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400 text-sm">📡</span>
+                            <div>
+                                <h2 class="text-xs text-emerald-400 font-mono font-bold uppercase tracking-wider">
+                                    Red Centinela & Telemetría Pública
+                                </h2>
+                                <p class="text-[9px] text-slate-400 font-mono">Sensores FDR in-situ, piezometría y estaciones oficiales DGA/DMC</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[9px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40 font-bold">9 NODOS</span>
+                            <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                        </div>
+                    </summary>
 
-                    <div class="space-y-2">
-                        <div class="text-[10px] font-bold text-sky-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
-                            <span>🔹</span> Malla IoT KioT • Fundo Meniel (Predial)
-                        </div>
-                        <div class="grid grid-cols-1 gap-1.5 text-xs font-mono">
-                            <div class="p-2 bg-black/40 border border-emerald-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-emerald-300 block text-xs">FDR-01 Cerezos (0-20 cm)</strong>
-                                    <span class="text-[9.5px] text-slate-400">36.2% VWC • Bat 92% • LQI 98%</span>
-                                </div>
-                                <button onclick="flyTo(-36.2095, -71.6060, 16)" class="px-2 py-1 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[10px] text-emerald-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
+                    <div class="p-3.5 pt-1 border-t border-white/10 space-y-3">
+                        <!-- Malla IoT KioT Predial -->
+                        <div class="space-y-1.5">
+                            <div class="text-[10px] font-bold text-sky-400 uppercase tracking-wider font-mono flex items-center justify-between">
+                                <span class="flex items-center gap-1.5"><span>🔹</span> Malla IoT KioT • Fundo Meniel (Predial)</span>
+                                <span class="text-[8.5px] text-slate-500">4 SENSORES</span>
                             </div>
-                            <div class="p-2 bg-black/40 border border-emerald-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-emerald-300 block text-xs">FDR-02 Avellano (20-60 cm)</strong>
-                                    <span class="text-[9.5px] text-slate-400">34.8% VWC • Bat 88% • LQI 95%</span>
+                            <div class="grid grid-cols-1 gap-1.5 text-xs font-mono">
+                                <div class="p-2 bg-black/40 border border-emerald-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-emerald-300 block text-xs">FDR-01 Cerezos (0-20 cm)</strong>
+                                        <span class="text-[9.5px] text-slate-400">36.2% VWC • Bat 92% • LQI 98%</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.2095, -71.6060, 16)" class="px-2 py-1 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[10px] text-emerald-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
                                 </div>
-                                <button onclick="flyTo(-36.2120, -71.6030, 16)" class="px-2 py-1 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[10px] text-emerald-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
-                            </div>
-                            <div class="p-2 bg-black/40 border border-emerald-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-emerald-300 block text-xs">FDR-03 Keyline Sur (Infiltración)</strong>
-                                    <span class="text-[9.5px] text-slate-400">37.1% VWC • Bat 95% • Activo</span>
+                                <div class="p-2 bg-black/40 border border-emerald-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-emerald-300 block text-xs">FDR-02 Avellano (20-60 cm)</strong>
+                                        <span class="text-[9.5px] text-slate-400">34.8% VWC • Bat 88% • LQI 95%</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.2120, -71.6030, 16)" class="px-2 py-1 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[10px] text-emerald-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
                                 </div>
-                                <button onclick="flyTo(-36.2145, -71.6050, 16)" class="px-2 py-1 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[10px] text-emerald-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
-                            </div>
-                            <div class="p-2 bg-black/40 border border-sky-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-sky-300 block text-xs">Piezómetro Tranque Meniel</strong>
-                                    <span class="text-[9.5px] text-slate-400">18,500 m³ • Cota 198m • Bat 99%</span>
+                                <div class="p-2 bg-black/40 border border-emerald-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-emerald-300 block text-xs">FDR-03 Keyline Sur (Infiltración)</strong>
+                                        <span class="text-[9.5px] text-slate-400">37.1% VWC • Bat 95% • Activo</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.2145, -71.6050, 16)" class="px-2 py-1 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[10px] text-emerald-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
                                 </div>
-                                <button onclick="flyTo(-36.2110, -71.6045, 16)" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 border border-sky-500/40 rounded text-[10px] text-sky-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
+                                <div class="p-2 bg-black/40 border border-sky-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-sky-300 block text-xs">Piezómetro Tranque Meniel</strong>
+                                        <span class="text-[9.5px] text-slate-400">18,500 m³ • Cota 198m • Bat 99%</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.2110, -71.6045, 16)" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 border border-sky-500/40 rounded text-[10px] text-sky-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider font-mono flex items-center gap-1.5 pt-2">
-                            <span>🏛️</span> Red Meteorológica & Hídrica Pública
-                        </div>
-                        <div class="grid grid-cols-1 gap-1.5 text-xs font-mono">
-                            <div class="p-2 bg-black/40 border border-purple-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-purple-300 block text-xs">INIA Retiro (Agroclimática)</strong>
-                                    <span class="text-[9.5px] text-slate-400">22.4°C • HR 38% • ETo 4.8 mm/d</span>
-                                </div>
-                                <button onclick="flyTo(-36.0580, -71.7610, 14)" class="px-2 py-1 bg-purple-950 hover:bg-purple-900 border border-purple-500/40 rounded text-[10px] text-purple-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
+                        <!-- Red Hidrometeorológica Pública -->
+                        <div class="space-y-1.5 pt-2 border-t border-white/5">
+                            <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider font-mono flex items-center justify-between">
+                                <span class="flex items-center gap-1.5"><span>🏛️</span> Red Meteorológica & Hídrica Pública</span>
+                                <span class="text-[8.5px] text-slate-500">DGA • DMC • INIA</span>
                             </div>
-                            <div class="p-2 bg-black/40 border border-sky-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-sky-300 block text-xs">DGA Fluviométrica Río Longaví</strong>
-                                    <span class="text-[9.5px] text-slate-400">Caudal 185 m³/s • Nivel 2.15m</span>
+                            <div class="grid grid-cols-1 gap-1.5 text-xs font-mono">
+                                <div class="p-2 bg-black/40 border border-purple-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-purple-300 block text-xs">INIA Retiro (Agroclimática)</strong>
+                                        <span class="text-[9.5px] text-slate-400">22.4°C • HR 38% • ETo 4.8 mm/d</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.0580, -71.7610, 14)" class="px-2 py-1 bg-purple-950 hover:bg-purple-900 border border-purple-500/40 rounded text-[10px] text-purple-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
                                 </div>
-                                <button onclick="flyTo(-36.1750, -71.6700, 14)" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 border border-sky-500/40 rounded text-[10px] text-sky-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
-                            </div>
-                            <div class="p-2 bg-black/40 border border-amber-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-amber-300 block text-xs">DMC Parral Centro</strong>
-                                    <span class="text-[9.5px] text-slate-400">Puelche: 38 km/h E-NE • 1014 hPa</span>
+                                <div class="p-2 bg-black/40 border border-sky-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-sky-300 block text-xs">DGA Fluviométrica Río Longaví</strong>
+                                        <span class="text-[9.5px] text-slate-400">Caudal 185 m³/s • Nivel 2.15m</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.1750, -71.6700, 14)" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 border border-sky-500/40 rounded text-[10px] text-sky-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
                                 </div>
-                                <button onclick="flyTo(-36.1432, -71.8267, 14)" class="px-2 py-1 bg-amber-950 hover:bg-amber-900 border border-amber-500/40 rounded text-[10px] text-amber-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
-                            </div>
-                            <div class="p-2 bg-black/40 border border-sky-500/30 rounded-lg flex items-center justify-between">
-                                <div>
-                                    <strong class="text-sky-300 block text-xs">DGA Embalse Bullileo</strong>
-                                    <span class="text-[9.5px] text-slate-400">Volumen: 84.2 Hm³ • Cota 395m</span>
+                                <div class="p-2 bg-black/40 border border-amber-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-amber-300 block text-xs">DMC Parral Centro</strong>
+                                        <span class="text-[9.5px] text-slate-400">Puelche: 38 km/h E-NE • 1014 hPa</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.1432, -71.8267, 14)" class="px-2 py-1 bg-amber-950 hover:bg-amber-900 border border-amber-500/40 rounded text-[10px] text-amber-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
                                 </div>
-                                <button onclick="flyTo(-36.2800, -71.4200, 13)" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 border border-sky-500/40 rounded text-[10px] text-sky-300 cursor-pointer">
-                                    Ver 🔍
-                                </button>
+                                <div class="p-2 bg-black/40 border border-sky-500/30 rounded-lg flex items-center justify-between">
+                                    <div>
+                                        <strong class="text-sky-300 block text-xs">DGA Embalse Bullileo</strong>
+                                        <span class="text-[9.5px] text-slate-400">Volumen: 84.2 Hm³ • Cota 395m</span>
+                                    </div>
+                                    <button onclick="flyTo(-36.2800, -71.4200, 13)" class="px-2 py-1 bg-sky-950 hover:bg-sky-900 border border-sky-500/40 rounded text-[10px] text-sky-300 cursor-pointer">
+                                        Ver 🔍
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </details>
 
-                <!-- 6 VISTAS PREDEFINIDAS DE LA CUENCA -->
-                <div class="bg-[#08101e]/90 p-3.5 rounded-xl border border-sky-500/30 space-y-2.5">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                        <h2 class="text-xs text-sky-300 font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🔭</span> 6 Vistas Clave de Cuenca
-                        </h2>
-                        <span class="text-[9px] font-mono text-slate-200 bg-sky-950/80 px-2 py-0.5 rounded border border-sky-500/40 font-bold">1-CLICK</span>
+                <!-- ═══════════════════════════════════════════════════════════════
+                     GRUPO 2 CONSOLIDADO: CATASTRO PREDIAL & VISTAS CLAVE DE CUENCA
+                     ═══════════════════════════════════════════════════════════════ -->
+                <details class="group bg-[#08101e]/90 rounded-xl border border-sky-500/30 overflow-hidden transition-all duration-200">
+                    <summary class="flex items-center justify-between p-3.5 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sky-300 text-sm">🏡</span>
+                            <div>
+                                <h2 class="text-xs text-sky-300 font-mono font-bold uppercase tracking-wider">
+                                    Catastro Predial & Vistas Clave
+                                </h2>
+                                <p class="text-[9px] text-slate-400 font-mono">Deslindes catastrales, red vecinal y navegación 3D a 1-click</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[9px] font-mono text-slate-200 bg-sky-950/80 px-2 py-0.5 rounded border border-sky-500/40 font-bold">PREDIAL + VISTAS</span>
+                            <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                        </div>
+                    </summary>
+
+                    <div class="p-3.5 pt-1 border-t border-white/10 space-y-3">
+                        <!-- Mosaico Catastral y Capas Prediales -->
+                        <div class="space-y-1.5">
+                            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider font-mono flex items-center justify-between">
+                                <span class="flex items-center gap-1.5"><span>📍</span> Deslindes & Capas Prediales</span>
+                                <span class="text-[8.5px] text-slate-500">MALLA TERRITORIAL</span>
+                            </div>
+                            <!-- Fundo Meniel Activo -->
+                            <label class="flex items-center justify-between p-2 rounded bg-emerald-950/30 hover:bg-emerald-950/50 cursor-pointer border border-emerald-500/40 transition-colors">
+                                <div class="flex items-center gap-2.5">
+                                    <input type="checkbox" checked onchange="window.toggleLayer('meniel', this)" class="accent-emerald-500 w-4 h-4 cursor-pointer">
+                                    <div class="w-2.5 h-2.5 rounded bg-emerald-400 animate-pulse"></div>
+                                    <div>
+                                        <span class="text-xs text-emerald-300 font-bold block">Fundo Meniel (Twin Núcleo)</span>
+                                        <span class="text-[8.5px] text-emerald-400/80">Rol 142-88 &bull; 24.8 ha &bull; Keyline Activo</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[9.5px] text-emerald-400 font-mono font-bold">24.8 ha</span>
+                                    <button onclick="flyTo(-36.21156, -71.60530, 15); event.stopPropagation();" class="px-1.5 py-0.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-500/40 rounded text-[9px] text-emerald-300 cursor-pointer" title="Centrar cámara en Meniel">
+                                        🔍
+                                    </button>
+                                </div>
+                            </label>
+                            <!-- Red Vecinal -->
+                            <label class="flex items-center justify-between p-2 rounded bg-black/40 hover:bg-white/5 cursor-pointer border border-slate-700/50 transition-colors">
+                                <div class="flex items-center gap-2.5">
+                                    <input type="checkbox" id="checkboxRedVecinal" onchange="window.toggleVecinosLayer()" class="accent-emerald-500 w-4 h-4 cursor-pointer">
+                                    <div class="w-2.5 h-2.5 rounded bg-slate-500"></div>
+                                    <div>
+                                        <span class="text-xs text-slate-300 font-semibold block">Red Vecinal (9 Predios)</span>
+                                        <span class="text-[8.5px] text-slate-400">Retiro & Parral &bull; Mosaico Colindante</span>
+                                    </div>
+                                </div>
+                                <span class="text-[9.5px] text-slate-400 font-mono font-bold">483 ha</span>
+                            </label>
+                        </div>
+
+                        <!-- Presets de Vistas Clave de Cuenca -->
+                        <div class="space-y-1.5 pt-2 border-t border-white/5">
+                            <div class="text-[10px] font-bold text-sky-400 uppercase tracking-wider font-mono flex items-center justify-between">
+                                <span class="flex items-center gap-1.5"><span>🔭</span> Presets de Navegación Rápida</span>
+                                <span class="text-[8.5px] text-slate-500">6 VISTAS • 1-CLICK</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <button class="bg-[#0b1324] hover:bg-emerald-950 border border-slate-700 hover:border-emerald-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.21156, -71.60530, 15)">
+                                    <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
+                                        <span>🏡</span> <span>Meniel (Keyline)</span>
+                                    </div>
+                                    <span class="text-[9px] text-emerald-300 font-mono block mt-0.5">Cota 340m • Núcleo</span>
+                                </button>
+                                <button class="bg-[#0b1324] hover:bg-sky-950 border border-slate-700 hover:border-sky-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.2800, -71.4200, 13)">
+                                    <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
+                                        <span>🌊</span> <span>Embalse Bullileo</span>
+                                    </div>
+                                    <span class="text-[9px] text-sky-300 font-mono block mt-0.5">Cota 680m • 60M m³</span>
+                                </button>
+                                <button class="bg-[#0b1324] hover:bg-amber-950 border border-slate-700 hover:border-amber-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.1432, -71.8267, 14)">
+                                    <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
+                                        <span>🏛️</span> <span>Parral Centro</span>
+                                    </div>
+                                    <span class="text-[9px] text-amber-300 font-mono block mt-0.5">Cota 170m • Urbano</span>
+                                </button>
+                                <button class="bg-[#0b1324] hover:bg-yellow-950 border border-slate-700 hover:border-yellow-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.0500, -71.7667, 14)">
+                                    <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
+                                        <span>🌾</span> <span>Retiro Pueblo</span>
+                                    </div>
+                                    <span class="text-[9px] text-yellow-300 font-mono block mt-0.5">Cota 145m • 5 APRs</span>
+                                </button>
+                                <button class="bg-[#0b1324] hover:bg-cyan-950 border border-slate-700 hover:border-cyan-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.1300, -71.6500, 11)">
+                                    <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
+                                        <span>🗺️</span> <span>Cuenca Global</span>
+                                    </div>
+                                    <span class="text-[9px] text-cyan-300 font-mono block mt-0.5">Macro • 122.070 ha</span>
+                                </button>
+                                <button class="bg-[#0b1324] hover:bg-blue-950 border border-slate-700 hover:border-blue-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.1800, -71.6400, 14)">
+                                    <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
+                                        <span>🌊</span> <span>Cruce Longaví</span>
+                                    </div>
+                                    <span class="text-[9px] text-blue-300 font-mono block mt-0.5">Crecida • T=50a</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button class="bg-[#0b1324] hover:bg-emerald-950 border border-slate-600 hover:border-emerald-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.21156, -71.60530, 15)">
-                            <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
-                                <span>🏡</span> <span>Meniel (Keyline)</span>
-                            </div>
-                            <span class="text-[9px] text-emerald-300 font-mono block mt-0.5">Cota 340m • Núcleo</span>
-                        </button>
-                        <button class="bg-[#0b1324] hover:bg-sky-950 border border-slate-600 hover:border-sky-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.2800, -71.4200, 13)">
-                            <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
-                                <span>🌊</span> <span>Embalse Bullileo</span>
-                            </div>
-                            <span class="text-[9px] text-sky-300 font-mono block mt-0.5">Cota 680m • 60M m³</span>
-                        </button>
-                        <button class="bg-[#0b1324] hover:bg-amber-950 border border-slate-600 hover:border-amber-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.1432, -71.8267, 14)">
-                            <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
-                                <span>🏛️</span> <span>Parral Centro</span>
-                            </div>
-                            <span class="text-[9px] text-amber-300 font-mono block mt-0.5">Cota 170m • Urbano</span>
-                        </button>
-                        <button class="bg-[#0b1324] hover:bg-yellow-950 border border-slate-600 hover:border-yellow-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.0500, -71.7667, 14)">
-                            <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
-                                <span>🌾</span> <span>Retiro Pueblo</span>
-                            </div>
-                            <span class="text-[9px] text-yellow-300 font-mono block mt-0.5">Cota 145m • 5 APRs</span>
-                        </button>
-                        <button class="bg-[#0b1324] hover:bg-cyan-950 border border-slate-600 hover:border-cyan-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.1300, -71.6500, 11)">
-                            <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
-                                <span>🗺️</span> <span>Cuenca Global</span>
-                            </div>
-                            <span class="text-[9px] text-cyan-300 font-mono block mt-0.5">Macro • 122.070 ha</span>
-                        </button>
-                        <button class="bg-[#0b1324] hover:bg-blue-950 border border-slate-600 hover:border-blue-400 p-2 rounded-xl text-left transition-all cursor-pointer" onclick="flyTo(-36.1800, -71.6400, 14)">
-                            <div class="flex items-center gap-1 text-white font-bold text-xs font-mono">
-                                <span>🌊</span> <span>Cruce Longaví</span>
-                            </div>
-                            <span class="text-[9px] text-blue-300 font-mono block mt-0.5">Crecida • T=50a</span>
-                        </button>
-                    </div>
-                </div>
+                </details>
 
                 <!-- ESTRATEGIA GANADERA TERRITORIAL (PRV) -->
                 <div class="p-3 bg-emerald-950/30 border border-emerald-500/40 rounded-xl space-y-1.5 font-sans text-xs">
@@ -11280,6 +12049,15 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                 </span>
                                 <input type="checkbox" id="toggleFlowFireWave" onchange="window.energyFlowEngine?.toggle('fireWave', this.checked)" class="accent-rose-500 cursor-pointer">
                             </label>
+
+                            <!-- Botón Táctico: Frente de Fuego & Simulación FWI Puelche -->
+                            <button onclick="setCuencaWindyVariable('fwi'); if(window.energyFlowEngine){ window.energyFlowEngine.toggle('fireWave', true); const chk = document.getElementById('toggleFlowFireWave'); if(chk) chk.checked = true; } if(typeof simulateBasinPreset === 'function') simulateBasinPreset('puelche');" class="w-full p-2.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/50 text-rose-200 hover:text-white font-mono text-[10.5px] font-bold transition-all cursor-pointer flex items-center justify-between shadow-sm">
+                                <span class="flex items-center gap-1.5">
+                                    <span>🔥</span>
+                                    <span>Frente de Fuego & Piro-Riesgo FWI</span>
+                                </span>
+                                <span class="text-[9px] bg-rose-950 px-1.5 py-0.5 rounded text-rose-300 border border-rose-500/40 font-mono">SIMULAR ↗</span>
+                            </button>
                         </div>
 
                         <!-- Leyenda Interna FWI & CAL FIRE -->
@@ -11614,12 +12392,12 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
         </div>
     </div>
     <!-- ─── AGROTWIN SUITE MODULAR JAVASCRIPT SYSTEM (FASE 2) ─── -->
-    <script src="js/hub/geo-layers.js"></script>
-    <script src="js/hub/hub-navigation.js"></script>
+    <script src="js/hub/geo-layers.js?v=4.1.0-windy-cuenca"></script>
+    <script src="js/hub/hub-navigation.js?v=4.1.0-windy-cuenca"></script>
     <script src="js/hub/mesa-vecinos.js"></script>
     <script src="js/hub/vault-cockpit.js"></script>
     <script src="js/hub/cerro-cuenca.js"></script>
-    <script src="js/hub/ecosystem-advisors.js"></script>
+    <script src="js/hub/ecosystem-advisors.js?v=4.1.0-windy-cuenca"></script>
     <script src="js/hub/mesa-hotspots-lenses.js"></script>
 
     <!-- ═══════════════════════════════════════════════════════════════════════

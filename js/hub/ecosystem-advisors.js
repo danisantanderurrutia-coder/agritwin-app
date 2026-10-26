@@ -201,6 +201,32 @@
                     });
                 }
 
+                // Partículas de flujo continuo 2D sobre la Cuenca 122k ha (Estilo Windy)
+                this.basinBounds = {
+                    minLat: -36.3300, maxLat: -36.0400,
+                    minLng: -71.8600, maxLng: -71.3600
+                };
+                this.flowFieldCount = 2800;
+                this.flowFieldParticles = [];
+                for (let i = 0; i < this.flowFieldCount; i++) {
+                    const lat = this.basinBounds.minLat + Math.random() * (this.basinBounds.maxLat - this.basinBounds.minLat);
+                    const lng = this.basinBounds.minLng + Math.random() * (this.basinBounds.maxLng - this.basinBounds.minLng);
+                    this.flowFieldParticles.push({
+                        lat: lat,
+                        lng: lng,
+                        prevLat: lat,
+                        prevLng: lng,
+                        age: Math.floor(Math.random() * 120),
+                        maxAge: 70 + Math.floor(Math.random() * 80),
+                        speedMult: 0.75 + Math.random() * 0.5
+                    });
+                }
+
+                this.altitudeM = 10;
+                this.forecastModel = 'ecmwf';
+                this.userSpeedMultiplier = 1.0;
+                this.userOpacity = 0.85;
+
                 // Anillos freáticos
                 this.aquiferRings = [
                     { r: 10, maxR: 120, speed: 0.8 },
@@ -403,6 +429,46 @@
                     p.progress += p.speed * dt;
                     if (p.progress > 1.0) p.progress = 0;
                 });
+
+                // Actualizar partículas continuas de flujo Windy
+                if (this.flowFieldParticles && (this.toggles.wind || ['wind', 'gusts', 'precip', 'temp', 'clouds', 'pressure'].includes(this.activeVariable))) {
+                    const stepMult = (this.speedMult || 1.0) * (this.userSpeedMultiplier || 1.0) * (window.hubPlaySpeed || 1.0);
+                    const isGusts = (this.activeVariable === 'gusts');
+                    const altFactor = Math.pow(Math.max(10, this.altitudeM || 10) / 10, 0.14);
+                    const baseAngleRad = ((this.windDir !== undefined ? this.windDir : 220) - 180) * Math.PI / 180;
+                    
+                    const stepLat = Math.cos(baseAngleRad) * 0.00030 * stepMult * altFactor * (isGusts ? 1.6 : 1.0);
+                    const stepLng = Math.sin(baseAngleRad) * 0.00038 * stepMult * altFactor * (isGusts ? 1.6 : 1.0);
+
+                    for (let i = 0; i < this.flowFieldParticles.length; i++) {
+                        const p = this.flowFieldParticles[i];
+                        if (!p.trail) p.trail = [];
+                        p.trail.unshift({ lat: p.lat, lng: p.lng });
+                        if (p.trail.length > 4) p.trail.pop();
+
+                        p.prevLat = p.lat;
+                        p.prevLng = p.lng;
+
+                        // Curvatura orográfica local por el cajón cordillerano del Río Longaví
+                        const orographicDeflection = Math.sin((p.lng + 71.60) * 12.0) * 0.00008;
+
+                        p.lat += (stepLat + orographicDeflection) * p.speedMult;
+                        p.lng += stepLng * p.speedMult;
+                        p.age++;
+
+                        if (p.age >= p.maxAge ||
+                            p.lat < this.basinBounds.minLat || p.lat > this.basinBounds.maxLat ||
+                            p.lng < this.basinBounds.minLng || p.lng > this.basinBounds.maxLng) {
+                            p.lat = this.basinBounds.minLat + Math.random() * (this.basinBounds.maxLat - this.basinBounds.minLat);
+                            p.lng = this.basinBounds.minLng + Math.random() * (this.basinBounds.maxLng - this.basinBounds.minLng);
+                            p.prevLat = p.lat;
+                            p.prevLng = p.lng;
+                            p.trail = [];
+                            p.age = 0;
+                            p.maxAge = 60 + Math.floor(Math.random() * 80);
+                        }
+                    }
+                }
 
                 this.aquiferRings.forEach(ring => {
                     ring.r += ring.speed * dt;
@@ -632,6 +698,7 @@
                     this.resize();
                 }
                 const ctx = this.ctx;
+                // Fondo 100% transparente para que la imagen satelital brille con total claridad
                 ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
                 // 0. ÁREAS DE INFLUENCIA, CURVAS DE NIVEL POR VARIABLE & CONOS DE ARRASTRE
@@ -694,15 +761,205 @@
                     ctx.fillText('Recarga Keyline Meniel', menielCenter.x + 8, menielCenter.y + 3);
                 }
 
-                // 3. Viento Atmosférico Dinámico (Estilo Windy)
-                if (this.toggles.wind) {
+                // 3. CAPAS ESPECIALES ESTILO WINDY: ISÓBARAS, NUBES, TEMPERATURA
+                if (this.activeVariable === 'pressure') {
+                    // Isóbaras suaves a lo largo de la cuenca
+                    const isobars = [
+                        { hpa: 1020, pts: [[-36.05, -71.42], [-36.14, -71.48], [-36.24, -71.46], [-36.32, -71.43]] },
+                        { hpa: 1016, pts: [[-36.06, -71.52], [-36.15, -71.58], [-36.25, -71.56], [-36.33, -71.53]] },
+                        { hpa: 1012, pts: [[-36.07, -71.62], [-36.16, -71.68], [-36.26, -71.66], [-36.34, -71.63]] },
+                        { hpa: 1008, pts: [[-36.08, -71.72], [-36.17, -71.78], [-36.27, -71.76], [-36.35, -71.73]] },
+                        { hpa: 1004, pts: [[-36.09, -71.82], [-36.18, -71.86], [-36.28, -71.84], [-36.36, -71.81]] }
+                    ];
+
+                    ctx.save();
+                    isobars.forEach(iso => {
+                        ctx.beginPath();
+                        let first = true;
+                        iso.pts.forEach(pt => {
+                            const p = this.map.latLngToContainerPoint(pt);
+                            if (first) { ctx.moveTo(p.x, p.y); first = false; }
+                            else { ctx.lineTo(p.x, p.y); }
+                        });
+                        ctx.strokeStyle = 'rgba(168, 85, 247, 0.75)';
+                        ctx.lineWidth = 2.0;
+                        ctx.stroke();
+
+                        const mid = this.map.latLngToContainerPoint(iso.pts[1]);
+                        this.drawHighContrastLabel(ctx, `🔘 ${iso.hpa} hPa`, mid.x + 8, mid.y, '#faf5ff', '#9333ea');
+                    });
+                    ctx.restore();
+                } else if (this.activeVariable === 'clouds') {
+                    // Masas suaves de nubosidad flotante
+                    ctx.save();
+                    const cloudCenters = [
+                        [-36.12, -71.46, 75],
+                        [-36.18, -71.54, 95],
+                        [-36.24, -71.65, 80],
+                        [-36.20, -71.75, 110],
+                        [-36.28, -71.48, 85]
+                    ];
+                    cloudCenters.forEach(([lat, lng, r]) => {
+                        const pt = this.map.latLngToContainerPoint([lat, lng]);
+                        const grad = ctx.createRadialGradient(pt.x, pt.y, 5, pt.x, pt.y, r * 1.5);
+                        grad.addColorStop(0, 'rgba(255, 255, 255, 0.38)');
+                        grad.addColorStop(0.5, 'rgba(241, 245, 249, 0.18)');
+                        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(pt.x, pt.y, r * 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    ctx.restore();
+                } else if (this.activeVariable === 'temp') {
+                    // Gradiente térmico cordillera (frío) a valle (cálido)
+                    ctx.save();
+                    const p1 = this.map.latLngToContainerPoint([-36.15, -71.40]);
+                    const p2 = this.map.latLngToContainerPoint([-36.20, -71.85]);
+                    const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+                    grad.addColorStop(0, 'rgba(59, 130, 246, 0.22)');
+                    grad.addColorStop(0.5, 'rgba(34, 197, 94, 0.15)');
+                    grad.addColorStop(1, 'rgba(239, 68, 68, 0.25)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    ctx.restore();
+                } else if (this.activeVariable === 'precip') {
+                    // RADAR METEOROLÓGICO PLUVIOMÉTRICO (DOPPLER) & ESCORRENTÍA FLUVIAL
+                    ctx.save();
+                    const now = performance.now() * 0.001;
+
+                    // 1. Células de radar de lluvia activa (mm/h)
+                    const rainCells = [
+                        { lat: -36.26, lng: -71.45, r: 110, mm: 22.4, label: 'Núcleo Andino 22.4 mm/h' },
+                        { lat: -36.20, lng: -71.55, r: 85,  mm: 14.2, label: 'Frente Bullileo 14 mm/h' },
+                        { lat: -36.16, lng: -71.66, r: 70,  mm: 6.8,  label: 'Precipitación Retiro 7 mm/h' },
+                        { lat: -36.12, lng: -71.78, r: 60,  mm: 2.1,  label: 'Llovizna Parral 2 mm/h' }
+                    ];
+
+                    rainCells.forEach(cell => {
+                        const pt = this.map.latLngToContainerPoint([cell.lat, cell.lng]);
+                        const pulse = Math.sin(now * 2.0 + cell.lat * 5) * 8;
+                        const radius = cell.r + pulse;
+                        const grad = ctx.createRadialGradient(pt.x, pt.y, 4, pt.x, pt.y, radius);
+                        grad.addColorStop(0, 'rgba(147, 51, 234, 0.42)');   // Violeta núcleo convectivo
+                        grad.addColorStop(0.35, 'rgba(37, 99, 235, 0.32)'); // Azul lluvia torrencial
+                        grad.addColorStop(0.70, 'rgba(56, 189, 248, 0.18)'); // Cyan lluvia moderada
+                        grad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        this.drawHighContrastLabel(ctx, `🌧️ ${cell.label}`, pt.x - 20, pt.y - 12, '#eff6ff', '#1d4ed8');
+                    });
+
+                    // 2. Escorrentía fluvial activa y pulsante en el eje del Río Longaví
+                    const riverPts = [
+                        [-36.2800, -71.4200], [-36.2300, -71.4800], [-36.2100, -71.5500],
+                        [-36.1900, -71.6200], [-36.1750, -71.6700], [-36.1600, -71.7200],
+                        [-36.1400, -71.7800]
+                    ];
+                    ctx.beginPath();
+                    let first = true;
+                    riverPts.forEach(pt => {
+                        const p = this.map.latLngToContainerPoint(pt);
+                        if (first) { ctx.moveTo(p.x, p.y); first = false; }
+                        else { ctx.lineTo(p.x, p.y); }
+                    });
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.9)';
+                    ctx.lineWidth = 4.5;
+                    ctx.setLineDash([14, 8]);
+                    ctx.lineDashOffset = -now * 45; // Pulso de escorrentía rápida aguas abajo
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.restore();
+                }
+
+                // 4. FLUJO CONTINUO DE PARTÍCULAS ESTILO WINDY (3.000 PARTÍCULAS SOBRE 122.000 HA)
+                if (this.flowFieldParticles && (this.toggles.wind || ['wind', 'gusts', 'precip', 'temp', 'clouds', 'pressure'].includes(this.activeVariable))) {
+                    const isGusts = (this.activeVariable === 'gusts');
+                    const isPrecip = (this.activeVariable === 'precip');
+                    const opacity = (this.userOpacity || 0.85);
+
+                    ctx.save();
+                    ctx.lineWidth = isGusts ? 2.4 : (isPrecip ? 2.0 : 1.7);
+                    ctx.lineCap = 'round';
+
+                    const bounds = this.map.getBounds();
+                    const minPtLat = bounds.getSouth();
+                    const maxPtLat = bounds.getNorth();
+                    const minPtLng = bounds.getWest();
+                    const maxPtLng = bounds.getEast();
+
+                    for (let i = 0; i < this.flowFieldParticles.length; i++) {
+                        const p = this.flowFieldParticles[i];
+                        if (p.lat < minPtLat || p.lat > maxPtLat || p.lng < minPtLng || p.lng > maxPtLng) continue;
+
+                        const curr = this.map.latLngToContainerPoint([p.lat, p.lng]);
+                        const prev = this.map.latLngToContainerPoint([p.prevLat, p.prevLng]);
+
+                        const dx = curr.x - prev.x;
+                        const dy = curr.y - prev.y;
+                        if (dx * dx + dy * dy < 0.2) continue;
+
+                        // Color espectral base según velocidad y capa activa
+                        let colorBase = 'rgba(56, 189, 248, 1)';
+                        const spd = (this.windSpeed || 18) * (isGusts ? 1.6 : 1.0);
+                        if (isPrecip) {
+                            colorBase = 'rgba(96, 165, 250, 1)'; // Azul lluvia índigo
+                        } else if (spd < 15) {
+                            colorBase = 'rgba(56, 189, 248, 1)'; // cyan
+                        } else if (spd < 28) {
+                            colorBase = 'rgba(34, 197, 94, 1)'; // verde
+                        } else if (spd < 42) {
+                            colorBase = 'rgba(234, 179, 8, 1)'; // amarillo
+                        } else if (spd < 60) {
+                            colorBase = 'rgba(239, 68, 68, 1)'; // rojo
+                        } else {
+                            colorBase = 'rgba(217, 70, 239, 1)'; // magenta
+                        }
+
+                        // Trazar estela decreciente transparente (Cero velo negro)
+                        if (p.trail && p.trail.length > 0) {
+                            let pStart = curr;
+                            for (let t = 0; t < p.trail.length; t++) {
+                                const ptPrev = this.map.latLngToContainerPoint([p.trail[t].lat, p.trail[t].lng]);
+                                const trailAlpha = (1.0 - (t + 1) / (p.trail.length + 1)) * opacity;
+                                ctx.strokeStyle = colorBase.replace(/[\d\.]+\)$/, `${trailAlpha.toFixed(2)})`);
+                                ctx.beginPath();
+                                ctx.moveTo(pStart.x, pStart.y);
+                                ctx.lineTo(ptPrev.x, ptPrev.y);
+                                ctx.stroke();
+                                pStart = ptPrev;
+                            }
+                        } else {
+                            ctx.strokeStyle = colorBase.replace(/[\d\.]+\)$/, `${opacity})`);
+                            ctx.beginPath();
+                            ctx.moveTo(prev.x, prev.y);
+                            ctx.lineTo(curr.x, curr.y);
+                            ctx.stroke();
+                        }
+
+                        // En ráfagas, dibujar cabeza iluminada
+                        if (isGusts && i % 4 === 0) {
+                            ctx.fillStyle = '#fef08a';
+                            ctx.beginPath();
+                            ctx.arc(curr.x, curr.y, 1.8, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                    ctx.restore();
+                }
+
+                // Corrientes históricas individuales
+                if (this.toggles.wind && this.windParticles) {
                     const cStart = this.windColorStart || 'rgba(245, 158, 11, 0)';
                     const cEnd = this.windColorEnd || 'rgba(239, 68, 68, 0.85)';
                     const cHead = this.windHeadColor || '#fef08a';
 
                     this.windParticles.forEach(p => {
                         const pts = this.windPaths[p.pathIdx];
-                        // Si el viento es del SW (brisa pacífico), invertir la dirección de avance
                         const prog = this.isSouthWestWind ? (1.0 - p.progress) : p.progress;
                         const prevProg = this.isSouthWestWind ? Math.min(1.0, prog + 0.04) : Math.max(0, prog - 0.04);
 

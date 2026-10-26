@@ -1,0 +1,955 @@
+{
+  "version": "2.0.0-holistic",
+  "farmName": "Fundo Meniel (Estero Colliguay)",
+  "region": "Parral, Maule Sur, Chile",
+  "totalHectares": 12.8,
+  "subscriptionPlan": "Full Suite Holistic (Admin)",
+  "availableModules": {
+    "galpon": {
+      "name": "El Galpón Predial (3D)",
+      "tier": "premium",
+      "active": true
+    },
+    "invernadero": {
+      "name": "Invernadero & Cultivos",
+      "tier": "free",
+      "active": true
+    },
+    "establo": {
+      "name": "Establo & Ganadería PRV",
+      "tier": "free",
+      "active": true
+    },
+    "incursion": {
+      "name": "Incursión a Campo (Rewilding)",
+      "tier": "free",
+      "active": true
+    },
+    "cerro": {
+      "name": "La Cumbre del Cerro (Cuenca)",
+      "tier": "premium",
+      "active": true
+    },
+    "mesa": {
+      "name": "La Mesa Vecinal DAO",
+      "tier": "free",
+      "active": true
+    }
+  },
+  "paddocks": [
+    {
+      "id": "P1",
+      "name": "Potrero 1 - Trébol Blanco & Festuca",
+      "x": -34,
+      "z": 28,
+      "w": 7,
+      "d": 7,
+      "restDays": 44,
+      "forrajeCm": 24,
+      "kgMsHa": 2850,
+      "status": "ready"
+    },
+    {
+      "id": "P2",
+      "name": "Potrero 2 - Alfalfa & Raygrass Perenne",
+      "x": -26,
+      "z": 28,
+      "w": 7,
+      "d": 7,
+      "restDays": 41,
+      "forrajeCm": 22,
+      "kgMsHa": 2600,
+      "status": "ready"
+    },
+    {
+      "id": "P3",
+      "name": "Potrero 3 - Pastura Sur-Oeste (Vacas Activo)",
+      "x": -34,
+      "z": 36,
+      "w": 7.5,
+      "d": 7.5,
+      "restDays": 1,
+      "forrajeCm": 25,
+      "kgMsHa": 3100,
+      "status": "active"
+    },
+    {
+      "id": "P4",
+      "name": "Potrero 4 - Silvopastoreo Borde Cerezos",
+      "x": -26,
+      "z": 36,
+      "w": 7,
+      "d": 7,
+      "restDays": 32,
+      "forrajeCm": 18,
+      "kgMsHa": 1950,
+      "status": "resting"
+    },
+    {
+      "id": "P5",
+      "name": "Potrero 5 - Trébol Subterráneo & Dáctilo (Ovejas)",
+      "x": -29,
+      "z": 4,
+      "w": 8,
+      "d": 7,
+      "restDays": 24,
+      "forrajeCm": 16,
+      "kgMsHa": 1750,
+      "status": "resting"
+    },
+    {
+      "id": "P6",
+      "name": "Potrero 6 - Pradera Regenerativa Este",
+      "x": 16,
+      "z": 9,
+      "w": 6.5,
+      "d": 6.5,
+      "restDays": 16,
+      "forrajeCm": 12,
+      "kgMsHa": 1250,
+      "status": "resting"
+    },
+    {
+      "id": "P7",
+      "name": "Potrero 7 - Franja de Infiltración Sur",
+      "x": 18,
+      "z": 24,
+      "w": 8,
+      "d": 6.5,
+      "restDays": 8,
+      "forrajeCm": 10,
+      "kgMsHa": 950,
+      "status": "resting"
+    },
+    {
+      "id": "P8",
+      "name": "Potrero 8 - Cuadro Nor-Este (Egg Mobile)",
+      "x": 6,
+      "z": -2,
+      "w": 8,
+      "d": 6,
+      "restDays": 4,
+      "forrajeCm": 8,
+      "kgMsHa": 750,
+      "status": "coop"
+    }
+  ],
+  "animals": [
+    {
+      "id": "COW-01",
+      "name": "Clarita",
+      "rfid": "SAG-CL-78192-01",
+      "species": "Bovino Overo Colorado",
+      "role": "Matriarca Lechera",
+      "weightKg": 540,
+      "gdpKgDay": 0.85,
+      "paddockId": "P3",
+      "health": "Óptima",
+      "vaccineSAG": "Al día (Aftosa/Brucelosis)",
+      "lastTreatment": "Sales marinas + Ajo orgánico"
+    },
+    {
+      "id": "COW-02",
+      "name": "Paloma",
+      "rfid": "SAG-CL-78192-02",
+      "species": "Bovino Clavel Alemán",
+      "role": "Nodriza",
+      "weightKg": 490,
+      "gdpKgDay": 0.78,
+      "paddockId": "P3",
+      "health": "Óptima",
+      "vaccineSAG": "Al día",
+      "lastTreatment": "Diatomeas en baño de polvo"
+    },
+    {
+      "id": "SHEEP-01",
+      "name": "Lana",
+      "rfid": "SAG-OV-44101-01",
+      "species": "Ovino Suffolk Down",
+      "role": "Pastoreo Fino",
+      "weightKg": 68,
+      "gdpKgDay": 0.22,
+      "paddockId": "P5",
+      "health": "Excelente",
+      "vaccineSAG": "Al día",
+      "lastTreatment": "Poda de pezuñas preventiva"
+    },
+    {
+      "id": "HORSE-01",
+      "name": "Relincho",
+      "rfid": "SAG-EQ-10022-01",
+      "species": "Caballo Chileno Corralero",
+      "role": "Trabajo de Campo",
+      "weightKg": 420,
+      "gdpKgDay": 0.0,
+      "paddockId": "P4",
+      "health": "Vigoroso",
+      "vaccineSAG": "Al día (Influenza/Tétanos)",
+      "lastTreatment": "Desparasitación con semillas calabaza"
+    },
+    {
+      "id": "COOP-01",
+      "name": "Flota Gallinas Egg Mobile",
+      "rfid": "SAG-AV-9901-LOTE",
+      "species": "Gallina Ponedora Sussex & Araucana",
+      "role": "Saneamiento Forrajero & Huevos Pastoreo",
+      "weightKg": 85,
+      "count": 45,
+      "paddockId": "P8",
+      "health": "Activa",
+      "vaccineSAG": "Plan Avícola SAG",
+      "lastTreatment": "Cama de viruta + carbón vegetal"
+    }
+  ],
+  "crops": [
+    {
+      "id": "CROP-QUI-01",
+      "species": "Quillaja saponaria",
+      "variety": "Quillay Nativo (Corredor Ribereño)",
+      "category": "Bosque Nativo / Protección Fluvial",
+      "location": {
+        "longitude": -122.0858,
+        "latitude": 37.3835
+      },
+      "heightMeters": 9.5,
+      "plantingYear": 2012,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-BOL-01",
+      "species": "Peumus boldus",
+      "variety": "Boldo Esclerófilo Nativo",
+      "category": "Bosque Nativo / Medicina",
+      "location": {
+        "longitude": -122.085,
+        "latitude": 37.3832
+      },
+      "heightMeters": 8.0,
+      "plantingYear": 2010,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-MAI-01",
+      "species": "Maytenus boaria",
+      "variety": "Maitén Andino-Ribereño",
+      "category": "Bosque Nativo / Amortiguación",
+      "location": {
+        "longitude": -122.0844,
+        "latitude": 37.383
+      },
+      "heightMeters": 10.2,
+      "plantingYear": 2014,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-SAU-01",
+      "species": "Salix humboldtiana",
+      "variety": "Sauce Chileno Fluvial",
+      "category": "Bosque Nativo / Fijación de Riberas",
+      "location": {
+        "longitude": -122.0862,
+        "latitude": 37.3838
+      },
+      "heightMeters": 11.5,
+      "plantingYear": 2011,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-MAQ-01",
+      "species": "Aristotelia chilensis",
+      "variety": "Maqui Silvestre Antioxidante",
+      "category": "Fruto Nativo / Superalimento",
+      "location": {
+        "longitude": -122.0848,
+        "latitude": 37.3836
+      },
+      "heightMeters": 3.8,
+      "plantingYear": 2017,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-AVE-01",
+      "species": "Corylus avellana",
+      "variety": "Avellano Europeo (Barcelona)",
+      "category": "Fruto Seco de Exportación",
+      "location": {
+        "longitude": -122.0852,
+        "latitude": 37.3862
+      },
+      "heightMeters": 4.8,
+      "plantingYear": 2018,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-AVE-02",
+      "species": "Corylus avellana",
+      "variety": "Avellano Europeo (Tonda di Giffoni)",
+      "category": "Fruto Seco de Exportación",
+      "location": {
+        "longitude": -122.0846,
+        "latitude": 37.386
+      },
+      "heightMeters": 4.2,
+      "plantingYear": 2019,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-NOG-01",
+      "species": "Juglans regia",
+      "variety": "Nogal Chandler de Exportación",
+      "category": "Fruto Seco de Exportación",
+      "location": {
+        "longitude": -122.0858,
+        "latitude": 37.3864
+      },
+      "heightMeters": 7.5,
+      "plantingYear": 2016,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-SHI-01",
+      "species": "Lentinula edodes",
+      "variety": "Hongo Shiitake en Troncos de Roble",
+      "category": "Micología Agroecológica",
+      "location": {
+        "longitude": -122.0854,
+        "latitude": 37.3847
+      },
+      "heightMeters": 0.8,
+      "plantingYear": 2022,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-VIN-01",
+      "species": "Vitis vinifera",
+      "variety": "Cepa País Centenaria (Espaldera)",
+      "category": "Vid Patrimonial del Maule",
+      "location": {
+        "longitude": -122.0805,
+        "latitude": 37.3855
+      },
+      "heightMeters": 1.8,
+      "plantingYear": 2015,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-VIN-02",
+      "species": "Vitis vinifera",
+      "variety": "Cepa Carignan Secano Interior",
+      "category": "Vid Patrimonial del Maule",
+      "location": {
+        "longitude": -122.0812,
+        "latitude": 37.385
+      },
+      "heightMeters": 1.8,
+      "plantingYear": 2017,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-CER-01",
+      "species": "Prunus avium",
+      "variety": "Cerezo Lapins con Microaspersión",
+      "category": "Fruta Fresca Exportación",
+      "location": {
+        "longitude": -122.0805,
+        "latitude": 37.3838
+      },
+      "heightMeters": 3.6,
+      "plantingYear": 2019,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Enero - Marzo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-CER-02",
+      "species": "Prunus avium",
+      "variety": "Cerezo Santina Temprano",
+      "category": "Fruta Fresca Exportación",
+      "location": {
+        "longitude": -122.0812,
+        "latitude": 37.3835
+      },
+      "heightMeters": 3.4,
+      "plantingYear": 2020,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Enero - Marzo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-OLI-01",
+      "species": "Olea europaea",
+      "variety": "Olivo Frantoio & Arbequina",
+      "category": "Olivo de Resiliencia Climática",
+      "location": {
+        "longitude": -122.0828,
+        "latitude": 37.3838
+      },
+      "heightMeters": 4.5,
+      "plantingYear": 2017,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-AGRI-01",
+      "species": "Agrivoltaics Structure",
+      "variety": "Seguidor Solar Fotovoltaico Elevado 120 kWp",
+      "category": "Energía Limpia & Sombra Agrícola",
+      "location": {
+        "longitude": -122.0848,
+        "latitude": 37.3882
+      },
+      "heightMeters": 3.5,
+      "plantingYear": 2023,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-TRANQUE-01",
+      "species": "Water Basin HDPE",
+      "variety": "Embalse Australiano 18.000 m³ con Geomembrana",
+      "category": "Infraestructura Hídrica",
+      "location": {
+        "longitude": -122.0801,
+        "latitude": 37.388
+      },
+      "heightMeters": 2.5,
+      "plantingYear": 2021,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-BIO-01",
+      "species": "Biofactory Dome",
+      "variety": "Invernadero Bioclimático & Compost Bokashi",
+      "category": "Biopreparados Agroecológicos",
+      "location": {
+        "longitude": -122.0828,
+        "latitude": 37.3866
+      },
+      "heightMeters": 4.2,
+      "plantingYear": 2022,
+      "environment": "indoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-PIN-01",
+      "species": "Pinus radiata",
+      "variety": "Pino Insigne con Manejo Silvopastoril",
+      "category": "Cortina Cortafuego Silvopastoril",
+      "location": {
+        "longitude": -122.0782,
+        "latitude": 37.386
+      },
+      "heightMeters": 14.0,
+      "plantingYear": 2014,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    },
+    {
+      "id": "CROP-EUC-01",
+      "species": "Eucalyptus globulus",
+      "variety": "Eucaliptus Manejado con Faja Desbrozada",
+      "category": "Barrera Perimetral Cortafuego",
+      "location": {
+        "longitude": -122.0778,
+        "latitude": 37.3845
+      },
+      "heightMeters": 16.5,
+      "plantingYear": 2015,
+      "environment": "outdoor",
+      "irrigationStrategy": "Goteo automatizado con reposición Penman-Monteith (FDR 20-40cm)",
+      "soilTreatment": "Bokashi maduro (1.5 kg/árbol) + Inoculación micorrízica en primavera",
+      "pestManagement": "Caldo Sulfocálcico al 2% en receso + Banda floral de aliso marítimo",
+      "harvestPeriod": "Abril - Mayo",
+      "intercroppingPartners": [
+        "Trébol blanco enano",
+        "Vicia atropurpurea",
+        "Lavanda angustifolia"
+      ]
+    }
+  ],
+  "protocols": [
+    {
+      "id": "vess",
+      "name": "VESS (Visual Evaluation of Soil Structure)",
+      "category": "Suelo",
+      "active": true
+    },
+    {
+      "id": "soil",
+      "name": "Field Soil Description (Horizontes A/B)",
+      "category": "Edafología",
+      "active": true
+    },
+    {
+      "id": "nativeforest",
+      "name": "Native Forest Assessment (Clímax)",
+      "category": "Fitosociología",
+      "active": true
+    },
+    {
+      "id": "wetland",
+      "name": "Wetlands & Riparian Zones (Estero Colliguay)",
+      "category": "Hidrología",
+      "active": true
+    },
+    {
+      "id": "shrubland",
+      "name": "Shrublands Assessment (Matorral Esclerófilo)",
+      "category": "Biomasa",
+      "active": true
+    },
+    {
+      "id": "plantation",
+      "name": "Tree Plantations & Agroforestry",
+      "category": "Silvicultura",
+      "active": true
+    },
+    {
+      "id": "peatland",
+      "name": "Peatlands & Carbon Sinks",
+      "category": "Carbono",
+      "active": true
+    },
+    {
+      "id": "gowild",
+      "name": "ReNatura Certification Survey",
+      "category": "Certificación",
+      "active": true
+    },
+    {
+      "id": "builder",
+      "name": "Custom Survey Builder",
+      "category": "Personalizado",
+      "active": true
+    }
+  ],
+  "crops_detailed": [
+    {
+      "id": "CROP-VIN-01",
+      "name": "Viñedo Patrimonial Cepas País & Carignan",
+      "species": "Vitis vinifera",
+      "variety": "País (Secano Costero) & Carignan Tradicional",
+      "category": "Viñedo en Espaldera & Cabeza",
+      "cuartel": "Cuartel 1 - Borde Norte",
+      "environment": "outdoor",
+      "plantedYear": 1968,
+      "surfaceHa": 1.8,
+      "plantsCount": 4200,
+      "irrigationStrategy": "Riego deficitario controlado (RDI) con sensor FDR a 40cm. Lámina: 8 mm/semana.",
+      "soilTreatment": "Compost de orujo maduro + Biocarbón activado con té de bosque nativo.",
+      "pestManagement": "Caldo Sulfocálcico en yema hinchada contra oídio y ácaros. Banda floral de aliso y menta.",
+      "harvestPeriod": "Finales de Marzo",
+      "currentPhenology": "Floración & Cuaja Temprana",
+      "healthStatus": "Óptimo (Sin estrés CWSI)",
+      "intercroppingPartners": [
+        "Trébol subterráneo",
+        "Vicia sativa",
+        "Aliso marítimo"
+      ],
+      "quickActions": [
+        "Poda en Verde recomendada",
+        "Aplicar Té de Compost en 4 días"
+      ],
+      "image": "assets/catan/tile_vineyard.jpg"
+    },
+    {
+      "id": "CROP-AVE-01",
+      "name": "Huerto de Avellano Europeo Giffoni",
+      "species": "Corylus avellana",
+      "variety": "Tonda di Giffoni & Barcelona",
+      "category": "Frutal de Nuez",
+      "cuartel": "Cuartel 2 - Terraza Este",
+      "environment": "outdoor",
+      "plantedYear": 2017,
+      "surfaceHa": 2.4,
+      "plantsCount": 1320,
+      "irrigationStrategy": "Doble línea de goteo autocompensado 2.3 L/h. Monitoreo Penman-Monteith.",
+      "soilTreatment": "Acolchado (mulch) de rastrojo chipeado + Bokashi aeróbico (2 kg/planta).",
+      "pestManagement": "Trampas de feromonas para polilla del algarrobo + Caldo bordelés otoñal.",
+      "harvestPeriod": "Febrero - Marzo",
+      "currentPhenology": "Crecimiento de Brotes & Llenado de Fruto",
+      "healthStatus": "Excelente (Humedad radicular: 23.4%)",
+      "intercroppingPartners": [
+        "Festuca ovina",
+        "Trébol blanco enano",
+        "Lavándula"
+      ],
+      "quickActions": [
+        "Revisar goteros hilera 4",
+        "Medir diámetro de canopia"
+      ],
+      "image": "assets/ui/invernadero_landing_bg.jpg"
+    },
+    {
+      "id": "CROP-CER-01",
+      "name": "Cerezos Lapins con Cubierta y Microaspersión",
+      "species": "Prunus avium",
+      "variety": "Lapins sobre portainjerto Colt",
+      "category": "Frutal de Carozo",
+      "cuartel": "Cuartel 3 - Zona Central",
+      "environment": "outdoor",
+      "plantedYear": 2019,
+      "surfaceHa": 1.2,
+      "plantsCount": 980,
+      "irrigationStrategy": "Microaspersión bajo copa para control térmico de heladas y goteo radicular.",
+      "soilTreatment": "Biofertilizante Supermagro foliar + Inoculación líquida de micorrizas Glomus.",
+      "pestManagement": "Bacillus subtilis contra cáncer bacterial y caolín reflector contra golpe de sol.",
+      "harvestPeriod": "Diciembre - Enero",
+      "currentPhenology": "Maduración de Madera & Reposo Invernal",
+      "healthStatus": "Vigoroso (Horas de Frío cumplidas: 620 HF)",
+      "intercroppingPartners": [
+        "Manzanilla silvestre",
+        "Rabanillo forrajero"
+      ],
+      "quickActions": [
+        "Pintado de troncos con cal viva y azufre"
+      ],
+      "image": "assets/ui/invernadero_landing_bg.jpg"
+    },
+    {
+      "id": "CROP-ALM-01",
+      "name": "Semilleros Bio-Climáticos de Hortalizas & Tomates Criollos",
+      "species": "Solanum lycopersicum & Hierbas",
+      "variety": "Tomate Rosado de Peumo, Albahaca Genovesa, Ají Cacho de Cabra",
+      "category": "Almácigos de Propagación",
+      "cuartel": "Invernadero Solar - Mesón A y B",
+      "environment": "indoor",
+      "plantedYear": 2026,
+      "surfaceHa": 0.05,
+      "plantsCount": 840,
+      "irrigationStrategy": "Micro-nebulización por pulsos de 30 segundos cada 3 horas.",
+      "soilTreatment": "Sustrato vivo: 40% humus de lombriz + 40% fibra de coco + 20% biochar molido.",
+      "pestManagement": "Extracto alcohólico de ajo y ají + Jabón potásico al 1.5%.",
+      "harvestPeriod": "Siembra continua / Trasplante escalonado",
+      "currentPhenology": "Germinación & Primera Hoja Verdadera",
+      "healthStatus": "Óptimo (Tasa de emergencia 94%)",
+      "intercroppingPartners": [
+        "Caléndula officinalis",
+        "Tagetes patula (nematicida natural)"
+      ],
+      "quickActions": [
+        "Ventilar cúpula cenital al mediodía",
+        "Repique en bandejas de 50 alveolos en 6 días"
+      ],
+      "image": "assets/ui/invernadero_landing_bg.jpg"
+    },
+    {
+      "id": "CROP-QUI-01",
+      "name": "Corredor Ribereño Nativo de Protección Fluvial",
+      "species": "Quillaja saponaria & Maytenus boaria",
+      "variety": "Quillay, Boldo, Maitén, Sauce Chileno",
+      "category": "Bosque Ribereño / Protección Hídrica",
+      "cuartel": "Franja Estero Colliguay (40m de servidumbre)",
+      "environment": "outdoor",
+      "plantedYear": 2012,
+      "surfaceHa": 2.8,
+      "plantsCount": 650,
+      "irrigationStrategy": "Infiltración freática natural por subálveo del estero (Sin riego artificial).",
+      "soilTreatment": "Reciclaje natural de hojarasca y necromasa.",
+      "pestManagement": "Equilibrio biológico natural clímax.",
+      "harvestPeriod": "Conservación Perpetua",
+      "currentPhenology": "Madurez Estival",
+      "healthStatus": "Clímax Ecológico Autoconservado",
+      "intercroppingPartners": [
+        "Colliguay",
+        "Chagual",
+        "Pequén"
+      ],
+      "quickActions": [
+        "Monitorear nivel freático estival"
+      ],
+      "image": "assets/catan/tile_forest.jpg"
+    }
+  ],
+  "animals_detailed": [
+    {
+      "id": "COW-01",
+      "name": "Clarita",
+      "species": "Bovino Doble Propósito Overo Colorado",
+      "rfid": "SAG-CL-78192-01",
+      "role": "Matriarca Lechera & Guía de Pastoreo",
+      "birthDate": "2021-09-14 (4.5 años)",
+      "weightKg": 540,
+      "targetWeightKg": 550,
+      "gdpKgDay": 0.85,
+      "bodyConditionScore": "3.75 / 5 (Óptima)",
+      "currentPaddock": "P3 - Pastura Sur-Oeste",
+      "paddockDays": "Día 1 de 2 de ocupación",
+      "nextPaddock": "P4 (Silvopastoreo Borde Cerezos en 24h)",
+      "healthStatus": "Excelente • Rumia activa • Ubre sana",
+      "vaccineSAG": [
+        {
+          "name": "Fiebre Aftosa & Brucelosis Bovina",
+          "status": "Al día (Certificado SAG #99102)",
+          "date": "2026-04-12"
+        },
+        {
+          "name": "Carbunclo Bacteridiano",
+          "status": "Vigente hasta Nov 2026",
+          "date": "2025-11-05"
+        }
+      ],
+      "preventiveCare": "Bloque de sal de mar con ajo silvestre + baño seco con tierra de diatomeas.",
+      "notes": "Excelente temperamento, lidera la rotación hacia los abrevaderos móviles.",
+      "image": "assets/ui/establo_landing_bg.jpg"
+    },
+    {
+      "id": "COW-02",
+      "name": "Paloma",
+      "species": "Bovino Clavel Alemán",
+      "rfid": "SAG-CL-78192-02",
+      "role": "Nodriza & Cría Regenerativa",
+      "birthDate": "2022-11-03 (3.2 años)",
+      "weightKg": 490,
+      "targetWeightKg": 520,
+      "gdpKgDay": 0.78,
+      "bodyConditionScore": "3.5 / 5",
+      "currentPaddock": "P3 - Pastura Sur-Oeste",
+      "paddockDays": "Día 1 de 2 de ocupación",
+      "nextPaddock": "P4",
+      "healthStatus": "Óptima",
+      "vaccineSAG": [
+        {
+          "name": "Vacunación SAG Completa",
+          "status": "Al día",
+          "date": "2026-04-12"
+        }
+      ],
+      "preventiveCare": "Cura de pezuñas con sulfato de cobre y aceite de eucalipto.",
+      "notes": "Doble rusticidad, excelente conversión de forraje tosco.",
+      "image": "assets/ui/establo_landing_bg.jpg"
+    },
+    {
+      "id": "SHEEP-01",
+      "name": "Lana",
+      "species": "Ovino Suffolk Down",
+      "rfid": "SAG-OV-44101-01",
+      "role": "Pastoreo Fino & Control de Malezas en Espalderas",
+      "birthDate": "2023-08-20 (2.5 años)",
+      "weightKg": 68,
+      "targetWeightKg": 70,
+      "gdpKgDay": 0.22,
+      "bodyConditionScore": "3.5 / 5",
+      "currentPaddock": "P5 - Trébol Subterráneo & Dáctilo",
+      "paddockDays": "Día 2 de 3 de ocupación",
+      "nextPaddock": "P6 (Pradera Regenerativa Este)",
+      "healthStatus": "Saludable • Lana limpia clase A",
+      "vaccineSAG": [
+        {
+          "name": "Vacuna Clostridial 8 vías",
+          "status": "Al día",
+          "date": "2026-03-10"
+        }
+      ],
+      "preventiveCare": "Desparasitación botánica con extracto de artemisa y semillas de zapallo.",
+      "notes": "Ideal para pastoreo de entrelíneas de frutales sin dañar corteza.",
+      "image": "assets/ui/establo_landing_bg.jpg"
+    },
+    {
+      "id": "HORSE-01",
+      "name": "Relincho",
+      "species": "Caballo Chileno Corralero",
+      "rfid": "SAG-EQ-10022-01",
+      "role": "Patrullaje Rural, Tiro Liviano & Manejo de Ganado",
+      "birthDate": "2019-03-15 (7 años)",
+      "weightKg": 420,
+      "targetWeightKg": 430,
+      "gdpKgDay": 0.05,
+      "bodyConditionScore": "4.0 / 5 (Atlético)",
+      "currentPaddock": "P4 - Silvopastoreo Borde Cerezos",
+      "paddockDays": "Pastoreo libre y descanso",
+      "nextPaddock": "P7",
+      "healthStatus": "Excelente condición muscular y cascos fuertes",
+      "vaccineSAG": [
+        {
+          "name": "Influenza Equina & Tétanos",
+          "status": "Certificado SAG Oficial",
+          "date": "2026-01-18"
+        }
+      ],
+      "preventiveCare": "Herraje natural descalzo (barefoot) + suplemento de levadura viva.",
+      "notes": "Manso, ágil en pendientes pronunciadas de ladera.",
+      "image": "assets/ui/establo_landing_bg.jpg"
+    },
+    {
+      "id": "COOP-01",
+      "name": "Flota Egg Mobile (45 Gallinas)",
+      "species": "Gallina Ponedora Sussex & Araucana",
+      "rfid": "SAG-AV-9901-LOTE",
+      "role": "Sanitización de Bostas, Control de Larvas & Huevos Pastoriles",
+      "birthDate": "Lote 2025 (1.2 años promedio)",
+      "weightKg": 88,
+      "targetWeightKg": 90,
+      "gdpKgDay": 0.0,
+      "bodyConditionScore": "Plumaje denso y crestas rojas vivas",
+      "currentPaddock": "P8 - Cuadro Nor-Este (Sigue a las vacas con 3 días de desfase)",
+      "paddockDays": "Día 1 de 4",
+      "nextPaddock": "P3 (Sanitizar potrero recién pastoreado)",
+      "healthStatus": "100% Postura activa (38-42 huevos/día)",
+      "vaccineSAG": [
+        {
+          "name": "Newcastle & Bronquitis Infecciosa",
+          "status": "Al día SAG",
+          "date": "2025-10-12"
+        }
+      ],
+      "preventiveCare": "Cenicero de desparasitación con azufre y ceniza de leña de espino.",
+      "notes": "Desmenuzan la bosta de vaca en 24h, esparciendo nutrientes y comiendo moscas.",
+      "image": "assets/ui/establo_landing_bg.jpg"
+    }
+  ]
+}
