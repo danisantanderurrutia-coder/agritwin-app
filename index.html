@@ -1231,7 +1231,6 @@
 
       <!-- Derecha: Navegación Permanente Unificada del Hub (Limpia y Minimalista) -->
       <nav class="flex items-center gap-1 sm:gap-2 font-sans relative">
-        <span class="panel-id-tag text-[8px] font-mono font-bold text-stone-500/80 px-1 py-0.5 rounded bg-black/5 border border-stone-300 select-none mr-1">[PANEL-GLOBAL-NAV]</span>
         <!-- 1. Juego Tutorial (Fuera del Cockpit) -->
         <button id="navBtn-tutorial" onclick="openTutorialNav()" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-stone-200/60 transition-all flex items-center gap-1.5 cursor-pointer" title="Juego Tutorial: Dinámica y Aprendizaje Interactivo de AgroTwin">
           <span>🎮</span> <span>Juego Tutorial</span>
@@ -1285,13 +1284,6 @@
         <!-- 7. Vault Docs -->
         <button id="navBtn-docs" onclick="switchMasterView('docs')" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-stone-200/60 transition-all flex items-center gap-1.5 cursor-pointer" title="Bóveda de Arquitectura, Scripts & Datasets">
           <span>📚</span> <span class="hidden sm:inline">Vault</span>
-        </button>
-
-        <div class="w-px h-5 bg-stone-300 mx-0.5 hidden sm:block"></div>
-
-        <!-- 💡 Ampolletita Escondida: Toggle Global de Etiquetas de Interfaz -->
-        <button id="btnTogglePanelTags" onclick="togglePanelTags()" class="tags-active" title="💡 Alternar etiquetas y códigos de interfaz (Atajo: Shift + L)" aria-label="Alternar etiquetas de interfaz">
-          <span id="bulbIcon">💡</span>
         </button>
 
         <!-- 8. Dossier Territorial -->
@@ -1557,7 +1549,6 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-                    <span class="panel-id-tag text-[8px] font-mono font-bold text-amber-800/80 px-1 py-0.5 rounded bg-amber-100/60 border border-amber-300 select-none">[PANEL-PANAL-ACCIONES]</span>
                     <button onclick="switchMasterView('panal')" class="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
                         <span>🏰</span>
                         <span>Entrar a Visión del Panal</span>
@@ -1574,7 +1565,6 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200/80 pb-3">
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="panel-id-tag text-[8px] font-mono font-bold text-stone-600 px-1 py-0.5 rounded bg-stone-200/70 border border-stone-300 select-none">[PANEL-HUB-HERRAMIENTAS]</span>
                             <h4 class="font-serif font-black text-stone-900 text-base flex items-center gap-2">
                                 <span>🎛️</span> Centro de Control del Hub: Módulos & Herramientas Unificadas
                             </h4>
@@ -1639,7 +1629,6 @@
                 <!-- ACCESOS RÁPIDOS MINIMALISTAS (PILLS EJECUTIVOS) -->
                 <div class="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div class="flex items-center gap-1.5">
-                        <span class="panel-id-tag text-[8px] font-mono font-bold text-stone-600 px-1 py-0.5 rounded bg-stone-200/70 border border-stone-300 select-none">[PANEL-PILLS-RAPIDOS]</span>
                         <span class="text-stone-500 font-mono text-[11px]">Accesos Rápidos:</span>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
@@ -3307,29 +3296,8 @@
                   </div>
                 </div>
 
-                <!-- Píldoras de Telemetría Vecinal -->
-                <div class="board-pills-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; font-family: 'JetBrains Mono', monospace;">
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Mosaico</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #10b981;">10 Predios</span>
-                  </div>
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(168, 85, 247, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Voto DAO</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #c084fc;">Costo = V²</span>
-                  </div>
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(45, 212, 191, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Cortafuegos</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #2dd4bf;">Faja 45m</span>
-                  </div>
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(52, 211, 153, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Quórum</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #34d399;">78% Activo</span>
-                  </div>
-                </div>
-
                 <!-- Modos Principales de Mesa Vecinal (3 Acciones) -->
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; position: relative;">
-                  <span class="panel-id-tag" style="font-size: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #a7f3d0; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 6px; border-radius: 4px; align-self: flex-start; user-select: none;">[PANEL-AOE-VECINAL]</span>
                   <!-- Botón 1: Explorar Mosaico Vecinal -->
                   <button onclick="toggleMesaCampaignBoard(false); openMesaMap();" class="aoe-action-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(4, 120, 87, 0.15)); border: 1px solid rgba(16, 185, 129, 0.5);">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -3369,7 +3337,6 @@
 
                 <!-- Acciones Secundarias (Acceso a las otras 3 pestañas + Volver) -->
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; font-family: 'Plus Jakarta Sans', sans-serif; position: relative;">
-                  <span class="panel-id-tag" style="grid-column: 1 / -1; font-size: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #94a3b8; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 2px 6px; border-radius: 4px; width: fit-content; user-select: none;">[PESTAÑAS DE ASAMBLEA]</span>
                   <button onclick="toggleMesaCampaignBoard(false); openMesaHotspotModal('radio');" class="aoe-secondary-btn" title="Radio Online Maule Sur & VHF">
                     <span>📻</span> Radio
                   </button>
@@ -3399,10 +3366,6 @@
                 <img src="assets/ui/sprite_mesa_chalkboard.png" alt="Pizarra El Panal" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-amber-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('panal')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MESA-01</span>
-                        <span class="aoe-badge-dot" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></span>
-                    </div>
                     <div class="aoe-badge-title">🐝 Pizarra: El Panal</div>
                     <div class="aoe-badge-metric">11 Nodos • Bio-Flujos</div>
                 </div>
@@ -3427,10 +3390,6 @@
                 <img src="assets/ui/sprite_mesa_pacts.png" alt="Carpeta de Pactos" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-teal-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('pactos')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MESA-02</span>
-                        <span class="aoe-badge-dot" style="background:#2dd4bf; box-shadow:0 0 6px #2dd4bf;"></span>
-                    </div>
                     <div class="aoe-badge-title">📜 Pactos & Estatuto</div>
                     <div class="aoe-badge-metric">Faja 45m • 9/10 Adhesión</div>
                 </div>
@@ -3455,10 +3414,6 @@
                 <img src="assets/ui/sprite_mesa_briefcase.png" alt="Maletín Metodológico" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-amber-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('maletin')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MESA-03</span>
-                        <span class="aoe-badge-dot" style="background:#fbbf24; box-shadow:0 0 6px #fbbf24;"></span>
-                    </div>
                     <div class="aoe-badge-title">💼 Maletín de Métodos</div>
                     <div class="aoe-badge-metric">DRP • Mediación Comunitaria</div>
                 </div>
@@ -3483,10 +3438,6 @@
                 <img src="assets/ui/sprite_mesa_dao_urn.png" alt="Balanza de Votos DAO" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-indigo-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('balanza')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MESA-04</span>
-                        <span class="aoe-badge-dot" style="background:#818cf8; box-shadow:0 0 6px #818cf8;"></span>
-                    </div>
                     <div class="aoe-badge-title">⚖️ Sistema de Votos</div>
                     <div class="aoe-badge-metric">Voto Cuadrático C=V²</div>
                 </div>
@@ -3511,10 +3462,6 @@
                 <img src="assets/ui/sprite_mesa_radio.png" alt="Radio Maule Sur" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-rose-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('radio')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MESA-05</span>
-                        <span class="aoe-badge-dot" style="background:#fb7185; box-shadow:0 0 6px #fb7185;"></span>
-                    </div>
                     <div class="aoe-badge-title">📻 Radios Online & VHF</div>
                     <div class="aoe-badge-metric">Streaming Maule • 146.520</div>
                 </div>
@@ -3539,10 +3486,6 @@
                 <img src="assets/ui/sprite_mesa_campfire.png" alt="Fogata de Actas" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-orange-500"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('fogata')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MESA-06</span>
-                        <span class="aoe-badge-dot" style="background:#f97316; box-shadow:0 0 6px #f97316;"></span>
-                    </div>
                     <div class="aoe-badge-title">🔥 Actas de Asambleas</div>
                     <div class="aoe-badge-metric">5 Actas • Turnos & Riego</div>
                 </div>
@@ -4147,10 +4090,6 @@
                 <img src="assets/ui/sprite_cultivos_1.png" alt="Semillero" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-emerald-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-BOT-01</span>
-                        <span class="aoe-badge-dot" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span>
-                    </div>
                     <div class="aoe-badge-title">🌱 Semilleros & Germ.</div>
                     <div class="aoe-badge-metric">840 Plántulas • Alveolos</div>
                 </div>
@@ -4175,10 +4114,6 @@
                 <img src="assets/ui/sprite_cultivos_2.png" alt="Catalejo Cuarteles" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-amber-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-BOT-02</span>
-                        <span class="aoe-badge-dot" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></span>
-                    </div>
                     <div class="aoe-badge-title">🔭 Cuarteles & Viñas</div>
                     <div class="aoe-badge-metric">14 Cuarteles • País/Carignan</div>
                 </div>
@@ -4203,10 +4138,6 @@
                 <img src="assets/ui/sprite_cultivos_3.png" alt="Pizarra Intercropping" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-sky-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-BOT-03</span>
-                        <span class="aoe-badge-dot" style="background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
-                    </div>
                     <div class="aoe-badge-title">📐 Gremios & LER</div>
                     <div class="aoe-badge-metric">LER: 1.34 (+34% Efic.)</div>
                 </div>
@@ -4231,10 +4162,6 @@
                 <img src="assets/ui/sprite_cultivos_4.png" alt="Barril Bokashi" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-emerald-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-BOT-04</span>
-                        <span class="aoe-badge-dot" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span>
-                    </div>
                     <div class="aoe-badge-title">🧪 Barril Bokashi & Tés</div>
                     <div class="aoe-badge-metric">420 kg Maduro • pH 6.8</div>
                 </div>
@@ -4259,10 +4186,6 @@
                 <img src="assets/ui/sprite_cultivos_5.png" alt="Calendario Biodinámico" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-amber-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-BOT-05</span>
-                        <span class="aoe-badge-dot" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></span>
-                    </div>
                     <div class="aoe-badge-title">📅 Calendario GDD</div>
                     <div class="aoe-badge-metric">1.420 GDD • Luna Meng.</div>
                 </div>
@@ -4287,10 +4210,6 @@
                 <img src="assets/ui/sprite_cultivos_6.png" alt="Prensa Botánica" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-rose-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-BOT-06</span>
-                        <span class="aoe-badge-dot" style="background:#e11d48; box-shadow:0 0 6px #e11d48;"></span>
-                    </div>
                     <div class="aoe-badge-title">📖 Atlas & Patología</div>
                     <div class="aoe-badge-metric">18 Fichas • Oídio/Mildiu</div>
                 </div>
@@ -4427,10 +4346,6 @@
                 <img src="assets/ui/sprite_establo_1.png" alt="Pizarra PRV" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-amber-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-PRV-01</span>
-                        <span class="aoe-badge-dot"></span>
-                    </div>
                     <div class="aoe-badge-title">📋 Rotación PRV</div>
                     <div class="aoe-badge-metric">P3 • 2.850 kg MS</div>
                 </div>
@@ -4455,10 +4370,6 @@
                 <img src="assets/ui/sprite_establo_2.png" alt="Arete RFID" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-sky-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-RFID-02</span>
-                        <span class="aoe-badge-dot" style="background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
-                    </div>
                     <div class="aoe-badge-title">🏷️ Caravana SAG</div>
                     <div class="aoe-badge-metric">12 Bovinos • RUP</div>
                 </div>
@@ -4483,10 +4394,6 @@
                 <img src="assets/ui/sprite_establo_3.png" alt="Botiquín SAG" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-red-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-MED-03</span>
-                        <span class="aoe-badge-dot" style="background:#ef4444; box-shadow:0 0 6px #ef4444;"></span>
-                    </div>
                     <div class="aoe-badge-title">💉 Botiquín SAG</div>
                     <div class="aoe-badge-metric">Cero Carencia • 100%</div>
                 </div>
@@ -4511,10 +4418,6 @@
                 <img src="assets/ui/sprite_establo_4.png" alt="Báscula Pesaje" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-amber-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-PESO-04</span>
-                        <span class="aoe-badge-dot"></span>
-                    </div>
                     <div class="aoe-badge-title">⚖️ Manga de Pesaje</div>
                     <div class="aoe-badge-metric">+850g/día Ganancia</div>
                 </div>
@@ -4539,10 +4442,6 @@
                 <img src="assets/ui/sprite_establo_5.png" alt="Muestras Forrajeras" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-emerald-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-FORR-05</span>
-                        <span class="aoe-badge-dot" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span>
-                    </div>
                     <div class="aoe-badge-title">🌾 Aforo Forraje</div>
                     <div class="aoe-badge-metric">22cm Altura • Óptimo</div>
                 </div>
@@ -4567,10 +4466,6 @@
                 <img src="assets/ui/sprite_establo_6.png" alt="Ciclado Bosta" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-lime-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CICL-06</span>
-                        <span class="aoe-badge-dot" style="background:#84cc16; box-shadow:0 0 6px #84cc16;"></span>
-                    </div>
                     <div class="aoe-badge-title">🪲 Ciclado Bosta</div>
                     <div class="aoe-badge-metric">Escarabajos • 4.8t C</div>
                 </div>
@@ -4706,10 +4601,6 @@
                 <img src="assets/ui/sprite_incursion_1.png" alt="Protocolos de Campo" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-teal-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-REWILD-01</span>
-                        <span class="aoe-badge-dot" style="background:#14b8a6; box-shadow:0 0 6px #14b8a6;"></span>
-                    </div>
                     <div class="aoe-badge-title">📋 9 Protocolos Ecosist.</div>
                     <div class="aoe-badge-metric">9 Protocolos • Rewilding</div>
                 </div>
@@ -4734,10 +4625,6 @@
                 <img src="assets/ui/sprite_incursion_2.png" alt="Barreno de Suelo" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-amber-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-REWILD-02</span>
-                        <span class="aoe-badge-dot" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></span>
-                    </div>
                     <div class="aoe-badge-title">🟤 Barreno & Horizontes</div>
                     <div class="aoe-badge-metric">Horizonte A/B • 4.8% MO</div>
                 </div>
@@ -4762,10 +4649,6 @@
                 <img src="assets/ui/sprite_incursion_3.png" alt="Cámara Trampa" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-sky-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-REWILD-03</span>
-                        <span class="aoe-badge-dot" style="background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
-                    </div>
                     <div class="aoe-badge-title">📸 Cámara Fauna & PIR</div>
                     <div class="aoe-badge-metric">Güiña • Zorro • 142 Fotos</div>
                 </div>
@@ -4790,10 +4673,6 @@
                 <img src="assets/ui/sprite_incursion_4.png" alt="Libreta Transecto" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-emerald-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-REWILD-04</span>
-                        <span class="aoe-badge-dot" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span>
-                    </div>
                     <div class="aoe-badge-title">🌿 Transecto 50m</div>
                     <div class="aoe-badge-metric">IEI: 0.88 • 26 Nativas</div>
                 </div>
@@ -4818,10 +4697,6 @@
                 <img src="assets/ui/sprite_incursion_5.png" alt="Microscopio" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-purple-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-REWILD-05</span>
-                        <span class="aoe-badge-dot" style="background:#8b5cf6; box-shadow:0 0 6px #8b5cf6;"></span>
-                    </div>
                     <div class="aoe-badge-title">🔬 Funga & Biota Suelo</div>
                     <div class="aoe-badge-metric">F/B: 1.24 • Micorrizas</div>
                 </div>
@@ -4846,10 +4721,6 @@
                 <img src="assets/ui/sprite_incursion_6.png" alt="Bioacústica" class="w-full h-auto drop-shadow-2xl transition-transform hover:scale-110 duration-200 pointer-events-auto">
                 <span class="diegetic-sprite-ping bg-rose-400" style="position: absolute; top: 8px; right: 8px;"></span>
                 <div class="aoe-unified-station-badge">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-REWILD-06</span>
-                        <span class="aoe-badge-dot" style="background:#f43f5e; box-shadow:0 0 6px #f43f5e;"></span>
-                    </div>
                     <div class="aoe-badge-title">🎙️ Bioacústica & ACI</div>
                     <div class="aoe-badge-metric">ACI: 0.74 • 18 Aves</div>
                 </div>
@@ -4957,7 +4828,6 @@
         <!-- STICKY SUBDECK NAVIGATION BAR: MOMENTO 2 CUENCA (Visible sólo en sub-vistas operativas o mapa) -->
         <div id="cerroSubdeckNav" class="sticky top-0 z-40 bg-[#070d18]/95 backdrop-blur-md border-b border-sky-500/30 px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2.5 shadow-2xl" style="display: none;">
             <div class="flex items-center gap-1.5 sm:gap-2">
-                <span class="panel-id-tag text-[8px] font-mono font-bold text-sky-400 bg-sky-950/80 px-1.5 py-0.5 rounded border border-sky-500/40 select-none">[CUENCA-NAV]</span>
                 <button id="cerroNav-panorama" onclick="setCerroSubView('panorama')" class="cerro-subtab-btn active" title="Volver al Landing Panorámico de Cuenca">
                     <span>🌄</span> <span>Mirador</span>
                 </button>
@@ -5058,29 +4928,8 @@
                   </div>
                 </div>
 
-                <!-- Píldoras de Telemetría de Cuenca -->
-                <div class="board-pills-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; font-family: 'JetBrains Mono', monospace;">
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(14, 165, 233, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Río Longaví</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #38bdf8;">124.5 m³/s</span>
-                  </div>
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Embalse Bullileo</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #10b981;">78.5%</span>
-                  </div>
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(245, 158, 11, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">FWI Puelche</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #f59e0b;">24 (Mod.)</span>
-                  </div>
-                  <div style="background: rgba(0,0,0,0.45); border: 1px solid rgba(52, 211, 153, 0.2); padding: 8px 6px; border-radius: 10px; text-align: center;">
-                    <span style="font-size: 9px; color: #64748b; display: block; text-transform: uppercase;">Pozos APR</span>
-                    <span style="font-size: 12px; font-weight: 800; color: #34d399;">5 Red Viva</span>
-                  </div>
-                </div>
-
                 <!-- Modos Principales de Cuenca (3 Acciones) -->
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; position: relative;">
-                  <span class="panel-id-tag" style="font-size: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #7dd3fc; background: rgba(14, 165, 233, 0.2); border: 1px solid rgba(14, 165, 233, 0.4); padding: 2px 6px; border-radius: 4px; align-self: flex-start; user-select: none;">[PANEL-AOE-CUENCA]</span>
                   <!-- Botón 1: Explorar Gemelo GIS -->
                   <button onclick="toggleCerroCampaignBoard(false); openCerroMap();" class="aoe-action-card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(3, 105, 161, 0.15)); border: 1px solid rgba(14, 165, 233, 0.5);">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -5120,7 +4969,6 @@
 
                 <!-- Acciones Secundarias -->
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; font-family: 'Plus Jakarta Sans', sans-serif; position: relative;">
-                  <span class="panel-id-tag" style="grid-column: 1 / -1; font-size: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #94a3b8; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 2px 6px; border-radius: 4px; width: fit-content; user-select: none;">[PANEL-CUENCA-SECUNDARIAS]</span>
                   <button onclick="toggleCerroCampaignBoard(false); setCerroSubView('decreto');" class="aoe-secondary-btn">
                     <span>📜</span> Expediente
                   </button>
@@ -5146,10 +4994,6 @@
                 <img src="assets/ui/sprite_cerro_drone.png" alt="Drone Sentinel-2" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));">
                 <span class="diegetic-sprite-ping bg-sky-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('drone')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CUENCA-01</span>
-                        <span class="aoe-badge-dot" style="background:#38bdf8; box-shadow:0 0 6px #38bdf8;"></span>
-                    </div>
                     <div class="aoe-badge-title">🛰️ Drone Sentinel-2</div>
                     <div class="aoe-badge-metric">10m Multiespectral • NDVI</div>
                 </div>
@@ -5174,10 +5018,6 @@
                 <img src="assets/ui/sprite_cerro_weather.png" alt="Veleta Puelche" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));">
                 <span class="diegetic-sprite-ping bg-amber-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('clima')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CUENCA-04</span>
-                        <span class="aoe-badge-dot" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></span>
-                    </div>
                     <div class="aoe-badge-title">🌤️ Veleta Puelche</div>
                     <div class="aoe-badge-metric">FWI 24 • Viento Este</div>
                 </div>
@@ -5202,10 +5042,6 @@
                 <img src="assets/ui/sprite_cerro_telescope.png" alt="Telescopio Panorámico" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));">
                 <span class="diegetic-sprite-ping bg-cyan-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('mirador')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CUENCA-02</span>
-                        <span class="aoe-badge-dot" style="background:#22d3ee; box-shadow:0 0 6px #22d3ee;"></span>
-                    </div>
                     <div class="aoe-badge-title">🔭 Mirador Cuenca</div>
                     <div class="aoe-badge-metric">122k ha • 6 Hitos Clave</div>
                 </div>
@@ -5230,10 +5066,6 @@
                 <img src="assets/ui/sprite_cerro_blueprints.png" alt="Plan de Obras" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));">
                 <span class="diegetic-sprite-ping bg-yellow-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('obras')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CUENCA-06</span>
-                        <span class="aoe-badge-dot" style="background:#facc15; box-shadow:0 0 6px #facc15;"></span>
-                    </div>
                     <div class="aoe-badge-title">📐 Plan Obras & Fajas</div>
                     <div class="aoe-badge-metric">420M CLP • 4 Proyectos</div>
                 </div>
@@ -5258,10 +5090,6 @@
                 <img src="assets/ui/sprite_cerro_tablet.png" alt="Tablet Hidrológica" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));">
                 <span class="diegetic-sprite-ping bg-blue-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('hidro')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CUENCA-03</span>
-                        <span class="aoe-badge-dot" style="background:#60a5fa; box-shadow:0 0 6px #60a5fa;"></span>
-                    </div>
                     <div class="aoe-badge-title">📱 Crecidas & Caudal</div>
                     <div class="aoe-badge-metric">124.5 m³/s • Hidro T=50</div>
                 </div>
@@ -5286,10 +5114,6 @@
                 <img src="assets/ui/sprite_cerro_antenna.png" alt="Torre Repetidora LoRa" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.6));">
                 <span class="diegetic-sprite-ping bg-emerald-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('lora')">
-                    <div class="aoe-badge-meta">
-                        <span class="aoe-badge-code">OBJ-CUENCA-05</span>
-                        <span class="aoe-badge-dot" style="background:#34d399; box-shadow:0 0 6px #34d399;"></span>
-                    </div>
                     <div class="aoe-badge-title">📡 Pozos APR & LoRa</div>
                     <div class="aoe-badge-metric">5 Pozos • 9 Nodos Red</div>
                 </div>
@@ -5767,14 +5591,7 @@
                                 🏔️
                             </div>
                             <div>
-                                <div class="flex items-center gap-2">
-                                    <span id="cerroModalBadge" class="text-[10px] font-mono font-bold uppercase tracking-wider text-sky-400 bg-sky-950/80 px-2.5 py-0.5 rounded border border-sky-500/30">
-                                        CUENCA MAULE SUR
-                                    </span>
-                                    <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">
-                                        PANEL UNIFICADO AOE
-                                    </span>
-                                </div>
+                                
                                 <h3 id="cerroModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2 mt-0.5">
                                     Instrumento Diegético
                                 </h3>
@@ -7248,7 +7065,6 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-2.5 shrink-0">
-                    <span class="panel-id-tag text-[8px] font-mono font-bold text-amber-800/80 px-1 py-0.5 rounded bg-amber-100/60 border border-amber-300 select-none">[PANEL-DOCS-ACCIONES]</span>
                     <button onclick="exportParcelsToCSV()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-xs font-bold text-stone-800 border border-[#E7DAC6] shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
                         <span>📥</span> <span>Exportar Catastro CSV</span>
                     </button>
@@ -7301,9 +7117,12 @@
 
             <!-- Subnavegación de Pestañas del Vault (Galpón Luminoso) -->
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
-                <span class="panel-id-tag text-[8px] font-mono font-bold text-stone-600 px-1 py-0.5 rounded bg-stone-200/70 border border-stone-300 select-none shrink-0">[PANEL-VAULT-TABS]</span>
                 <button onclick="openDossierInHub()" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-emerald-50 text-emerald-950 border border-emerald-300 shadow-sm">
                     <span>🛰️</span> <span>Dossier Satelital & Software (18 Láminas)</span>
+                </button>
+                <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-sky-50 text-sky-950 border border-sky-300 shadow-sm">
+                    <span>🛡️</span> <span>Estándar Vecino Informado</span>
+                    <span class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9px] font-mono">MÓDULO 1</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
                     <span>🏛️</span> <span>Arquitectura del Sistema</span>
@@ -7358,6 +7177,215 @@
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 0B: ESTÁNDAR VECINO INFORMADO (DOCUMENTACIÓN TÉCNICA Y AUDITABLE)
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="docs-vecino" class="docs-subcontent hidden space-y-6">
+                <!-- Header Banner Vecino Informado -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-50 via-white to-emerald-50 border border-sky-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-start sm:items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-600 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                            🛡️
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-100 text-sky-800 border border-sky-300">ESTÁNDAR OPERATIVO C2</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-emerald-700 font-semibold">Módulo 1: Autosegmentación Biofísica Activo</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-stone-500">Radio Táctico 5 km</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-bold text-stone-900 font-serif">Estándar «Vecino Informado» de Agrotech</h3>
+                            <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-3xl leading-relaxed">
+                                Marco de inteligencia territorial compartida que resuelve la brecha entre la tenencia legal (Catastro SII) y la física del suelo (Teledetección Sentinel-2 L2A). Permite al agricultor comprender cómo las dinámicas externas de su cuenca (biomasa combustible, reservas hídricas y rastrojos secos) impactan su predio.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 font-mono text-xs shrink-0 w-full md:w-auto">
+                        <button onclick="switchMasterView('territory'); setTimeout(() => { window.toggleBiofisicoLulcLayer(true); }, 300);" class="w-full md:w-auto px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer">
+                            <span>🗺️ Ver Capa en el Mapa</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Desglose de Módulo 1: Cómo procesamos los datos -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Tarjeta 1: La Regla Fundamental -->
+                    <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-sm">1</span>
+                            <h4 class="font-bold text-sm text-stone-900 font-serif">LULC Biofísico ≠ Catastro Legal</h4>
+                        </div>
+                        <p class="text-xs text-stone-600 leading-relaxed">
+                            Al usuario no le interesa de quién es legalmente el predio vecino para evaluar si corre peligro de incendio o sequía. Separamos el procesamiento espectral puro del mosaico de roles del SII para delimitar <strong>unidades biofísicas homogéneas</strong> independientes del cerco de alambre.
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-stone-50 border border-stone-200 text-[11px] font-mono text-stone-700">
+                            <strong>Principio:</strong> El fuego, la sequía y la escorrentía no respetan deslindes notariales.
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: Zonificación Dual LOD -->
+                    <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">2</span>
+                            <h4 class="font-bold text-sm text-stone-900 font-serif">Filtro Antirruido (LOD Dual)</h4>
+                        </div>
+                        <p class="text-xs text-stone-600 leading-relaxed">
+                            Para evitar el efecto <em>"sal y pimienta"</em> (150.000 micro-polígonos pixelados de 10m), aplicamos un esquema de Nivel de Detalle Espacial:
+                        </p>
+                        <ul class="text-[11px] font-mono text-stone-700 space-y-1.5 list-disc pl-4">
+                            <li><strong>Macro-Cuenca (>5 km):</strong> Polígonos con Unidad Mínima Cartográfica <strong>MMU ≥ 50 ha</strong> suavizados con Douglas-Peucker.</li>
+                            <li><strong>Radio Táctico Local (5 km Meniel):</strong> Resolución fina <strong>MMU ≥ 1.5 ha</strong> aislando tranques y cuarteles agrícolas.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tarjeta 3: Estrategia de Biomasa Forestal -->
+                    <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-sm">3</span>
+                            <h4 class="font-bold text-sm text-stone-900 font-serif">Estrategia de Biomasa Unificada</h4>
+                        </div>
+                        <p class="text-xs text-stone-600 leading-relaxed">
+                            En verano, Sentinel-2 puede arrojar firmas idénticas entre monocultivo de pino maduro y bosque esclerófilo denso. Para garantizar >94% de certeza, se unificaron provisionalmente bajo <strong>«Biomasa Forestal Continua»</strong>.
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-950">
+                            <strong>Roadmap de Discriminación:</strong> En los pasos siguientes incorporamos pendiente DEM (>18° = nativo de quebrada) y análisis de textura Canny (ortogonalidad de plantación comercial).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Capas del Módulo 1 Implementadas -->
+                <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-stone-200 pb-3">
+                        <div>
+                            <h4 class="font-bold text-sm text-stone-900 font-serif">Catálogo de Polígonos Biofísicos Activos (Módulo 1)</h4>
+                            <p class="text-xs text-stone-500">Capas vectoriales integradas en el motor cartográfico de AgriTwin</p>
+                        </div>
+                        <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-stone-100 text-stone-700 border border-stone-300 font-bold">
+                            13 POLÍGONOS CALIBRADOS
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left font-mono text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-stone-50 border-b border-stone-200 text-stone-600 text-[10.5px]">
+                                    <th class="p-2.5">Clase Biofísica</th>
+                                    <th class="p-2.5">Polígono Representativo</th>
+                                    <th class="p-2.5">Superficie</th>
+                                    <th class="p-2.5">Resolución LOD</th>
+                                    <th class="p-2.5">Certeza Espectral</th>
+                                    <th class="p-2.5">Vínculo Táctico / Riesgo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100 text-[11px] text-stone-800">
+                                <tr class="hover:bg-cyan-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-cyan-700 flex items-center gap-1.5">
+                                        <span>💧</span> Espejo de Agua
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Tranque Acumulador Meniel</td>
+                                    <td class="p-2.5 font-bold text-cyan-900">1.8 ha (18.500 m³)</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Local 5 km (MMU 1.5 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">98% (MNDWI)</td>
+                                    <td class="p-2.5 text-stone-600">Punto de abastecimiento aéreo para brigadas y cortafuego vivo</td>
+                                </tr>
+                                <tr class="hover:bg-cyan-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-cyan-700 flex items-center gap-1.5">
+                                        <span>💧</span> Espejo de Agua
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Tranque Vecinal Los Cristales</td>
+                                    <td class="p-2.5 font-bold text-cyan-900">2.4 ha (24.800 m³)</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Local 5 km (MMU 1.5 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">97% (MNDWI)</td>
+                                    <td class="p-2.5 text-stone-600">Respaldo hídrico colaborativo en red vecinal</td>
+                                </tr>
+                                <tr class="hover:bg-rose-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-rose-700 flex items-center gap-1.5">
+                                        <span>🌲</span> Biomasa Forestal
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Rodal Forestal Flanco Norte</td>
+                                    <td class="p-2.5 font-bold text-rose-900">14.2 ha</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Local 5 km (MMU 1.5 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">94% (S2 BOA)</td>
+                                    <td class="p-2.5 text-stone-600">Vulnerabilidad de interfaz WUI sobre el flanco norte de Meniel</td>
+                                </tr>
+                                <tr class="hover:bg-rose-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-rose-700 flex items-center gap-1.5">
+                                        <span>🌲</span> Biomasa Forestal
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Remanente Nativo Quebrada El Guindo</td>
+                                    <td class="p-2.5 font-bold text-rose-900">8.5 ha</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Local 5 km (MMU 1.5 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">92% (S2 BOA)</td>
+                                    <td class="p-2.5 text-stone-600">Amortiguador biológico de erosión y cortafuego natural en vaguada</td>
+                                </tr>
+                                <tr class="hover:bg-emerald-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-emerald-700 flex items-center gap-1.5">
+                                        <span>🌾</span> Matriz Agrícola
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Cuarteles Cerezos & Avellanos Meniel</td>
+                                    <td class="p-2.5 font-bold text-emerald-900">22.0 ha (12 ha + 10 ha)</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Local 5 km (MMU 1.5 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">96% (S2 BOA)</td>
+                                    <td class="p-2.5 text-stone-600">Canopia densa activa; barrera verde hidratada contra fuego</td>
+                                </tr>
+                                <tr class="hover:bg-rose-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-rose-700 flex items-center gap-1.5">
+                                        <span>🌲</span> Biomasa Forestal
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Cinturón Biomasa Precordillera Andina</td>
+                                    <td class="p-2.5 font-bold text-rose-900">12.300 ha</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">Macro-Cuenca (MMU ≥50 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">94% (S2 BOA)</td>
+                                    <td class="p-2.5 text-stone-600">Combustible masivo continuo en corredor de viento Puelche</td>
+                                </tr>
+                                <tr class="hover:bg-emerald-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-emerald-700 flex items-center gap-1.5">
+                                        <span>🌾</span> Matriz Agrícola
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Matriz Agrícola Irrigada Cuenca Media</td>
+                                    <td class="p-2.5 font-bold text-emerald-900">18.600 ha</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">Macro-Cuenca (MMU ≥50 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">96% (S2 BOA)</td>
+                                    <td class="p-2.5 text-stone-600">Amortiguador térmico de baja inflamabilidad estival</td>
+                                </tr>
+                                <tr class="hover:bg-cyan-50/50 transition-colors">
+                                    <td class="p-2.5 font-bold text-cyan-700 flex items-center gap-1.5">
+                                        <span>💧</span> Espejo de Agua
+                                    </td>
+                                    <td class="p-2.5 font-semibold">Espejo Mayor Embalse Bullileo</td>
+                                    <td class="p-2.5 font-bold text-cyan-900">3.200 ha</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">Macro-Cuenca (MMU ≥50 ha)</span></td>
+                                    <td class="p-2.5 font-bold text-emerald-700">99% (MNDWI)</td>
+                                    <td class="p-2.5 text-stone-600">Reserva hídrica estratégica regional (84.2 Hm³)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Benchmarking y Transferencia del Dossier -->
+                <div class="p-5 rounded-2xl bg-stone-50 border border-[#E7DAC6] shadow-sm space-y-3 font-sans">
+                    <h4 class="font-bold text-sm text-stone-900 font-serif flex items-center gap-2">
+                        <span>🛰️</span> Transferencia Tecnológica desde el Dossier de Teledetección
+                    </h4>
+                    <p class="text-xs text-stone-600 leading-relaxed">
+                        Este Módulo 1 incorpora directamente las metodologías de segmentación y detección automática analizadas en nuestro <strong>Dossier Estratégico</strong>:
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 bg-white rounded-xl border border-stone-200">
+                            <strong class="text-emerald-800 block mb-1">Descartes Labs (Slide 2):</strong>
+                            <span class="text-stone-600">Algoritmo de detección de bordes espectrales homogéneos para evitar el trazado manual de polígonos.</span>
+                        </div>
+                        <div class="p-3 bg-white rounded-xl border border-stone-200">
+                            <strong class="text-sky-800 block mb-1">Planet Labs (Slide 1):</strong>
+                            <span class="text-stone-600">Índice MNDWI de alta fidelidad para aislar espejos de agua sin distorsión por sombra de laderas.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
                  SUBTAB 1: ARQUITECTURA DEL SISTEMA (MASTER-DETAIL CON MERMAID & TABLAS)
                  ═══════════════════════════════════════════════════════════════════ -->
             <div id="docs-arch" class="docs-subcontent space-y-6">
@@ -7386,7 +7414,6 @@
                     <div class="lg:col-span-4 space-y-2 bg-white p-3.5 rounded-2xl border border-[#E7DAC6] shadow-sm">
                         <div class="text-[11px] font-mono font-bold text-stone-500 uppercase px-2 py-1 tracking-wider border-b border-[#E7DAC6] pb-2 mb-2 flex items-center justify-between">
                             <span class="flex items-center gap-1.5">
-                                <span class="panel-id-tag text-[8px] font-mono font-bold text-amber-800/80 px-1 py-0.5 rounded bg-amber-100/60 border border-amber-300 select-none">[PANEL-ARCH-MODULOS]</span>
                                 <span>Módulos del Sistema</span>
                             </span>
                             <span class="text-stone-400">13 Módulos</span>
@@ -9535,7 +9562,6 @@
                         <div class="space-y-1.5">
                             <div class="text-[10px] font-mono font-bold text-emerald-800 uppercase px-2 py-1 tracking-wider bg-emerald-50/80 rounded-lg flex items-center justify-between border border-emerald-200/60">
                                 <span class="flex items-center gap-1.5">
-                                    <span class="panel-id-tag text-[8px] font-mono font-bold text-emerald-800 px-1 py-0.5 rounded bg-emerald-100/80 border border-emerald-300 select-none">[PANEL-SCRIPTS-LIST]</span>
                                     <span>⚙️ Algoritmos Biofísicos</span>
                                 </span>
                                 <span>6 Scripts</span>
@@ -10599,6 +10625,15 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     <span id="badgeDockVecinos" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
                 </button>
 
+                <!-- Módulo 1: Estándar Vecino Informado - LULC Biofísico Puro -->
+                <button onclick="toggleBiofisicoLulcLayer();" id="btnDockLulcBio" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer" title="Cobertura Biofísica Pura Sentinel-2 L2A (LOD 5km / Macro >50ha)">
+                    <span class="flex items-center gap-2">
+                        <span>🌱</span>
+                        <span>LULC Biofísico (Módulo 1)</span>
+                    </span>
+                    <span id="badgeDockLulcBio" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
                 <button onclick="toggleCuencaTacticalLegend();" id="btnDockTacticalLegend" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-purple-500/15 border border-white/5 hover:border-purple-500/30 flex items-center justify-between text-xs text-purple-200 transition-all cursor-pointer">
                     <span class="flex items-center gap-2">
                         <span>🗺️</span>
@@ -10800,9 +10835,6 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] px-2.5 py-1 rounded-full bg-sky-950 text-sky-300 font-mono border border-sky-500/40 font-bold" id="tacticalBiophysicalBadge">
-                        ALTA RESOLUCIÓN
-                    </span>
                     <button onclick="closeBiophysicalModal()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold cursor-pointer transition-colors" title="Cerrar (Esc)">
                         ✕
                     </button>
@@ -11510,8 +11542,8 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         <button class="basin-moment-pill w-full justify-start" onclick="applyCuencaClimatePreset('drought', this)" title="Momento 4: La Niña prolongada, acuífero -11m">
                             <span>🏜️</span> Megasequía
                         </button>
-                        <button class="basin-moment-pill w-full justify-start" onclick="applyCuencaClimatePreset('puelche_fire', this)" title="Momento 5: Puelche extremo catabático FWI 52 (Piro-Alerta)">
-                            <span>🌪️</span> Puelche Extremo
+                        <button class="basin-moment-pill w-full justify-start" onclick="applyCuencaClimatePreset('puelche_fire', this)" title="Momento 5: Puelche catabático extremo ESE 58 km/h, HR 11%">
+                            <span>🌪️</span> Puelche Catabático
                         </button>
                         <button class="basin-moment-pill w-full justify-start" onclick="applyCuencaClimatePreset('winter_dry', this)" title="Momento 6: Inversión térmica y heladas polares -3.8°C">
                             <span>❄️</span> Heladas Polares
@@ -11598,6 +11630,16 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                             <div class="p-1.5 rounded bg-red-950/40 text-[9.5px] text-red-200 border border-red-900/50">
                                 🛡️ <b>Mitigación:</b> Cortavientos densos de Peumo/Quillay en borde Este reducen viento 62%.
                             </div>
+                            <!-- Switch ON/OFF Viento Puelche -->
+                            <div class="pt-2 flex items-center justify-between border-t border-white/10 font-mono">
+                                <span class="text-amber-200 text-[10.5px] font-bold flex items-center gap-1.5">
+                                    <span>⚡</span> Régimen Viento Puelche:
+                                </span>
+                                <button id="btnTogglePuelcheWind" onclick="window.togglePuelcheWind()" class="px-3 py-1 rounded-md text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 cursor-pointer shadow-sm">
+                                    <span id="dotPuelcheWind" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                                    <span id="labelPuelcheWind">PUELCHE: OFF</span>
+                                </button>
+                            </div>
                         </div>
                     </details>
 
@@ -11666,6 +11708,15 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                             <div class="text-sm font-bold text-emerald-400">2026-09-21</div>
                         </div>
                     </div>
+
+                    <!-- Módulo 1: Botón Accionador LULC Biofísico Dual LOD -->
+                    <button onclick="toggleBiofisicoLulcLayer()" id="btnSidebarLulcBio" class="w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 hover:text-white font-mono text-[10.5px] font-bold flex items-center justify-between transition-all cursor-pointer">
+                        <span class="flex items-center gap-1.5">
+                            <span>🌱</span>
+                            <span>Mosaico Biofísico (LOD 5km)</span>
+                        </span>
+                        <span id="badgeSidebarLulcBio" class="text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono">ACTIVAR</span>
+                    </button>
                 </div>
 
                 <!-- CONTENEDOR REACTIVO DE BLOQUES COLAPSABLES SIG (POBLADO POR GEO-LAYERS.JS) -->
@@ -12061,16 +12112,16 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         </div>
 
                         <!-- Leyenda Interna FWI & CAL FIRE -->
-                        <details class="bg-black/60 p-2 rounded-lg border border-white/5 text-[9.5px]">
-                            <summary class="cursor-pointer text-slate-400 hover:text-slate-200 font-bold uppercase flex justify-between">
+                        <details class="bg-black/60 p-2.5 rounded-lg border border-white/10 text-[9.5px] text-slate-200">
+                            <summary class="cursor-pointer text-slate-300 hover:text-white font-bold uppercase flex justify-between select-none">
                                 <span>🎨 Leyenda Severidad FWI / CAL FIRE</span>
                                 <span>▾</span>
                             </summary>
-                            <div class="grid grid-cols-2 gap-1.5 pt-2">
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#b91c1c] rounded-sm"></span><span>Very High (VHFHSZ)</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#ea580c] rounded-sm"></span><span>High (HFHSZ)</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#f59e0b] rounded-sm"></span><span>Moderate (MFHSZ)</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#f43f5e] border border-dashed border-white rounded-sm"></span><span>Pavesas WUI 1.5km</span></div>
+                            <div class="grid grid-cols-2 gap-1.5 pt-2 text-slate-200 font-mono">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#b91c1c] rounded-sm shrink-0"></span><span class="text-slate-200">Very High (VHFHSZ)</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#ea580c] rounded-sm shrink-0"></span><span class="text-slate-200">High (HFHSZ)</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#f59e0b] rounded-sm shrink-0"></span><span class="text-slate-200">Moderate (MFHSZ)</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#f43f5e] border border-dashed border-white rounded-sm shrink-0"></span><span class="text-slate-200">Pavesas WUI 1.5km</span></div>
                             </div>
                         </details>
                     </div>
@@ -12119,16 +12170,16 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         </div>
 
                         <!-- Leyenda Interna Calados & Períodos de Retorno -->
-                        <details class="bg-black/60 p-2 rounded-lg border border-white/5 text-[9.5px]">
-                            <summary class="cursor-pointer text-slate-400 hover:text-slate-200 font-bold uppercase flex justify-between">
+                        <details class="bg-black/60 p-2.5 rounded-lg border border-white/10 text-[9.5px] text-slate-200">
+                            <summary class="cursor-pointer text-slate-300 hover:text-white font-bold uppercase flex justify-between select-none">
                                 <span>🎨 Leyenda Calados & Retorno T</span>
                                 <span>▾</span>
                             </summary>
-                            <div class="grid grid-cols-2 gap-1.5 pt-2">
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#38bdf8] rounded-sm"></span><span>T=10 años (Calado &lt; 0.8m)</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#0284c7] rounded-sm"></span><span>T=50 años (Calado 0.8 - 1.8m)</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#1e3a8a] rounded-sm"></span><span>T=100 años (Calado &gt; 1.8m)</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-3 h-0.5 border-t border-dashed border-[#06b6d4]"></span><span>Canal Keyline Infiltrante</span></div>
+                            <div class="grid grid-cols-2 gap-1.5 pt-2 text-slate-200 font-mono">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#38bdf8] rounded-sm shrink-0"></span><span class="text-slate-200">T=10 años (Calado &lt; 0.8m)</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#0284c7] rounded-sm shrink-0"></span><span class="text-slate-200">T=50 años (Calado 0.8 - 1.8m)</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#1e3a8a] rounded-sm shrink-0"></span><span class="text-slate-200">T=100 años (Calado &gt; 1.8m)</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-3 h-0.5 border-t border-dashed border-[#06b6d4] shrink-0"></span><span class="text-slate-200">Canal Keyline Infiltrante</span></div>
                             </div>
                         </details>
                     </div>
@@ -12173,15 +12224,15 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         </div>
 
                         <!-- Leyenda Interna SERNAGEOMIN -->
-                        <details class="bg-black/60 p-2 rounded-lg border border-white/5 text-[9.5px]">
-                            <summary class="cursor-pointer text-slate-400 hover:text-slate-200 font-bold uppercase flex justify-between">
+                        <details class="bg-black/60 p-2.5 rounded-lg border border-white/10 text-[9.5px] text-slate-200">
+                            <summary class="cursor-pointer text-slate-300 hover:text-white font-bold uppercase flex justify-between select-none">
                                 <span>🎨 Leyenda SERNAGEOMIN & Movimiento</span>
                                 <span>▾</span>
                             </summary>
-                            <div class="grid grid-cols-2 gap-1.5 pt-2">
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#ef4444] rounded-sm"></span><span>Escarpe Activo 34°</span></div>
-                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#f59e0b] border border-dashed border-white rounded-sm"></span><span>Cono Runout Aluvial L-110</span></div>
-                                <div class="flex items-center gap-1.5 col-span-2 text-[9px] text-slate-400">
+                            <div class="grid grid-cols-2 gap-1.5 pt-2 text-slate-200 font-mono">
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#ef4444] rounded-sm shrink-0"></span><span class="text-slate-200">Escarpe Activo 34°</span></div>
+                                <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#f59e0b] border border-dashed border-white rounded-sm shrink-0"></span><span class="text-slate-200">Cono Runout Aluvial L-110</span></div>
+                                <div class="flex items-center gap-1.5 col-span-2 text-[9px] text-slate-300">
                                     <span>Cohesión Mohr-Coulomb &bull; Saturación hídrica crítica</span>
                                 </div>
                             </div>
@@ -12415,9 +12466,6 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
             </button>
 
             <div class="absolute bottom-3 left-4 right-4">
-                <span id="drawerBiomeTag" class="text-[9px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/80 text-slate-950 font-black">
-                    NÚCLEO PREDIAL
-                </span>
                 <h3 id="drawerParcelName" class="text-lg font-black text-white mt-1 leading-tight">
                     Fundo Meniel
                 </h3>

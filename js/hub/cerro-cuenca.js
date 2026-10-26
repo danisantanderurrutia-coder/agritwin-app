@@ -32,7 +32,7 @@
             });
 
             if (id === 'drone') {
-                badgeEl.innerText = 'OBJ-CUENCA-01 • LULC';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-01 • LULC';
                 titleEl.innerHTML = '<span>🛸</span> Monitoreo Aéreo LULC & Ortomosaico Sentinel-2';
                 bodyEl.innerHTML = `
                     <div class="space-y-4">
@@ -79,7 +79,7 @@
                     </div>
                 `;
             } else if (id === 'mirador') {
-                badgeEl.innerText = 'OBJ-CUENCA-02 • MIRADOR';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-02 • MIRADOR';
                 titleEl.innerHTML = '<span>🔭</span> Vistas Predefinidas & Locaciones Estratégicas';
                 bodyEl.innerHTML = `
                     <div class="space-y-4">
@@ -133,7 +133,7 @@
                     </div>
                 `;
             } else if (id === 'hidro') {
-                badgeEl.innerText = 'OBJ-CUENCA-03 • HIDROLOGÍA';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-03 • HIDROLOGÍA';
                 titleEl.innerHTML = '<span>📟</span> Dinámica Hídrica Fluvial & Simulación de Crecidas';
                 bodyEl.innerHTML = `
                     <div class="space-y-4 text-xs font-mono">
@@ -327,7 +327,7 @@
                     </div>
                 `;
             } else if (id === 'clima') {
-                badgeEl.innerText = 'OBJ-CUENCA-04 • PIRO-METEOROLOGÍA';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-04 • PIRO-METEOROLOGÍA';
                 titleEl.innerHTML = '<span>🌪️</span> Viento Puelche & Peligro de Incendios FWI';
                 bodyEl.innerHTML = `
                     <div class="space-y-4 text-xs">
@@ -386,7 +386,7 @@
                     </div>
                 `;
             } else if (id === 'lora') {
-                badgeEl.innerText = 'OBJ-CUENCA-05 • RED CENTINELA';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-05 • RED CENTINELA';
                 titleEl.innerHTML = '<span>📡</span> Red LoRaWAN & Telemetría de Pozos APR';
                 bodyEl.innerHTML = `
                     <div class="space-y-4 text-xs font-mono">
@@ -454,7 +454,7 @@
                     </div>
                 `;
             } else if (id === 'obras') {
-                badgeEl.innerText = 'OBJ-CUENCA-06 • OBRAS PAISAJE';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-06 • OBRAS PAISAJE';
                 titleEl.innerHTML = '<span>🛠️</span> Portafolio de Inversión Paisajística (420M CLP)';
                 bodyEl.innerHTML = `
                     <div class="space-y-4 text-xs font-mono">
@@ -575,7 +575,7 @@
                     </div>
                 `;
             } else if (id === 'resumen') {
-                badgeEl.innerText = 'OBJ-CUENCA-00 • RESUMEN PAISAJE';
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-00 • RESUMEN PAISAJE';
                 titleEl.innerHTML = '<span>📋</span> Tablón Central de Campaña • Cuenca Río Longaví';
                 bodyEl.innerHTML = `
                     <div class="space-y-4">

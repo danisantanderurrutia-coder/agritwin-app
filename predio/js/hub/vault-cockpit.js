@@ -234,9 +234,6 @@
                         <div class="space-y-2">
                             <div class="relative h-40 rounded-xl overflow-hidden border border-[#E7DAC6]">
                                 <img src="${b.image}" alt="${b.name}" class="w-full h-full object-cover">
-                                <span class="absolute top-2 left-2 text-[9px] font-mono px-2 py-0.5 rounded font-bold uppercase text-stone-900 border border-black/10" style="background: ${b.color}">
-                                    ${b.tag}
-                                </span>
                             </div>
                             <h4 class="font-bold text-stone-900 text-sm font-serif">${b.name}</h4>
                             <p class="text-[11px] text-stone-600 leading-relaxed">${b.desc}</p>

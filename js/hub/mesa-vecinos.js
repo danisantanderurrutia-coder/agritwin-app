@@ -67,8 +67,11 @@
 
             // Rellenar cabecera visual
             document.getElementById('drawerBiomeImg').src = biome.image;
-            document.getElementById('drawerBiomeTag').innerText = biome.tag;
-            document.getElementById('drawerBiomeTag').style.backgroundColor = biome.color;
+            const drawerTagEl = document.getElementById('drawerBiomeTag');
+            if (drawerTagEl) {
+                drawerTagEl.innerText = biome.tag;
+                drawerTagEl.style.backgroundColor = biome.color;
+            }
             document.getElementById('drawerParcelName').innerText = p.name;
             document.getElementById('drawerParcelRol').innerText = 'Rol: ' + p.rol;
             document.getElementById('drawerParcelArea').innerText = p.area_ha + ' ha';

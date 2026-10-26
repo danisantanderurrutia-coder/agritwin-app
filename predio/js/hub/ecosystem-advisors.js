@@ -406,11 +406,13 @@
 
                 // 2. Partículas de Fuego y Pavesas Volantes (Viento Puelche & Biomasa)
                 if (this.toggles.fireWave) {
+                    const isPuelche = !!(window.isPuelcheActive || this.isPuelcheActive || (this.windSpeed >= 40 && this.windDir >= 60 && this.windDir <= 120));
+                    const puelcheMult = isPuelche ? 2.2 : 0.7;
                     this.fireParticles.forEach(p => {
-                        // Las pavesas (chispas) se desplazan a velocidad incrementada
-                        const pSpeed = p.isSpark ? (p.speed * 1.6) : p.speed;
+                        // Las pavesas (chispas) se desplazan a velocidad incrementada si Puelche rachea
+                        const pSpeed = p.isSpark ? (p.speed * 1.6 * puelcheMult) : (p.speed * puelcheMult);
                         p.progress += pSpeed * dt;
-                        p.wobble += 0.08;
+                        p.wobble += isPuelche ? 0.08 : 0.04;
                         if (p.progress > 1.0) p.progress = 0;
                     });
                 }
@@ -1288,11 +1290,19 @@
             // ═══════════════════════════════════════════════════════════════════
             // FLUJO DINÁMICO DE INCENDIO & PAVESAS PUELCHE (P-01..P-03 • VIENTO & BIOMASA)
             // ═══════════════════════════════════════════════════════════════════
+            // FLUJO DINÁMICO DE INCENDIO: BALANCE FÍSICO PUELCHE VS COMBUSTIÓN BASAL
+            // ═══════════════════════════════════════════════════════════════════
             renderFireWave(ctx) {
                 if (!this.toggles.fireWave) return;
 
+                const isPuelche = !!(window.isPuelcheActive || this.isPuelcheActive || (this.windSpeed >= 40 && this.windDir >= 60 && this.windDir <= 120));
+
                 // 1. Radar Palpitante en Foco Primario de Cordillera
-                this.drawRtsRadarEmitter(ctx, [-36.1720, -71.4750], 'FOCO CORDILLERA P-01', 'SPAWN FWI 74 (EXTREMO) • 850 m/h', '#ef4444');
+                if (isPuelche) {
+                    this.drawRtsRadarEmitter(ctx, [-36.1720, -71.4750], 'FOCO CORDILLERA P-01', 'SPAWN FWI 74 (EXTREMO) • 850 m/h (PUELCHE ACTIVO)', '#ef4444');
+                } else {
+                    this.drawRtsRadarEmitter(ctx, [-36.1720, -71.4750], 'FOCO CORDILLERA P-01', 'SPAWN FWI 24 (MODERADO) • 180 m/h (COMBUSTIÓN BASAL)', '#f59e0b');
+                }
 
                 // 2. Trazas incandescentes de propagación por viento & biomasa
                 this.firePaths.forEach((pts, idx) => {
@@ -1304,11 +1314,16 @@
                         if (first) { ctx.moveTo(pt.x, pt.y); first = false; }
                         else { ctx.lineTo(pt.x, pt.y); }
                     });
-                    ctx.strokeStyle = (idx === 0) ? 'rgba(239, 68, 68, 0.45)' : 'rgba(249, 115, 22, 0.35)';
-                    ctx.lineWidth = (idx === 0) ? 5 : 3.5;
+                    if (isPuelche) {
+                        ctx.strokeStyle = (idx === 0) ? 'rgba(239, 68, 68, 0.55)' : 'rgba(249, 115, 22, 0.40)';
+                        ctx.lineWidth = (idx === 0) ? 5.5 : 3.8;
+                    } else {
+                        ctx.strokeStyle = (idx === 0) ? 'rgba(245, 158, 11, 0.35)' : 'rgba(217, 119, 6, 0.25)';
+                        ctx.lineWidth = (idx === 0) ? 3.5 : 2.5;
+                    }
                     ctx.setLineDash([12, 6]);
-                    ctx.shadowColor = '#ea580c';
-                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = isPuelche ? '#ea580c' : '#b45309';
+                    ctx.shadowBlur = isPuelche ? 14 : 6;
                     ctx.stroke();
                     ctx.setLineDash([]);
                     ctx.restore();
@@ -1319,7 +1334,7 @@
                 if (firePts && firePts.length >= 2) {
                     const windAngleBase = (295 * Math.PI) / 180; // Dirección dominante Puelche ONO
                     const windWobble = Math.sin(performance.now() * 0.0018) * 0.16 + Math.cos(performance.now() * 0.0009) * 0.10; // Ráfagas momento a momento
-                    const chevronStations = [0.18, 0.44, 0.68, 0.86];
+                    const chevronStations = isPuelche ? [0.18, 0.44, 0.68, 0.86] : [0.22, 0.52, 0.80];
 
                     chevronStations.forEach((progress, cIdx) => {
                         const pt = this.getPointOnPolyline(firePts, progress);
@@ -1327,14 +1342,22 @@
                         if (!pt || !prevPt) return;
 
                         const pathAngle = Math.atan2(pt.y - prevPt.y, pt.x - prevPt.x);
-                        // Balanceo físico: 65% eje de combustible en laderas + 35% vector eólico Puelche con oscilación
-                        const effectiveAngle = pathAngle * 0.65 + (windAngleBase + windWobble) * 0.35;
-                        const pulsePhase = (performance.now() * 0.004 - progress * 5.0);
+                        // Balanceo físico: Si Puelche está ON, 55% combustible + 45% vector eólico catabático
+                        // Si Puelche está OFF, 90% combustible/ladera + 10% brisa basal
+                        const effectiveAngle = isPuelche
+                            ? (pathAngle * 0.55 + (windAngleBase + windWobble) * 0.45)
+                            : (pathAngle * 0.90 + (windAngleBase + windWobble) * 0.10);
+                        const pulsePhase = (performance.now() * (isPuelche ? 0.005 : 0.0025) - progress * 5.0);
 
-                        this.drawRtsTacticalChevron(ctx, pt.x, pt.y, effectiveAngle, 42, 32, 'rgba(220, 38, 38, 0.70)', '#fde047', 0.72, pulsePhase);
+                        const chevronLength = isPuelche ? 42 : 30;
+                        const chevronWidth = isPuelche ? 32 : 22;
+                        const mainColor = isPuelche ? 'rgba(220, 38, 38, 0.75)' : 'rgba(217, 119, 6, 0.65)';
+                        const tipColor = isPuelche ? '#fde047' : '#fef08a';
 
-                        // En P-02 (zona de salto de chispas), proyectar chevrons menores de spotting hacia sotavento
-                        if (cIdx === 1) {
+                        this.drawRtsTacticalChevron(ctx, pt.x, pt.y, effectiveAngle, chevronLength, chevronWidth, mainColor, tipColor, 0.72, pulsePhase);
+
+                        // Si Puelche está ON: En P-02 proyectar chevrons de spotting (pavesas) hacia sotavento
+                        if (isPuelche && cIdx === 1) {
                             const spotAngle = effectiveAngle + 0.15;
                             const spotPtX = pt.x + Math.cos(spotAngle) * 38;
                             const spotPtY = pt.y + Math.sin(spotAngle) * 38;
@@ -1345,18 +1368,21 @@
 
                 // 4. Partículas de fuego, lenguas de llama y pavesas volantes (spotting)
                 this.fireParticles.forEach(p => {
+                    // Si Puelche está OFF, suprimir o atenuar chispas de salto largo
+                    if (!isPuelche && p.isSpark && p.progress > 0.5) return;
+
                     const pts = this.firePaths[p.pathIdx];
                     const pt = this.getPointOnPolyline(pts, p.progress);
                     const prevPt = this.getPointOnPolyline(pts, Math.max(0, p.progress - 0.05));
                     if (!pt || !prevPt) return;
 
                     const angle = Math.atan2(pt.y - prevPt.y, pt.x - prevPt.x);
-                    const lateral = Math.sin(p.wobble) * (p.isSpark ? 8 : 3.5);
+                    const lateral = Math.sin(p.wobble) * (p.isSpark ? (isPuelche ? 8 : 3) : 3.5);
                     const curX = pt.x + Math.cos(angle + Math.PI / 2) * lateral;
                     const curY = pt.y + Math.sin(angle + Math.PI / 2) * lateral;
 
                     ctx.save();
-                    if (p.isSpark) {
+                    if (p.isSpark && isPuelche) {
                         ctx.fillStyle = '#fde047';
                         ctx.shadowColor = '#f97316';
                         ctx.shadowBlur = 10;
@@ -1370,23 +1396,23 @@
                         ctx.moveTo(prevPt.x, prevPt.y);
                         ctx.lineTo(curX, curY);
                         ctx.stroke();
-                    } else {
+                    } else if (!p.isSpark) {
                         const grad = ctx.createLinearGradient(prevPt.x, prevPt.y, curX, curY);
                         grad.addColorStop(0, 'rgba(239, 68, 68, 0)');
-                        grad.addColorStop(0.5, 'rgba(249, 115, 22, 0.85)');
-                        grad.addColorStop(1, '#fef08a');
+                        grad.addColorStop(0.5, isPuelche ? 'rgba(249, 115, 22, 0.85)' : 'rgba(217, 119, 6, 0.65)');
+                        grad.addColorStop(1, isPuelche ? '#fef08a' : '#fed7aa');
 
                         ctx.beginPath();
                         ctx.moveTo(prevPt.x, prevPt.y);
                         ctx.lineTo(curX, curY);
                         ctx.strokeStyle = grad;
-                        ctx.lineWidth = p.size;
+                        ctx.lineWidth = isPuelche ? p.size : (p.size * 0.75);
                         ctx.lineCap = 'round';
                         ctx.stroke();
 
-                        ctx.fillStyle = '#fde047';
-                        ctx.shadowColor = '#dc2626';
-                        ctx.shadowBlur = 12;
+                        ctx.fillStyle = isPuelche ? '#fde047' : '#fbbf24';
+                        ctx.shadowColor = isPuelche ? '#dc2626' : '#ea580c';
+                        ctx.shadowBlur = isPuelche ? 12 : 6;
                         ctx.beginPath();
                         ctx.moveTo(curX, curY);
                         ctx.lineTo(curX - 11 * Math.cos(angle - 0.45), curY - 11 * Math.sin(angle - 0.45));
@@ -1401,10 +1427,14 @@
                 // 5. Barrera Defensiva Activa: Faja Cortafuego WUI 45m
                 this.drawRtsDefenseWall(ctx, [-36.1850, -71.4950], [-36.2150, -71.5180], 'FAJA CORTAFUEGO WUI 45m (BARRERA ACTIVA)', '#10b981');
 
-                // 6. Rótulo de propagación por viento & biomasa
+                // 6. Rótulo de propagación según condición física de viento Puelche vs Combustión Basal
                 const labelCoord = [-36.1920, -71.5300];
                 const lPt = this.map.latLngToContainerPoint(labelCoord);
-                this.drawHighContrastLabel(ctx, '🔥 FRENTE DE AVANCE PUELCHE ➔ 850 m/h (PAVESAS 1.2 km)', lPt.x + 10, lPt.y - 20, '#fef08a', '#dc2626');
+                if (isPuelche) {
+                    this.drawHighContrastLabel(ctx, '🔥 FRENTE DE AVANCE PUELCHE ➔ 850 m/h (PAVESAS 1.2 km)', lPt.x + 10, lPt.y - 20, '#fef08a', '#dc2626');
+                } else {
+                    this.drawHighContrastLabel(ctx, '🔥 FRENTE BASAL ➔ 180 m/h (COMBUSTIÓN BIOMASA LOCAL)', lPt.x + 10, lPt.y - 20, '#fef08a', '#b45309');
+                }
             }
 
             // ═══════════════════════════════════════════════════════════════════

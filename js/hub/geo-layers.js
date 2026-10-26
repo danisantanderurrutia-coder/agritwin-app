@@ -251,6 +251,320 @@
             ]
         };
 
+        // ─── 1.1B ESTÁNDAR VECINO INFORMADO: MÓDULO 1 - MOSAICO LULC BIOFÍSICO (LOD DUAL: MACRO >50ha + LOCAL 5km) ───
+        // Cobertura biofísica pura (Sentinel-2 L2A BOA 10m) independiente de roles de tenencia de la tierra.
+        // Biomasa Forestal Unificada temporalmente (con estrategia de discriminación por pendiente DEM >18° y textura Canny).
+        const geojsonBiofisicoLulc = {
+            "type": "FeatureCollection",
+            "features": [
+                // ── MACRO-POLÍGONOS CUENCA (MMU ≥ 50 ha) ──
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "MACRO_FOR_CORDILLERA",
+                        "name": "Cinturón Biomasa Precordillera Andina",
+                        "class": "biomasa_forestal",
+                        "area_ha": 12300,
+                        "zone": "Macro-Cuenca (LOD MMU ≥50 ha)",
+                        "confidence": "94% (Sentinel-2 L2A)",
+                        "label_note": "Biomasa Unificada (Estrategia: pendiente DEM >18° y textura Canny para discriminar nativo de pino)",
+                        "hazard_link": "Combustible masivo continuo en corredor de viento Puelche",
+                        "color": "#f43f5e",
+                        "fillColor": "#e11d48",
+                        "stroke": "#fb7185"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5200, -36.2100], [-71.4400, -36.2150], [-71.4100, -36.2800],
+                            [-71.4300, -36.3300], [-71.5100, -36.3100], [-71.5200, -36.2100]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "MACRO_FOR_COSTA",
+                        "name": "Macizo Forestal Cordillera de la Costa",
+                        "class": "biomasa_forestal",
+                        "area_ha": 14850,
+                        "zone": "Macro-Cuenca (LOD MMU ≥50 ha)",
+                        "confidence": "95% (Sentinel-2 L2A)",
+                        "label_note": "Biomasa Unificada (Plantaciones densas de pino insigne y eucalipto glóbulus)",
+                        "hazard_link": "Combustible denso perimetral en límite poniente de cuenca",
+                        "color": "#f43f5e",
+                        "fillColor": "#e11d48",
+                        "stroke": "#fb7185"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.8200, -36.0800], [-71.9300, -36.0900], [-71.9500, -36.1800],
+                            [-71.8500, -36.2000], [-71.8100, -36.1400], [-71.8200, -36.0800]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "MACRO_AGR_LONGAVI",
+                        "name": "Matriz Agrícola Irrigada Cuenca Media",
+                        "class": "matriz_agricola",
+                        "area_ha": 18600,
+                        "zone": "Macro-Cuenca (LOD MMU ≥50 ha)",
+                        "confidence": "96% (Sentinel-2 L2A)",
+                        "label_note": "Suelo aluvial bajo riego gravitacional de canales Longaví",
+                        "hazard_link": "Amortiguador térmico de baja inflamabilidad estival",
+                        "color": "#10b981",
+                        "fillColor": "#059669",
+                        "stroke": "#34d399"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5800, -36.1800], [-71.6500, -36.1500], [-71.7400, -36.1350],
+                            [-71.7200, -36.1850], [-71.6400, -36.2050], [-71.5800, -36.1800]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "MACRO_SEC_PARRAL",
+                        "name": "Llanura de Secano & Rastrojo Parral-Retiro",
+                        "class": "secano_rastrojo",
+                        "area_ha": 9800,
+                        "zone": "Macro-Cuenca (LOD MMU ≥50 ha)",
+                        "confidence": "93% (Sentinel-2 L2A)",
+                        "label_note": "Pastizal seco estival y rastrojo de cosecha de cereal",
+                        "hazard_link": "Combustible ligero de ignición rápida a ras de suelo",
+                        "color": "#f59e0b",
+                        "fillColor": "#d97706",
+                        "stroke": "#fbbf24"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.7000, -36.0500], [-71.8200, -36.0600], [-71.8400, -36.1200],
+                            [-71.7300, -36.1150], [-71.7000, -36.0500]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "MACRO_AGUA_BULLILEO",
+                        "name": "Espejo Mayor Embalse Bullileo",
+                        "class": "espejo_agua",
+                        "area_ha": 3200,
+                        "zone": "Macro-Cuenca (LOD MMU ≥50 ha)",
+                        "confidence": "99% (MNDWI Sentinel-2)",
+                        "label_note": "Cuerpo de agua léntico principal de regulación de cuenca",
+                        "hazard_link": "Reserva hídrica estratégica regional (84.2 Hm³)",
+                        "color": "#06b6d4",
+                        "fillColor": "#0891b2",
+                        "stroke": "#22d3ee"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.4050, -36.2650], [-71.4350, -36.2700], [-71.4350, -36.2950],
+                            [-71.4100, -36.2900], [-71.4050, -36.2650]
+                        ]]
+                    }
+                },
+
+                // ── POLÍGONOS DE ALTA RESOLUCIÓN LOCAL (RADIO 5 KM MENIEL, MMU ≥ 1.5 ha) ──
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_AGUA_MENIEL",
+                        "name": "Tranque Acumulador Fundo Meniel",
+                        "class": "espejo_agua",
+                        "area_ha": 1.8,
+                        "vol_estimado_m3": "18.500 m³",
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "98% (MNDWI)",
+                        "label_note": "Espejo superficial detectado; calibración batimétrica media hm=3.2m",
+                        "hazard_link": "Punto de abastecimiento aéreo para brigadas y cortafuego vivo",
+                        "color": "#06b6d4",
+                        "fillColor": "#0891b2",
+                        "stroke": "#22d3ee"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6058, -36.2102], [-71.6038, -36.2102], [-71.6038, -36.2118],
+                            [-71.6058, -36.2118], [-71.6058, -36.2102]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_AGUA_CRISTALES",
+                        "name": "Tranque Vecinal Los Cristales",
+                        "class": "espejo_agua",
+                        "area_ha": 2.4,
+                        "vol_estimado_m3": "24.800 m³",
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "97% (MNDWI)",
+                        "label_note": "Tranque vecino colindante oeste; capacidad de apoyo hídrico",
+                        "hazard_link": "Respaldo hídrico colaborativo en red vecinal",
+                        "color": "#06b6d4",
+                        "fillColor": "#0891b2",
+                        "stroke": "#22d3ee"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6165, -36.2170], [-71.6135, -36.2170], [-71.6135, -36.2195],
+                            [-71.6165, -36.2195], [-71.6165, -36.2170]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_AGUA_SANMANUEL",
+                        "name": "Tranque Sector San Manuel",
+                        "class": "espejo_agua",
+                        "area_ha": 3.1,
+                        "vol_estimado_m3": "32.000 m³",
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "98% (MNDWI)",
+                        "label_note": "Tranque intermedio de canal San Manuel",
+                        "hazard_link": "Punto de recarga de agua para sector norte",
+                        "color": "#06b6d4",
+                        "fillColor": "#0891b2",
+                        "stroke": "#22d3ee"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6225, -36.2010], [-71.6190, -36.2010], [-71.6190, -36.2038],
+                            [-71.6225, -36.2038], [-71.6225, -36.2010]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_AGR_CEREZOS",
+                        "name": "Cuartel Cerezos Meniel (Norte)",
+                        "class": "matriz_agricola",
+                        "area_ha": 12.0,
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "96% (Sentinel-2 L2A)",
+                        "label_note": "Cuartel frutal bajo riego por goteo; vigor NDVI 0.74",
+                        "hazard_link": "Canopia densa activa; barrera verde hidratada contra fuego",
+                        "color": "#10b981",
+                        "fillColor": "#059669",
+                        "stroke": "#34d399"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6085, -36.2088], [-71.6025, -36.2075], [-71.6020, -36.2110],
+                            [-71.6082, -36.2115], [-71.6085, -36.2088]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_AGR_AVELLANOS",
+                        "name": "Cuartel Avellanos Meniel (Sur Keyline)",
+                        "class": "matriz_agricola",
+                        "area_ha": 10.0,
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "95% (Sentinel-2 L2A)",
+                        "label_note": "Cuartel estructurado con líneas Keyline a desnivel; VWC 34.8%",
+                        "hazard_link": "Alta retención de agua de escorrentía e infiltración profunda",
+                        "color": "#10b981",
+                        "fillColor": "#059669",
+                        "stroke": "#34d399"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6082, -36.2115], [-71.6020, -36.2110], [-71.6010, -36.2140],
+                            [-71.6075, -36.2155], [-71.6082, -36.2115]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_FOR_NORTE",
+                        "name": "Rodal Biomasa Forestal Flanco Norte",
+                        "class": "biomasa_forestal",
+                        "area_ha": 14.2,
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "94% (Sentinel-2 L2A)",
+                        "label_note": "Biomasa Unificada (Colindante directo; pendiente suave 6°; monocultivo comercial)",
+                        "hazard_link": "Riesgo de interfaz WUI directo sobre el deslinde norte de Meniel",
+                        "color": "#f43f5e",
+                        "fillColor": "#e11d48",
+                        "stroke": "#fb7185"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6000, -36.2010], [-71.5930, -36.2010], [-71.5940, -36.2065],
+                            [-71.6015, -36.2060], [-71.6000, -36.2010]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_FOR_GUINDO",
+                        "name": "Remanente Nativo Quebrada El Guindo",
+                        "class": "biomasa_forestal",
+                        "area_ha": 8.5,
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "92% (Sentinel-2 L2A)",
+                        "label_note": "Biomasa Unificada (Quebrada escarpada pendiente 24°; firma esclerófila nativa)",
+                        "hazard_link": "Amortiguador biológico de erosión y cortafuego natural en vaguada",
+                        "color": "#f43f5e",
+                        "fillColor": "#e11d48",
+                        "stroke": "#fb7185"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5890, -36.2120], [-71.5810, -36.2110], [-71.5820, -36.2165],
+                            [-71.5900, -36.2160], [-71.5890, -36.2120]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "LOC_SEC_SANANTONIO",
+                        "name": "Parche Pastizal / Secano San Antonio",
+                        "class": "secano_rastrojo",
+                        "area_ha": 18.6,
+                        "zone": "Radio Local Táctico (<5 km)",
+                        "confidence": "93% (Sentinel-2 L2A)",
+                        "label_note": "Pastizal seco estival en deslinde sur",
+                        "hazard_link": "Riesgo de inicio de fuego por colilla o maquinaria agrícola",
+                        "color": "#f59e0b",
+                        "fillColor": "#d97706",
+                        "stroke": "#fbbf24"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6210, -36.2240], [-71.6140, -36.2230], [-71.6150, -36.2295],
+                            [-71.6225, -36.2290], [-71.6210, -36.2240]
+                        ]]
+                    }
+                }
+            ]
+        };
+
         // ─── 1.2 ZONIFICACIÓN DE AMENAZA DE INUNDACIÓN FLUVIAL (DGA / SENAPRED) ───
         const geojsonInundacion = {
             "type": "FeatureCollection",
@@ -1435,6 +1749,7 @@
 
         // Map Layers Object to hold references
         const overlayLayers = {};
+        window.overlayLayers = overlayLayers;
 
         // 2.1 Mosaico Catastral Predial Rural (Roles SII)
         function getPredioScenarioStyle(feature, presetKey) {
@@ -2149,6 +2464,77 @@
         overlayLayers['calfire_fhsz'] = calFireFhszLayer;
 
         // ═══════════════════════════════════════════════════════════════════
+        // 2.5B ESTÁNDAR VECINO INFORMADO: MÓDULO 1 - MOSAICO LULC BIOFÍSICO PURO (SIN CATASTRO)
+        // ═══════════════════════════════════════════════════════════════════
+        const biofisicoLulcLayer = L.geoJSON(geojsonBiofisicoLulc, {
+            style: function(feature) {
+                const p = feature.properties;
+                return {
+                    color: p.stroke || p.color,
+                    weight: 1.8,
+                    fillColor: p.fillColor || p.color,
+                    fillOpacity: p.class === 'espejo_agua' ? 0.45 : 0.22,
+                    className: 'lulc-biofisico-poly'
+                };
+            },
+            onEachFeature: function(feature, layer) {
+                const p = feature.properties;
+                layer.on('mouseover', function(e) {
+                    this.setStyle({ fillOpacity: 0.65, weight: 2.8 });
+                    this.bringToFront();
+                });
+                layer.on('mouseout', function(e) {
+                    this.setStyle({ fillOpacity: p.class === 'espejo_agua' ? 0.45 : 0.22, weight: 1.8 });
+                });
+
+                const classIcon = p.class === 'espejo_agua' ? '💧' : (p.class === 'biomasa_forestal' ? '🌲' : (p.class === 'matriz_agricola' ? '🌾' : '🌾'));
+                const classNameLabel = p.class === 'espejo_agua' ? 'Cuerpo / Espejo de Agua' : (p.class === 'biomasa_forestal' ? 'Biomasa Forestal Continua' : (p.class === 'matriz_agricola' ? 'Matriz Agrícola Irrigada' : 'Secano & Rastrojo Estival'));
+
+                const popupHtml = `
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #f8fafc; min-width: 250px; line-height: 1.4;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 5px; margin-bottom: 6px;">
+                            <span style="font-size: 9px; color: #38bdf8; font-weight: bold; background: rgba(56,189,248,0.15); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(56,189,248,0.3);">
+                                LULC BIOFÍSICO &bull; S2 L2A
+                            </span>
+                            <span style="font-size: 9px; color: #10b981; font-weight: bold;">${p.confidence}</span>
+                        </div>
+                        <strong style="display: block; font-size: 12px; color: #ffffff; margin-bottom: 4px;">
+                            ${classIcon} ${p.name}
+                        </strong>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 10px;">
+                            <span style="color: #94a3b8;">Clase Biofísica:</span>
+                            <span style="color: ${p.color}; font-weight: bold;">${classNameLabel}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 10px;">
+                            <span style="color: #94a3b8;">Superficie:</span>
+                            <span style="color: #f8fafc; font-weight: bold;">${p.area_ha.toLocaleString()} ha</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 10px;">
+                            <span style="color: #94a3b8;">Resolución LOD:</span>
+                            <span style="color: #e2e8f0; font-size: 9.5px;">${p.zone}</span>
+                        </div>
+                        ${p.vol_estimado_m3 ? `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 10px; background: rgba(6,182,212,0.15); padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(6,182,212,0.3);">
+                            <span style="color: #67e8f9;">Volumen Est.:</span>
+                            <span style="color: #ffffff; font-weight: bold;">${p.vol_estimado_m3}</span>
+                        </div>
+                        ` : ''}
+                        <div style="margin-top: 6px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 9.5px; color: #cbd5e1;">
+                            <span style="color: #f59e0b; font-weight: bold;">⚡ Vínculo Territorial:</span> ${p.hazard_link}
+                        </div>
+                        ${p.label_note ? `
+                        <div style="margin-top: 4px; font-size: 8.5px; color: #94a3b8; font-style: italic;">
+                            ℹ️ ${p.label_note}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                layer.bindPopup(popupHtml);
+            }
+        });
+        overlayLayers['lulc_biofisico'] = biofisicoLulcLayer;
+
+        // ═══════════════════════════════════════════════════════════════════
         // 2.6 FUNCIONES DE CONTROL DE TRANSECTOS, ENCUADRE CONTEXTUAL & VIENTO
         // ═══════════════════════════════════════════════════════════════════
         
@@ -2193,6 +2579,14 @@
                     activeCls: 'bg-orange-500/30 text-white border-orange-400/60',
                     inactiveCls: 'bg-white/5 text-orange-200 border-white/5',
                     badgeActive: 'bg-orange-500/30 text-orange-300 border-orange-400/50 font-bold',
+                    badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
+                },
+                'lulc_biofisico': {
+                    id: 'btnDockLulcBio',
+                    badgeId: 'badgeDockLulcBio',
+                    activeCls: 'bg-emerald-500/30 text-white border-emerald-400/60',
+                    inactiveCls: 'bg-white/5 text-emerald-200 border-white/5',
+                    badgeActive: 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 font-bold',
                     badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
                 }
             };
@@ -2289,7 +2683,37 @@
             }
         });
 
-        // Toggle de Transectos con Encuadre Contextual Suave (Opción 1A) y Sincronización de Flujos Vivos
+        // Helper para desactivar una capa de riesgo y sus flujos asociados de forma consistente
+        window.deactivateRiskLayer = function(type) {
+            const layer = overlayLayers[type];
+            if (layer && map.hasLayer(layer)) {
+                map.removeLayer(layer);
+            }
+            updateDockButtonState(type, false);
+            const chk = document.getElementById('chkSidebar-' + type);
+            if (chk) chk.checked = false;
+
+            if (window.energyFlowEngine) {
+                if (type === 'inundacion') {
+                    window.energyFlowEngine.toggles.floodWave = false;
+                    window.energyFlowEngine.toggles.water = false;
+                    const chkFlood = document.getElementById('toggleFlowFloodWave');
+                    if (chkFlood) chkFlood.checked = false;
+                    const chkWater = document.getElementById('toggleFlowWater');
+                    if (chkWater) chkWater.checked = false;
+                } else if (type === 'incendios') {
+                    window.energyFlowEngine.toggles.fireWave = false;
+                    const chkFire = document.getElementById('toggleFlowFireWave');
+                    if (chkFire) chkFire.checked = false;
+                } else if (type === 'landslides') {
+                    window.energyFlowEngine.toggles.landslideWave = false;
+                    const chkSlide = document.getElementById('toggleFlowLandslideWave');
+                    if (chkSlide) chkSlide.checked = false;
+                }
+            }
+        };
+
+        // Toggle de Transectos con Encuadre Contextual Suave (Opción 1A) y Mutua Exclusión Física
         window.toggleTransectLayer = function(type) {
             const layer = overlayLayers[type];
             if (!layer) return;
@@ -2303,6 +2727,15 @@
 
             const newState = !isActive;
             updateDockButtonState(type, newState);
+
+            // Mutua exclusión física entre Inundación e Incendios
+            if (newState) {
+                if (type === 'inundacion') {
+                    window.deactivateRiskLayer('incendios');
+                } else if (type === 'incendios') {
+                    window.deactivateRiskLayer('inundacion');
+                }
+            }
 
             // Sincronizar apertura de Tab 3 (Riesgos) y desplegar el módulo correspondiente
             if (newState) {
@@ -2337,20 +2770,8 @@
                     if (chkWater) chkWater.checked = newState;
                 } else if (type === 'incendios') {
                     window.energyFlowEngine.toggles.fireWave = newState;
-                    window.energyFlowEngine.toggles.wind = newState;
-                    if (newState) {
-                        window.energyFlowEngine.setAtmosphericState({
-                            windSpeed: 45,
-                            windDir: 95,
-                            temp: 36,
-                            precip: 0
-                        });
-                        window.energyFlowEngine.speedMult = 2.4;
-                    }
                     const chkFire = document.getElementById('toggleFlowFireWave');
                     if (chkFire) chkFire.checked = newState;
-                    const chkWind = document.getElementById('toggleFlowWind');
-                    if (chkWind) chkWind.checked = newState;
                 } else if (type === 'landslides') {
                     window.energyFlowEngine.toggles.landslideWave = newState;
                     const chkSlide = document.getElementById('toggleFlowLandslideWave');
@@ -2389,6 +2810,31 @@
             }
         };
 
+        // ═══════════════════════════════════════════════════════════════════
+        // ESTÁNDAR VECINO INFORMADO: TOGGLE LULC BIOFÍSICO (MÓDULO 1)
+        // ═══════════════════════════════════════════════════════════════════
+        window.toggleBiofisicoLulcLayer = function(force) {
+            const layer = overlayLayers['lulc_biofisico'];
+            if (!layer || !map) return;
+            const isActive = map.hasLayer(layer);
+            const shouldBeActive = (force !== undefined) ? force : !isActive;
+            if (shouldBeActive) {
+                map.addLayer(layer);
+            } else {
+                map.removeLayer(layer);
+            }
+            updateDockButtonState('lulc_biofisico', shouldBeActive);
+
+            // Sincronizar badge lateral si existe
+            const sbBadge = document.getElementById('badgeSidebarLulcBio');
+            if (sbBadge) {
+                sbBadge.innerText = shouldBeActive ? 'ACTIVO' : 'ACTIVAR';
+                sbBadge.className = shouldBeActive 
+                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-emerald-500/40 text-emerald-200 border border-emerald-400/60 font-mono font-bold'
+                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+            }
+        };
+
         // Centrar directamente en Meniel
         window.flyToMeniel = function() {
             map.flyTo([-36.2115, -71.6050], 14, { duration: 1.0 });
@@ -2415,27 +2861,79 @@
             updateDockButtonState('vecinos', !isActive);
         };
 
+        // Control Explícito del Viento Puelche (Variación Atmosférica ON/OFF en Pestaña 1)
+        window.isPuelcheActive = false;
+
+        window.setPuelcheState = function(active) {
+            window.isPuelcheActive = !!active;
+
+            // Sincronizar botón en Tab 1 (Atmósfera / Tiempo)
+            const btn = document.getElementById('btnTogglePuelcheWind');
+            const dot = document.getElementById('dotPuelcheWind');
+            const lbl = document.getElementById('labelPuelcheWind');
+
+            if (btn && dot && lbl) {
+                if (window.isPuelcheActive) {
+                    btn.className = 'px-3 py-1 rounded-md text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-rose-950/90 text-rose-200 border-rose-500/70 shadow-[0_0_12px_rgba(239,68,68,0.4)] cursor-pointer';
+                    dot.className = 'w-2 h-2 rounded-full bg-rose-400 animate-pulse';
+                    lbl.innerText = 'PUELCHE: ON (ESE 58 km/h)';
+                } else {
+                    btn.className = 'px-3 py-1 rounded-md text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 cursor-pointer shadow-sm';
+                    dot.className = 'w-2 h-2 rounded-full bg-slate-500';
+                    lbl.innerText = 'PUELCHE: OFF';
+                }
+            }
+
+            // Sincronizar motor de partículas y líneas de corriente eólicas
+            if (window.energyFlowEngine) {
+                window.energyFlowEngine.isPuelcheActive = window.isPuelcheActive;
+                if (window.isPuelcheActive) {
+                    window.energyFlowEngine.toggles.wind = true;
+                    window.energyFlowEngine.setRegime('storm');
+                    if (typeof window.energyFlowEngine.setAtmosphericState === 'function') {
+                        window.energyFlowEngine.setAtmosphericState({
+                            windSpeed: 58,
+                            windDir: 75, // ESE Puelche catabático
+                            temp: 39,
+                            precip: 0
+                        });
+                    }
+                    const chkWind = document.getElementById('toggleFlowWind');
+                    if (chkWind) chkWind.checked = true;
+                } else {
+                    window.energyFlowEngine.setRegime('base');
+                    if (typeof window.energyFlowEngine.setAtmosphericState === 'function') {
+                        window.energyFlowEngine.setAtmosphericState({
+                            windSpeed: 15,
+                            windDir: 225, // Brisa SW normal
+                            temp: 22,
+                            precip: 0
+                        });
+                    }
+                }
+            }
+
+            // Sincronizar sliders meteorológicos si Puelche está ON
+            if (window.isPuelcheActive) {
+                const sWind = document.getElementById('slide-wind');
+                const sHum = document.getElementById('slide-hum');
+                const sTemp = document.getElementById('slide-temp');
+                if (sWind) sWind.value = 58;
+                if (sHum) sHum.value = 11;
+                if (sTemp) sTemp.value = 39;
+                if (typeof updateFWI === 'function') updateFWI(39, 11, 58);
+            }
+            updateDockButtonState('viento', window.isPuelcheActive);
+            return window.isPuelcheActive;
+        };
+
+        window.togglePuelcheWind = function() {
+            return window.setPuelcheState(!window.isPuelcheActive);
+        };
+
         // Toggle de Viento según Emergencia (Opción 3: Puelche / Humo solo bajo demanda)
         window.toggleWindEmergency = function(forcedState) {
-            if (!window.energyFlowEngine) return;
-            const current = !!window.energyFlowEngine.toggles.wind;
-            const target = (typeof forcedState === 'boolean') ? forcedState : !current;
-            
-            window.energyFlowEngine.toggles.wind = target;
-            if (target) {
-                // Activar modo emergencia viento Puelche
-                if (typeof window.energyFlowEngine.setAtmosphericState === 'function') {
-                    window.energyFlowEngine.setAtmosphericState({
-                        windSpeed: 42,
-                        windDir: 95, // ESE Puelche
-                        temp: 34,
-                        precip: 0
-                    });
-                }
-                window.energyFlowEngine.speedMult = 2.2;
-            }
-            updateDockButtonState('viento', target);
-            return target;
+            return window.setPuelcheState(forcedState);
         };
 
         // Registrar capas en el control Leaflet tradicional (colapsado)
@@ -3541,38 +4039,80 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                 const pyrogenicCells = [cellP01, cellP02, cellP03].filter(c => c && c.poly);
                 const landslideCells = [cellM01, cellM02].filter(c => c && c.poly);
 
+                // Matriz de compatibilidad y mutua exclusión física en los 8 Momentos
                 if (presetKey === 'storm_t100' || presetKey === 'storm_t10') {
+                    // Crecidas / Lluvia extrema: apagar activamente Incendios y Puelche
+                    if (typeof window.deactivateRiskLayer === 'function') {
+                        window.deactivateRiskLayer('incendios');
+                    }
+                    if (typeof window.setPuelcheState === 'function') {
+                        window.setPuelcheState(false);
+                    }
+
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 3.8, color: '#38bdf8', fillOpacity: 0.45, dashArray: '8, 3' }));
                     pyrogenicCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 3.8, color: '#ef4444', fillOpacity: 0.50, dashArray: '8, 3' }));
                     if (typeof window.toggleTransectLayer === 'function' && typeof transectoFluvialGroup !== 'undefined' && !map.hasLayer(transectoFluvialGroup)) {
                         window.toggleTransectLayer('inundacion');
                     }
-                } else if (presetKey === 'puelche_fire' || presetKey === 'heatwave') {
+                } else if (presetKey === 'puelche_fire') {
+                    // Momento 5: Puelche Catabático (Tiempo extremo: Viento ESE 58 km/h, HR 11%)
+                    // Desacople: NO activa incendios automáticamente. Apaga inundaciones.
+                    if (typeof window.deactivateRiskLayer === 'function') {
+                        window.deactivateRiskLayer('inundacion');
+                    }
+                    if (typeof window.setPuelcheState === 'function') {
+                        window.setPuelcheState(true);
+                    }
+
                     pyrogenicCells.forEach(c => c.poly.setStyle({ weight: 4.2, color: '#ef4444', fillOpacity: 0.55, dashArray: '8, 3' }));
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#0369a1', fillOpacity: 0.08, dashArray: '4, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
-                    if (presetKey === 'puelche_fire') {
-                        if (typeof window.toggleWindEmergency === 'function') {
-                            window.toggleWindEmergency(true);
-                        }
-                        if (typeof window.toggleTransectLayer === 'function' && typeof transectoIncendioGroup !== 'undefined' && !map.hasLayer(transectoIncendioGroup)) {
-                            window.toggleTransectLayer('incendios');
-                        }
+                } else if (presetKey === 'heatwave') {
+                    // Ola de calor: desactiva inundaciones y desactiva puelche (viento sur calmo 14 km/h)
+                    if (typeof window.deactivateRiskLayer === 'function') {
+                        window.deactivateRiskLayer('inundacion');
                     }
+                    if (typeof window.setPuelcheState === 'function') {
+                        window.setPuelcheState(false);
+                    }
+
+                    pyrogenicCells.forEach(c => c.poly.setStyle({ weight: 4.0, color: '#f97316', fillOpacity: 0.45, dashArray: '6, 3' }));
+                    fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#0369a1', fillOpacity: 0.08, dashArray: '4, 4' }));
+                    landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
                 } else if (presetKey === 'drought') {
+                    // Megasequía: desactiva inundaciones y desactiva puelche
+                    if (typeof window.deactivateRiskLayer === 'function') {
+                        window.deactivateRiskLayer('inundacion');
+                    }
+                    if (typeof window.setPuelcheState === 'function') {
+                        window.setPuelcheState(false);
+                    }
+
                     pyrogenicCells.forEach(c => c.poly.setStyle({ weight: 2.8, color: '#f59e0b', fillOpacity: 0.30, dashArray: '6, 4' }));
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#0284c7', fillOpacity: 0.08, dashArray: '4, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
+                } else if (presetKey === 'winter_dry') {
+                    // Helada polar: desactiva incendios
+                    if (typeof window.deactivateRiskLayer === 'function') {
+                        window.deactivateRiskLayer('incendios');
+                    }
+                    if (typeof window.setPuelcheState === 'function') {
+                        window.setPuelcheState(false);
+                    }
+
+                    fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.8, color: '#38bdf8', fillOpacity: 0.15, dashArray: '4, 4' }));
+                    pyrogenicCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
+                    landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
                 } else {
+                    // Normal / Verano normal: estado equilibrado sin Puelche
+                    if (typeof window.setPuelcheState === 'function') {
+                        window.setPuelcheState(false);
+                    }
+
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 2.2, color: '#38bdf8', fillOpacity: 0.20, dashArray: '6, 4' }));
                     pyrogenicCells.forEach(c => c.poly.setStyle({ weight: 2.2, color: '#ef4444', fillOpacity: 0.22, dashArray: '6, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 2.2, color: '#f59e0b', fillOpacity: 0.22, dashArray: '6, 4' }));
-                    if (presetKey === 'normal' || presetKey === 'summer_normal') {
-                        if (typeof window.toggleWindEmergency === 'function') {
-                            window.toggleWindEmergency(false);
-                        }
-                    }
                 }
 
                 // 2. Capa de Exposición Territorial Colonia (Uso de Suelo / Activos)

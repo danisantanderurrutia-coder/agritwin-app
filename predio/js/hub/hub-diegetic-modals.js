@@ -34,7 +34,6 @@ function ensureDiegeticModalContainer() {
                         <span id="diegeticModalIcon" class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl shrink-0">🌿</span>
                         <div>
                             <div class="flex items-center gap-2">
-                                <span id="diegeticModalTag" class="text-[9px] font-mono font-bold text-amber-400 bg-black/50 px-2 py-0.5 rounded border border-amber-500/30 uppercase">[MODAL-AOE]</span>
                                 <span id="diegeticModalCategory" class="text-xs text-stone-400 font-mono">AgroTwin Suite</span>
                             </div>
                             <h3 id="diegeticModalTitle" class="text-lg sm:text-xl font-black text-white font-serif tracking-tight mt-0.5">Título</h3>
@@ -73,7 +72,7 @@ function openDiegeticModal(opts) {
 
     if (opts.borderColor) card.style.borderColor = opts.borderColor;
     if (opts.icon) icon.textContent = opts.icon;
-    if (opts.tag) tag.textContent = opts.tag;
+    if (tag && opts.tag) tag.textContent = opts.tag;
     if (opts.category) cat.textContent = opts.category;
     if (opts.title) title.textContent = opts.title;
     if (opts.status) status.textContent = opts.status;
