@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriTwin • Dossier Estratégico y Técnico Completo (Landscape)</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+      background: #f1f5f9;
+      font-size: 8pt;
+      line-height: 1.35;
+    }
+
+    .slide {
+      page-break-after: always;
+      width: 100%;
+      height: 192mm;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10mm 12mm 8mm 12mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .slide:last-child {
+      page-break-after: auto;
+    }
+
+    /* HEADER SLIDE */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .slide-tag {
+      font-size: 7pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #059669;
+      margin-bottom: 2px;
+    }
+
+    .slide-title {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+
+    .slide-meta {
+      font-size: 7.5pt;
+      color: #64748b;
+      font-weight: 600;
+      text-align: right;
+      line-height: 1.25;
+    }
+
+    /* FOOTER SLIDE */
+    .slide-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 6.8pt;
+      color: #94a3b8;
+    }
+
+    /* GRIDS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      flex: 1;
+    }
+
+    /* BENTO CARDS */
+    .card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card.highlight-green { border-color: #10b981; background: #f0fdf4; }
+    .card.highlight-blue { border-color: #38bdf8; background: #f0f9ff; }
+    .card.highlight-purple { border-color: #c084fc; background: #faf5ff; }
+    .card.highlight-amber { border-color: #f59e0b; background: #fffbeb; }
+    .card.highlight-red { border-color: #f87171; background: #fff5f5; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .card-brand {
+      font-size: 10pt;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .card-subtitle {
+      font-size: 6.8pt;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      font-size: 6.5pt;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-blue { background: #e0f2fe; color: #0284c7; }
+    .badge-green { background: #dcfce7; color: #16a34a; }
+    .badge-red { background: #fee2e2; color: #dc2626; }
+    .badge-amber { background: #fef3c7; color: #d97706; }
+    .badge-purple { background: #f3e8ff; color: #9333ea; }
+    .badge-dark { background: #0f172a; color: #ffffff; }
+
+    .feature-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 6px 8px;
+      margin-bottom: 6px;
+    }
+
+    .feature-title {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .feature-text {
+      font-size: 7.2pt;
+      color: #334155;
+      line-height: 1.35;
+    }
+
+    .infra-box {
+      background: #f8fafc;
+      border-radius: 4px;
+      padding: 6px 8px;
+      border-left: 3px solid #0284c7;
+      font-size: 6.8pt;
+      color: #475569;
+      line-height: 1.3;
+    }
+
+    .infra-box.green { border-left-color: #10b981; }
+    .infra-box.purple { border-left-color: #a855f7; }
+    .infra-box.amber { border-left-color: #f59e0b; }
+    .infra-box.red { border-left-color: #ef4444; }
+
+    .infra-title {
+      font-size: 6.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .pill-item {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 6.5pt;
+      background: #e2e8f0;
+      padding: 1px 4px;
+      border-radius: 3px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    /* PIPELINE DIAGRAM */
+    .pipeline-container {
+      display: grid;
+      grid-template-columns: 1fr 20px 1fr 20px 1fr 20px 1.25fr;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .pipeline-step {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .pipeline-step.active { border-color: #059669; background: #ecfdf5; }
+    .pipeline-step.hero { border-color: #2563eb; background: #eff6ff; }
+
+    .pipeline-arrow {
+      font-size: 13pt;
+      font-weight: 900;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    .step-icon { font-size: 14pt; margin-bottom: 2px; }
+    .step-label { font-size: 8pt; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
+    .step-sub { font-size: 6.8pt; color: #64748b; line-height: 1.25; }
+
+    /* TABLES */
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.2pt;
+      margin-top: 4px;
+    }
+
+    .custom-table th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 6px 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 6.5pt;
+      letter-spacing: 0.4px;
+      text-align: left;
+    }
+
+    .custom-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+      line-height: 1.3;
+    }
+
+    .custom-table tr:nth-child(even) td { background: #f8fafc; }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== LÁMINA 1: PORTADA & EL GRAN DESACOPLE ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Dossier Estratégico & Técnico • Observación de la Tierra & Negocios Agroclimáticos</div>
+          <div class="slide-title">De Píxeles Gratuitos de la NASA y la ESA a Tracción Multimillonaria</div>
+        </div>
+        <div class="slide-meta">
+          AGRITWIN INTELLIGENCE<br/>
+          OCTUBRE 2026 • EDICIÓN MAESTRA (14 LÁMINAS)
+        </div>
+      </div>
+
+      <!-- VISUAL PIPELINE -->
+      <div class="pipeline-container">
+        <div class="pipeline-step">
+          <div class="step-icon">🛰️</div>
+          <div class="step-label">1. Satélites Públicos</div>
+          <div class="step-sub">Copernicus Sentinel-1/2/3/5P<br/>NASA Landsat 8/9, GEDI, MODIS<br/><strong>Costo: $0 USD (Commodity)</strong></div>
+        </div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-step active">
+          <div class="step-icon">🌱</div>
+          <div class="step-label">2. Ground Truth en Tierra</div>
+          <div class="step-sub">Sondas FDR suelo (20-100cm)<br/>Catastro Frutícola CIREN<br/>Caudalímetros & aforos DGA</div>
+        </div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-step hero">
+          <div class="step-icon">⚙️</div>
+          <div class="step-label">3. Motores Físicos & IA</div>
+          <div class="step-sub">Balance FAO-56 (Kc dinámico)<br/>Modelo de propagación Rothermel<br/>Alometría de biomasa AGB & DNDC</div>
+        </div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-step" style="border-color: #10b981; background: #f0fdf4;">
+          <div class="step-icon">💰</div>
+          <div class="step-label">4. Salidas de Alto Impacto</div>
+          <div class="step-sub"><strong>Ahorro 25% energía</strong> bombeo<br/><strong>Evitar multas DGA</strong> (UTAs)<br/><strong>Créditos Water/Carbon</strong> Big Tech</div>
+        </div>
+      </div>
+
+      <!-- 2 BLOQUES CONCEPTUALES -->
+      <div class="grid-2">
+        <div class="card" style="border-left: 4px solid #ef4444;">
+          <div>
+            <div class="card-brand" style="color: #b91c1c; font-size: 9.5pt;">❌ La Trampa: Vender "Software de Mapas Bonitos" (Por qué fracasan)</div>
+            <div class="card-subtitle">La brecha insalvable entre el dato geoespacial crudo y el negocio real</div>
+            <p style="font-size: 7.5pt; color: #475569; margin-bottom: 6px;">
+              Históricamente, decenas de startups descargan mosaicos NDVI de Google Earth Engine y construyen dashboards visualmente atractivos. Los agricultores abandonan el software a los 3 meses porque:
+            </p>
+            <ul style="font-size: 7.2pt; color: #475569; padding-left: 14px; line-height: 1.4;">
+              <li><strong>El píxel no es una decisión agronómica:</strong> Un mapa en color rojo/amarillo no le dice al tractorista ni al regador cuántos milímetros regar mañana ni cuántas horas prender la bomba.</li>
+              <li><strong>Falsos positivos continuos:</strong> Sin calibración física en terreno, el satélite confunde malezas vigorosas con cultivo sano, o árboles estresados con sombras de pendiente orográfica.</li>
+              <li><strong>Fricción humana insuperable:</strong> Los administradores y mayordomos de campo no se sientan frente a una pantalla de computador a interpretar curvas de reflectancia espectral.</li>
+            </ul>
+          </div>
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px; padding: 6px; margin-top: 6px;">
+            <strong style="color: #991b1b; font-size: 7.2pt;">Lección Clave:</strong> El dato satelital en sí no vale nada. El negocio no es el visor espacial, es el <em>insight</em> procesado que ahorra dinero directo o evita una sanción punitiva.
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid #10b981;">
+          <div>
+            <div class="card-brand" style="color: #047857; font-size: 9.5pt;">✅ La Receta Ejecutiva: Acción Masticada, Blindaje Punitivo y Mercados ESG</div>
+            <div class="card-subtitle">El patrón común de las empresas que lograron tracción exponencial</div>
+            <p style="font-size: 7.5pt; color: #475569; margin-bottom: 6px;">
+              Las plataformas que levantaron millones y escalaron a millones de hectáreas entendieron tres reglas operativas inviolables:
+            </p>
+            <ul style="font-size: 7.2pt; color: #475569; padding-left: 14px; line-height: 1.4;">
+              <li><strong>Cero Fricción (Canal WhatsApp / Directo):</strong> El entregable es una instrucción directa al celular: <em>"Sector 3: regar 3 horas hoy a las 21:00 hrs"</em> (como demostró Instacrops).</li>
+              <li><strong>El Dolor Regulatorio (Blindaje Punitivo):</strong> Cumplir con la ley de aguas (DGA en Chile, SGMA en California) para no arriesgar multas millonarias en UTAs ni clausura de pozos.</li>
+              <li><strong>El Cliente Corporativo con Chequera Ilimitada:</strong> Certificar el agua o el carbono ahorrado y vendérselo a corporaciones (Google, Amazon, Microsoft) con compromisos Net Zero.</li>
+            </ul>
+          </div>
+          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 4px; padding: 6px; margin-top: 6px;">
+            <strong style="color: #065f46; font-size: 7.2pt;">Lección Clave:</strong> Quien paga no siempre es el agricultor; el cliente corporativo o el miedo a la multa legal pagan multiplicadores de 10x respecto a un SaaS agrícola tradicional.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 1: Fundamentos y Modelo de Valor</span>
+      <span>Lámina 1 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 2: KILIMO ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Casos Pioneros en LatAm • Riego Sensorless & Water Insetting</div>
+          <div class="slide-title">Kilimo: De SaaS Agrícola a la Compensación Hídrica con Big Tech</div>
+        </div>
+        <div class="slide-meta">
+          ARGENTINA / CHILE / PERÚ / MÉXICO<br/>
+          FUNDADA POR JAIRO TRAD & EQUIPO
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-blue">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">💧 Kilimo: Tesis y Propuesta de Valor</div>
+                <div class="card-subtitle">Riego de Precisión sin Hardware en Tierra</div>
+              </div>
+              <span class="badge badge-blue">Sensorless Agtech</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Problema Original:</div>
+              <div class="feature-text">
+                Instalar sondas de humedad de suelo en miles de hectáreas es logísticamente prohibitivo: cuestan miles de dólares, requieren calibración constante según textura de suelo y la maquinaria pesada suele cortarlas o enterrarlas durante la labor agronómica.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Solución Algorítmica:</div>
+              <div class="feature-text">
+                Kilimo modela el contenido de agua en el perfil del suelo utilizando la metodología FAO-56. Derivan el coeficiente de cultivo (<span class="pill-item">Kc</span>) a partir de la curva de evolución del dosel foliar con satélites ópticos, y calculan la evapotranspiración de referencia (<span class="pill-item">ET0</span>) mediante estaciones climáticas y reanálisis.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🚀 El Pivote Brutal (Water Stewardship):</div>
+              <div class="feature-text">
+                Descubrieron que cobrar suscripciones mensuales al productor tenía alta fricción. En su lugar, abrieron el mercado de <strong>Water Offset / Insetting</strong>: multinacionales con Data Centers e industrias con metas <em>Net Zero Water</em> (<strong>Microsoft, Google, Amazon, Coca-Cola</strong>) pagan a Kilimo por los metros cúbicos de agua que los agricultores dejan de bombear en cuencas con estrés hídrico extremo (como la cuenca del Río Maipo en Chile o el Valle de México). El productor recibe incentivos económicos o tecnología gratuita; las Big Tech compensan su huella hídrica corporativa.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚙️ Infraestructura Tecnológica & Operativa</div>
+                <div class="card-subtitle">El Stack de Procesamiento y Auditoría</div>
+              </div>
+              <span class="badge badge-dark">Pipeline Satelital</span>
+            </div>
+
+            <div class="infra-box" style="margin-bottom: 8px;">
+              <div class="infra-title">1. Ingesta y Fusión de Teleobservación:</div>
+              • <strong>Copernicus Sentinel-2:</strong> Bandas multiespectrales a 10 y 20 m para calcular NDVI, NDWI y NDRE cada 5 días.<br/>
+              • <strong>NASA Landsat 8 y 9:</strong> Banda térmica (TIRS) y reflectancia de superficie a 30 m como respaldo y calibración.<br/>
+              • <strong>Frecuencia Temporal:</strong> Reconstrucción de series temporales con interpolación para filtrar nubosidad.
+            </div>
+
+            <div class="infra-box green" style="margin-bottom: 8px;">
+              <div class="infra-title">2. Motor Biofísico y Balance Hídrico:</div>
+              • <strong>Ecuación Fundamental:</strong> <span class="pill-item">ETc = Kc(NDVI) × ET0</span>.<br/>
+              • <strong>Balance de Humedad:</strong> <span class="pill-item">Humedad_hoy = Humedad_ayer - ETc + Riego + Lluvia_efectiva</span>.<br/>
+              • <strong>Clima:</strong> Estaciones agrometeorológicas públicas (Agromet/INIA en Chile) y reanálisis climático ERA5 (ECMWF).
+            </div>
+
+            <div class="infra-box amber">
+              <div class="infra-title">3. Mecanismo dMRV y Certificación de Compensación:</div>
+              • <strong>Línea de Base:</strong> Comparación del consumo histórico del predio contra la línea comunitaria de la cuenca.<br/>
+              • <strong>Auditoría Independiente:</strong> Validación de ahorros bajo el estándar de la <em>Alliance for Water Stewardship (AWS)</em>.<br/>
+              • <strong>Entregable al Regador:</strong> Mensajes concisos en smartphone indicando milímetros o minutos de riego por cuartel.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 2: Riego y Water Stewardship</span>
+      <span>Lámina 2 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 3: INSTACROPS AI ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Casos Pioneros en LatAm • Hardware IoT & Asistente Conversacional</div>
+          <div class="slide-title">Instacrops AI: Del Combate de Heladas al Agente Autónomo en WhatsApp</div>
+        </div>
+        <div class="slide-meta">
+          CHILE / LATAM • FUNDADA EN 2014<br/>
+          MARIO BUSTAMANTE • HARDWARE + LLMS
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-green">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🤖 Instacrops: Evolución y Tesis</div>
+                <div class="card-subtitle">De Sensores Físicos a Inteligencia Artificial Agronómica</div>
+              </div>
+              <span class="badge badge-green">IoT + GenAI</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 Origen: Salvar Cosechas de Heladas Tardías:</div>
+              <div class="feature-text">
+                Mario Bustamante (ingeniero eléctrico) fundó Instacrops en Chile para resolver un dolor devastador: las heladas de primavera que destruyen en una sola noche la producción anual de cerezas, uvas o arándanos. Desarrolló estaciones meteorológicas y dispositivos electrónicos en campo para predecir el punto de rocío y alertar al productor para encender torres de viento o quemadores.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Transición hacia el Riego de Precisión:</div>
+              <div class="feature-text">
+                Al tener instaladas estaciones en cientos de fundos, integraron sondas capacitivas FDR de suelo multinivel para resolver la segunda gran pregunta del agricultor: <em>cuándo y cuánto regar</em>. El sistema evita el sobreriego, ahorrando agua, energía de bombas y previniendo la asfixia radicular en frutales.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🚀 El Gran Acierto de Adopción (InstaDrop / WhatsApp):</div>
+              <div class="feature-text">
+                Comprendieron antes que nadie que el administrador de campo y el regador no usan software de escritorio ni dashboards complejos. Crearon **InstaDrop**: un agente de IA que se comunica directamente por **WhatsApp**. El agricultor interactúa en lenguaje natural y recibe recomendaciones concretas: <em>"Cuartel Manzanos 3: regar 3 horas hoy a las 21:00 hrs"</em>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚙️ Infraestructura Tecnológica & Terreno</div>
+                <div class="card-subtitle">Silicio Propietario, Redes Móviles y Agentes de IA</div>
+              </div>
+              <span class="badge badge-dark">Hardware & Software Stack</span>
+            </div>
+
+            <div class="infra-box green" style="margin-bottom: 8px;">
+              <div class="infra-title">1. Hardware IoT en Campo (Silicio Terrestre):</div>
+              • <strong>Estaciones Autónomas:</strong> Nodos microclimáticos con sensores de temperatura, humedad relativa, presión y radiación solar.<br/>
+              • <strong>Sondas FDR Suelo:</strong> Medición multinivel de humedad y conductividad eléctrica a 20, 40, 60 y 80 cm.<br/>
+              • <strong>Autonomía Energética:</strong> Micro-paneles solares fotovoltaicos con baterías de litio protegidas en gabinetes IP65/IP67.
+            </div>
+
+            <div class="infra-box" style="margin-bottom: 8px;">
+              <div class="infra-title">2. Red de Telemetría Celular e Ingestión Cloud:</div>
+              • <strong>Conectividad Rural:</strong> Módems 4G Cat-M1 y NB-IoT optimizados para transmisión intermitente con bajo consumo.<br/>
+              • <strong>Protocolo de Datos:</strong> Envío de paquetes telemetría comprimidos vía MQTT/HTTPS a microservicios en GCP/AWS.<br/>
+              • <strong>Fusión Satelital:</strong> Cruzan las lecturas de suelo con mosaicos NDVI de Sentinel-2 para expandir la visión a todo el cuartel.
+            </div>
+
+            <div class="infra-box purple">
+              <div class="infra-title">3. Agente de IA Conversacional (RAG Agronómico):</div>
+              • <strong>WhatsApp Business Cloud API:</strong> Interfaz conversacional bidireccional accesible para cualquier trabajador de campo.<br/>
+              • <strong>Modelos LLM con RAG:</strong> Respuestas agronómicas contextualizadas con la variedad del cultivo, tipo de suelo y pronóstico microclimático.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 3: Adopción e IoT Terrestre</span>
+      <span>Lámina 3 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 4: PACHAMA & SATELLIENCE ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Verificación Digital 3D & Seguros Paramétricos</div>
+          <div class="slide-title">Pachama y Satellience: El Valor de la Precisión Satelital</div>
+        </div>
+        <div class="slide-meta">
+          SILICON VALLEY / YC / LATAM<br/>
+          LIDAR ESPACIAL & FINTECH AGRÍCOLA
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- PACHAMA -->
+        <div class="card highlight-purple">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🌲 Pachama: dMRV de Carbono Forestal en 3D</div>
+                <div class="card-subtitle">Fundada por Diego Saez-Gil • Respaldada por Breakthrough Energy & Amazon</div>
+              </div>
+              <span class="badge badge-purple">High-Integrity Carbon</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 Dolor de Mercado: La Crisis del Mercado de Carbono:</div>
+              <div class="feature-text">
+                El mercado voluntario de créditos de carbono forestal (REDD+) estaba colapsando por falta de credibilidad: consultores auditaban bosques midiendo árboles con cinta métrica cada cinco años, generando "créditos fantasma" de proyectos sobreestimados.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Innovación Tecnológica (LiDAR Espacial 3D):</div>
+              <div class="feature-text">
+                Pachama reemplazó la inspección arcaica por **dMRV (Digital Measurement, Reporting & Verification)**. Combinan satélites públicos y comerciales para medir la estructura del bosque en 3D y calcular la biomasa aérea (<span class="pill-item">Above Ground Biomass - AGB</span>) de forma continua, vendiendo créditos con prima de precio a corporaciones como **Shopify, Microsoft y Mercado Libre**.
+              </div>
+            </div>
+          </div>
+
+          <div class="infra-box purple">
+            <div class="infra-title">Infraestructura Tecnológica de Pachama:</div>
+            • <strong>NASA GEDI (LiDAR en la ISS):</strong> Mide la altura exacta del dosel y el perfil vertical de vegetación con pulsos láser desde el espacio.<br/>
+            • <strong>ESA Sentinel-1 (Radar SAR):</strong> Banda C que atraviesa nubosidad continua en el Amazonas para detectar cambios estructurales.<br/>
+            • <strong>PlanetScope (3m diario):</strong> Detección inmediata de talas selectivas y degradación forestal sin esperar pasadas mensuales.<br/>
+            • <strong>Redes Convolucionales (CNNs):</strong> Estimación alométrica de carbono calibrada con parcelas de inventarios forestales de terreno.
+          </div>
+        </div>
+
+        <!-- SATELLIENCE -->
+        <div class="card highlight-amber">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🛰️ Satellience: Analítica Biofísica & Seguros</div>
+                <div class="card-subtitle">Monitoreo Agroclimático & Seguros Paramétricos en LatAm</div>
+              </div>
+              <span class="badge badge-amber">Fintech Agroclimática</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 Tesis de Negocio: Resolver el Riesgo Agroindustrial:</div>
+              <div class="feature-text">
+                Diseñada para atender a mesas de trading de granos, empresas agroindustriales y compañías de seguros agrícolas. Su foco es modelar la condición biofísica del cultivo a escala regional y reducir los costos de liquidación de siniestros.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Gran Innovación: Seguros Paramétricos Satelitales:</div>
+              <div class="feature-text">
+                En el seguro agrícola tradicional, un perito debe viajar semanas después de una sequía o inundación para tasar el daño en terreno, generando disputas y demoras de meses. Con los seguros paramétricos de Satellience, **la póliza se activa automáticamente**: si el índice de estrés hídrico o sequía satelital cae bajo un umbral durante 20 días continuos, la indemnización se transfiere de inmediato al agricultor.
+              </div>
+            </div>
+          </div>
+
+          <div class="infra-box amber">
+            <div class="infra-title">Infraestructura Tecnológica de Satellience:</div>
+            • <strong>Índices Biofísicos Avanzados:</strong> Cálculo de LAI (Índice de Área Foliar), FAPAR y contenido de clorofila foliar con Sentinel-2.<br/>
+            • <strong>Series Temporales Multi-Año:</strong> Algoritmos de descomposición estacional para detectar anomalías de sequía frente a la media histórica.<br/>
+            • <strong>Smart Contracts & APIs:</strong> Desencadenamiento de pagos automáticos para aseguradoras sin necesidad de peritajes presenciales.<br/>
+            • <strong>Predicción de Rendimiento:</strong> Estimación temprana de quintales por hectárea previa a la cosecha para traders de commodities.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 4: Carbono 3D y Seguros Paramétricos</span>
+      <span>Lámina 4 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 5: FIRETRACE & ORORATECH ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Piro-Detección Satelital Térmica & Supresión Física Directa</div>
+          <div class="slide-title">Firetrace y OroraTech: Protección Crítica ante Incendios Forestales</div>
+        </div>
+        <div class="slide-meta">
+          GLOBAL / CHILE / FORESTAL<br/>
+          CUBESATS INFRARROJOS & SUPRESIÓN EN MÁQUINA
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-red">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🔥 OroraTech & Satellites on Fire: Detección Térmica LEO</div>
+                <div class="card-subtitle">Vigilancia Espacial de Focos de Calor en Menos de 15 Minutos</div>
+              </div>
+              <span class="badge badge-red">Piro-Detección Sub-Hora</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Cuello de Botella de los Satélites Tradicionales:</div>
+              <div class="feature-text">
+                Los satélites meteorológicos geoestacionarios (como NOAA GOES-16) toman fotos cada 10 minutos pero con píxeles gigantes de 2 km (no ven fuegos iniciales). Por su parte, los satélites de órbita polar como MODIS o VIIRS (NASA FIRMS) tienen buena resolución térmica (375 m) pero pasan solo dos veces al día. Cuando detectan el incendio, ya consumió cientos de hectáreas.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Solución con CubeSats Térmicos Infrarrojos:</div>
+              <div class="feature-text">
+                Startups como **OroraTech** (que opera activamente en Chile protegiendo patrimonio forestal) despliegan constelaciones de microsatélites con cámaras térmicas MWIR y LWIR dedicadas. Detectan anomalías térmicas de pocos metros cuadrados en **menos de 15 minutos** desde la ignición y proyectan la dirección del fuego cruzando topografía y viento.
+              </div>
+            </div>
+          </div>
+
+          <div class="infra-box red">
+            <div class="infra-title">Stack de Teledetección Térmica y Modelación:</div>
+            • <strong>Sensores Térmicos Espaciales:</strong> Bandas infrarrojas en 3.9 µm y 11 µm calibradas para saturación a altas temperaturas.<br/>
+            • <strong>Modelo de Propagación de Rothermel:</strong> Cálculo del frente de avance lineal acoplando viento, pendiente del DEM y carga de combustible.<br/>
+            • <strong>Contenido de Humedad de Combustible (FMC):</strong> Estimado dinámicamente con las bandas infrarrojas SWIR (B11 y B12) de Sentinel-2.
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🚜 Firetrace: Extinción Automática en Maquinaria Agrícola</div>
+                <div class="card-subtitle">Protección Directa de Cosechadoras, Tractores y Compartimentos Críticos</div>
+              </div>
+              <span class="badge badge-dark">Hardware de Supresión</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Riesgo de Incendio en Maquinaria de Cosecha:</div>
+              <div class="feature-text">
+                En plena cosecha de cereales o forraje en verano (40°C y baja humedad), el polvillo y la paja seca se acumulan en los motores de cosechadoras y tractores pesados. Una chispa o fricción hidráulica enciende el compartimento del motor en segundos. No solo destruye una máquina de $400.000 USD: la cosechadora en llamas inicia mega-incendios forestales que arrasan cuencas completas.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Tecnología Termoneumática Autónoma de Firetrace:</div>
+              <div class="feature-text">
+                Firetrace instala un tubo polimérico presurizado patentado que recorre el motor y los paneles eléctricos. Cuando el calor de las llamas toca el tubo, este revienta en el punto exacto más caliente. La caída de presión abre la válvula del cilindro extintor, inundando el motor con agente limpio o polvo químico en menos de 10 segundos **sin requerir electricidad, baterías ni intervención del chofer**.
+              </div>
+            </div>
+          </div>
+
+          <div class="infra-box" style="border-left-color: #ef4444;">
+            <div class="infra-title">Integración Estratégica: Espacio + Terreno:</div>
+            • <strong>Alerta Macro (Espacio):</strong> OroraTech detecta el frente de fuego que se aproxima al fundo o la quema no autorizada en el lindero.<br/>
+            • <strong>Defensa Micro (Terreno):</strong> Firetrace protege los activos mecánicos críticos que operan cortafuegos o cosechan en la zona de riesgo.<br/>
+            • <strong>Doctrina Táctica:</strong> La combinación de alerta temprana satelital y supresión automática previene pérdidas humanas y patrimoniales.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 5: Piro-Defensa y Resiliencia</span>
+      <span>Lámina 5 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 6: ODEPA, CIREN & DGA EN CHILE ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">El Modelo Público-Privado Soberano • Caso Chile</div>
+          <div class="slide-title">Agro-Satélite (ODEPA + CIREN + CENIA) y la Fiscalización DGA</div>
+        </div>
+        <div class="slide-meta">
+          CHILE • MINAGRI & DGA<br/>
+          CATASTRO FRUTÍCOLA & CÓDIGO DE AGUAS
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-green">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🇨🇱 Agro-Satélite: Soberanía de Estadísticas Agrícolas</div>
+                <div class="card-subtitle">ODEPA + CIREN + Centro Nacional de Inteligencia Artificial (CENIA)</div>
+              </div>
+              <span class="badge badge-green">Ground Truth Soberano</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Problema de las Estadísticas Tradicionales:</div>
+              <div class="feature-text">
+                Chile dependía de censos agropecuarios decenales y del Catastro Frutícola de CIREN, actualizado cada 3 o 4 años mediante encuestas presenciales. Ante crisis hídricas severas y la guerra en Europa, el Estado necesitaba saber cuántas hectáreas de trigo, maíz o porotos estaban sembradas *en la temporada activa*, no dos años después.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💎 El Foso Inexpugnable de CIREN (Ground Truth Oficial):</div>
+              <div class="feature-text">
+                El satélite óptico solo detecta firmas de reflectancia: no distingue trigo de pastizal silvestre ni una variedad de cerezo de un ciruelo. El Centro de Información de Recursos Naturales (CIREN) aportó su **catastro georreferenciado histórico predio por predio**, roles del SII y validación en terreno. Al entrenar redes neuronales con este *Ground Truth* soberano, lograron clasificar cultivos específicos a escala de potrero con precisiones superiores al **90%**.
+              </div>
+            </div>
+          </div>
+
+          <div class="infra-box green">
+            <div class="infra-title">Infraestructura del Proyecto Agro-Satélite:</div>
+            • <strong>Satélites Públicos:</strong> Pipeline de descarga continua de Copernicus Sentinel-2 procesado en servidores del NLHPC.<br/>
+            • <strong>Capas Georreferenciadas:</strong> Base catastral de CIREN con más de 300.000 roles agrícolas y especies identificadas.<br/>
+            • <strong>Modelos Supervisados:</strong> Redes recurrentes y transformers entrenados por CENIA para series de tiempo multiespectrales.
+          </div>
+        </div>
+
+        <div class="card highlight-amber">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚖️ La Fiscalización Satelital de la DGA (Código de Aguas)</div>
+                <div class="card-subtitle">El Mecanismo Punitivo que Justifica el Software en Chile</div>
+              </div>
+              <span class="badge badge-amber">Compliance & Multas UTAs</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Cruce Satélite vs. Caudalímetro Telemático:</div>
+              <div class="feature-text">
+                Con la reforma al Código de Aguas, la **Dirección General de Aguas (DGA)** exige telemetría continua en todos los pozos de aguas subterráneas (CAS). La DGA utiliza imágenes térmicas y multiespectrales de Sentinel-2 y Landsat para cruzar la evapotranspiración real de los cultivos con la extracción reportada.
+                <br/><br/>
+                • Si un predio registra **verdor y consumo hídrico activo** en pleno enero/febrero...<br/>
+                • ...pero el caudalímetro telemático oficial reporta flujo cero o un caudal inferior a la demanda biológica del cultivo...<br/>
+                • ➔ **Infracción Flagrante:** Se constata extracción no autorizada o sobregiro del derecho de aprovechamiento concedido.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💰 El Dolor Financiero (Multas en UTAs):</div>
+              <div class="feature-text">
+                Las sanciones de la DGA no son advertencias: se cursan en **UTAs (Unidades Tributarias Anuales)**, oscilando entre **100 y 1.000 UTAs** ($70 a $700 millones de pesos chilenos), acompañadas de clausura física del pozo y querellas por usurpación de aguas.
+              </div>
+            </div>
+          </div>
+
+          <div class="infra-box amber">
+            <div class="infra-title">La Receta de Software para el Agricultor:</div>
+            El software agtech en Chile no se vende como "agricultura digital bonita": se vende como un **escudo preventivo de compliance** que audita los metros cúbicos consumidos vs. los derechos inscritos para evitar la clausura del campo.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 6: El Modelo Chileno y Fiscalización DGA</span>
+      <span>Lámina 6 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 7: REGROW AG ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Benchmarking Mundial • Carbono en Suelo & Agricultura Regenerativa</div>
+          <div class="slide-title">Regrow Ag: La Plataforma Global de Resiliencia y Emisiones Scope 3</div>
+        </div>
+        <div class="slide-meta">
+          ESTADOS UNIDOS / GLOBAL • FUNDADA POR ANASTASSIA VOLKOVA<br/>
+          RESPALDADA POR MICROSOFT (M12) & GALVANIZE
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-green">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🌾 Regrow Ag: Tesis y Modelo de Negocio</div>
+                <div class="card-subtitle">Descarbonización de las Mayores Cadenas Alimentarias del Planeta</div>
+              </div>
+              <span class="badge badge-green">Líder MRV Agrícola</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Dolor Corporativo: Las Emisiones Scope 3:</div>
+              <div class="feature-text">
+                Empresas globales de alimentos y granos como **Cargill, General Mills, Kellogg's, Unilever y Nestlé** tienen compromisos públicos de reducir a cero sus emisiones netas para 2030-2050. Sin embargo, más del 80% de sus emisiones provienen de sus proveedores agrícolas (Scope 3: siembra, fertilización nitrogenada y labranza). Era físicamente imposible tomar muestras de suelo con pala en millones de hectáreas para auditar el progreso.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Solución de Regrow (MRV Biofísico Satelital):</div>
+              <div class="feature-text">
+                Regrow desarrolló un sistema de **Medición, Reporte y Verificación (MRV)** que combina imágenes satelitales con modelación computacional de biogeoquímica del suelo. La plataforma audita qué agricultores adoptaron labranza cero, cultivos de cobertura y rotaciones regenerativas, calculando el carbono orgánico fijado en el suelo y la reducción de emisiones de óxido nitroso ($N_2O$).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚙️ Infraestructura Tecnológica & Algoritmos</div>
+                <div class="card-subtitle">El Modelo DNDC y la Observación Remota Continua</div>
+              </div>
+              <span class="badge badge-dark">DNDC Engine</span>
+            </div>
+
+            <div class="infra-box green" style="margin-bottom: 8px;">
+              <div class="infra-title">1. El Motor Biofísico DNDC (DeNitrification-DeComposition):</div>
+              • <strong>Física y Bioquímica del Suelo:</strong> Simula el ciclo del carbono y nitrógeno en el perfil del suelo, modelando la actividad microbiana, la temperatura radicular, la descomposición de materia orgánica y la emisión de gases de efecto invernadero.<br/>
+              • <strong>Calibración Satelital:</strong> En lugar de asumir parámetros fijos, el modelo DNDC es alimentado semanalmente con biomasa y humedad derivada de satélite.
+            </div>
+
+            <div class="infra-box" style="margin-bottom: 8px;">
+              <div class="infra-title">2. Ingesta y Detección de Prácticas de Manejo (OpTIS):</div>
+              • <strong>Algoritmo OpTIS (Operational Tillage Information System):</strong> Procesa series temporales de Copernicus Sentinel-2 y Landsat para identificar automáticamente la presencia de rastrojos, labranza reducida y cobertura vegetal invernal.<br/>
+              • <strong>Resolución Espacial:</strong> Evaluación automática lote por lote a 10 metros sin necesidad de encuestas a los agricultores.
+            </div>
+
+            <div class="infra-box purple">
+              <div class="infra-title">3. Valor y Monetización B2B:</div>
+              • <strong>Contratos Enterprise Multimillonarios:</strong> Las corporaciones agroalimentarias pagan licencias anuales de software para auditar y certificar su huella de carbono ante auditores internacionales (SBTi, GHG Protocol).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 7: Agricultura Regenerativa & Carbono</span>
+      <span>Lámina 7 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 8: CROPX ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Benchmarking Mundial • Sistema Operativo Agronómico de Precisión</div>
+          <div class="slide-title">CropX: La Fusión de Hardware Espiral de Suelo y Telemetría Satelital</div>
+        </div>
+        <div class="slide-meta">
+          ISRAEL / GLOBAL • FUNDADA POR TOMER TZACH & EQUIPO<br/>
+          ADQUISICIÓN DE DACOM (HOLANDA) & CROPMETRICS (EE.UU.)
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-blue">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🌿 CropX: Tesis de Sistema Operativo Integral</div>
+                <div class="card-subtitle">Control de Riego, Nutrición y Prevención de Hongos</div>
+              </div>
+              <span class="badge badge-blue">Hardware + Software Fused</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 Tesis: La Fusión Indispensable de Suelo y Cielo:</div>
+              <div class="feature-text">
+                CropX comprendió las limitaciones de ambos mundos: los satélites solo ven la superficie de las hojas (no saben qué ocurre en las raíces), y los sensores de suelo tradicionales eran difíciles de instalar y caros. CropX patentó un sensor espiral de instalación ultra-rápida (5 minutos con un taladro) que mide el perfil completo del suelo y lo sincroniza con modelos satelitales globales.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 Estrategia de Crecimiento (M&A Agtech):</div>
+              <div class="feature-text">
+                Para dominar el mercado global, CropX adquirió empresas pioneras: **CropMetrics** en EE.UU. (líder en riego de pivotes centrales) y **Dacom Farm Intelligence** en Europa (los pioneros en modelación de patógenos fúngicos y tizón tardío). Hoy operan en más de 50 países como el sistema operativo agronómico de cabecera.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚙️ Infraestructura Tecnológica & Patentes</div>
+                <div class="card-subtitle">Sensor Espiral, Lixiviación y Modelos Fúngicos</div>
+              </div>
+              <span class="badge badge-dark">Patented Hardware</span>
+            </div>
+
+            <div class="infra-box" style="margin-bottom: 8px;">
+              <div class="infra-title">1. El Hardware de Terreno Espiral Patentado:</div>
+              • <strong>Diseño en Espiral:</strong> Se enrosca directamente en el suelo sin perturbar la estructura del suelo circundante.<br/>
+              • <strong>Sensores Tri-Nivel:</strong> Mide simultáneamente **Humedad Volumétrica, Conductividad Eléctrica (EC / Salinidad) y Temperatura** a 8", 18" y 36" de profundidad.<br/>
+              • <strong>Conectividad Directa:</strong> Transmisión celular integrada en la cabeza del sensor con batería de 2 años de autonomía.
+            </div>
+
+            <div class="infra-box green" style="margin-bottom: 8px;">
+              <div class="infra-title">2. Prescripción de Fertirriego y Lixiviación:</div>
+              • <strong>Monitoreo de Nitrógeno:</strong> Al medir la conductividad eléctrica y el drenaje profundo, avisa al agricultor si el fertilizante se está lavando más allá de la raíz, evitando pérdida de dinero y contaminación de acuíferos.<br/>
+              • <strong>Prescripción Variable:</strong> Mapas VRA de riego y nitrógeno cargables directamente en tractores John Deere y pivotes Lindsay.
+            </div>
+
+            <div class="infra-box amber">
+              <div class="infra-title">3. Modelos Fúngicos Predictivos (Dacom Engine):</div>
+              • <strong>Prevención de Patógenos:</strong> Correlaciona humedad foliar, temperatura y humedad del suelo para predecir brotes de tizón y mildiu antes de que aparezcan las manchas, reduciendo hasta un 30% las aplicaciones de fungicidas.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 8: Sensores Físicos & Sistema Operativo</span>
+      <span>Lámina 8 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 9: OPENET ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Benchmarking Mundial • El Estándar Público de Evapotranspiración</div>
+          <div class="slide-title">OpenET: El Consorcio Científico de la NASA, USGS y Google</div>
+        </div>
+        <div class="slide-meta">
+          ESTADOS UNIDOS • OESTE AMERICANO<br/>
+          CONSORCIO PÚBLICO-PRIVADO • GOOGLE EARTH ENGINE
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-blue">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">💧 OpenET: La Búsqueda del Estándar Supremo</div>
+                <div class="card-subtitle">Cálculo de Consumo Hídrico Parcela por Parcela</div>
+              </div>
+              <span class="badge badge-dark">Gold Standard de ET</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Dolor Histórico de las Cuencas en Sequía:</div>
+              <div class="feature-text">
+                En el oeste de Estados Unidos (cuenca del Río Colorado, Valle Central de California), los conflictos por derechos de agua entre agricultores, ciudades y el gobierno federal estaban bloqueados por la falta de un dato confiable: cada agencia usaba un modelo distinto de cálculo de evapotranspiración, lo que derivaba en juicios interminables sobre cuánta agua consumía realmente cada campo.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Creación de OpenET:</div>
+              <div class="feature-text">
+                Un consorcio sin precedentes liderado por la **NASA, el USGS (Servicio Geológico de EE.UU.), el Desert Research Institute (DRI), Environmental Defense Fund (EDF) y Google** desarrolló **OpenET**: una plataforma de datos abiertos que calcula el consumo de agua a nivel de parcela en 17 estados del oeste americano con total transparencia científica.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚙️ Infraestructura y el Ensamble de 6 Modelos</div>
+                <div class="card-subtitle">Computación Masiva en la Nube con Google Earth Engine</div>
+              </div>
+              <span class="badge badge-blue">Multi-Model Ensemble</span>
+            </div>
+
+            <div class="infra-box" style="margin-bottom: 8px;">
+              <div class="infra-title">1. El Poder del Ensamble de 6 Modelos Satelitales:</div>
+              En vez de confiar en un solo algoritmo, OpenET corre simultáneamente **seis modelos satelitales de balance de energía**:
+              <br/>
+              • <strong>METRIC</strong> (Mapping EvapoTranspiration at high Resolution with Internalized Calibration)<br/>
+              • <strong>SSEBop</strong> (Simplified Surface Energy Balance Operational)<br/>
+              • <strong>SIMS</strong> (Satellite Irrigation Management Support de la NASA)<br/>
+              • <strong>PT-JPL</strong> (Priestley-Taylor Jet Propulsion Laboratory)<br/>
+              • <strong>DisALEXI</strong> (Atmosphere-Land Exchange Inverse)<br/>
+              • <strong>eeMETRIC</strong> (METRIC optimizado para Google Earth Engine)
+            </div>
+
+            <div class="infra-box green" style="margin-bottom: 8px;">
+              <div class="infra-title">2. Resolución y Datos Satelitales Involucrados:</div>
+              • <strong>Resolución Parcela:</strong> Datos a 30 metros de píxel usando las bandas térmicas y ópticas de **Landsat 7, 8 y 9** combinadas con **Sentinel-2**.<br/>
+              • <strong>Datos Meteorológicos de Rejilla:</strong> Ingesta diaria de NLDAS y gridMET para radiación solar, viento y humedad del aire.
+            </div>
+
+            <div class="infra-box amber">
+              <div class="infra-title">3. Aplicación Legal y Mercados de Agua:</div>
+              • <strong>Gestión SGMA:</strong> Utilizado por los distritos de gestión de aguas subterráneas de California para cobrar cuotas de sobregiro y regular mercados de transferencias de agua entre productores con base científica incuestionable.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 9: El Estándar Científico de Evapotranspiración</span>
+      <span>Lámina 9 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 10: HYDROSAT ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Benchmarking Mundial • Infrarrojo Térmico & Microsatélites Propios</div>
+          <div class="slide-title">Hydrosat: Detección Temprana de Estrés Hídrico Antes del Daño Visible</div>
+        </div>
+        <div class="slide-meta">
+          ESTADOS UNIDOS / LUXEMBURGO • FUNDADA POR ROYCE DALBY & PIETER JOSHI<br/>
+          DATOS TÉRMICOS DE LA NASA A CONSTELACIÓN PROPIA DE CUBESATS
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card highlight-red">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🌡️ Hydrosat: Tesis de la "Fiebre Vegetal"</div>
+                <div class="card-subtitle">Superación del NDVI Tradicional Mediante Temperatura Térmica</div>
+              </div>
+              <span class="badge badge-red">Thermal IR Intelligence</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 El Gran Defecto del Índice NDVI:</div>
+              <div class="feature-text">
+                El NDVI mide el verdor y la clorofila visible en las hojas. Sin embargo, cuando una planta sufre estrés hídrico, su primer mecanismo de defensa es **cerrar los estomas** para no perder agua por transpiración. Al dejar de transpirar, la planta deja de enfriarse y **su temperatura foliar se eleva de 2°C a 5°C ("fiebre vegetal")**. Durante esta fase, el cultivo sigue viéndose perfectamente verde en el NDVI, pero ya está sufriendo pérdidas irreversibles de rendimiento. Cuando el NDVI se torna amarillo, el agricultor ya perdió un 15% de su cosecha.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">💡 La Solución de Hydrosat:</div>
+              <div class="feature-text">
+                Hydrosat monitorea directamente la temperatura de la superficie terrestre con sensores infrarrojos térmicos, detectando el estrés hídrico y la falta de riego **entre 5 y 10 días antes** de que cualquier satélite óptico tradicional o el ojo humano noten daño en el campo.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">⚙️ De Satélites Públicos a su Propia Flota Espacial</div>
+                <div class="card-subtitle">Evolución desde ECOSTRESS hacia la Constelación VanZyl</div>
+              </div>
+              <span class="badge badge-dark">CubeSat Thermal Constellation</span>
+            </div>
+
+            <div class="infra-box red" style="margin-bottom: 8px;">
+              <div class="infra-title">1. El Inicio con Datos Públicos de la NASA:</div>
+              • <strong>MODIS Térmico:</strong> Datos térmicos globales pero a 1 km de resolución (demasiado grueso para campos pequeños).<br/>
+              • <strong>NASA ECOSTRESS:</strong> Radiómetro térmico a bordo de la Estación Espacial Internacional con resolución de 70 metros.<br/>
+              • <strong>Algoritmos Propietarios de Fusión:</strong> Desarrollaron modelos de super-resolución térmica para agudizar datos térmicos usando las bandas ópticas de Sentinel-2.
+            </div>
+
+            <div class="infra-box" style="margin-bottom: 8px;">
+              <div class="infra-title">2. El Salto a Constelación Propia (VanZyl-1 y 2):</div>
+              • <strong>El Cuello de Botella Térmico Mundial:</strong> Landsat solo toma datos térmicos cada 8 días a 100 m. Hydrosat decidió lanzar su propia flota de CubeSats térmicos de alta resolución.<br/>
+              • <strong>Cámaras Infrarrojas Avanzadas:</strong> Cobertura térmica diaria a escala de subparcela con calibración radiométrica continua.
+            </div>
+
+            <div class="infra-box green">
+              <div class="infra-title">3. Clientes y Casos de Uso de Alto Valor:</div>
+              • <strong>Previsión de Cosechas:</strong> Aseguradoras y fondos de inversión agrícola pagan por predecir cosechas con 3 semanas de anticipación.<br/>
+              • <strong>Agricultura Comercial:</strong> Productores de frutas y hortalizas evitan golpes de calor y deshidratación foliar.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 10: Infrarrojo Térmico y Fiebre Vegetal</span>
+      <span>Lámina 10 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 11: KAYRROS & ELEAF ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Benchmarking Mundial • Monitoreo Ambiental & Balance de Energía SEBAL</div>
+          <div class="slide-title">Kayrros y eLEAF: Los Gigantes del Clima y la Hidrología Global</div>
+        </div>
+        <div class="slide-meta">
+          FRANCIA / PAÍSES BAJOS • LÍDERES EUROPEOS<br/>
+          DETECCIÓN DE EMISIONES & AUDITORÍAS DE CUENCA
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- KAYRROS -->
+        <div class="card highlight-purple">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">🌍 Kayrros: El Guardián Satelital del Metano y Bosques</div>
+                <div class="card-subtitle">Francia • Fundada en 2016 • Inteligencia para la ONU y la Banca</div>
+              </div>
+              <span class="badge badge-purple">Emisiones & Deforestación</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 Tesis y Lo Mejor que Hacen:</div>
+              <div class="feature-text">
+                Kayrros es el líder mundial indiscutido en la detección y cuantificación de **fugas de metano y deforestación en tiempo real**. Utilizan datos de los satélites europeos para identificar columnas invisibles de gas metano liberadas por la industria energética y agrícola, y miden la pérdida de biomasa forestal a escala planetaria.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">⚙️ Infraestructura y Datos Clave:</div>
+              <div class="feature-text">
+                • <strong>Copernicus Sentinel-5P (TROPOMI):</strong> Espectrómetro que mide gases traza en la atmósfera para ubicar plumas de metano.<br/>
+                • <strong>Sentinel-2 y Sentinel-1:</strong> Cruce de radar y óptica para mapear deforestación y pérdida de stock de carbono.<br/>
+                • <strong>Clientes:</strong> La Agencia Internacional de Energía (AIE), el Programa de la ONU para el Medio Ambiente (UNEP) y grandes bancos de inversión.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ELEAF -->
+        <div class="card highlight-blue">
+          <div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">💧 eLEAF: Los Creadores del Algoritmo SEBAL</div>
+                <div class="card-subtitle">Países Bajos • Fundada por el Prof. Wim Bastiaanssen en 2000</div>
+              </div>
+              <span class="badge badge-blue">Pioneros del Balance Energético</span>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">🎯 Tesis y Lo Mejor que Hacen:</div>
+              <div class="feature-text">
+                eLEAF es la institución madre de la evapotranspiración moderna por satélite. Su fundador inventó el algoritmo **SEBAL (Surface Energy Balance Algorithm for Land)**, el modelo matemático que demostró que el agua consumida por las plantas se puede deducir calculando el balance de radiación neta, flujo de calor del suelo y calor sensible en la atmósfera mediante satélites térmicos.
+              </div>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-title">⚙️ Infraestructura y Datos Clave:</div>
+              <div class="feature-text">
+                • <strong>Ecuación SEBAL:</strong> <span class="pill-item">λE = Rn - G - H</span> (donde λE es la energía latente convertida en agua transpirada).<br/>
+                • <strong>Auditorías de Cuencas Mundiales:</strong> Monitorean millones de hectáreas para el Banco Mundial, la FAO y ministerios de agricultura en África, Medio Oriente y América.<br/>
+                • <strong>Independencia Total de Sondas:</strong> Modelación biofísica pura basada en conservación de masa y energía.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 11: Emisiones Globales y Algoritmo SEBAL</span>
+      <span>Lámina 11 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 12: LA RECETA EJECUTIVA DE TRACCIÓN ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Playbook Comercial y Operativo • El Foso Defensivo</div>
+          <div class="slide-title">La Receta Ejecutiva: Cómo Convertir Píxeles en Millones de Dólares</div>
+        </div>
+        <div class="slide-meta">
+          GO-TO-MARKET & MONETIZACIÓN<br/>
+          LOS 3 MOTORES ECONÓMICOS
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <!-- MOTOR 1 -->
+        <div class="card" style="border-top: 4px solid #0284c7;">
+          <div class="card-brand" style="font-size: 9pt;">1. El Motor del Ahorro Operativo (OPEX)</div>
+          <div class="card-subtitle">"Te bajo la cuenta de la luz y el fertilizante"</div>
+          <div class="feature-text">
+            En un predio de 100 hectáreas de frutales, el gasto en <strong>energía eléctrica para bombear agua</strong> y la compra de fertilizante nitrogenado representan entre el <strong>35% y el 45% del costo operativo anual</strong>.
+            <br/><br/>
+            • <strong>El Retorno de Inversión (ROI):</strong> Un algoritmo de balance hídrico satelital como el de Kilimo ahorra entre un 15% y un 25% de agua y energía evitando el sobreriego por costumbre.
+            <br/><br/>
+            • <strong>La Métrica de Venta:</strong> El software no cuesta dinero: se paga en la tercera semana de la temporada estival con el ahorro neto de la factura eléctrica de la bomba de pozo.
+          </div>
+        </div>
+
+        <!-- MOTOR 2 -->
+        <div class="card" style="border-top: 4px solid #f59e0b;">
+          <div class="card-brand" style="font-size: 9pt;">2. El Motor del Cumplimiento Punitivo (Multas)</div>
+          <div class="card-subtitle">"Evito que la DGA te multe en 500 UTAs o te cierre el pozo"</div>
+          <div class="feature-text">
+            La psicología del agricultor ante el riesgo legal es inmediata. Mientras que la sustentabilidad es un deseo secundario, la <strong>amenaza de clausura del pozo</strong> en plena floración o cuaja significa la quiebra total del año agrícola.
+            <br/><br/>
+            • <strong>En Chile (Código de Aguas DGA):</strong> Reconciliación telemática del caudalímetro oficial vs. la demanda satelital del cuartel para alertar desvíos antes de una inspección.
+            <br/><br/>
+            • <strong>En Europa (Regulación EUDR):</strong> Desde 2024/2025, la UE exige coordenadas poligonales satelitales que demuestren que el fruto exportado no proviene de terrenos deforestados. Quien no tiene el reporte, no desembarca en el puerto.
+          </div>
+        </div>
+
+        <!-- MOTOR 3 -->
+        <div class="card" style="border-top: 4px solid #10b981;">
+          <div class="card-brand" style="font-size: 9pt;">3. El Motor Corporativo ESG (Activos Ambientales)</div>
+          <div class="card-subtitle">"Le vendo tus metros cúbicos o carbono a Big Tech"</div>
+          <div class="feature-text">
+            El mayor descubrimiento de Kilimo y Pachama: los balances de las empresas Fortune 500 tienen presupuestos multimillonarios dedicados a sustentabilidad y neutralidad hídrica y de carbono.
+            <br/><br/>
+            • <strong>Water Replenishment / Insetting:</strong> Google y Microsoft instalan Data Centers que consumen millones de litros de agua para refrigeración en Santiago o Querétaro. Están obligados a "reponer" esa misma cantidad de agua en la misma cuenca.
+            <br/><br/>
+            • <strong>El Arbitraje Financiero:</strong> La plataforma agtech financia la tecnología en el campo o incluso le paga al agricultor un incentivo por ahorrar, y le vende el certificado verificado a Big Tech con márgenes brutos superiores al 70%.
+          </div>
+        </div>
+      </div>
+
+      <!-- BLUEPRINT RESUMEN -->
+      <div style="background: #0f172a; color: #ffffff; border-radius: 6px; padding: 8px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 7.2pt; color: #cbd5e1;">
+          <strong style="color: #6ee7b7;">Fórmula de Éxito en 4 Pasos:</strong> 1) Ingesta gratuita de Copernicus/NASA ➔ 2) Calibración en tierra con pocas estaciones patrón ➔ 3) Despacho masticado por WhatsApp ➔ 4) Monetización de multas evitadas o compensación corporativa.
+        </span>
+        <span class="badge badge-green" style="font-size: 6.5pt;">PLAYBOOK EJECUTIVO</span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 12: La Receta de Negocio y Tracción</span>
+      <span>Lámina 12 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 13: TABLA MAESTRA COMPARATIVA ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Benchmarking Integral • Matriz de Análisis</div>
+          <div class="slide-title">Matriz Comparativa de los 11 Proyectos Referentes</div>
+        </div>
+        <div class="slide-meta">
+          COMPARATIVA DE ARQUITECTURAS<br/>
+          DATOS, GROUND TRUTH & MODELO DE NEGOCIO
+        </div>
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Plataforma</th>
+            <th>Origen / Cobertura</th>
+            <th>Fuentes de Datos Satelitales</th>
+            <th>Ground Truth Físico</th>
+            <th>Cliente Objetivo</th>
+            <th>Mecanismo de Monetización / Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Kilimo</strong></td>
+            <td>Argentina / LatAm</td>
+            <td>Sentinel-2 + Landsat 8/9</td>
+            <td>Medio (Balance FAO-56 sensorless)</td>
+            <td>Regantes & Big Tech (Microsoft/Google)</td>
+            <td>Venta de certificados de Water Insetting corporativo.</td>
+          </tr>
+          <tr>
+            <td><strong>Instacrops AI</strong></td>
+            <td>Chile / LatAm</td>
+            <td>IoT propio + Sentinel-2</td>
+            <td>Alto (Sondas FDR propietarias)</td>
+            <td>Productores frutícolas</td>
+            <td>SaaS agronómico con asistente InstaDrop en WhatsApp.</td>
+          </tr>
+          <tr>
+            <td><strong>Pachama</strong></td>
+            <td>EE.UU. / LatAm</td>
+            <td>NASA GEDI (LiDAR) + Sentinel-1 + Planet</td>
+            <td>Alto (Parcelas alométricas calibradas)</td>
+            <td>Empresas Fortune 500 (ESG)</td>
+            <td>Comisión sobre créditos de carbono forestal 3D dMRV.</td>
+          </tr>
+          <tr>
+            <td><strong>OroraTech / Firetrace</strong></td>
+            <td>Alemania / EE.UU.</td>
+            <td>CubeSats térmicos propios + VIIRS</td>
+            <td>Medio-Alto (Focos térmicos y supresión)</td>
+            <td>Forestales, agro y aseguradoras</td>
+            <td>Suscripción de piro-alerta temprana y venta de hardware extintor.</td>
+          </tr>
+          <tr>
+            <td><strong>Satellience</strong></td>
+            <td>LatAm</td>
+            <td>Sentinel-2 + MODIS</td>
+            <td>Medio (Series biofísicas históricas)</td>
+            <td>Agroindustrias y aseguradoras</td>
+            <td>Liquidación automática de seguros agrícolas paramétricos.</td>
+          </tr>
+          <tr>
+            <td><strong>Agro-Satélite (ODEPA/CIREN)</strong></td>
+            <td>Chile (Público)</td>
+            <td>Sentinel-2 + Landsat</td>
+            <td>Máximo (Catastro Frutícola oficial CIREN)</td>
+            <td>Estado, MinAgri y DGA</td>
+            <td>Soberanía alimentaria y fiscalización de derechos de agua DGA.</td>
+          </tr>
+          <tr>
+            <td><strong>Regrow Ag</strong></td>
+            <td>EE.UU. / Global</td>
+            <td>Sentinel-2 + Landsat</td>
+            <td>Alto (Muestreo agronómico y DNDC)</td>
+            <td>Gigantes de alimentos (Cargill, Kellogg's)</td>
+            <td>Licencias enterprise para auditoría de emisiones Scope 3 en suelo.</td>
+          </tr>
+          <tr>
+            <td><strong>CropX</strong></td>
+            <td>Israel / Global</td>
+            <td>Sentinel-2 + Sensores patentados</td>
+            <td>Máximo (Sondas espirales multinivel)</td>
+            <td>Grandes agricultores y distribuidores</td>
+            <td>Suscripción anual de hardware + software de fertirriego.</td>
+          </tr>
+          <tr>
+            <td><strong>OpenET</strong></td>
+            <td>EE.UU. (NASA/USGS)</td>
+            <td>Landsat (TIRS) + Sentinel-2</td>
+            <td>Alto (Estaciones eddy covariance)</td>
+            <td>Distritos de riego y gobierno federal</td>
+            <td>Consorcio público para gestión y mercados de agua en cuencas.</td>
+          </tr>
+          <tr>
+            <td><strong>Hydrosat</strong></td>
+            <td>EE.UU. / Luxemburgo</td>
+            <td>MODIS/ECOSTRESS + CubeSats térmicos</td>
+            <td>Medio (Temperatura de superficie)</td>
+            <td>Traders agrícolas y aseguradoras</td>
+            <td>Detección temprana de fiebre vegetal previa a pérdidas de cosecha.</td>
+          </tr>
+          <tr>
+            <td><strong>Kayrros / eLEAF</strong></td>
+            <td>Europa / Global</td>
+            <td>Sentinel-5P, Sentinel-2, Landsat</td>
+            <td>Alto (Algoritmo físico SEBAL)</td>
+            <td>ONU, Banco Mundial y bancos</td>
+            <td>Auditorías de emisiones de metano y balances hídricos de cuenca.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 13: Matriz Maestra Comparativa</span>
+      <span>Lámina 13 de 14</span>
+    </div>
+  </div>
+
+  <!-- ==================== LÁMINA 14: SÍNTESIS & APLICACIÓN A AGRITWIN ==================== -->
+  <div class="slide">
+    <div>
+      <div class="slide-header">
+        <div>
+          <div class="slide-tag">Aplicación Concreta al Proyecto AgriTwin • Fundo Meniel & Cuenca Longaví</div>
+          <div class="slide-title">AgriTwin: Qué Tomamos de Cada Referente y Cómo Ganamos</div>
+        </div>
+        <div class="slide-meta">
+          ARQUITECTURA DE TRIPLE ESCALA<br/>
+          PREDIO ↔ CUENCA • HARDWARE + 3D
+        </div>
+      </div>
+
+      <!-- LOS 3 PILARES DE AGRITWIN -->
+      <div class="grid-3" style="margin-bottom: 10px;">
+        <div class="card" style="border-top: 4px solid #10b981;">
+          <div class="card-brand" style="font-size: 9pt;">1. Hardware Terreno Soberano</div>
+          <div class="card-subtitle">Gabinete IP67 + ESP32 + Sondas FDR Suelo</div>
+          <div class="feature-text">
+            No llenamos el fundo de sensores. Desplegamos **estaciones patrón** con microcontrolador ESP32 en C++, sondas capacitivas FDR multinivel (20–100 cm) y sensores microclimáticos BME280.
+            <br/><br/>
+            • <strong>El Rol:</strong> Calibrar en tiempo real el satélite continuo de Sentinel-2 para eliminar falsos positivos en el Fundo Meniel.
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #0284c7;">
+          <div class="card-brand" style="font-size: 9pt;">2. Gemelo 3D & Simulación Física</div>
+          <div class="card-subtitle">Three.js / CesiumJS + Tranque 18.500 m³</div>
+          <div class="feature-text">
+            A diferencia de Kilimo o Instacrops (que son dashboards planos), AgriTwin renderiza la topografía completa, potreros de pastoreo Voisin (PRV), mallas 3D de frutales y cámaras solares 4G.
+            <br/><br/>
+            • <strong>El Rol:</strong> Simular el llenado y autonomía del **Tranque Keyline de 18.500 m³** y el balance hídrico dinámico FAO-56.
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #ef4444;">
+          <div class="card-brand" style="font-size: 9pt;">3. Doctrina C2 de Cuenca (Riesgos)</div>
+          <div class="card-subtitle">Mando Táctico • Ecuación R = (H × V) / 100</div>
+          <div class="feature-text">
+            Integramos el vector de piro-defensa y crecida aluvial en la Cuenca del Longaví. Modelamos la propagación de fuego (Rothermel), fajas cortafuegos WUI de 45 m y defensa vecinal.
+            <br/><br/>
+            • <strong>El Rol:</strong> Puesto de Mando y Control (C2) para defender activos críticos ante incendios forestales e inundaciones.
+          </div>
+        </div>
+      </div>
+
+      <!-- QUÉ TOMAMOS DE CADA UNO -->
+      <div style="background: #0f172a; color: #ffffff; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px;">
+        <div style="font-size: 8pt; font-weight: 800; color: #6ee7b7; margin-bottom: 4px;">
+          🎯 Hoja de Ruta de Integración Técnica en AgriTwin:
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; font-size: 6.8pt; color: #cbd5e1;">
+          <div>
+            <strong style="color: #38bdf8;">💧 De Kilimo & OpenET:</strong><br/>
+            Kc satelital dinámico en <span class="pill-item" style="background:#1e293b; color:#fff;">SimulationEngine.js</span> usando NDVI de Sentinel-2 para el Fundo Meniel sin costo de APIs.
+          </div>
+          <div>
+            <strong style="color: #4ade80;">🤖 De Instacrops AI:</strong><br/>
+            Canal de despacho de órdenes por WhatsApp. El 3D es para el centro de mando; el mayordomo recibe: <em>"Bomba Tranque 3h hoy"</em>.
+          </div>
+          <div>
+            <strong style="color: #f87171;">🔥 De Firetrace & OroraTech:</strong><br/>
+            Alimentar el parámetro de humedad de combustible (<span class="pill-item" style="background:#1e293b; color:#fff;">FMC</span>) del modelo Rothermel con las bandas B8 y B11 (NDII).
+          </div>
+          <div>
+            <strong style="color: #fbbf24;">⚖️ De CIREN / DGA:</strong><br/>
+            Módulo de reconciliación de caudalímetros telemáticos vs. evapotranspiración satelital para blindaje preventivo ante multas DGA.
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTRATEGIA COMERCIAL CABALLO DE TROYA -->
+      <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 5px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 7.2pt; color: #065f46;">
+          <strong>🚀 Estrategia Comercial "Caballo de Troya" (Cuenca del Maule y Longaví):</strong> Entregar un diagnóstico histórico gratuito de balance hídrico y vigor vegetal con Sentinel-2 a fundos vecinos ➔ Demostrar sobregasto en bombeo o discrepancia DGA ➔ Desplegar el gabinete ESP32 y licenciar el Gemelo 3D (>75% conversión).
+        </span>
+        <span class="badge badge-green" style="font-size: 6.5pt;">STATUS: LISTO PARA PRODUCCIÓN</span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>AgriTwin Intelligence Briefing • Capítulo 14: Plan Estratégico y Calce Arquitectónico</span>
+      <span>Lámina 14 de 14</span>
+    </div>
+  </div>
+
+</body>
+</html>

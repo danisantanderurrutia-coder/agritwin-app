@@ -408,9 +408,15 @@
     }
 
     .pill-item {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
+      display: inline-block;
+      font-family: monospace;
+      font-size: 6.8pt;
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 1px 5px;
+      border-radius: 3px;
       color: #0F172A;
+      font-weight: 700;
     }
 
     /* VISUAL BANNER / IMAGE CONTAINER */
@@ -570,6 +576,7 @@
         <span style="font-size: 16pt;">🌾</span>
         <span>AgriTwin Intelligence</span>
       </a>
+      <span class="brand-badge">Dossier Estratégico Web</span>
     </div>
 
     <div class="nav-actions">
@@ -600,6 +607,7 @@
         <div>
           <div class="deck-tag" id="slideCategory">
             <span id="slideCategoryText">Categoría</span>
+            <span class="deck-slug-pill" id="slideSlugPill">#slug</span>
           </div>
           <div class="deck-title" id="slideTitle">Título de la Lámina</div>
         </div>
@@ -718,6 +726,7 @@
                     <div class="card-name">💧 Kilimo: Tesis y Propuesta de Valor</div>
                     <div class="card-sub">Riego Sensorless sin Hardware en Tierra • Fundada por Jairo Trad</div>
                   </div>
+                  <span class="badge badge-blue">Sensorless Agtech</span>
                 </div>
 
                 <div class="feature-box">
@@ -750,6 +759,7 @@
                     <div class="card-name">⚙️ Infraestructura Tecnológica & Operativa</div>
                     <div class="card-sub">El Stack de Teleobservación y Auditoría AWS</div>
                   </div>
+                  <span class="badge badge-blue">Pipeline Satelital</span>
                 </div>
 
                 <div class="infra-box" style="margin-bottom: 8px;">
@@ -794,6 +804,7 @@
                     <div class="card-name">🤖 Instacrops: Evolución y Tesis</div>
                     <div class="card-sub">De Sensores Físicos a Inteligencia Artificial Agronómica • Mario Bustamante</div>
                   </div>
+                  <span class="badge badge-green">IoT + GenAI</span>
                 </div>
 
                 <div class="feature-box">
@@ -826,6 +837,7 @@
                     <div class="card-name">⚙️ Infraestructura Tecnológica & Terreno</div>
                     <div class="card-sub">Silicio Propietario, Redes Móviles y Agentes de IA</div>
                   </div>
+                  <span class="badge badge-green">Hardware & Software Stack</span>
                 </div>
 
                 <div class="infra-box green" style="margin-bottom: 8px;">
@@ -869,6 +881,7 @@
                     <div class="card-name">🌲 Pachama: dMRV de Carbono Forestal en 3D</div>
                     <div class="card-sub">Diego Saez-Gil • Y Combinator, Breakthrough Energy & Amazon</div>
                   </div>
+                  <span class="badge badge-purple">High-Integrity Carbon</span>
                 </div>
 
                 <div class="feature-box">
@@ -902,6 +915,7 @@
                     <div class="card-name">🛰️ Satellience: Analítica Biofísica & Seguros</div>
                     <div class="card-sub">Monitoreo Agroclimático & Seguros Paramétricos en LatAm</div>
                   </div>
+                  <span class="badge badge-amber">Fintech Agroclimática</span>
                 </div>
 
                 <div class="feature-box">
@@ -947,6 +961,7 @@
                     <div class="card-name">🔥 OroraTech & Satellites on Fire: Detección LEO</div>
                     <div class="card-sub">Vigilancia Térmica de Focos de Calor en Menos de 15 Minutos</div>
                   </div>
+                  <span class="badge badge-red">Piro-Detección Sub-Hora</span>
                 </div>
 
                 <div class="feature-box">
@@ -979,6 +994,7 @@
                     <div class="card-name">🚜 Firetrace: Extinción Automática en Maquinaria</div>
                     <div class="card-sub">Protección Directa de Cosechadoras, Tractores y Motores</div>
                   </div>
+                  <span class="badge badge-red">Hardware de Supresión</span>
                 </div>
 
                 <div class="feature-box">
@@ -1023,6 +1039,7 @@
                     <div class="card-name">🇨🇱 Agro-Satélite: Soberanía de Estadísticas Agrícolas</div>
                     <div class="card-sub">ODEPA + CIREN + Centro Nacional de Inteligencia Artificial (CENIA)</div>
                   </div>
+                  <span class="badge badge-green">Ground Truth Soberano</span>
                 </div>
 
                 <div class="feature-box">
@@ -1055,6 +1072,7 @@
                     <div class="card-name">⚖️ La Fiscalización Satelital de la DGA (Código de Aguas)</div>
                     <div class="card-sub">El Mecanismo Punitivo que Justifica el Software en Chile</div>
                   </div>
+                  <span class="badge badge-amber">Compliance & Multas UTAs</span>
                 </div>
 
                 <div class="feature-box">
@@ -1101,6 +1119,7 @@
                     <div class="card-name">🌾 Regrow Ag: Tesis y Modelo de Negocio</div>
                     <div class="card-sub">Descarbonización de las Mayores Cadenas Alimentarias • Anastassia Volkova</div>
                   </div>
+                  <span class="badge badge-green">Líder MRV Agrícola</span>
                 </div>
 
                 <div class="feature-box">
@@ -1126,6 +1145,7 @@
                     <div class="card-name">⚙️ Infraestructura Tecnológica & Algoritmos</div>
                     <div class="card-sub">El Modelo DNDC y la Observación Remota Continua</div>
                   </div>
+                  <span class="badge badge-green">DNDC Engine</span>
                 </div>
 
                 <div class="infra-box green" style="margin-bottom: 8px;">
@@ -1166,6 +1186,7 @@
                     <div class="card-name">🌿 CropX: Tesis de Sistema Operativo Integral</div>
                     <div class="card-sub">Control de Riego, Nutrición y Prevención de Hongos • Tomer Tzach</div>
                   </div>
+                  <span class="badge badge-blue">Hardware + Software Fused</span>
                 </div>
 
                 <div class="feature-box">
@@ -1191,6 +1212,7 @@
                     <div class="card-name">⚙️ Infraestructura Tecnológica & Patentes</div>
                     <div class="card-sub">Sensor Espiral, Lixiviación y Modelos Fúngicos</div>
                   </div>
+                  <span class="badge badge-blue">Patented Hardware</span>
                 </div>
 
                 <div class="infra-box" style="margin-bottom: 8px;">
@@ -1232,6 +1254,7 @@
                     <div class="card-name">💧 OpenET: La Búsqueda del Estándar Supremo</div>
                     <div class="card-sub">Cálculo de Consumo Hídrico Parcela por Parcela</div>
                   </div>
+                  <span class="badge badge-blue">Gold Standard de ET</span>
                 </div>
 
                 <div class="feature-box">
@@ -1257,6 +1280,7 @@
                     <div class="card-name">⚙️ Infraestructura y el Ensamble de 6 Modelos</div>
                     <div class="card-sub">Computación Masiva en la Nube con Google Earth Engine</div>
                   </div>
+                  <span class="badge badge-blue">Multi-Model Ensemble</span>
                 </div>
 
                 <div class="infra-box" style="margin-bottom: 8px;">
@@ -1303,6 +1327,7 @@
                     <div class="card-name">🌡️ Hydrosat: Tesis de la "Fiebre Vegetal"</div>
                     <div class="card-sub">Superación del NDVI Tradicional Mediante Temperatura Térmica • Royce Dalby</div>
                   </div>
+                  <span class="badge badge-red">Thermal IR Intelligence</span>
                 </div>
 
                 <div class="feature-box">
@@ -1328,6 +1353,7 @@
                     <div class="card-name">⚙️ De Satélites Públicos a su Propia Flota Espacial</div>
                     <div class="card-sub">Evolución desde ECOSTRESS hacia la Constelación VanZyl</div>
                   </div>
+                  <span class="badge badge-red">CubeSat Thermal Constellation</span>
                 </div>
 
                 <div class="infra-box red" style="margin-bottom: 8px;">
@@ -1370,6 +1396,7 @@
                     <div class="card-name">🌍 Kayrros: El Guardián Satelital del Metano</div>
                     <div class="card-sub">Francia • Fundada en 2016 • Inteligencia para la ONU y la Banca</div>
                   </div>
+                  <span class="badge badge-purple">Emisiones & Deforestación</span>
                 </div>
 
                 <div class="feature-box">
@@ -1397,6 +1424,7 @@
                     <div class="card-name">💧 eLEAF: Los Creadores del Algoritmo SEBAL</div>
                     <div class="card-sub">Países Bajos • Fundada por el Prof. Wim Bastiaanssen en 2000</div>
                   </div>
+                  <span class="badge badge-blue">Pioneros del Balance Energético</span>
                 </div>
 
                 <div class="feature-box">
@@ -1470,6 +1498,7 @@
             <span style="font-size: 7.5pt; color: var(--text-muted);">
               <strong style="color: var(--accent-green);">Fórmula de Éxito en 4 Pasos:</strong> 1) Ingesta gratuita de Copernicus/NASA ➔ 2) Calibración en tierra con pocas estaciones patrón ➔ 3) Despacho masticado por WhatsApp ➔ 4) Monetización de multas evitadas o compensación corporativa.
             </span>
+            <span class="badge badge-green">PLAYBOOK EJECUTIVO</span>
           </div>
         `
       },
@@ -1604,6 +1633,7 @@
                   <div class="card-name" style="color: #065F46;">🌱 1. Hardware Terreno Soberano</div>
                   <div class="card-sub">Gabinete IP67 + ESP32 + Sondas FDR Suelo</div>
                 </div>
+                <span class="badge badge-green">Tierra</span>
               </div>
               <div class="feature-desc">
                 No llenamos el fundo de sensores. Desplegamos **estaciones patrón** con microcontrolador ESP32 en C++, sondas capacitivas FDR multinivel (20–100 cm) y sensores microclimáticos BME280.
@@ -1618,6 +1648,7 @@
                   <div class="card-name" style="color: #0369A1;">💧 2. Gemelo 3D & Simulación Física</div>
                   <div class="card-sub">Three.js / CesiumJS + Tranque 18.500 m³</div>
                 </div>
+                <span class="badge badge-blue">Espacio 3D</span>
               </div>
               <div class="feature-desc">
                 A diferencia de Kilimo o Instacrops (que son dashboards planos), AgriTwin renderiza la topografía completa, potreros de pastoreo Voisin (PRV), mallas 3D de frutales y cámaras solares 4G.
@@ -1632,6 +1663,7 @@
                   <div class="card-name" style="color: #991B1B;">🛡️ 3. Doctrina C2 de Cuenca (Riesgos)</div>
                   <div class="card-sub">Mando Táctico • Ecuación R = (H × V) / 100</div>
                 </div>
+                <span class="badge badge-red">Piro-Defensa</span>
               </div>
               <div class="feature-desc">
                 Integramos el vector de piro-defensa y crecida aluvial en la Cuenca del Longaví. Modelamos la propagación de fuego (Rothermel), fajas cortafuegos WUI de 45 m y defensa vecinal.
@@ -1644,6 +1676,7 @@
           <div style="background: #F8FAFC; border: 1.5px solid var(--border-card); border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;">
             <div style="font-size: 7.8pt; font-weight: 800; color: #0F172A; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
               <span>🎯 Hoja de Ruta de Integración Técnica en AgriTwin:</span>
+              <span class="badge badge-blue">Transferencia Inmediata</span>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; font-size: 7.2pt; color: #44403C;">
               <div style="background: #FFFFFF; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-card);">
@@ -1669,6 +1702,7 @@
             <span style="font-size: 7.5pt; color: #065F46;">
               <strong>🚀 Estrategia Comercial "Caballo de Troya" (Cuenca del Maule y Longaví):</strong> Entregar un diagnóstico histórico gratuito de balance hídrico y vigor vegetal con Sentinel-2 a fundos vecinos ➔ Demostrar sobregasto en bombeo o discrepancia DGA ➔ Desplegar el gabinete ESP32 y licenciar el Gemelo 3D (>75% conversión).
             </span>
+            <span class="badge badge-green">STATUS: LISTO PARA PRODUCCIÓN</span>
           </div>
         `
       },
@@ -1685,6 +1719,7 @@
             <div style="font-size: 8pt; color: #334155; line-height: 1.35;">
               <strong style="color: #0F172A;">💡 La Revelación Económica de la Industria:</strong> El 90% de las startups de hardware agrícola se estancan o quiebran por capital inmovilizado, logística de terreno y desgaste de garantías. Las que alcanzaron tracciones multimillonarias (Kilimo, Instacrops, Regrow) nacieron o mutaron hacia un modelo <strong>100% Software y Asset-Light</strong>.
             </div>
+            <span class="badge badge-purple" style="white-space: nowrap;">TESIS AGROTECH 2026</span>
           </div>
 
           <div class="grid-2" style="margin-bottom: 12px;">
@@ -1694,6 +1729,7 @@
                   <div class="card-name" style="color: #B91C1C;">❌ La Trampa del Fierro Propio</div>
                   <div class="card-sub">Fabricar, importar y distribuir hardware en el campo</div>
                 </div>
+                <span class="badge badge-red">MARGEN: 25% – 30%</span>
               </div>
               <div class="feature-box">
                 <div class="feature-title">🚜 Riesgo Operativo Extremo en Terreno:</div>
@@ -1715,6 +1751,7 @@
                   <div class="card-name" style="color: #047857;">✅ La Ventaja Exponencial de Software Puro</div>
                   <div class="card-sub">Algoritmos biofísicos, datos públicos y gemelo 3D web</div>
                 </div>
+                <span class="badge badge-green">MARGEN: 85% – 92%</span>
               </div>
               <div class="feature-box">
                 <div class="feature-title">⚡ Despliegue Inmediato en Minutos:</div>
@@ -1769,6 +1806,7 @@
             <div class="card" style="border-top: 3.5px solid #0284C7;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span style="font-size: 13pt;">💧</span>
+                <span class="badge badge-blue">INSPIRACIÓN KILIMO</span>
               </div>
               <div style="font-size: 8.5pt; font-weight: 800; color: #0F172A; margin-bottom: 3px;">1. Riego Sensorless (FAO-56)</div>
               <div style="font-size: 7pt; color: #64748B; margin-bottom: 6px;">Sentinel-2 NDVI + Clima Open-Meteo</div>
@@ -1780,6 +1818,7 @@
             <div class="card" style="border-top: 3.5px solid #059669;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span style="font-size: 13pt;">🤖</span>
+                <span class="badge badge-green">INSPIRACIÓN INSTACROPS</span>
               </div>
               <div style="font-size: 8.5pt; font-weight: 800; color: #0F172A; margin-bottom: 3px;">2. Estación Virtual & Webhooks</div>
               <div style="font-size: 7pt; color: #64748B; margin-bottom: 6px;">Interpolación ERA5 + APIs Terceros</div>
@@ -1791,6 +1830,7 @@
             <div class="card" style="border-top: 3.5px solid #DC2626;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span style="font-size: 13pt;">🔥</span>
+                <span class="badge badge-red">INSPIRACIÓN ORORATECH</span>
               </div>
               <div style="font-size: 8.5pt; font-weight: 800; color: #0F172A; margin-bottom: 3px;">3. Radar Térmico de Incendios</div>
               <div style="font-size: 7pt; color: #64748B; margin-bottom: 6px;">API Pública Gratuita NASA FIRMS</div>
@@ -1804,6 +1844,7 @@
             <div class="card" style="border-top: 3.5px solid #7C3AED;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span style="font-size: 13pt;">🌲</span>
+                <span class="badge badge-purple">INSPIRACIÓN PACHAMA & MRV</span>
               </div>
               <div style="font-size: 8.5pt; font-weight: 800; color: #0F172A; margin-bottom: 3px;">4. Auditor EUDR de No-Deforestación</div>
               <div style="font-size: 7pt; color: #64748B; margin-bottom: 6px;">Histórico Sentinel-2 2020-2026 para Fruta y Vino</div>
@@ -1815,6 +1856,7 @@
             <div class="card" style="border-top: 3.5px solid #D97706;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span style="font-size: 13pt;">⚖️</span>
+                <span class="badge badge-amber">INSPIRACIÓN CIREN / DGA</span>
               </div>
               <div style="font-size: 8.5pt; font-weight: 800; color: #0F172A; margin-bottom: 3px;">5. Blindaje Normativo DGA & Catastro</div>
               <div style="font-size: 7pt; color: #64748B; margin-bottom: 6px;">Auditor Preventivo de Extracciones de Agua</div>
@@ -1899,6 +1941,7 @@
                   <div class="card-name" style="color: #0284C7;">1. AgriTwin Core Platform (SaaS B2B)</div>
                   <div class="card-sub">Suscripción anual por hectárea para predios medianos y grandes</div>
                 </div>
+                <span class="badge badge-blue">RECURRENCIA ANUAL</span>
               </div>
               <div class="feature-box">
                 <div class="feature-title">💰 Pricing de Mercado:</div>
@@ -1920,6 +1963,7 @@
                   <div class="card-name" style="color: #047857;">2. Software Studio (Proyectos a Medida)</div>
                   <div class="card-sub">Fábrica de soluciones de software para consorcios y exportadoras</div>
                 </div>
+                <span class="badge badge-green">$15K – $60K USD / PROYECTO</span>
               </div>
               <div class="feature-box">
                 <div class="feature-title">🌊 Consolas C2 para Juntas de Vigilancia de Cuencas:</div>
@@ -1940,6 +1984,7 @@
             <div style="font-size: 7.6pt; color: #065F46;">
               <strong>🚀 El Manifiesto Software de AgroTech:</strong> El software se construye una vez, no se desgasta mecánicamente, no sufre con las heladas del Maule y escala a nivel global a costo marginal cero. AgroTech se posiciona como el <em>partner</em> de ingeniería de software agrícola más sofisticado de Chile.
             </div>
+            <span class="badge badge-green" style="white-space: nowrap;">MODELO VALIDADO</span>
           </div>
         `
       }

@@ -1,0 +1,206 @@
+/* AgriTwin - HUD & Toolbar Stylesheet (Extracted from index.html) */
+
+/* Base transitions */
+.app-header, .workshop-header { transition: transform 0.3s ease; }
+
+/* Toolbar Container & Hammer Toggle */
+.toolbar-container {
+  position: absolute;
+  left: 14px;
+  bottom: 16px;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+.btn-hammer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(13, 19, 34, 0.95);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fde047;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  z-index: 36;
+}
+.btn-hammer-toggle:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  transform: scale(1.03);
+}
+.hammer-arrow {
+  font-size: 10px;
+  transition: transform 0.3s ease;
+  color: #fbbf24;
+}
+.toolbar-container.toolbar-open .hammer-arrow {
+  transform: rotate(180deg);
+}
+
+/* When collapsed (default), controls-bar slides away to the side */
+.toolbar-container .controls-bar {
+  position: relative !important;
+  left: auto !important;
+  bottom: auto !important;
+  max-width: 0 !important;
+  opacity: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  transform: translateX(-15px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  margin: 0 !important;
+}
+/* When toolbar-open, controls-bar expands to the side */
+.toolbar-container.toolbar-open .controls-bar {
+  max-width: calc(100vw - 220px) !important;
+  opacity: 1 !important;
+  padding: 4px 8px !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
+  transform: translateX(0);
+}
+
+/* Floating House Button (Volver al Galpón / Casa) */
+.floating-house-btn {
+  position: fixed;
+  top: 16px;
+  left: 86px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(13, 19, 34, 0.95);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s ease;
+}
+.floating-house-btn:hover {
+  background: rgba(245, 158, 11, 0.25);
+  transform: scale(1.04);
+}
+
+/* Camera HUD Pills (Tour, Walkthrough, Timelapse) */
+.camera-hud-pill {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(13, 20, 36, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 10px 18px;
+  border-radius: 9999px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 20px rgba(59, 130, 246, 0.25);
+  color: #f8fafc;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  animation: hudPillFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+@keyframes hudPillFadeIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.hud-pill-icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pulse-blue {
+  animation: iconPulseBlue 2s infinite ease-in-out;
+}
+.pulse-green {
+  animation: iconPulseGreen 2s infinite ease-in-out;
+}
+.pulse-amber {
+  animation: iconPulseAmber 2s infinite ease-in-out;
+}
+@keyframes iconPulseBlue {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #3b82f6); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 8px #60a5fa); }
+}
+@keyframes iconPulseGreen {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #10b981); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 8px #34d399); }
+}
+@keyframes iconPulseAmber {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #f59e0b); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 8px #fbbf24); }
+}
+.hud-pill-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hud-pill-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+}
+.hud-pill-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hud-key {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #e2e8f0;
+  font-family: monospace;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+.hud-pill-close-btn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.hud-pill-close-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  border-color: #ef4444;
+  transform: scale(1.05);
+}
+
+/* Embedded suite frame helpers */
+.is-embedded .app-header { display: none !important; }
+.is-embedded .workshop-header { display: none !important; }
+.is-embedded .workshop-overlay { padding-top: 0 !important; }
+.is-embedded #workshopOverlay .workshop-scene { top: 0 !important; }

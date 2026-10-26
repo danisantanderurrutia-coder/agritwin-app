@@ -1,0 +1,267 @@
+/* AgriTwin - 3D Object Placement Command Dock & HUD Stylesheet (AoE III Palette) */
+
+#aoe3-command-dock {
+  position: fixed;
+  bottom: 66px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  width: 820px;
+  max-width: 96vw;
+  background: linear-gradient(180deg, #2e1e12 0%, #180f08 100%);
+  border: 2px solid #b8860b;
+  outline: 1px solid #4a3416;
+  border-radius: 10px;
+  box-shadow: inset 0 0 16px rgba(0,0,0,0.9), 0 18px 48px rgba(0,0,0,0.95), 0 0 16px rgba(184,134,11,0.25);
+  z-index: 45;
+  font-family: 'Plus Jakarta Sans', Georgia, serif;
+  color: #fef3c7;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+#aoe3-command-dock.dock-open {
+  display: flex;
+  transform: translateX(-50%) translateY(0);
+}
+.aoe3-dock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #44301d 0%, #291c10 100%);
+  border-bottom: 2px solid #8c6721;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.aoe3-dock-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 6px 10px;
+  background: rgba(18, 12, 7, 0.9);
+  border-bottom: 1px solid #4a3418;
+  overflow-x: auto;
+}
+.aoe3-tab-btn {
+  background: linear-gradient(180deg, #3d2a1a 0%, #201309 100%);
+  border: 1px solid #8c6721;
+  color: #d4af37;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  transition: all 0.15s;
+  text-shadow: 0 1px 2px #000;
+}
+.aoe3-tab-btn:hover {
+  background: linear-gradient(180deg, #593e25 0%, #301d0d 100%);
+  border-color: #fbbf24;
+  color: #fff;
+}
+.aoe3-tab-btn.active {
+  background: linear-gradient(180deg, #b8860b 0%, #785208 100%);
+  border-color: #fef08a;
+  color: #000;
+  font-weight: 800;
+  text-shadow: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.aoe3-grid-container {
+  padding: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: radial-gradient(circle at center, #26170d 0%, #120a05 100%);
+}
+.aoe3-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+.aoe3-card {
+  background: linear-gradient(180deg, #3a2616 0%, #1e130a 100%);
+  border: 1px solid #73511c;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  position: relative;
+  transition: all 0.18s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.5);
+}
+.aoe3-card:hover {
+  transform: translateY(-2px);
+  border-color: #fbbf24;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 16px rgba(0,0,0,0.7), 0 0 12px rgba(245,158,11,0.4);
+}
+.aoe3-card.selected {
+  border: 2px solid #38bdf8;
+  background: linear-gradient(180deg, #1e3a4f 0%, #0c1c28 100%);
+}
+.aoe3-card-icon {
+  font-size: 26px;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+}
+.aoe3-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fef08a;
+  line-height: 1.2;
+}
+.aoe3-card-cost {
+  font-size: 9.5px;
+  color: #cbd5e1;
+  font-family: monospace;
+}
+.aoe3-card-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 8px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Modal de Inserción / Parámetros */
+#aoe3-insert-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 10001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-family: 'Plus Jakarta Sans', Georgia, serif;
+}
+.aoe3-modal-dialog {
+  width: 520px;
+  max-width: 95vw;
+  background: linear-gradient(180deg, #2b1b10 0%, #150d07 100%);
+  border: 2px solid #b8860b;
+  border-radius: 12px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 25px rgba(184,134,11,0.3);
+  color: #fef3c7;
+  overflow: hidden;
+  animation: aoeModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes aoeModalPop {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.aoe3-modal-header {
+  padding: 12px 18px;
+  background: linear-gradient(180deg, #44301d 0%, #291c10 100%);
+  border-bottom: 2px solid #8c6721;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.aoe3-modal-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 12px;
+}
+.aoe3-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.aoe3-form-group label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fde047;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.aoe3-input, .aoe3-select {
+  background: #140b06;
+  border: 1px solid #78521e;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+}
+.aoe3-input:focus, .aoe3-select:focus {
+  outline: none;
+  border-color: #fbbf24;
+  box-shadow: 0 0 8px rgba(245,158,11,0.5);
+}
+.aoe3-modal-footer {
+  padding: 12px 18px;
+  background: rgba(14, 8, 4, 0.9);
+  border-top: 1px solid #4a3418;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.aoe3-btn-action {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.aoe3-btn-cancel {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #cbd5e1;
+}
+.aoe3-btn-cancel:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.aoe3-btn-confirm {
+  background: linear-gradient(180deg, #10b981 0%, #047857 100%);
+  border: 1px solid #34d399;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.4);
+}
+.aoe3-btn-confirm:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* HUD Flotante Durante Colocación Activa */
+#aoe3-placement-hud {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: rgba(24, 15, 8, 0.95);
+  border: 1px solid #fbbf24;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 14px rgba(245,158,11,0.3);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  gap: 14px;
+  color: #fef3c7;
+  font-family: 'Plus Jakarta Sans', Georgia, serif;
+}
+.pulse-glow {
+  animation: aoePulse 1.8s infinite;
+}
+@keyframes aoePulse {
+  0% { box-shadow: 0 0 4px rgba(245,158,11,0.4); }
+  50% { box-shadow: 0 0 16px rgba(245,158,11,0.85), inset 0 0 8px rgba(254,240,138,0.5); }
+  100% { box-shadow: 0 0 4px rgba(245,158,11,0.4); }
+}
