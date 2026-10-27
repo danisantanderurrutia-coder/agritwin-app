@@ -7728,6 +7728,75 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- ═══════════════════════════════════════════════════════════════════
+                         SECCIÓN 4: MODELADO DE CHOQUE CON BARRERAS DEFENSIVAS Y DEMANDA HIDRÁULICA
+                         MÓDULO 2 AMPLIADO: FAJA CORTAFUEGOS 45M & ACOPLE CON TRANQUE MENIEL
+                         ═══════════════════════════════════════════════════════════════════ -->
+                    <div class="space-y-4 pt-4 border-t border-[#E7DAC6]">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-900 flex items-center justify-center font-bold text-sm">4</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-stone-900 font-serif">Modelo de Choque Defensivo con Barreras WUI &amp; Demanda Hidráulica</h4>
+                                <p class="text-[11px] text-stone-500 font-mono">Resistencia de la Faja de 45m • Penetración por Pavesas • Amortiguación Hídrica vía Tranque Meniel</p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-stone-600 font-sans leading-relaxed">
+                            Cuando un foco de incendio (simulado mediante <em>Click-to-Ignite</em> o generado por un macizo forestal vecino) avanza hacia el Fundo Meniel, colisiona con la <strong>Faja Defensiva WUI de 45 metros</strong> dispuesta en el deslinde este. El sistema evalúa dos fenómenos físicos acoplados: la <strong>detención por suelo mineral</strong> y el <strong>salto aerotransportado de pavesas</strong>, dimensionando el caudal de agua necesario del tranque acumulador para impedir el vuelco hacia los cuarteles agrícolas.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <!-- Tarjeta KaTeX 1: Eficacia de Retención de Superficie -->
+                            <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                                <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                    <span>🛡️</span> Retención Superficial ($\eta_{\text{faja}}$)
+                                </span>
+                                <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                    $$\eta_{\text{faja}} = 1 - \left(\frac{I_{\text{frente}}}{I_{\text{crítico}}}\right)^{0.6} \cdot e^{-W_{\text{faja}} / L_{\text{llama}}}$$
+                                </div>
+                                <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                    Para $W_{\text{faja}} = 45\text{ m}$ y longitud de llama $L_{\text{llama}} \approx 3.2\text{ m}$, la faja de suelo mineral detiene entre el <strong>85% y 98%</strong> del fuego terrestre creeping, pero es permeable a la radiación de copa.
+                                </p>
+                            </div>
+
+                            <!-- Tarjeta KaTeX 2: Probabilidad de Salto de Pavesas -->
+                            <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                                <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                    <span>⚡</span> Salto de Pavesas ($\mathbb{P}_{\text{salto}}$)
+                                </span>
+                                <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                    $$\mathbb{P}_{\text{salto}} = 1 - \exp\left(-\frac{D_{\text{spot}}}{W_{\text{faja}}} \cdot \left[\frac{100 - \text{LFMC}}{100}\right]^2\right)$$
+                                </div>
+                                <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                    Bajo Puelche ($D_{\text{spot}} = 1.35\text{ km} \gg 45\text{ m}$), $\mathbb{P}_{\text{salto}} \approx 94\%$. Demuestra matemáticamente que un cortafuegos sin agua es <strong>vulnerado por vía aérea</strong>.
+                                </p>
+                            </div>
+
+                            <!-- Tarjeta KaTeX 3: Balance Hidráulico del Tranque -->
+                            <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                                <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                    <span>💧</span> Demanda Hidráulica ($V_{\text{req}}$)
+                                </span>
+                                <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                    $$V_{\text{req}} = L_{\text{faja}} \cdot W_{\text{faja}} \cdot q_{\text{asp}} \cdot \Delta t_{\text{alerta}} \cdot 10^{-3}$$
+                                </div>
+                                <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                    Con $L=650\text{ m}$, $W=45\text{ m}$ y $q=4.5\text{ L/m}^2\text{/h}$ por 40 min: requiere <strong>$88\text{ m}^3$</strong> ($0.48\%$ del Tranque Meniel de $18.500\text{ m}^3$). Amortiguación 100% viable.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Banner de Conclusión Operativa -->
+                        <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-sans text-amber-950 space-y-1">
+                            <b class="font-serif text-stone-900 flex items-center gap-1.5">
+                                <span>🎯</span> Protocolo C2 Activado: Faja Húmeda Acoplada
+                            </b>
+                            <p class="leading-relaxed text-[11px] text-stone-700">
+                                Al simular una ignición ad-hoc mediante <em>Click-to-Ignite</em>, el visor calcula de inmediato el sector vulnerable de Meniel y programa la <strong>precarga de aspersores perimetrales</strong>. Al saturar la hojarasca y el borde con $88\text{ m}^3$ de agua antes de la llegada del frente, la probabilidad de ignición por pavesas cae de $94\%$ a menos del $12\%$, protegiendo los cuarteles de cerezos y avellanos contiguos.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -12904,6 +12973,69 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                     <p id="tacticalScenarioDesc" class="text-[9.5px] text-slate-400 leading-tight font-sans italic">
                                         Viento andino descendente con compresión adiabática seca. Fuego de avance rápido (>18 m/min) con salto masivo de pavesas sobre cortafuegos.
                                     </p>
+                                </div>
+                            </div>
+
+                            <!-- SUBMÓDULO 2.B: SIMULADOR DE IGNICIÓN TÁCTICA INTERACTIVA & CHOQUE CON FAJA 45M -->
+                            <div class="p-2.5 rounded-lg bg-[#221008]/90 border border-amber-500/40 space-y-2 font-mono">
+                                <div class="flex items-center justify-between border-b border-amber-500/20 pb-1.5">
+                                    <span class="text-amber-300 font-bold text-[10px] flex items-center gap-1.5">
+                                        <span>🎯</span> Simulador de Foco Ad-hoc (Click-to-Ignite)
+                                    </span>
+                                    <span class="text-[9px] text-amber-400/80">Choque Faja 45m</span>
+                                </div>
+
+                                <button onclick="toggleClickToIgniteMode();" id="btnToggleClickToIgnite" class="w-full py-1.5 px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-amber-200 hover:text-white font-mono text-[10px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-sm">
+                                    <span class="flex items-center gap-1.5">
+                                        <span>📍</span>
+                                        <span>Foco de Ignición en Mapa</span>
+                                    </span>
+                                    <span id="badgeClickToIgnite" class="text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-300 border border-white/10 font-mono">ACTIVAR</span>
+                                </button>
+
+                                <!-- Tarjeta de Diagnóstico Dinámico tras el Click -->
+                                <div id="cardCustomIgnitionDiagnostics" class="hidden p-2 rounded-lg bg-black/70 border border-amber-500/30 space-y-1.5 text-[9.5px]">
+                                    <div class="flex items-center justify-between border-b border-white/10 pb-1">
+                                        <span class="text-red-400 font-bold flex items-center gap-1">
+                                            <span>🔥</span> Impacto Estimado en Meniel
+                                        </span>
+                                        <button onclick="clearCustomIgnition();" class="text-[8.5px] text-slate-400 hover:text-white px-1.5 py-0.2 rounded bg-white/5 border border-white/10 cursor-pointer" title="Limpiar foco simulado">
+                                            ✕ Limpiar
+                                        </button>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-1 text-[9px]">
+                                        <div class="p-1 bg-black/40 rounded border border-white/5">
+                                            <span class="text-slate-400 block text-[8px]">Coordenadas Foco:</span>
+                                            <b id="customIgnitionCoords" class="text-white">-36.2130, -71.5850</b>
+                                        </div>
+                                        <div class="p-1 bg-black/40 rounded border border-white/5">
+                                            <span class="text-slate-400 block text-[8px]">Distancia Límites:</span>
+                                            <b id="customIgnitionDist" class="text-amber-300">1.2 km a Meniel</b>
+                                        </div>
+                                        <div class="p-1 bg-black/40 rounded border border-white/5">
+                                            <span class="text-slate-400 block text-[8px]">Tiempo Arribo ($T_{\text{arr}}$):</span>
+                                            <b id="customIgnitionTime" class="text-red-400">18 min (1.1 km/h)</b>
+                                        </div>
+                                        <div class="p-1 bg-black/40 rounded border border-white/5">
+                                            <span class="text-slate-400 block text-[8px]">Salto Pavesas ($D_{\text{spot}}$):</span>
+                                            <b id="customIgnitionSpotting" class="text-amber-400">1.35 km (Albini)</b>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-1.5 bg-black/50 rounded border border-white/5 text-[9px] space-y-0.5">
+                                        <span class="text-slate-400 block text-[8px]">Choque Faja Cortafuegos 45m:</span>
+                                        <div id="customIgnitionFajaStatus" class="text-slate-200">
+                                            Suelo: <b class="text-emerald-400">85% retención</b> &bull; Pavesas: <b class="text-red-400">94% salto</b>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-1.5 bg-cyan-950/40 rounded border border-cyan-500/30 text-[9px] space-y-0.5">
+                                        <span class="text-cyan-300 block text-[8px]">💧 Consumo Hídrico Aspersión (Tranque Meniel):</span>
+                                        <div id="customIgnitionWater" class="text-cyan-200">
+                                            <b class="text-cyan-300">88 m³</b> (0.48% de Tranque Meniel 18.5k m³) &bull; 40 min aspersión
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

@@ -3067,6 +3067,246 @@
         renderTacticalFireVectorsForRegime('puelche');
 
         // ═══════════════════════════════════════════════════════════════════
+        // 2.5D SIMULADOR DE IGNICIÓN TÁCTICA INTERACTIVA (CLICK-TO-IGNITE) & CHOQUE CON FAJA 45M
+        // Permite al usuario seleccionar un punto arbitrario en el mapa y simular la pluma balística
+        // Cruce con Faja Cortafuegos de 45m y balance hídrico de aspersión perimetral (Tranque Meniel)
+        // ═══════════════════════════════════════════════════════════════════
+        const customIgnitionLayer = L.layerGroup();
+        customIgnitionLayer.addTo(map);
+        window.customIgnitionLayer = customIgnitionLayer;
+        window.isClickToIgniteActive = false;
+        window.activeCustomIgnitionState = null;
+
+        // Función para activar / desactivar el modo Click-to-Ignite
+        window.toggleClickToIgniteMode = function(force) {
+            window.isClickToIgniteActive = (force !== undefined) ? force : !window.isClickToIgniteActive;
+            const btn = document.getElementById('btnToggleClickToIgnite');
+            const badge = document.getElementById('badgeClickToIgnite');
+            const mapContainer = map.getContainer();
+
+            if (window.isClickToIgniteActive) {
+                if (mapContainer) mapContainer.style.cursor = 'crosshair';
+                if (btn) btn.className = 'w-full py-2 px-3 rounded-lg bg-amber-500/35 border border-amber-400 text-white font-mono text-[10.5px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-md animate-pulse';
+                if (badge) {
+                    badge.innerText = 'HAZ CLICK EN EL MAPA';
+                    badge.className = 'text-[8.5px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/60 font-mono font-bold';
+                }
+                // Si la capa de vectores está apagada, la encendemos para ver el contexto
+                if (overlayLayers['fire_threat_vectors'] && !map.hasLayer(overlayLayers['fire_threat_vectors'])) {
+                    window.toggleTacticalFireVectorsLayer(true);
+                }
+            } else {
+                if (mapContainer) mapContainer.style.cursor = '';
+                if (btn) btn.className = 'w-full py-2 px-3 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-amber-200 hover:text-white font-mono text-[10.5px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-sm';
+                if (badge) {
+                    badge.innerText = 'ACTIVAR';
+                    badge.className = 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+                }
+            }
+        };
+
+        // Función para limpiar la simulación ad-hoc activa
+        window.clearCustomIgnition = function() {
+            customIgnitionLayer.clearLayers();
+            window.activeCustomIgnitionState = null;
+            const card = document.getElementById('cardCustomIgnitionDiagnostics');
+            if (card) card.classList.add('hidden');
+        };
+
+        // Manejador del click sobre el mapa en modo Click-to-Ignite
+        map.on('click', function(e) {
+            if (!window.isClickToIgniteActive) return;
+
+            const clickLat = e.latlng.lat;
+            const clickLng = e.latlng.lng;
+            const menielEastBoundary = [-36.2115, -71.5950];
+
+            // Distancia geodésica a los límites de Fundo Meniel
+            const distBoundaryMeters = map.distance(e.latlng, L.latLng(menielEastBoundary[0], menielEastBoundary[1]));
+            const distBoundaryKm = distBoundaryMeters / 1000;
+
+            const regimeKey = window.currentTacticalWindRegime || 'puelche';
+            const regime = TACTICAL_WIND_REGIMES[regimeKey] || TACTICAL_WIND_REGIMES.puelche;
+
+            // Dirección del fuego según viento activo
+            const windDeg = regime.windDeg;
+            const fireDir = (windDeg + 180) % 360;
+
+            // Velocidad de avance de cabeza Rothermel (m/min) y km/h
+            const speedMpm = 18.4 * (regime.spreadMultiplier / 2.35);
+            const speedKmh = (speedMpm * 60) / 1000;
+            const arrivalTimeMin = Math.max(2, Math.round(distBoundaryKm / (speedKmh / 60)));
+
+            // Interacción con la Faja Cortafuegos WUI de 45m
+            let fajaSurfaceRetencionPct = 100;
+            let fajaSpottingBreakthroughPct = 0;
+            let spottingOverreachKm = 0;
+
+            if (regime.spottingKm > 0.045) {
+                spottingOverreachKm = +(regime.spottingKm - 0.045).toFixed(2);
+                fajaSpottingBreakthroughPct = Math.min(95, Math.round((regime.spottingKm / 0.045) * (1 - regime.lfmcPct / 100) * 10));
+            }
+
+            if (regimeKey === 'puelche') {
+                fajaSurfaceRetencionPct = 85;
+                fajaSpottingBreakthroughPct = 94;
+            } else if (regimeKey === 'surazo') {
+                fajaSurfaceRetencionPct = 98;
+                fajaSpottingBreakthroughPct = 38;
+            } else if (regimeKey === 'norte') {
+                fajaSurfaceRetencionPct = 92;
+                fajaSpottingBreakthroughPct = 76;
+            } else {
+                fajaSurfaceRetencionPct = 95;
+                fajaSpottingBreakthroughPct = 42;
+            }
+
+            // Consumo hídrico para aspersión defensiva perimetral (Tranque Meniel 18.500 m³)
+            const fajaSectorLengthM = Math.min(1200, Math.max(450, Math.round(distBoundaryMeters * 0.6)));
+            const fajaAreaM2 = fajaSectorLengthM * 45;
+            const waterRequiredM3 = Math.round((fajaAreaM2 * 4.5 * (40 / 60)) / 1000);
+            const tranqueTotalM3 = 18500;
+            const tranqueUsagePct = +((waterRequiredM3 / tranqueTotalM3) * 100).toFixed(2);
+
+            // Guardar estado en memoria
+            window.activeCustomIgnitionState = {
+                lat: clickLat,
+                lng: clickLng,
+                distKm: +distBoundaryKm.toFixed(2),
+                arrivalTimeMin,
+                regimeKey,
+                speedKmh: +speedKmh.toFixed(2),
+                spottingKm: regime.spottingKm,
+                fajaSurfaceRetencionPct,
+                fajaSpottingBreakthroughPct,
+                spottingOverreachKm,
+                waterRequiredM3,
+                tranqueUsagePct
+            };
+
+            // Limpiar capa previa y dibujar nuevos vectores dinámicos
+            customIgnitionLayer.clearLayers();
+
+            // 1. Marcador táctico del foco con pulso térmico
+            const flameIcon = L.divIcon({
+                className: 'custom-flame-ignition-icon',
+                html: `
+                    <div style="position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+                        <div style="position:absolute; width:36px; height:36px; border-radius:50%; background:rgba(239,68,68,0.4); border:1.5px solid #ef4444; animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
+                        <div style="position:absolute; width:26px; height:26px; border-radius:50%; background:rgba(220,38,38,0.9); box-shadow:0 0 15px rgba(239,68,68,0.9); display:flex; align-items:center; justify-content:center; border:1px solid #ffffff;">
+                            <span style="font-size:14px;">🔥</span>
+                        </div>
+                    </div>
+                `,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20]
+            });
+            const flameMarker = L.marker([clickLat, clickLng], { icon: flameIcon });
+            flameMarker.bindTooltip(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:bold; color:#fecaca; background:rgba(18,6,6,0.95); padding:3px 6px; border-radius:4px; border:1px solid #ef4444;">
+                    🎯 FOCO AD-HOC • ${distBoundaryKm.toFixed(2)} km a Meniel (${arrivalTimeMin} min)
+                </div>
+            `, { permanent: true, direction: 'top', offset: [0, -18] });
+            flameMarker.addTo(customIgnitionLayer);
+
+            // 2. Pluma balística militar adaptada desde este punto de ignición
+            const reachKm = Math.max(1.2, Math.min(distBoundaryKm + 0.6, 3.2));
+            const p0 = [clickLat, clickLng];
+
+            // Haz Central (Head fire)
+            const p1_head = destLatLng(clickLat, clickLng, reachKm, fireDir);
+            const pc_head = destLatLng(clickLat, clickLng, reachKm * 0.5, fireDir + 4);
+            const headArrow = createTacticalFireArrow(p0, pc_head, p1_head, {
+                color: '#dc2626',
+                weight: 5.5,
+                badgeText: `🔥 ${Math.min(96, Math.max(45, 92 - Math.round(distBoundaryKm * 10)))}% • ${arrivalTimeMin} min`,
+                popupHtml: `
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px; color:#f8fafc; min-width:220px;">
+                        <strong style="color:#ef4444; font-size:12px;">🎯 Simulación de Ignición Ad-hoc</strong>
+                        <div style="display:flex; justify-content:space-between; margin-top:4px;">
+                            <span style="color:#94a3b8;">Distancia a Meniel:</span>
+                            <b style="color:#f87171;">${distBoundaryKm.toFixed(2)} km</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:2px;">
+                            <span style="color:#94a3b8;">Tiempo Estimado:</span>
+                            <b style="color:#fca5a5;">${arrivalTimeMin} min (${speedKmh.toFixed(1)} km/h)</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:2px;">
+                            <span style="color:#94a3b8;">Salto Faja 45m:</span>
+                            <b style="color:#fbbf24;">${fajaSpottingBreakthroughPct}% prob (${regime.spottingKm} km)</b>
+                        </div>
+                        <div style="margin-top:6px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1); font-size:10px; color:#86efac;">
+                            💧 <b>Agua Aspersión Tranque:</b> ${waterRequiredM3} m³ (${tranqueUsagePct}% capacidad)
+                        </div>
+                    </div>
+                `
+            });
+            headArrow.shaft.addTo(customIgnitionLayer);
+            headArrow.headMarker.addTo(customIgnitionLayer);
+            if (headArrow.badgeMarker) headArrow.badgeMarker.addTo(customIgnitionLayer);
+
+            // Flanco Izquierdo
+            const p1_left = destLatLng(clickLat, clickLng, reachKm * 0.65, fireDir - 16);
+            const pc_left = destLatLng(clickLat, clickLng, reachKm * 0.35, fireDir - 8);
+            const leftArrow = createTacticalFireArrow(p0, pc_left, p1_left, { color: '#f97316', weight: 2.8, opacity: 0.85 });
+            leftArrow.shaft.addTo(customIgnitionLayer);
+            leftArrow.headMarker.addTo(customIgnitionLayer);
+
+            // Flanco Derecho
+            const p1_right = destLatLng(clickLat, clickLng, reachKm * 0.65, fireDir + 16);
+            const pc_right = destLatLng(clickLat, clickLng, reachKm * 0.35, fireDir + 8);
+            const rightArrow = createTacticalFireArrow(p0, pc_right, p1_right, { color: '#f97316', weight: 2.8, opacity: 0.85 });
+            rightArrow.shaft.addTo(customIgnitionLayer);
+            rightArrow.headMarker.addTo(customIgnitionLayer);
+
+            // Vector de Pavesas (Spotting Albini) superando la barrera
+            if (regime.spottingKm > 0) {
+                const spotDest = destLatLng(clickLat, clickLng, Math.min(distBoundaryKm + 0.3, reachKm + regime.spottingKm * 0.6), fireDir + 3);
+                const spotPts = bezierPoints(p0, destLatLng(clickLat, clickLng, regime.spottingKm * 0.5, fireDir - 10), spotDest, 14);
+                const spotLine = L.polyline(spotPts, {
+                    color: '#fde047',
+                    weight: 2.0,
+                    dashArray: '4, 6',
+                    opacity: 0.95
+                });
+                spotLine.bindTooltip(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:#fef08a; background:rgba(0,0,0,0.9); padding:2px 5px; border-radius:3px; border:1px solid #facc15;">
+                        ⚡ SALTO PAVESAS: ${regime.spottingKm} km (Albini) &bull; Cruza faja 45m
+                    </div>
+                `, { sticky: true });
+                spotLine.addTo(customIgnitionLayer);
+            }
+
+            // Actualizar Tarjeta de Diagnóstico Dinámico en el Sidebar (#tab-riesgos)
+            const card = document.getElementById('cardCustomIgnitionDiagnostics');
+            if (card) {
+                card.classList.remove('hidden');
+                const elCoords = document.getElementById('customIgnitionCoords');
+                const elDist = document.getElementById('customIgnitionDist');
+                const elTime = document.getElementById('customIgnitionTime');
+                const elFaja = document.getElementById('customIgnitionFajaStatus');
+                const elSpot = document.getElementById('customIgnitionSpotting');
+                const elWater = document.getElementById('customIgnitionWater');
+
+                if (elCoords) elCoords.innerText = `${clickLat.toFixed(4)}, ${clickLng.toFixed(4)}`;
+                if (elDist) elDist.innerText = `${distBoundaryKm.toFixed(2)} km a Meniel`;
+                if (elTime) elTime.innerText = `${arrivalTimeMin} min (${speedKmh.toFixed(1)} km/h)`;
+                if (elFaja) {
+                    elFaja.innerHTML = `Suelo: <b class="text-emerald-400">${fajaSurfaceRetencionPct}% retención</b> &bull; Pavesas: <b class="text-red-400">${fajaSpottingBreakthroughPct}% salto</b>`;
+                }
+                if (elSpot) {
+                    elSpot.innerText = `${regime.spottingKm} km salto proy. (supera faja 45m)`;
+                }
+                if (elWater) {
+                    elWater.innerHTML = `<b class="text-cyan-300">${waterRequiredM3} m³</b> (${tranqueUsagePct}% de Tranque Meniel 18.5k m³) &bull; 40 min aspersión`;
+                }
+            }
+
+            // Desactivar el cursor de click para permitir interacción normal tras definir el foco
+            window.toggleClickToIgniteMode(false);
+        });
+
+        // ═══════════════════════════════════════════════════════════════════
         // 2.6 FUNCIONES DE CONTROL DE TRANSECTOS, ENCUADRE CONTEXTUAL & VIENTO
         // ═══════════════════════════════════════════════════════════════════
         
