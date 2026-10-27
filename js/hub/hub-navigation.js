@@ -1266,6 +1266,12 @@
                     if (typeof initDocsCatalog === 'function') {
                         initDocsCatalog();
                     }
+                } else if (tabId === 'docs-vecino') {
+                    setTimeout(() => {
+                        if (typeof window.renderLatexInContainer === 'function') {
+                            window.renderLatexInContainer('docs-vecino');
+                        }
+                    }, 80);
                 }
             } catch (err) {
                 console.warn('[Docs Vault] Error actualizando subtab:', tabId, err);

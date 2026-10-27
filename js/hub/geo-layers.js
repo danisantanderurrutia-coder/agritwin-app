@@ -2535,6 +2535,525 @@
         overlayLayers['lulc_biofisico'] = biofisicoLulcLayer;
 
         // ═══════════════════════════════════════════════════════════════════
+        // 2.5C ESTÁNDAR VECINO INFORMADO: MÓDULO 2 - VECTORES DE AMENAZA TRANSFRONTERIZA
+        // Haces vectoriales tácticos militares (Pickett's Charge style) multi-escenario
+        // Modelado biofísico acoplado: Rothermel (1972) + Elipse Huygens + Albini Spotting (1979)
+        // ═══════════════════════════════════════════════════════════════════
+        const TACTICAL_WIND_REGIMES = {
+            puelche: {
+                id: 'puelche',
+                name: 'Viento Puelche (Catabático ESE)',
+                shortName: 'Puelche ESE',
+                windSpeedKmh: 42,
+                windDeg: 120, // Sopla desde ESE (120°) hacia WNW (300°)
+                airTempC: 34.5,
+                relativeHumidity: 14,
+                lfmcPct: 62, // Humedad foliar viva Sentinel-2 NDWI < 80% (Crítico)
+                dfmcPct: 4.1, // Humedad hojarasca muerta Simard/Nelson (Polvorín)
+                spreadMultiplier: 2.35,
+                spottingKm: 1.35,
+                color: '#dc2626',
+                primaryThreatSector: 'Deslinde Este & Flanco Nororiente (Colindancia Directa Meniel)',
+                description: 'Viento andino descendente con compresión adiabática seca. Fuego de avance rápido (>18 m/min) con salto masivo de pavesas sobre cortafuegos.'
+            },
+            surazo: {
+                id: 'surazo',
+                name: 'Surazo Estival (Brisa de Valle SSW)',
+                shortName: 'Surazo SSW',
+                windSpeedKmh: 24,
+                windDeg: 205, // Sopla desde SSW (205°) hacia NNE (25°)
+                airTempC: 27.2,
+                relativeHumidity: 44,
+                lfmcPct: 78,
+                dfmcPct: 8.6,
+                spreadMultiplier: 1.25,
+                spottingKm: 0.55,
+                color: '#f97316',
+                primaryThreatSector: 'Deslinde Sur & Potreros PRV (Franja Forestal Faldeo Bullileo)',
+                description: 'Régimen dominante en tardes estivales impulsado por el anticiclón pacífico. Empuja fuegos hacia el norte a lo largo del corredor agrícola de Retiro.'
+            },
+            norte: {
+                id: 'norte',
+                name: 'Viento Norte Pre-Frontal (NNW)',
+                shortName: 'Norte NNW',
+                windSpeedKmh: 28,
+                windDeg: 340, // Sopla desde NNW (340°) hacia SSE (160°)
+                airTempC: 31.0,
+                relativeHumidity: 36,
+                lfmcPct: 71,
+                dfmcPct: 6.9,
+                spreadMultiplier: 1.55,
+                spottingKm: 0.85,
+                color: '#ea580c',
+                primaryThreatSector: 'Deslinde Norte & Cuarteles de Frutales (Paños de Secano y Espino)',
+                description: 'Cuña térmica pre-frontal. Empuja focos hacia el sur-sureste amenazando cuarteles de cerezos y tranques de acumulación.'
+            },
+            live: {
+                id: 'live',
+                name: 'Telemetría en Tiempo Real (SDSS)',
+                shortName: 'Tiempo Real',
+                windSpeedKmh: 18,
+                windDeg: 180,
+                airTempC: 24.5,
+                relativeHumidity: 52,
+                lfmcPct: 84,
+                dfmcPct: 10.2,
+                spreadMultiplier: 1.0,
+                spottingKm: 0.35,
+                color: '#f59e0b',
+                primaryThreatSector: 'Dinámico según estación meteorológica activa',
+                description: 'Condición instantánea calculada con sensores IoT y modelo meteorológico en vivo.'
+            }
+        };
+
+        window.TACTICAL_WIND_REGIMES = TACTICAL_WIND_REGIMES;
+        window.currentTacticalWindRegime = 'puelche';
+
+        const tacticalFireVectorsLayer = L.layerGroup();
+        overlayLayers['fire_threat_vectors'] = tacticalFireVectorsLayer;
+
+        // Función matemática geodesica de destino
+        function destLatLng(lat, lng, distanceKm, bearingDeg) {
+            const R = 6371;
+            const dR = distanceKm / R;
+            const bRad = bearingDeg * Math.PI / 180;
+            const phi1 = lat * Math.PI / 180;
+            const lambda1 = lng * Math.PI / 180;
+            const phi2 = Math.asin(Math.sin(phi1) * Math.cos(dR) + Math.cos(phi1) * Math.sin(dR) * Math.cos(bRad));
+            const lambda2 = lambda1 + Math.atan2(Math.sin(bRad) * Math.sin(dR) * Math.cos(phi1), Math.cos(dR) - Math.sin(phi1) * Math.sin(phi2));
+            return [phi2 * 180 / Math.PI, lambda2 * 180 / Math.PI];
+        }
+
+        // Generador de puntos de curvatura Bézier cuadrática
+        function bezierPoints(p0, pc, p1, steps = 18) {
+            const pts = [];
+            for (let i = 0; i <= steps; i++) {
+                const t = i / steps;
+                const lat = (1 - t) * (1 - t) * p0[0] + 2 * (1 - t) * t * pc[0] + t * t * p1[0];
+                const lng = (1 - t) * (1 - t) * p0[1] + 2 * (1 - t) * t * pc[1] + t * t * p1[1];
+                pts.push([lat, lng]);
+            }
+            return pts;
+        }
+
+        // Cálculo de orientación final (rumbo) entre dos puntos
+        function calcBearing(pA, pB) {
+            const lat1 = pA[0] * Math.PI / 180;
+            const lat2 = pB[0] * Math.PI / 180;
+            const dLng = (pB[1] - pA[1]) * Math.PI / 180;
+            const y = Math.sin(dLng) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+            const b = Math.atan2(y, x) * 180 / Math.PI;
+            return (b + 360) % 360;
+        }
+
+        // Construcción de flecha táctica militar completa (Varilla curvada + Punta afilada + Badge interactivo)
+        function createTacticalFireArrow(p0, pc, p1, opts) {
+            const pts = bezierPoints(p0, pc, p1, 16);
+            const finalBearing = calcBearing(pts[pts.length - 2], pts[pts.length - 1]);
+
+            // 1. Línea principal de la flecha con halo de contraste táctico
+            const shaft = L.polyline(pts, {
+                color: opts.color || '#dc2626',
+                weight: opts.weight || 4.5,
+                opacity: opts.opacity || 0.92,
+                dashArray: opts.dashArray || null,
+                className: 'tactical-fire-vector-shaft'
+            });
+
+            // 2. Cabezal de flecha militar afilado (Pickett's Charge style)
+            const arrowHeadSize = opts.headSize || (opts.weight > 4 ? 26 : 20);
+            const arrowSvg = `
+                <div style="width: ${arrowHeadSize * 1.4}px; height: ${arrowHeadSize * 1.4}px; transform: rotate(${finalBearing}deg); transform-origin: center; pointer-events: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.85)); cursor: pointer;">
+                    <svg viewBox="-20 -15 35 30" class="w-full h-full">
+                        <polygon points="0,0 -16,-7 -11,0 -16,7" fill="${opts.color || '#dc2626'}" stroke="#ffffff" stroke-width="${opts.weight > 4 ? '1.5' : '1.0'}"/>
+                    </svg>
+                </div>
+            `;
+            const headIcon = L.divIcon({
+                className: 'tactical-arrow-head-icon',
+                html: arrowSvg,
+                iconSize: [arrowHeadSize * 1.4, arrowHeadSize * 1.4],
+                iconAnchor: [arrowHeadSize * 0.7, arrowHeadSize * 0.7]
+            });
+            const headMarker = L.marker(p1, { icon: headIcon });
+
+            // 3. Badge táctico flotante en la cabeza si está especificado
+            let badgeMarker = null;
+            if (opts.badgeText) {
+                const badgeIcon = L.divIcon({
+                    className: 'tactical-fire-badge-icon',
+                    html: `
+                        <div style="background: rgba(10, 14, 24, 0.95); border: 1.2px solid ${opts.color || '#dc2626'}; border-radius: 6px; padding: 2px 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.85); font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 800; color: #ffffff; white-space: nowrap; display: flex; align-items: center; gap: 4px; pointer-events: auto; cursor: pointer;">
+                            <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${opts.color || '#dc2626'}; box-shadow: 0 0 6px ${opts.color || '#dc2626'};"></span>
+                            <span>${opts.badgeText}</span>
+                        </div>
+                    `,
+                    iconSize: [120, 20],
+                    iconAnchor: [60, -8]
+                });
+                badgeMarker = L.marker(p1, { icon: badgeIcon });
+            }
+
+            // 4. Popup táctico acoplado
+            if (opts.popupHtml) {
+                shaft.bindPopup(opts.popupHtml);
+                headMarker.bindPopup(opts.popupHtml);
+                if (badgeMarker) badgeMarker.bindPopup(opts.popupHtml);
+            }
+
+            return { shaft, headMarker, badgeMarker };
+        }
+
+        // Generador completo de Haces Vectoriales Tácticos (Multi-Escenario)
+        function renderTacticalFireVectorsForRegime(regimeKey) {
+            tacticalFireVectorsLayer.clearLayers();
+            const regime = TACTICAL_WIND_REGIMES[regimeKey] || TACTICAL_WIND_REGIMES.puelche;
+            const windDeg = regime.windDeg;
+            const fireDir = (windDeg + 180) % 360; // Rumbo de propagación a favor del viento
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FUENTE 1: RODAL FORESTAL COLINDANTE INMEDIATO ESTE (Pino Insigne 18m)
+            // Deslinde a solo 600m del límite Este de Fundo Meniel
+            // ═══════════════════════════════════════════════════════════════════
+            const frontEste = [
+                { id: 'E1', lat: -36.2100, lng: -71.5935, name: 'Borde Norte Rodal Este', lfmc: regime.lfmcPct, fuel: 'Pino Insigne Adulto (Modelo 7)' },
+                { id: 'E2', lat: -36.2135, lng: -71.5930, name: 'Frente Central Colindancia Este', lfmc: regime.lfmcPct, fuel: 'Pino Insigne Denso (Modelo 7)' },
+                { id: 'E3', lat: -36.2170, lng: -71.5940, name: 'Borde Sur Rodal Este (Vaguada)', lfmc: regime.lfmcPct + 4, fuel: 'Pino + Quebrada Esclerófila' }
+            ];
+
+            frontEste.forEach((pt, idx) => {
+                const isCenter = (idx === 1);
+                let bearing = fireDir;
+                let reachKm = 1.35 * regime.spreadMultiplier;
+                let probPct = isCenter ? (regimeKey === 'puelche' ? 92 : (regimeKey === 'norte' ? 58 : 42)) : (regimeKey === 'puelche' ? 84 : 45);
+                let timeMin = Math.round(18 / (regime.spreadMultiplier * (isCenter ? 1.0 : 0.85)));
+
+                if (regimeKey === 'puelche') {
+                    // Puelche empuja directo al WNW hacia Meniel
+                    bearing = 295 + (idx - 1) * 14;
+                    reachKm = (isCenter ? 2.4 : 1.8) * (regime.spreadMultiplier / 2.0);
+                } else if (regimeKey === 'surazo') {
+                    // Surazo empuja hacia NNE paralelo a la montaña
+                    bearing = 20 + (idx - 1) * 12;
+                    reachKm = 1.6;
+                    probPct = 48;
+                    timeMin = 38;
+                } else if (regimeKey === 'norte') {
+                    // Norte empuja hacia SSE
+                    bearing = 165 + (idx - 1) * 12;
+                    reachKm = 1.7;
+                    probPct = 62;
+                    timeMin = 32;
+                }
+
+                const p0 = [pt.lat, pt.lng];
+                const p1 = destLatLng(pt.lat, pt.lng, reachKm, bearing);
+                // Control point con suave curvatura orográfica
+                const pMid = destLatLng(pt.lat, pt.lng, reachKm * 0.5, bearing + (idx === 0 ? 8 : (idx === 2 ? -8 : 3)));
+                const pc = pMid;
+
+                const popupHtml = `
+                    <div style="font-family:'JetBrains Mono',monospace; min-width:270px; font-size:11px; padding:5px; color:#f8fafc; line-height:1.45;">
+                        <div style="border-bottom:1px solid rgba(239,68,68,0.4); padding-bottom:5px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:10px; font-weight:bold; color:#ef4444; background:rgba(239,68,68,0.2); padding:1px 6px; border-radius:4px; border:1px solid rgba(239,68,68,0.4);">
+                                VECTOR TÁCTICO &bull; ESTÁNDAR VECINO
+                            </span>
+                            <span style="font-size:10px; font-weight:bold; color:#fbbf24;">${probPct}% PROB.</span>
+                        </div>
+                        <strong style="display:block; font-size:12px; color:#ffffff; margin-bottom:4px;">
+                            🏹 Vector Piro-Dinámico: ${pt.name}
+                        </strong>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Régimen Eólico:</span>
+                            <span style="color:#f59e0b; font-weight:bold;">${regime.name}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Humedad Foliar (LFMC S2):</span>
+                            <span style="color:${regime.lfmcPct < 70 ? '#ef4444' : '#10b981'}; font-weight:bold;">${regime.lfmcPct}% (${regime.lfmcPct < 80 ? 'CRÍTICO' : 'SEGURO'})</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Humedad Hojarasca (DFMC):</span>
+                            <span style="color:#f87171; font-weight:bold;">${regime.dfmcPct}%</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Velocidad de Avance (R):</span>
+                            <span style="color:#ffffff; font-weight:bold;">${(regime.spreadMultiplier * 8.2).toFixed(1)} m/min</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px; background:rgba(239,68,68,0.15); padding:2px 5px; border-radius:4px;">
+                            <span style="color:#fca5a5; font-weight:bold;">Impacto en Deslinde:</span>
+                            <span style="color:#ffffff; font-weight:bold;">~${timeMin} minutos</span>
+                        </div>
+                        <div style="margin-top:6px; padding-top:5px; border-top:1px solid rgba(255,255,255,0.1); font-size:9.5px; color:#cbd5e1;">
+                            <span style="color:#fbbf24; font-weight:bold;">🛡️ Acción Vecinal Sugerida:</span> Activar faja cortafuego perimetral Este de 45m y precargar tranque de auxilio.
+                        </div>
+                    </div>
+                `;
+
+                const arrowObj = createTacticalFireArrow(p0, pc, p1, {
+                    color: isCenter ? regime.color : '#ea580c',
+                    weight: isCenter ? (regimeKey === 'puelche' ? 5.8 : 4.8) : 3.4,
+                    badgeText: isCenter ? `🔥 ${probPct}% • ${timeMin} min` : `${probPct}%`,
+                    popupHtml: popupHtml
+                });
+
+                arrowObj.shaft.addTo(tacticalFireVectorsLayer);
+                arrowObj.headMarker.addTo(tacticalFireVectorsLayer);
+                if (arrowObj.badgeMarker) arrowObj.badgeMarker.addTo(tacticalFireVectorsLayer);
+
+                // Si es Puelche y es la flecha central, agregar vector balístico de salto de pavesas (Spotting Albini)
+                if (regimeKey === 'puelche' && isCenter) {
+                    const pSpotStart = p1;
+                    const pSpotEnd = destLatLng(p1[0], p1[1], regime.spottingKm, bearing);
+                    const pSpotMid = destLatLng(p1[0], p1[1], regime.spottingKm * 0.5, bearing + 4);
+
+                    const spotArrow = createTacticalFireArrow(pSpotStart, pSpotMid, pSpotEnd, {
+                        color: '#fbbf24',
+                        weight: 2.6,
+                        dashArray: '5, 5',
+                        headSize: 18,
+                        badgeText: `💥 Pavesas +${regime.spottingKm}km`,
+                        popupHtml: `
+                            <div style="font-family:'JetBrains Mono',monospace; min-width:240px; font-size:11px; padding:4px; color:#f8fafc;">
+                                <strong style="color:#fbbf24; font-size:12px;">💥 Salto Balístico de Pavesas (Albini 1979)</strong>
+                                <p style="font-size:10px; color:#cbd5e1; margin-top:4px;">
+                                    Proyección de corteza y conos incandescentes desprendidos del dosel de pino (18m). Cruza caminos, acequias y cortafuegos estrechos.
+                                </p>
+                                <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:10px;">
+                                    <span style="color:#94a3b8;">Alcance Aerotransportado:</span>
+                                    <span style="color:#fde047; font-weight:bold;">${regime.spottingKm} km</span>
+                                </div>
+                            </div>
+                        `
+                    });
+                    spotArrow.shaft.addTo(tacticalFireVectorsLayer);
+                    spotArrow.headMarker.addTo(tacticalFireVectorsLayer);
+                    if (spotArrow.badgeMarker) spotArrow.badgeMarker.addTo(tacticalFireVectorsLayer);
+                }
+            });
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FUENTE 2: MACIZO PRECORDILLERANO ESTE (8.450 ha)
+            // Gran frente forestal andino que alimenta la cuenca
+            // ═══════════════════════════════════════════════════════════════════
+            const frontCordillera = [
+                { id: 'C1', lat: -36.2050, lng: -71.5350, name: 'Macizo Cordillerano Alto Norte' },
+                { id: 'C2', lat: -36.2200, lng: -71.5300, name: 'Macizo Cordillerano Alto Centro' },
+                { id: 'C3', lat: -36.2380, lng: -71.5250, name: 'Macizo Cordillerano Cajón Longaví' }
+            ];
+
+            frontCordillera.forEach((pt, idx) => {
+                let bearing = fireDir;
+                let reachKm = 2.4 * regime.spreadMultiplier;
+                let probPct = (regimeKey === 'puelche') ? 88 : 45;
+                let timeMin = Math.round(55 / regime.spreadMultiplier);
+
+                if (regimeKey === 'puelche') {
+                    bearing = 290 + (idx - 1) * 10;
+                    reachKm = 3.6;
+                } else if (regimeKey === 'surazo') {
+                    bearing = 15 + (idx - 1) * 8;
+                    reachKm = 2.2;
+                } else if (regimeKey === 'norte') {
+                    bearing = 160 + (idx - 1) * 8;
+                    reachKm = 2.5;
+                }
+
+                const p0 = [pt.lat, pt.lng];
+                const p1 = destLatLng(pt.lat, pt.lng, reachKm, bearing);
+                const pc = destLatLng(pt.lat, pt.lng, reachKm * 0.5, bearing + (idx === 0 ? 6 : -6));
+
+                const cordObj = createTacticalFireArrow(p0, pc, p1, {
+                    color: (regimeKey === 'puelche') ? '#b91c1c' : '#c2410c',
+                    weight: (regimeKey === 'puelche') ? 5.2 : 3.8,
+                    badgeText: (regimeKey === 'puelche') ? `Macro-Frente • ${probPct}%` : null,
+                    popupHtml: `
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px; color:#f8fafc;">
+                            <strong style="color:#ef4444;">🏔️ ${pt.name}</strong>
+                            <div style="font-size:10px; color:#cbd5e1; margin-top:3px;">
+                                Gran masa combustible continua (>8.000 ha). En régimen Puelche alimenta frentes masivos de avance hacia el fondo de valle.
+                            </div>
+                        </div>
+                    `
+                });
+
+                cordObj.shaft.addTo(tacticalFireVectorsLayer);
+                cordObj.headMarker.addTo(tacticalFireVectorsLayer);
+                if (cordObj.badgeMarker) cordObj.badgeMarker.addTo(tacticalFireVectorsLayer);
+            });
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FUENTE 3: FRANJA FORESTAL SUR (Faldeo Bullileo, 22.3 ha)
+            // Principal vector crítico bajo SURAZO ESTIVAL
+            // ═══════════════════════════════════════════════════════════════════
+            const frontSur = [
+                { id: 'S1', lat: -36.2320, lng: -71.6150, name: 'Franja Sur Oeste' },
+                { id: 'S2', lat: -36.2340, lng: -71.6050, name: 'Franja Sur Centro (Ruta Bullileo)' },
+                { id: 'S3', lat: -36.2360, lng: -71.5950, name: 'Franja Sur Este' }
+            ];
+
+            frontSur.forEach((pt, idx) => {
+                const isCenter = (idx === 1);
+                let bearing = fireDir;
+                let reachKm = 1.4 * regime.spreadMultiplier;
+                let probPct = (regimeKey === 'surazo') ? (isCenter ? 86 : 74) : 38;
+                let timeMin = (regimeKey === 'surazo') ? (isCenter ? 26 : 34) : 48;
+
+                if (regimeKey === 'surazo') {
+                    // Surazo empuja hacia NNE directo a Meniel
+                    bearing = 25 + (idx - 1) * 14;
+                    reachKm = (isCenter ? 2.5 : 1.9);
+                } else if (regimeKey === 'puelche') {
+                    bearing = 305 + (idx - 1) * 10;
+                    reachKm = 1.5;
+                } else if (regimeKey === 'norte') {
+                    bearing = 160 + (idx - 1) * 10;
+                    reachKm = 1.2;
+                }
+
+                const p0 = [pt.lat, pt.lng];
+                const p1 = destLatLng(pt.lat, pt.lng, reachKm, bearing);
+                const pc = destLatLng(pt.lat, pt.lng, reachKm * 0.5, bearing + (idx === 0 ? -6 : 6));
+
+                const surObj = createTacticalFireArrow(p0, pc, p1, {
+                    color: (regimeKey === 'surazo') ? '#f97316' : '#ea580c',
+                    weight: (regimeKey === 'surazo') ? (isCenter ? 5.5 : 4.0) : 3.0,
+                    badgeText: (regimeKey === 'surazo' && isCenter) ? `🔥 ${probPct}% • ${timeMin} min` : null,
+                    popupHtml: `
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px; color:#f8fafc;">
+                            <strong style="color:#f97316;">🌲 ${pt.name}</strong>
+                            <div style="font-size:10px; color:#cbd5e1; margin-top:3px;">
+                                Rodales en faldeo sur. Bajo <b>Surazo Estival</b> constituye el vector principal de propagación hacia las pasturas y viviendas de Meniel.
+                            </div>
+                        </div>
+                    `
+                });
+
+                surObj.shaft.addTo(tacticalFireVectorsLayer);
+                surObj.headMarker.addTo(tacticalFireVectorsLayer);
+                if (surObj.badgeMarker) surObj.badgeMarker.addTo(tacticalFireVectorsLayer);
+            });
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FUENTE 4: PAÑOS DE SECANO & MATORRAL NORTE
+            // Principal vector crítico bajo VIENTO NORTE PRE-FRONTAL
+            // ═══════════════════════════════════════════════════════════════════
+            const frontNorte = [
+                { id: 'N1', lat: -36.1860, lng: -71.6150, name: 'Borde Secano Norte Oeste' },
+                { id: 'N2', lat: -36.1840, lng: -71.6050, name: 'Borde Secano Norte Centro' },
+                { id: 'N3', lat: -36.1820, lng: -71.5950, name: 'Borde Secano Norte Este' }
+            ];
+
+            frontNorte.forEach((pt, idx) => {
+                const isCenter = (idx === 1);
+                let bearing = fireDir;
+                let reachKm = 1.3 * regime.spreadMultiplier;
+                let probPct = (regimeKey === 'norte') ? (isCenter ? 79 : 68) : 35;
+                let timeMin = (regimeKey === 'norte') ? (isCenter ? 32 : 40) : 55;
+
+                if (regimeKey === 'norte') {
+                    // Norte empuja hacia SSE directo a los huertos de Meniel
+                    bearing = 160 + (idx - 1) * 12;
+                    reachKm = (isCenter ? 2.4 : 1.8);
+                } else if (regimeKey === 'puelche') {
+                    bearing = 290 + (idx - 1) * 10;
+                    reachKm = 1.4;
+                } else if (regimeKey === 'surazo') {
+                    bearing = 20 + (idx - 1) * 10;
+                    reachKm = 1.1;
+                }
+
+                const p0 = [pt.lat, pt.lng];
+                const p1 = destLatLng(pt.lat, pt.lng, reachKm, bearing);
+                const pc = destLatLng(pt.lat, pt.lng, reachKm * 0.5, bearing + (idx === 0 ? 5 : -5));
+
+                const norteObj = createTacticalFireArrow(p0, pc, p1, {
+                    color: (regimeKey === 'norte') ? '#ef4444' : '#f59e0b',
+                    weight: (regimeKey === 'norte') ? (isCenter ? 5.0 : 3.6) : 2.8,
+                    badgeText: (regimeKey === 'norte' && isCenter) ? `🔥 ${probPct}% • ${timeMin} min` : null,
+                    popupHtml: `
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px; color:#f8fafc;">
+                            <strong style="color:#ef4444;">🌾 ${pt.name}</strong>
+                            <div style="font-size:10px; color:#cbd5e1; margin-top:3px;">
+                                Paño de rastrojos secos y espinal. Bajo <b>Viento Norte Pre-frontal</b> proyecta frentes rápidos sobre los cuarteles frutales de Meniel.
+                            </div>
+                        </div>
+                    `
+                });
+
+                norteObj.shaft.addTo(tacticalFireVectorsLayer);
+                norteObj.headMarker.addTo(tacticalFireVectorsLayer);
+                if (norteObj.badgeMarker) norteObj.badgeMarker.addTo(tacticalFireVectorsLayer);
+            });
+        }
+
+        // Conmutador del Régimen Eólico Activo
+        window.setTacticalWindRegime = function(regimeKey) {
+            if (!TACTICAL_WIND_REGIMES[regimeKey]) regimeKey = 'puelche';
+            window.currentTacticalWindRegime = regimeKey;
+            
+            // Re-renderizar los vectores si la capa está activa
+            renderTacticalFireVectorsForRegime(regimeKey);
+
+            // Actualizar botones de selección en el Sidebar
+            ['puelche', 'surazo', 'norte', 'live'].forEach(rk => {
+                const btn = document.getElementById('btnTacticalRegime_' + rk);
+                if (btn) {
+                    if (rk === regimeKey) {
+                        btn.className = 'py-1.5 px-2 rounded-lg bg-red-600 text-white font-mono font-bold text-[10px] shadow-sm transition-all border border-red-400 cursor-pointer flex items-center justify-center gap-1';
+                    } else {
+                        btn.className = 'py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1';
+                    }
+                }
+            });
+
+            // Actualizar tarjeta de inteligencia táctica del escenario activo
+            const reg = TACTICAL_WIND_REGIMES[regimeKey];
+            const titleEl = document.getElementById('tacticalScenarioTitle');
+            const speedEl = document.getElementById('tacticalScenarioSpeed');
+            const lfmcEl = document.getElementById('tacticalScenarioLfmc');
+            const dfmcEl = document.getElementById('tacticalScenarioDfmc');
+            const sectorEl = document.getElementById('tacticalScenarioSector');
+            const descEl = document.getElementById('tacticalScenarioDesc');
+
+            if (titleEl) titleEl.innerText = reg.name;
+            if (speedEl) speedEl.innerText = reg.windSpeedKmh + ' km/h';
+            if (lfmcEl) lfmcEl.innerText = reg.lfmcPct + '%';
+            if (dfmcEl) dfmcEl.innerText = reg.dfmcPct + '%';
+            if (sectorEl) sectorEl.innerText = reg.primaryThreatSector;
+            if (descEl) descEl.innerText = reg.description;
+        };
+
+        // Toggle principal de la capa de Vectores Tácticos (Módulo 2)
+        window.toggleTacticalFireVectorsLayer = function(force) {
+            const layer = overlayLayers['fire_threat_vectors'];
+            if (!layer || !map) return;
+            const isActive = map.hasLayer(layer);
+            const shouldBeActive = (force !== undefined) ? force : !isActive;
+
+            if (shouldBeActive) {
+                renderTacticalFireVectorsForRegime(window.currentTacticalWindRegime || 'puelche');
+                map.addLayer(layer);
+            } else {
+                map.removeLayer(layer);
+            }
+
+            updateDockButtonState('fire_threat_vectors', shouldBeActive);
+
+            // Sincronizar badge lateral si existe
+            const sbBadge = document.getElementById('badgeSidebarFireVectors');
+            if (sbBadge) {
+                sbBadge.innerText = shouldBeActive ? 'ACTIVO' : 'ACTIVAR';
+                sbBadge.className = shouldBeActive 
+                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-red-500/40 text-red-200 border border-red-400/60 font-mono font-bold'
+                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+            }
+        };
+
+        // Renderizado inicial en memoria de los vectores
+        renderTacticalFireVectorsForRegime('puelche');
+
+        // ═══════════════════════════════════════════════════════════════════
         // 2.6 FUNCIONES DE CONTROL DE TRANSECTOS, ENCUADRE CONTEXTUAL & VIENTO
         // ═══════════════════════════════════════════════════════════════════
         
@@ -2587,6 +3106,14 @@
                     activeCls: 'bg-emerald-500/30 text-white border-emerald-400/60',
                     inactiveCls: 'bg-white/5 text-emerald-200 border-white/5',
                     badgeActive: 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 font-bold',
+                    badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
+                },
+                'fire_threat_vectors': {
+                    id: 'btnDockFireVectors',
+                    badgeId: 'badgeDockFireVectors',
+                    activeCls: 'bg-red-500/30 text-white border-red-400/60',
+                    inactiveCls: 'bg-white/5 text-red-200 border-white/5',
+                    badgeActive: 'bg-red-500/30 text-red-300 border-red-400/50 font-bold',
                     badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
                 }
             };

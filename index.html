@@ -45,7 +45,7 @@
     <!-- KaTeX for Scientific & Mathematical Equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');window.renderLatexInContainer('docs-vecino');}"></script>
 
 
     <!-- Chart.js -->
@@ -7383,6 +7383,181 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     MÓDULO 2: DOCTRINA FÍSICA & BALÍSTICA DE FUEGO TRANSFRONTERIZO
+                     Haces vectoriales tácticos, ecuaciones acopladas y teledetección de humedad
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <!-- Header Módulo 2 -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl p-2 rounded-xl bg-red-50 border border-red-200 text-red-600">🏹🔥</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
+                                    Módulo 2: Vectores de Amenaza Transfronteriza, Balística de Fuego & Vientos Multi-Escenario
+                                </h3>
+                                <p class="text-xs text-stone-500 font-mono mt-0.5">
+                                    Doctrina de Propagación Canónica (Rothermel 1972) • Teledetección de Humedad Foliar Sentinel-2 (LFMC) • Salto Balístico de Pavesas (Albini 1979)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="switchMasterView('territory'); toggleTacticalFireVectorsLayer(true);" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                                <span>🗺️</span> <span>Ver Haces en el Mapa</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Introducción Epistemológica: Por qué Haces Tácticos Militares -->
+                    <div class="p-4 rounded-xl bg-[#FDFBF7] border border-red-200/80 space-y-2">
+                        <b class="text-xs font-mono font-bold text-stone-800 uppercase tracking-wider flex items-center gap-2">
+                            <span>⚔️</span> Fundamento Cartográfico: De la Flecha Simple al Haz Táctico Divergente
+                        </b>
+                        <p class="text-xs text-stone-600 leading-relaxed font-sans">
+                            Inspirado en la cartografía militar de frentes de batalla (referencia histórica de frentes divergentes), el fuego en la interfase urbano-agrícola-forestal (WUI) <strong>no se propaga como una sola flecha recta</strong>. Cada rodal de biomasa combustible proyecta un <strong>haz de vectores</strong> que divergen a lo largo del frente de contacto. La flecha central de cabeza concentra la mayor probabilidad y velocidad lineal, mientras que los flancos se abren en abanico y las pavesas aerotransportadas saltan cortafuegos hacia adelante.
+                        </p>
+                    </div>
+
+                    <!-- Tabla de los 4 Regímenes Eólicos del Maule Sur -->
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
+                            <span>🌪️</span> 1. Los 4 Regímenes Eólicos del Territorio Maule Sur (No solo Puelche)
+                        </h4>
+                        <p class="text-xs text-stone-600 font-sans leading-relaxed">
+                            El viento Puelche es la condición más devastadora pero no la única que gobierna la cuenca. El motor biofísico evalúa la balística bajo 4 escenarios meteorológicos deterministas:
+                        </p>
+                        <div class="overflow-x-auto border border-[#E7DAC6] rounded-xl">
+                            <table class="w-full text-left text-xs font-mono">
+                                <thead class="bg-[#F8F5EE] text-stone-700 border-b border-[#E7DAC6]">
+                                    <tr>
+                                        <th class="p-2.5 font-bold">Régimen Eólico</th>
+                                        <th class="p-2.5 font-bold">Dirección / Forzante</th>
+                                        <th class="p-2.5 font-bold">Velocidad / HR</th>
+                                        <th class="p-2.5 font-bold">Humedad Foliar (LFMC)</th>
+                                        <th class="p-2.5 font-bold">Avance (R)</th>
+                                        <th class="p-2.5 font-bold">Sector Vulnerable en Meniel</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#E7DAC6] text-[11px]">
+                                    <tr class="hover:bg-red-50/40 transition-colors">
+                                        <td class="p-2.5 font-bold text-red-700 flex items-center gap-1.5">
+                                            <span>🌪️</span> Puelche Catabático
+                                        </td>
+                                        <td class="p-2.5 font-semibold">ESE (120°) &rarr; WNW</td>
+                                        <td class="p-2.5 font-bold text-red-900">42 km/h &bull; HR 14%</td>
+                                        <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 text-[10px] font-bold">62% (Crítico &lt;80%)</span></td>
+                                        <td class="p-2.5 font-bold text-red-700">18.4 m/min (1.1 km/h)</td>
+                                        <td class="p-2.5 text-stone-700 font-semibold">Deslinde Este (Colindancia directa &lt;15 min)</td>
+                                    </tr>
+                                    <tr class="hover:bg-orange-50/40 transition-colors">
+                                        <td class="p-2.5 font-bold text-orange-700 flex items-center gap-1.5">
+                                            <span>🌬️</span> Surazo Estival
+                                        </td>
+                                        <td class="p-2.5 font-semibold">SSW (205°) &rarr; NNE</td>
+                                        <td class="p-2.5 font-bold text-stone-800">24 km/h &bull; HR 44%</td>
+                                        <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">78% (Alerta Media)</span></td>
+                                        <td class="p-2.5 font-bold text-orange-700">10.2 m/min (0.6 km/h)</td>
+                                        <td class="p-2.5 text-stone-700">Deslinde Sur & Potreros PRV (Franja Bullileo)</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/40 transition-colors">
+                                        <td class="p-2.5 font-bold text-amber-700 flex items-center gap-1.5">
+                                            <span>🧭</span> Norte Pre-Frontal
+                                        </td>
+                                        <td class="p-2.5 font-semibold">NNW (340°) &rarr; SSE</td>
+                                        <td class="p-2.5 font-bold text-stone-800">28 km/h &bull; HR 36%</td>
+                                        <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">71% (Alerta)</span></td>
+                                        <td class="p-2.5 font-bold text-amber-700">12.7 m/min (0.8 km/h)</td>
+                                        <td class="p-2.5 text-stone-700">Deslinde Norte & Cuarteles Frutales</td>
+                                    </tr>
+                                    <tr class="hover:bg-sky-50/40 transition-colors">
+                                        <td class="p-2.5 font-bold text-sky-700 flex items-center gap-1.5">
+                                            <span>📡</span> Tiempo Real SDSS
+                                        </td>
+                                        <td class="p-2.5 font-semibold">Dinámico (Sensores IoT)</td>
+                                        <td class="p-2.5 font-bold text-stone-800">Estación DGA/Meniel</td>
+                                        <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Sensor In-Situ</span></td>
+                                        <td class="p-2.5 font-bold text-sky-700">Cálculo Horario</td>
+                                        <td class="p-2.5 text-stone-700">Reevaluación continua con cada ráfaga</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Ecuaciones Matemáticas en KaTeX -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
+                            <span>📐</span> 2. Modelo Físico Acoplado de Propagación de Frentes (Rothermel &amp; Huygens)
+                        </h4>
+                        
+                        <!-- Tarjeta KaTeX 1: Rothermel -->
+                        <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block">
+                                Ecuación Canónica de Velocidad de Propagación de Cabeza ($R_{\text{head}}$):
+                            </span>
+                            <div class="text-sm font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$R_{\text{head}} = \frac{I_R \cdot \xi \cdot (1 + \Phi_w + \Phi_s)}{\rho_b \cdot \epsilon \cdot Q_{ig}}$$
+                            </div>
+                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
+                                Donde $I_R$ es la intensidad de reacción térmica del combustible fino (MJ/m²·min); $\xi$ es el flujo de propagación propagante; $\Phi_w = C \cdot U_{\text{midflame}}^B \cdot (\beta/\beta_{\text{op}})^{-E}$ es el coeficiente acelerador del viento; $\Phi_s = 5.275 \cdot (\tan \theta)^2$ es el factor orográfico de pendiente derivado del Copernicus DEM 30m; y $Q_{ig} = 581 + 2594 \cdot m_f$ es el calor requerido para la ignición en función de la humedad del combustible fino ($m_f$).
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Teledetección Satelital de Humedad -->
+                        <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block">
+                                Teledetección Espectral de Humedad Foliar Viva (LFMC) con Sentinel-2 L2A:
+                            </span>
+                            <div class="text-sm font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\text{NDWI} = \frac{\rho_{\text{B8A}} - \rho_{\text{B11}}}{\rho_{\text{B8A}} + \rho_{\text{B11}}} = \frac{\text{NIR} - \text{SWIR}_1}{\text{NIR} + \text{SWIR}_1}$$
+                            </div>
+                            <div class="text-sm font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\text{LFMC} (\%) \approx 135.4 \cdot \text{NDWI} + 42.1 \quad (\text{para } \text{Pinus radiata} \text{ y matorral esclerófilo})$$
+                            </div>
+                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
+                                El agua líquida dentro del mesófilo foliar absorbe selectivamente en el Infrarrojo de Onda Corta ($\text{SWIR}_1$, B11 a 1610 nm), mientras que la estructura celular sana refleja fuertemente en el Infrarrojo Cercano (NIR, B8A a 865 nm). Cuando $\text{LFMC} < 80\%$, las acículas de pino se vuelven explosivamente inflamables facilitando la transición a fuego de copas.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Humedad de Hojarasca Muerta y Salto de Pavesas -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                                <span class="text-xs font-mono font-bold text-stone-800 block">
+                                    Humedad Hojarasca Muerta ($m_f$ — Simard/Nelson):
+                                </span>
+                                <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                    $$m_f \approx 2.227 + 0.160 \cdot HR - 0.0148 \cdot T$$
+                                </div>
+                                <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                    Calcula el equilibrio higrométrico dinámico de combustibles finos muertos de 1h y 10h a partir de la temperatura $T$ y humedad relativa $HR$ de superficie.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                                <span class="text-xs font-mono font-bold text-stone-800 block">
+                                    Salto Balístico de Pavesas ($D_{\text{spot}}$ — Albini 1979):
+                                </span>
+                                <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                    $$D_{\text{spot}} \approx 0.052 \cdot H_{\text{canopy}}^{0.8} \cdot U_{\text{gust}}^{1.15} \cdot \left(\frac{100 - HR}{100}\right)$$
+                                </div>
+                                <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                    Determina la distancia aerotransportada de fragmentos de corteza y conos incandescentes que cruzan cortafuegos y caminos antes de la llegada del frente principal.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conclusión Táctica para el Vecino -->
+                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-sans text-emerald-950 space-y-1.5">
+                        <strong class="font-bold font-serif flex items-center gap-1.5 text-sm text-emerald-900">
+                            <span>🛡️</span> Conclusión Operativa: La Regla de los 30-30-30 y la Faja WUI de 45 Metros
+                        </strong>
+                        <p class="leading-relaxed">
+                            Bajo condiciones de estrés extremo ($T > 30^\circ\text{C}$, $HR < 30\%$, Viento $> 30\text{ km/h}$), una faja cortafuego convencional de 5 metros es <strong>completamente inútil</strong> frente al salto de pavesas ($D_{\text{spot}} > 900\text{ m}$). El Estándar Vecino Informado prescribe una <strong>estrategia defensiva en 3 escalones</strong>: faja desmalezada de 45m en el deslinde crítico, precarga del tranque de 18.500 m³ para aforo de motobombas y humectación perimetral por aspersión 40 minutos antes del impacto proyectado.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
@@ -10996,6 +11171,15 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     <span id="badgeDockLulcBio" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
                 </button>
 
+                <!-- Módulo 2: Estándar Vecino Informado - Vectores de Amenaza Transfronteriza -->
+                <button onclick="toggleTacticalFireVectorsLayer();" id="btnDockFireVectors" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-red-500/15 border border-white/5 hover:border-red-500/30 flex items-center justify-between text-xs text-red-200 transition-all cursor-pointer" title="Haces Vectoriales Tácticos de Incendios Multi-Escenario (Rothermel + Huygens + Albini)">
+                    <span class="flex items-center gap-2">
+                        <span>🏹🔥</span>
+                        <span>Vectores Incendio (Módulo 2)</span>
+                    </span>
+                    <span id="badgeDockFireVectors" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
                 <button onclick="toggleCuencaTacticalLegend();" id="btnDockTacticalLegend" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-purple-500/15 border border-white/5 hover:border-purple-500/30 flex items-center justify-between text-xs text-purple-200 transition-all cursor-pointer">
                     <span class="flex items-center gap-2">
                         <span>🗺️</span>
@@ -12382,6 +12566,89 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         <p class="text-[9px] text-slate-400 font-mono">Evaluación cuantitativa y clasificación táctica C2</p>
                     </div>
                     <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 font-bold">C2 OFICIAL</span>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     MÓDULO 2: ESTÁNDAR VECINO INFORMADO - VECTORES DE AMENAZA TRANSFRONTERIZA
+                     Haces vectoriales tácticos militares (Pickett's Charge) con selector de 4 regímenes
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div class="p-3.5 rounded-xl bg-[#140808]/95 border border-red-500/40 space-y-3 font-sans shadow-lg">
+                    <div class="flex items-center justify-between border-b border-red-500/20 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base p-1 rounded-lg bg-red-950/80 border border-red-500/30 text-red-400">🏹🔥</span>
+                            <div>
+                                <h3 class="text-xs font-mono font-bold text-red-300 uppercase tracking-wider">
+                                    Vectores de Amenaza Transfronteriza
+                                </h3>
+                                <p class="text-[9px] text-slate-400 font-mono">Estándar Vecino Informado &bull; Balística de Fuego</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleTacticalFireVectorsLayer();" id="btnSidebarFireVectors" class="py-1 px-2.5 rounded-lg bg-red-600/30 hover:bg-red-600/50 text-red-200 border border-red-500/50 text-[10px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
+                            <span>Vectores:</span>
+                            <span id="badgeSidebarFireVectors" class="text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-300 font-mono">ACTIVAR</span>
+                        </button>
+                    </div>
+
+                    <!-- Selector de los 4 Regímenes Eólicos -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                            <span>Régimen de Viento Eólico:</span>
+                            <span class="text-amber-400 font-bold">Multi-Escenario</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <button onclick="setTacticalWindRegime('puelche');" id="btnTacticalRegime_puelche" class="py-1.5 px-2 rounded-lg bg-red-600 text-white font-mono font-bold text-[10px] shadow-sm transition-all border border-red-400 cursor-pointer flex items-center justify-center gap-1">
+                                <span>🌪️</span> <span>Puelche (ESE)</span>
+                            </button>
+                            <button onclick="setTacticalWindRegime('surazo');" id="btnTacticalRegime_surazo" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
+                                <span>🌬️</span> <span>Surazo (SSW)</span>
+                            </button>
+                            <button onclick="setTacticalWindRegime('norte');" id="btnTacticalRegime_norte" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
+                                <span>🧭</span> <span>Norte (NNW)</span>
+                            </button>
+                            <button onclick="setTacticalWindRegime('live');" id="btnTacticalRegime_live" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
+                                <span>📡</span> <span>Tiempo Real</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta de Inteligencia Táctica Activa -->
+                    <div class="p-2.5 rounded-lg bg-black/60 border border-white/5 space-y-2 text-xs font-mono">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
+                            <span class="text-slate-400 text-[10px]">Escenario Activo:</span>
+                            <strong id="tacticalScenarioTitle" class="text-amber-300 text-[10.5px]">Viento Puelche (Catabático ESE)</strong>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
+                            <div class="p-1.5 bg-black/40 rounded border border-white/5">
+                                <span class="text-slate-400 block text-[9px]">Viento</span>
+                                <b id="tacticalScenarioSpeed" class="text-red-400">42 km/h</b>
+                            </div>
+                            <div class="p-1.5 bg-black/40 rounded border border-white/5" title="Live Fuel Moisture Content vía Sentinel-2 NDWI (Crítico <80%)">
+                                <span class="text-slate-400 block text-[9px]">LFMC Foliar</span>
+                                <b id="tacticalScenarioLfmc" class="text-amber-400">62%</b>
+                            </div>
+                            <div class="p-1.5 bg-black/40 rounded border border-white/5" title="Dead Fuel Moisture Content (Simard/Nelson)">
+                                <span class="text-slate-400 block text-[9px]">DFMC Muerto</span>
+                                <b id="tacticalScenarioDfmc" class="text-rose-400">4.1%</b>
+                            </div>
+                        </div>
+                        <div class="text-[10px] space-y-1">
+                            <div>
+                                <span class="text-slate-400">Sector Crítico Meniel:</span>
+                                <b id="tacticalScenarioSector" class="text-red-300 block font-sans">Deslinde Este & Noreste (Colindancia Directa Meniel)</b>
+                            </div>
+                            <p id="tacticalScenarioDesc" class="text-[9.5px] text-slate-400 leading-tight font-sans italic">
+                                Viento andino descendente con compresión adiabática seca. Fuego de avance rápido (>18 m/min) con salto masivo de pavesas sobre cortafuegos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Botón para inspeccionar física en el Vault -->
+                    <button onclick="switchMasterView('docs'); switchDocsTab('docs-vecino');" class="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[10px] font-mono flex items-center justify-between transition-all cursor-pointer">
+                        <span class="flex items-center gap-1.5">
+                            <span>📚</span> <span>Ver Doctrina Física en Vault (KaTeX)</span>
+                        </span>
+                        <span>➔</span>
+                    </button>
                 </div>
 
                 <!-- Ecuación Táctica Canónica -->
