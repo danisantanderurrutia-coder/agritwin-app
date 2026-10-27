@@ -3392,6 +3392,943 @@
         });
 
         // ═══════════════════════════════════════════════════════════════════
+        // 2.5E ESTÁNDAR VECINO PROTEGIDO: MÓDULO 3 - RESERVA HÍDRICA COLECTIVA
+        // 18 Tranques de acumulación DGA/CNR en radio 5 km (342.500 m³ nominales)
+        // Modelado espectral acoplado: InfeRes / Global Water Watch + Banda MNDWI (Xu 2006)
+        // ═══════════════════════════════════════════════════════════════════
+        const geojsonTranquesCuenca5km = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_MENIEL_01",
+                        "name": "Tranque Keyline Fundo Meniel (Piloto)",
+                        "sector": "Parral / Fundo Meniel",
+                        "rol": "418-24 Parral",
+                        "dist_km": 0.0,
+                        "bearing": "Centro",
+                        "center": [-36.2105, -71.6045],
+                        "capacity_m3": 18500,
+                        "current_m3": 17020,
+                        "fill_pct": 92,
+                        "tolerance_pct": 0.5, // Piezómetro IoT sumergido real
+                        "aptitude": ["aljibe", "helipunto", "bombeo"],
+                        "sensor": "Piezómetro KioT Sumergido LoRaWAN (Ground-Truth)",
+                        "canal": "Derivado 3 Canal San Manuel",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.76,
+                        "elevation_m": 198
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6058, -36.2098], [-71.6032, -36.2098],
+                            [-71.6032, -36.2112], [-71.6058, -36.2112],
+                            [-71.6058, -36.2098]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_CRISTALES_N",
+                        "name": "Tranque Los Cristales Norte",
+                        "sector": "Estero Los Cristales",
+                        "rol": "412-10 Retiro",
+                        "dist_km": 2.2,
+                        "bearing": "NE",
+                        "center": [-36.1950, -71.5920],
+                        "capacity_m3": 29000,
+                        "current_m3": 23490,
+                        "fill_pct": 81,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "helipunto"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal Los Cristales / Melado",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.74,
+                        "elevation_m": 215
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5936, -36.1938], [-71.5904, -36.1938],
+                            [-71.5904, -36.1962], [-71.5936, -36.1962],
+                            [-71.5936, -36.1938]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_SAN_MANUEL_E",
+                        "name": "Tranque San Manuel Este",
+                        "sector": "San Manuel Central",
+                        "rol": "420-05 Parral",
+                        "dist_km": 2.1,
+                        "bearing": "E",
+                        "center": [-36.2040, -71.5830],
+                        "capacity_m3": 28000,
+                        "current_m3": 20720,
+                        "fill_pct": 74,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "bombeo"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Matriz Canal San Manuel",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.71,
+                        "elevation_m": 208
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5844, -36.2028], [-71.5816, -36.2028],
+                            [-71.5816, -36.2052], [-71.5844, -36.2052],
+                            [-71.5844, -36.2028]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_MAITEN_ALTO",
+                        "name": "Tranque Maitén Alto",
+                        "sector": "El Maitén Cordillera",
+                        "rol": "425-18 Parral",
+                        "dist_km": 2.3,
+                        "bearing": "SW",
+                        "center": [-36.2280, -71.6210],
+                        "capacity_m3": 35000,
+                        "current_m3": 29750,
+                        "fill_pct": 85,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "helipunto"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Derivado Canal Melado",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.78,
+                        "elevation_m": 224
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6228, -36.2266], [-71.6192, -36.2266],
+                            [-71.6192, -36.2294], [-71.6228, -36.2294],
+                            [-71.6228, -36.2266]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_QUEBRADA_HONDA",
+                        "name": "Tranque Quebrada Honda",
+                        "sector": "Lomas del Pehuenche",
+                        "rol": "431-02 Parral",
+                        "dist_km": 2.8,
+                        "bearing": "SE",
+                        "center": [-36.2350, -71.5950],
+                        "capacity_m3": 22500,
+                        "current_m3": 15300,
+                        "fill_pct": 68,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Estero Los Cristales",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.69,
+                        "elevation_m": 236
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5964, -36.2338], [-71.5936, -36.2338],
+                            [-71.5936, -36.2362], [-71.5964, -36.2362],
+                            [-71.5964, -36.2338]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_MELADO_01",
+                        "name": "Tranque Canal Melado 1",
+                        "sector": "Ribera Norte Melado",
+                        "rol": "398-14 Retiro",
+                        "dist_km": 3.3,
+                        "bearing": "N",
+                        "center": [-36.1820, -71.6110],
+                        "capacity_m3": 22000,
+                        "current_m3": 17380,
+                        "fill_pct": 79,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "bombeo"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal Melado Matriz",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.75,
+                        "elevation_m": 192
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6126, -36.1808], [-71.6094, -36.1808],
+                            [-71.6094, -36.1832], [-71.6126, -36.1832],
+                            [-71.6126, -36.1808]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_MELADO_02",
+                        "name": "Tranque Canal Melado 2",
+                        "sector": "Quilaimo Alto",
+                        "rol": "399-08 Retiro",
+                        "dist_km": 4.0,
+                        "bearing": "NNE",
+                        "center": [-36.1760, -71.6030],
+                        "capacity_m3": 19200,
+                        "current_m3": 13824,
+                        "fill_pct": 72,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal Melado Matriz",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.70,
+                        "elevation_m": 195
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6044, -36.1748], [-71.6016, -36.1748],
+                            [-71.6016, -36.1772], [-71.6044, -36.1772],
+                            [-71.6044, -36.1748]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_SAN_MANUEL_B",
+                        "name": "Tranque San Manuel Bajo",
+                        "sector": "Llano Aluvial Oeste",
+                        "rol": "415-33 Parral",
+                        "dist_km": 2.9,
+                        "bearing": "W",
+                        "center": [-36.2190, -71.6350],
+                        "capacity_m3": 14800,
+                        "current_m3": 9620,
+                        "fill_pct": 65,
+                        "tolerance_pct": 15,
+                        "aptitude": ["bombeo", "aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Derivado Menor San Manuel",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.67,
+                        "elevation_m": 188
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6364, -36.2178], [-71.6336, -36.2178],
+                            [-71.6336, -36.2202], [-71.6364, -36.2202],
+                            [-71.6364, -36.2178]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_EL_BOLDO",
+                        "name": "Tranque El Boldo",
+                        "sector": "Camino a Catillo",
+                        "rol": "433-11 Parral",
+                        "dist_km": 3.6,
+                        "bearing": "S",
+                        "center": [-36.2420, -71.6180],
+                        "capacity_m3": 12400,
+                        "current_m3": 9920,
+                        "fill_pct": 80,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal San Manuel",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.72,
+                        "elevation_m": 218
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6192, -36.2408], [-71.6168, -36.2408],
+                            [-71.6168, -36.2432], [-71.6192, -36.2432],
+                            [-71.6192, -36.2408]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_LOMA_GARZAS",
+                        "name": "Tranque Loma de las Garzas",
+                        "sector": "Vegas de Longaví",
+                        "rol": "405-22 Retiro",
+                        "dist_km": 3.8,
+                        "bearing": "NW",
+                        "center": [-36.1890, -71.6380],
+                        "capacity_m3": 16500,
+                        "current_m3": 11550,
+                        "fill_pct": 70,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal Longaví Matriz",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.68,
+                        "elevation_m": 182
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6394, -36.1878], [-71.6366, -36.1878],
+                            [-71.6366, -36.1902], [-71.6394, -36.1902],
+                            [-71.6394, -36.1878]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_PENASCO_SUR",
+                        "name": "Tranque Peñasco Sur",
+                        "sector": "Piedemonte Andino",
+                        "rol": "440-07 Parral",
+                        "dist_km": 4.4,
+                        "bearing": "SE",
+                        "center": [-36.2480, -71.5850],
+                        "capacity_m3": 20000,
+                        "current_m3": 16800,
+                        "fill_pct": 84,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "helipunto"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Vertedero Quebrada Honda",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.77,
+                        "elevation_m": 254
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5864, -36.2468], [-71.5836, -36.2468],
+                            [-71.5836, -36.2492], [-71.5864, -36.2492],
+                            [-71.5864, -36.2468]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_LOS_AROMOS",
+                        "name": "Tranque Los Aromos",
+                        "sector": "Colliguay Este",
+                        "rol": "422-19 Parral",
+                        "dist_km": 3.9,
+                        "bearing": "E",
+                        "center": [-36.2080, -71.5620],
+                        "capacity_m3": 9800,
+                        "current_m3": 5684,
+                        "fill_pct": 58,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Estero Los Cristales",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.63,
+                        "elevation_m": 212
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5632, -36.2070], [-71.5608, -36.2070],
+                            [-71.5608, -36.2090], [-71.5632, -36.2090],
+                            [-71.5632, -36.2070]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_RINCON_VERDE",
+                        "name": "Tranque Rincón Verde",
+                        "sector": "Faldas del Roble",
+                        "rol": "428-15 Parral",
+                        "dist_km": 3.3,
+                        "bearing": "SE",
+                        "center": [-36.2230, -71.5710],
+                        "capacity_m3": 11200,
+                        "current_m3": 8176,
+                        "fill_pct": 73,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Derivado San Manuel 4",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.69,
+                        "elevation_m": 220
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5724, -36.2218], [-71.5696, -36.2218],
+                            [-71.5696, -36.2242], [-71.5724, -36.2242],
+                            [-71.5724, -36.2218]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_VEGA_GRANDE",
+                        "name": "Tranque Vega Grande",
+                        "sector": "Villaseca Norte",
+                        "rol": "392-04 Retiro",
+                        "dist_km": 4.6,
+                        "bearing": "NNE",
+                        "center": [-36.1720, -71.5890],
+                        "capacity_m3": 17600,
+                        "current_m3": 14256,
+                        "fill_pct": 81,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal Melado Derivado",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.73,
+                        "elevation_m": 202
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5904, -36.1708], [-71.5876, -36.1708],
+                            [-71.5876, -36.1732], [-71.5904, -36.1732],
+                            [-71.5904, -36.1708]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_POTRERO_NUEVO",
+                        "name": "Tranque Potrero Nuevo",
+                        "sector": "Parral Poniente",
+                        "rol": "417-12 Parral",
+                        "dist_km": 3.5,
+                        "bearing": "W",
+                        "center": [-36.2010, -71.6420],
+                        "capacity_m3": 15000,
+                        "current_m3": 10350,
+                        "fill_pct": 69,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal San Manuel Derivado",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.67,
+                        "elevation_m": 184
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6434, -36.1998], [-71.6406, -36.1998],
+                            [-71.6406, -36.2022], [-71.6434, -36.2022],
+                            [-71.6434, -36.1998]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_COIRON_ALTO",
+                        "name": "Tranque Coirón Alto",
+                        "sector": "Lomas de Coirón",
+                        "rol": "437-09 Parral",
+                        "dist_km": 4.4,
+                        "bearing": "SW",
+                        "center": [-36.2390, -71.6400],
+                        "capacity_m3": 21500,
+                        "current_m3": 18920,
+                        "fill_pct": 88,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "helipunto"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal Melado Alto",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.79,
+                        "elevation_m": 228
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6416, -36.2378], [-71.6384, -36.2378],
+                            [-71.6384, -36.2402], [-71.6416, -36.2402],
+                            [-71.6416, -36.2378]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_EL_MEMBRILLO",
+                        "name": "Tranque El Membrillo",
+                        "sector": "Los Cristales Oriente",
+                        "rol": "414-06 Retiro",
+                        "dist_km": 3.8,
+                        "bearing": "NE",
+                        "center": [-36.1910, -71.5700],
+                        "capacity_m3": 13500,
+                        "current_m3": 8370,
+                        "fill_pct": 62,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Estero Los Cristales",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.65,
+                        "elevation_m": 222
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.5714, -36.1898], [-71.5686, -36.1898],
+                            [-71.5686, -36.1922], [-71.5714, -36.1922],
+                            [-71.5714, -36.1898]
+                        ]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TR_LA_LEONERA",
+                        "name": "Tranque La Leonera",
+                        "sector": "Límite Forestal Sur",
+                        "rol": "444-21 Parral",
+                        "dist_km": 4.4,
+                        "bearing": "S",
+                        "center": [-36.2510, -71.6080],
+                        "capacity_m3": 16000,
+                        "current_m3": 12320,
+                        "fill_pct": 77,
+                        "tolerance_pct": 15,
+                        "aptitude": ["aljibe", "bombeo"],
+                        "sensor": "Sentinel-2 MSI L2A (InfeRes Hipsométrico)",
+                        "canal": "Canal San Manuel Cabecera",
+                        "satellite_age": "Hace 2 días (Copernicus S2A L2A)",
+                        "mndwi": 0.72,
+                        "elevation_m": 242
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.6094, -36.2498], [-71.6066, -36.2498],
+                            [-71.6066, -36.2522], [-71.6094, -36.2522],
+                            [-71.6094, -36.2498]
+                        ]]
+                    }
+                }
+            ]
+        };
+
+        window.geojsonTranquesCuenca5km = geojsonTranquesCuenca5km;
+
+        // Capa Leaflet de los 18 Tranques Colectivos
+        const tranquesLayer = L.geoJSON(geojsonTranquesCuenca5km, {
+            style: function(feature) {
+                const p = feature.properties;
+                const isMeniel = p.id === 'TR_MENIEL_01';
+                return {
+                    color: isMeniel ? '#10b981' : '#06b6d4',
+                    weight: isMeniel ? 2.8 : 2.0,
+                    dashArray: '4, 3', // Incerteza batimétrica satelital ±15%
+                    fillColor: isMeniel ? '#059669' : '#0891b2',
+                    fillOpacity: 0.65,
+                    className: 'tranque-polygon-water'
+                };
+            },
+            onEachFeature: function(feature, layer) {
+                const p = feature.properties;
+                const isMeniel = p.id === 'TR_MENIEL_01';
+
+                // Tooltip táctico flotante
+                layer.bindTooltip(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:bold; color:${isMeniel ? '#6ee7b7' : '#67e8f9'}; background:rgba(7,14,26,0.95); padding:3px 7px; border-radius:4px; border:1px solid ${isMeniel ? 'rgba(16,185,129,0.5)' : 'rgba(6,182,212,0.5)'}; box-shadow:0 2px 8px rgba(0,0,0,0.7);">
+                        💧 ${p.name} &bull; ${(p.current_m3 / 1000).toFixed(1)}k m³ (${p.fill_pct}%)
+                    </div>
+                `, { permanent: false, direction: 'top', offset: [0, -6] });
+
+                // Popup interactivo de comando táctico
+                const aptBadges = p.aptitude.map(a => {
+                    if (a === 'aljibe') return '<span style="background:rgba(249,115,22,0.25); color:#fdba74; padding:1px 5px; border-radius:3px; border:1px solid rgba(249,115,22,0.4); font-size:9px;">🚒 Aljibe</span>';
+                    if (a === 'helipunto') return '<span style="background:rgba(56,189,248,0.25); color:#7dd3fc; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.4); font-size:9px;">🚁 Helipunto</span>';
+                    if (a === 'bombeo') return '<span style="background:rgba(168,85,247,0.25); color:#d8b4fe; padding:1px 5px; border-radius:3px; border:1px solid rgba(168,85,247,0.4); font-size:9px;">🔌 Bombeo</span>';
+                    return '';
+                }).join(' ');
+
+                const popupHtml = `
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; min-width:270px; padding:4px; color:#f8fafc;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid ${isMeniel ? '#10b981' : '#06b6d4'}; padding-bottom:4px; margin-bottom:6px;">
+                            <strong style="color:${isMeniel ? '#34d399' : '#38bdf8'}; font-size:12px;">💧 ${p.name}</strong>
+                            <span style="background:${isMeniel ? 'rgba(16,185,129,0.3)' : 'rgba(6,182,212,0.2)'}; color:${isMeniel ? '#6ee7b7' : '#67e8f9'}; padding:1px 5px; border-radius:3px; font-size:8.5px; font-weight:bold;">${isMeniel ? 'GROUND TRUTH' : 'INFERES S2'}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Ubicación / Rol:</span>
+                            <span style="color:#f1f5f9; font-weight:bold;">${p.rol} (${p.dist_km.toFixed(1)} km ${p.bearing})</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Capacidad Nominal:</span>
+                            <span style="color:#f1f5f9; font-weight:bold;">${p.capacity_m3.toLocaleString()} m³</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px;">
+                            <span style="color:#94a3b8;">Volumen Estimado:</span>
+                            <span style="color:${isMeniel ? '#34d399' : '#38bdf8'}; font-weight:bold;">${p.current_m3.toLocaleString()} m³ (${p.fill_pct}%)</span>
+                        </div>
+                        <div style="width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden; margin:4px 0 6px 0;">
+                            <div style="width:${p.fill_pct}%; height:100%; background:${p.fill_pct > 75 ? '#10b981' : (p.fill_pct > 50 ? '#06b6d4' : '#f59e0b')}; border-radius:3px;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:9.5px;">
+                            <span style="color:#94a3b8;">Tolerancia Batimétrica:</span>
+                            <span style="color:#cbd5e1;">&plusmn;${p.tolerance_pct}% ${isMeniel ? '(Sensor Presión)' : '(Curva InfeRes)'}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:9.5px;">
+                            <span style="color:#94a3b8;">Canal Aportante:</span>
+                            <span style="color:#7dd3fc;">${p.canal}</span>
+                        </div>
+                        <div style="margin-bottom:6px;">
+                            <span style="color:#94a3b8; font-size:9px; display:block; margin-bottom:2px;">Aptitud Táctica de Carga:</span>
+                            <div style="display:flex; gap:4px; flex-wrap:wrap;">${aptBadges}</div>
+                        </div>
+                        <div style="display:flex; gap:4px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
+                            <button onclick="calculateWaterTransitTime('${p.id}')" style="flex:1; padding:4px 6px; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:bold; background:rgba(249,115,22,0.25); color:#fdba74; border:1px solid rgba(249,115,22,0.5); border-radius:4px; cursor:pointer;">
+                                ⏱️ Tiempo Aljibe
+                            </button>
+                            <button onclick="inspectTranqueMNDWI('${p.id}')" style="flex:1; padding:4px 6px; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:bold; background:rgba(6,182,212,0.25); color:#67e8f9; border:1px solid rgba(6,182,212,0.5); border-radius:4px; cursor:pointer;">
+                                🛰️ Banda MNDWI
+                            </button>
+                        </div>
+                    </div>
+                `;
+                layer.bindPopup(popupHtml);
+            }
+        });
+
+        overlayLayers['recursos_tranques'] = tranquesLayer;
+
+        // ═══════════════════════════════════════════════════════════════════
+        // CAPA ESPECTRAL MNDWI (Xu 2006: Verde B03 vs SWIR-1 B11)
+        // Renders visual spectral layer + contextual floating HUD legend
+        // ═══════════════════════════════════════════════════════════════════
+        const mndwiSpectralLayer = L.layerGroup();
+
+        // 1. Capa de contraste atmosférico / territorial oscuro
+        const spectralBaseMask = L.polygon([
+            [-36.1500, -71.6700], [-36.1500, -71.5400],
+            [-36.2700, -71.5400], [-36.2700, -71.6700]
+        ], {
+            color: 'transparent',
+            fillColor: '#0b1329',
+            fillOpacity: 0.38,
+            interactive: false
+        });
+        mndwiSpectralLayer.addLayer(spectralBaseMask);
+
+        // 2. Corredores de agua fluviales vivos (Río Longaví, Estero Cristales, Canal Melado)
+        const riverCorridorsMndwi = [
+            // Río Longaví
+            L.polyline([
+                [-36.1620, -71.6620], [-36.1750, -71.6420], [-36.1880, -71.6210],
+                [-36.2050, -71.6020], [-36.2250, -71.5810], [-36.2480, -71.5580]
+            ], { color: '#00f0ff', weight: 6, opacity: 0.88, className: 'mndwi-river-glow' })
+            .bindTooltip('<div style="font-family:\'JetBrains Mono\'; font-size:9px; background:#041a2e; color:#00f0ff; padding:2px 5px; border-radius:3px; border:1px solid #00f0ff;">🌊 Río Longaví &bull; MNDWI: +0.72</div>'),
+
+            // Estero Los Cristales
+            L.polyline([
+                [-36.1880, -71.5720], [-36.1950, -71.5850], [-36.2040, -71.5950],
+                [-36.2150, -71.6080], [-36.2350, -71.6180]
+            ], { color: '#38bdf8', weight: 4.5, opacity: 0.85 })
+            .bindTooltip('<div style="font-family:\'JetBrains Mono\'; font-size:9px; background:#041a2e; color:#38bdf8; padding:2px 5px; border-radius:3px; border:1px solid #38bdf8;">💧 Estero Los Cristales &bull; MNDWI: +0.64</div>'),
+
+            // Canal Melado Matriz
+            L.polyline([
+                [-36.1740, -71.6150], [-36.1810, -71.6050], [-36.1920, -71.5880],
+                [-36.2080, -71.5760]
+            ], { color: '#06b6d4', weight: 3.5, opacity: 0.8, dashArray: '6, 4' })
+            .bindTooltip('<div style="font-family:\'JetBrains Mono\'; font-size:9px; background:#041a2e; color:#06b6d4; padding:2px 5px; border-radius:3px; border:1px solid #06b6d4;">⚡ Canal Melado Matriz &bull; MNDWI: +0.58</div>')
+        ];
+        riverCorridorsMndwi.forEach(r => mndwiSpectralLayer.addLayer(r));
+
+        // 3. Resplandor de los 18 tranques en espectro MNDWI (azul eléctrico resplandeciente)
+        geojsonTranquesCuenca5km.features.forEach(f => {
+            const p = f.properties;
+            const coords = f.geometry.coordinates[0].map(c => [c[1], c[0]]);
+            const glowPoly = L.polygon(coords, {
+                color: '#ffffff',
+                weight: 1.8,
+                fillColor: '#00f0ff',
+                fillOpacity: 0.92,
+                className: 'mndwi-tranque-glow'
+            });
+            glowPoly.bindTooltip(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:bold; color:#00f0ff; background:#031525; padding:3px 6px; border-radius:4px; border:1px solid #00f0ff; box-shadow:0 0 10px rgba(0,240,255,0.6);">
+                    🛰️ MNDWI: +${p.mndwi.toFixed(2)} &bull; ${p.name}
+                </div>
+            `, { permanent: false, direction: 'top' });
+            mndwiSpectralLayer.addLayer(glowPoly);
+        });
+
+        overlayLayers['mndwi_espectral'] = mndwiSpectralLayer;
+
+        // ═══════════════════════════════════════════════════════════════════
+        // CONTROLADORES Y FUNCIONES OPERATIVAS DE RECURSOS & TRANQUES
+        // ═══════════════════════════════════════════════════════════════════
+
+        // Toggle de la Capa de 18 Tranques
+        window.toggleTranquesLayer = function(force) {
+            const layer = overlayLayers['recursos_tranques'];
+            if (!layer || !map) return;
+            const isActive = map.hasLayer(layer);
+            const shouldBeActive = (force !== undefined) ? force : !isActive;
+
+            if (shouldBeActive) {
+                map.addLayer(layer);
+            } else {
+                map.removeLayer(layer);
+            }
+            updateDockButtonState('recursos_tranques', shouldBeActive);
+
+            // Sincronizar botón lateral si existe
+            const btnSidebar = document.getElementById('btnToggleTranquesSidebar');
+            if (btnSidebar) {
+                if (shouldBeActive) {
+                    btnSidebar.className = 'py-1.5 px-2 rounded-lg bg-cyan-500 text-white border border-cyan-300 font-mono text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer';
+                    btnSidebar.innerHTML = '<span>💧</span> <span>18 Tranques Activos</span>';
+                } else {
+                    btnSidebar.className = 'py-1.5 px-2 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-400/50 font-mono text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+                    btnSidebar.innerHTML = '<span>💧</span> <span>Ver 18 Tranques</span>';
+                }
+            }
+        };
+
+        // Toggle de la Capa Espectral MNDWI
+        window.toggleMNDWILayer = function(force) {
+            const layer = overlayLayers['mndwi_espectral'];
+            if (!layer || !map) return;
+            const isActive = map.hasLayer(layer);
+            const shouldBeActive = (force !== undefined) ? force : !isActive;
+
+            if (shouldBeActive) {
+                map.addLayer(layer);
+                showMndwiSpectralHudLegend(true);
+            } else {
+                map.removeLayer(layer);
+                showMndwiSpectralHudLegend(false);
+            }
+            updateDockButtonState('mndwi_espectral', shouldBeActive);
+
+            // Sincronizar botón lateral
+            const btnSidebar = document.getElementById('btnToggleMndwiSidebar');
+            if (btnSidebar) {
+                if (shouldBeActive) {
+                    btnSidebar.className = 'py-1.5 px-2 rounded-lg bg-sky-500 text-white border border-sky-300 font-mono text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer';
+                    btnSidebar.innerHTML = '<span>🛰️</span> <span>MNDWI Activo</span>';
+                } else {
+                    btnSidebar.className = 'py-1.5 px-2 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-400/50 font-mono text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+                    btnSidebar.innerHTML = '<span>🛰️</span> <span>Banda MNDWI</span>';
+                }
+            }
+        };
+
+        // Mostrar / Ocultar Leyenda Flotante HUD de Teledetección MNDWI
+        function showMndwiSpectralHudLegend(visible) {
+            let hud = document.getElementById('legendMndwiSpectral');
+            if (!hud && visible) {
+                hud = document.createElement('div');
+                hud.id = 'legendMndwiSpectral';
+                hud.className = 'fixed left-4 bottom-12 z-30 p-3 rounded-xl bg-[#070e1a]/95 backdrop-blur-md border border-cyan-400/50 shadow-2xl font-mono text-[10px] text-slate-200 max-w-xs space-y-2 select-none animate-fadeIn';
+                hud.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-cyan-500/30 pb-1.5">
+                        <span class="font-bold text-cyan-300 flex items-center gap-1.5">
+                            <span>🛰️</span> Sentinel-2 MSI &bull; MNDWI (Xu 2006)
+                        </span>
+                        <button onclick="window.toggleMNDWILayer(false)" class="text-slate-400 hover:text-white px-1 font-bold cursor-pointer">&times;</button>
+                    </div>
+                    <div class="text-[9px] text-slate-300 bg-black/40 p-1.5 rounded border border-white/5">
+                        <b>Fórmula de Absorción:</b> (B03 Verde - B11 SWIR1) / (B03 + B11)
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3 rounded bg-[#00f0ff] border border-white shadow-[0_0_8px_#00f0ff] shrink-0"></span>
+                            <span class="text-[9px] leading-tight"><b>+0.2 a +1.0:</b> Agua libre / Tranques profundos</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3 rounded bg-[#0d9488] border border-white/20 shrink-0"></span>
+                            <span class="text-[9px] leading-tight"><b>0.0 a +0.2:</b> Suelo saturado / Riberas</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3 rounded bg-[#475569] border border-white/20 shrink-0"></span>
+                            <span class="text-[9px] leading-tight"><b>-0.3 a 0.0:</b> Huertos irrigados (Cerezos/Avellano)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3 rounded bg-[#18181b] border border-white/20 shrink-0"></span>
+                            <span class="text-[9px] leading-tight"><b>&lt; -0.3:</b> Rastrojo seco / Suelo mineral</span>
+                        </div>
+                    </div>
+                    <div class="text-[8px] text-slate-400 pt-1 border-t border-white/10 flex justify-between">
+                        <span>Copernicus L2A BOA</span>
+                        <span>Res. 10m &bull; Revisita 5d</span>
+                    </div>
+                `;
+                document.body.appendChild(hud);
+            }
+            if (hud) {
+                hud.style.display = visible ? 'block' : 'none';
+            }
+        }
+
+        // Enfocar un tranque específico en el mapa
+        window.centerTranque = function(tranqueId) {
+            const feat = geojsonTranquesCuenca5km.features.find(f => f.properties.id === tranqueId);
+            if (!feat || !map) return;
+            const p = feat.properties;
+            
+            // Si la capa de tranques está apagada, encenderla
+            if (overlayLayers['recursos_tranques'] && !map.hasLayer(overlayLayers['recursos_tranques'])) {
+                window.toggleTranquesLayer(true);
+            }
+
+            map.flyTo([p.center[0], p.center[1]], 15.5, { duration: 1.2 });
+
+            // Abrir popup de la capa si está disponible
+            setTimeout(() => {
+                if (overlayLayers['recursos_tranques']) {
+                    overlayLayers['recursos_tranques'].eachLayer(layer => {
+                        if (layer.feature && layer.feature.properties.id === tranqueId) {
+                            layer.openPopup();
+                        }
+                    });
+                }
+            }, 1250);
+        };
+
+        // Inspeccionar tranque en banda MNDWI
+        window.inspectTranqueMNDWI = function(tranqueId) {
+            window.centerTranque(tranqueId);
+            if (!map.hasLayer(overlayLayers['mndwi_espectral'])) {
+                window.toggleMNDWILayer(true);
+            }
+        };
+
+        // Cálculo de Tiempo de Despacho de Camión Aljibe hacia Fundo Meniel
+        window.calculateWaterTransitTime = function(tranqueId) {
+            const feat = geojsonTranquesCuenca5km.features.find(f => f.properties.id === tranqueId);
+            if (!feat) return;
+            const p = feat.properties;
+
+            if (p.id === 'TR_MENIEL_01') {
+                alert(`🏡 Tranque Meniel es fuente in-situ (0.0 km):\n• Bombeo directo inmediato por manguera de 4" (120 L/s).\n• Carga de aljibe en conexión storz perimetral: 12 min.\n• Helipunto Bambi Bucket: 60m (tiempo rotación 2.5 min).`);
+                return;
+            }
+
+            // Velocidad promedio aljibe ripio/asfalto: 28 km/h
+            const travelOneWayMin = Math.round((p.dist_km / 28) * 60);
+            const fillTimeMin = 12; // Carga de 10.000 L con motobomba
+            const cycleTotalMin = (travelOneWayMin * 2) + fillTimeMin + 8; // Retorno + vaciado
+
+            const msg = `🚒 LOGÍSTICA DE CARGA & DESPACHO ALJIBE\n──────────────────────────────────────\nFuente: ${p.name}\nDistancia a Meniel: ${p.dist_km.toFixed(1)} km (${p.bearing})\nCapacidad Disponible: ${p.current_m3.toLocaleString()} m³ (${p.fill_pct}%)\n\n• Tiempo de viaje hacia Meniel (28 km/h): ${travelOneWayMin} min\n• Tiempo de succión y llenado 10k L: ${fillTimeMin} min\n• Ciclo completo de rotación: ~${cycleTotalMin} minutos por camión.\n• Aptitud: ${p.aptitude.join(', ').toUpperCase()}`;
+            alert(msg);
+        };
+
+        // Filtrado dinámico de la lista de tranques en el Sidebar
+        window.filterTranquesByAptitude = function(aptitude) {
+            // Actualizar botones de filtro
+            document.querySelectorAll('.tranque-filter-btn').forEach(btn => {
+                btn.className = 'tranque-filter-btn px-2 py-0.5 rounded bg-black/40 text-slate-300 hover:text-white border border-white/10 cursor-pointer whitespace-nowrap text-[9px]';
+            });
+            const activeBtn = event ? event.target : null;
+            if (activeBtn) {
+                activeBtn.className = 'tranque-filter-btn active px-2 py-0.5 rounded bg-sky-500/30 text-sky-200 border border-sky-400/50 font-bold cursor-pointer whitespace-nowrap text-[9px]';
+            }
+
+            renderRecursosTranquesList(aptitude);
+        };
+
+        // Renderizado del catálogo de 18 tranques en el contenedor `#listaTranquesContainer`
+        function renderRecursosTranquesList(filterAptitude = 'all') {
+            const container = document.getElementById('listaTranquesContainer');
+            const countLabel = document.getElementById('lblRecursosFiltroCount');
+            if (!container) return;
+
+            let list = geojsonTranquesCuenca5km.features;
+            if (filterAptitude !== 'all') {
+                list = list.filter(f => f.properties.aptitude.includes(filterAptitude));
+            }
+
+            if (countLabel) {
+                countLabel.innerText = `${list.length} Obras (${filterAptitude === 'all' ? 'Total' : filterAptitude})`;
+            }
+
+            container.innerHTML = list.map(f => {
+                const p = f.properties;
+                const isMeniel = p.id === 'TR_MENIEL_01';
+                const fillBarColor = p.fill_pct > 75 ? 'bg-emerald-500' : (p.fill_pct > 50 ? 'bg-cyan-500' : 'bg-amber-500');
+
+                return `
+                    <div class="p-2 rounded-lg bg-black/40 border ${isMeniel ? 'border-emerald-500/50 bg-emerald-950/20' : 'border-white/5 hover:border-cyan-500/30'} space-y-1 text-[9.5px] transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold ${isMeniel ? 'text-emerald-300' : 'text-slate-200'} truncate flex items-center gap-1">
+                                <span>${isMeniel ? '🏡' : '💧'}</span>
+                                <span class="truncate">${p.name}</span>
+                            </span>
+                            <span class="text-[8.5px] font-mono text-cyan-300 shrink-0 font-bold">
+                                ${(p.current_m3 / 1000).toFixed(1)}k m³
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between text-[8.5px] text-slate-400 font-mono">
+                            <span>${p.dist_km === 0 ? 'En Caserío' : `${p.dist_km.toFixed(1)} km ${p.bearing}`} &bull; ${p.rol}</span>
+                            <span class="${p.fill_pct > 75 ? 'text-emerald-400' : 'text-cyan-400'} font-bold">${p.fill_pct}% Lleno (&plusmn;${p.tolerance_pct}%)</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div class="${fillBarColor} h-full rounded-full" style="width: ${p.fill_pct}%"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-white/5 text-[8.5px]">
+                            <div class="flex items-center gap-1 text-slate-300">
+                                ${p.aptitude.includes('aljibe') ? '<span title="Apto para Aljibe">🚒</span>' : ''}
+                                ${p.aptitude.includes('helipunto') ? '<span title="Helipunto Bambi Bucket">🚁</span>' : ''}
+                                ${p.aptitude.includes('bombeo') ? '<span title="Motobomba fija">🔌</span>' : ''}
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="centerTranque('${p.id}')" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-cyan-500/30 text-cyan-200 font-bold transition-all cursor-pointer" title="Centrar en el mapa">
+                                    🔍 Ver
+                                </button>
+                                <button onclick="inspectTranqueMNDWI('${p.id}')" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-sky-500/30 text-sky-200 font-bold transition-all cursor-pointer" title="Ver en Banda Espectral MNDWI">
+                                    🛰️ MNDWI
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        window.renderRecursosTranquesList = renderRecursosTranquesList;
+
+        // Renderizado inicial al cargar
+        setTimeout(() => {
+            renderRecursosTranquesList('all');
+        }, 300);
+
+        // ═══════════════════════════════════════════════════════════════════
         // 2.6 FUNCIONES DE CONTROL DE TRANSECTOS, ENCUADRE CONTEXTUAL & VIENTO
         // ═══════════════════════════════════════════════════════════════════
         
@@ -3452,6 +4389,22 @@
                     activeCls: 'bg-red-500/30 text-white border-red-400/60',
                     inactiveCls: 'bg-white/5 text-red-200 border-white/5',
                     badgeActive: 'bg-red-500/30 text-red-300 border-red-400/50 font-bold',
+                    badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
+                },
+                'recursos_tranques': {
+                    id: 'btnDockTranques',
+                    badgeId: 'badgeDockTranques',
+                    activeCls: 'bg-cyan-500/30 text-white border-cyan-400/60',
+                    inactiveCls: 'bg-white/5 text-cyan-200 border-white/5',
+                    badgeActive: 'bg-cyan-500/30 text-cyan-300 border-cyan-400/50 font-bold',
+                    badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
+                },
+                'mndwi_espectral': {
+                    id: 'btnDockMNDWI',
+                    badgeId: 'badgeDockMNDWI',
+                    activeCls: 'bg-sky-500/30 text-white border-sky-400/60',
+                    inactiveCls: 'bg-white/5 text-sky-200 border-white/5',
+                    badgeActive: 'bg-sky-500/30 text-sky-300 border-sky-400/50 font-bold',
                     badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
                 }
             };
@@ -3992,6 +4945,7 @@
             if (tabId === 'tab-windy' || tabId === 'tab-water') tabId = 'tab-tiempo';
             if (tabId === 'tab-territory' || tabId === 'tab-centinela') tabId = 'tab-sig';
             if (tabId === 'tab-tactico') tabId = 'tab-riesgos';
+            if (tabId === 'tab-tranques' || tabId === 'tab-agua') tabId = 'tab-recursos';
             const btn = document.querySelector(`.tab-btn[data-target="${tabId}"]`);
             if (btn) btn.click();
             if (typeof window.toggleTerritorialSidebar === 'function') {
