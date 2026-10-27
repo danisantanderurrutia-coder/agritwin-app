@@ -5259,7 +5259,64 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
         // ═══════════════════════════════════════════════════════════════════════
         // RENDERIZADOR UNIVERSAL DE LATEX CON KATEX (ROBUSTO CONTRA CONFLICTOS $)
         // ═══════════════════════════════════════════════════════════════════════
-        window.renderLatexInContainer = function(target) {
+        
+        // ═══════════════════════════════════════════════════════════════════════
+        // DISPARADORES DIRECTOS DESDE LA BÓVEDA (VAULT) Y MODAL AL GEMELO 3D
+        // ═══════════════════════════════════════════════════════════════════════
+        window.launchClimateScenarioFromVault = function(presetKey) {
+            if (typeof window.switchMasterView === 'function') {
+                window.switchMasterView('cuenca');
+            }
+            setTimeout(function() {
+                if (typeof window.applyCuencaClimatePreset === 'function') {
+                    window.applyCuencaClimatePreset(presetKey);
+                }
+                if (typeof window.switchTiempoSubTab === 'function') {
+                    window.switchTiempoSubTab('controles');
+                }
+            }, 180);
+        };
+
+        
+        window.launchAtmosphericLayerFromModal = function(layerKey) {
+            window.closeAtmosphericScienceModal();
+            setTimeout(function() {
+                if (typeof window.setCuencaWindyVariable === 'function') {
+                    window.setCuencaWindyVariable(layerKey);
+                }
+                if (typeof window.switchTiempoSubTab === 'function') {
+                    window.switchTiempoSubTab('controles');
+                }
+            }, 120);
+        };
+
+        window.launchClimateScenarioFromModal = function(presetKey) {
+            window.closeAtmosphericScienceModal();
+            setTimeout(function() {
+                if (typeof window.applyCuencaClimatePreset === 'function') {
+                    window.applyCuencaClimatePreset(presetKey);
+                }
+                if (typeof window.switchTiempoSubTab === 'function') {
+                    window.switchTiempoSubTab('controles');
+                }
+            }, 100);
+        };
+
+        window.launchAtmosphericLayerFromVault = function(layerKey) {
+            if (typeof window.switchMasterView === 'function') {
+                window.switchMasterView('cuenca');
+            }
+            setTimeout(function() {
+                if (typeof window.setCuencaWindyVariable === 'function') {
+                    window.setCuencaWindyVariable(layerKey);
+                }
+                if (typeof window.switchTiempoSubTab === 'function') {
+                    window.switchTiempoSubTab('controles');
+                }
+            }, 180);
+        };
+
+window.renderLatexInContainer = function(target) {
             if (typeof renderMathInElement !== 'function') {
                 setTimeout(function() {
                     if (typeof renderMathInElement === 'function') {
@@ -5613,6 +5670,48 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
     <div class="abstract-box">
         <b>RESUMEN TÉCNICO-CIENTÍFICO:</b> Este informe documenta la integración matemática y el downscaling numérico del gemelo digital AgriTwin. Las condiciones de contorno globales de <b>ECMWF IFS (9 km)</b> y <b>NOAA GFS (22 km)</b> son moduladas físicamente a <b>30 metros</b> mediante el DEM Copernicus/SRTM, la rugosidad aerodinámica LULC y las ecuaciones de conservación de masa, validadas contra las redes DGA, INIA y DMC.
     </div>
+
+    
+    <h2 class="section-title">0. Redes de Datos, Sensores Terrestres &amp; Pipeline de Ingesta</h2>
+    <div style="font-size: 8pt; color: #475569; margin-bottom: 8px;">
+        La arquitectura atmosférica de AgriTwin no depende de un único proveedor, sino que articula cuatro niveles jerárquicos de telemetría y asimilación:
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 18%;">Nivel de Ingesta</th>
+                <th style="width: 27%;">Fuente Oficial / Proveedor</th>
+                <th style="width: 25%;">Resolución Espacio-Temporal</th>
+                <th style="width: 30%;">Rol en el Gemelo Digital Cuenca</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Nivel A: Forzante Global</b></td>
+                <td><b>Open-Meteo API</b><br>(ECMWF IFS &amp; NOAA GFS)</td>
+                <td>9 km (ECMWF) / 22 km (GFS)<br>Paso horario (actualización 4x/día)</td>
+                <td>Condición de contorno sinóptica regional: presión superficial, geopotencial, radiación y vientos libres.</td>
+            </tr>
+            <tr>
+                <td><b>Nivel B: Relieve &amp; LULC</b></td>
+                <td><b>Copernicus DEM GLO-30m</b><br>+ Sentinel-2 L2A BOA (10m)</td>
+                <td>Malla fija 30 metros (elevación)<br>10 metros (rugosidad $z_0$)</td>
+                <td>Modulación orográfica: gradiente adiabático, sombras 3D, aceleración Venturi y coeficiente de rugosidad de Manning.</td>
+            </tr>
+            <tr>
+                <td><b>Nivel C: Redes Oficiales</b></td>
+                <td><b>DGA Maule, DMC &amp; INIA</b><br>(Linares, Bullileo, Cauquenes)</td>
+                <td>Estaciones meteorológicas horarias / Aforos limnigráficos</td>
+                <td>Ground-truth de validación de caudales reales ($m^3/s$), volúmenes de embalse y calibración térmica.</td>
+            </tr>
+            <tr>
+                <td><b>Nivel D: Sensores Prediales</b></td>
+                <td><b>Nodos KioT LoRaWAN</b><br>(Huerto Meniel &amp; Microcuencas)</td>
+                <td>Lectura cada 10 min<br>Sensores a nivel de dosel y suelo</td>
+                <td>Detección hiperlocal de inversiones térmicas nocturnas (heladas radiativas) y humedad foliar de canopia.</td>
+            </tr>
+        </tbody>
+    </table>
 
     <h2 class="section-title">1. Matriz Comparativa: Las 6 Capas Atmosféricas</h2>
     <table>
