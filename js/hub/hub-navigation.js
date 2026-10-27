@@ -206,6 +206,10 @@
 
         window.switchMasterView = switchMasterView;
         function switchMasterView(viewId, mode) {
+            if (viewId === 'cuenca') {
+                viewId = 'territory';
+                if (!mode) mode = 'cerro';
+            }
             currentMasterView = viewId;
             if (mode) currentTerritorialMode = mode;
             window.scrollTo(0, 0);
