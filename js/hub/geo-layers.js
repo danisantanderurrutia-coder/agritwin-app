@@ -2468,23 +2468,33 @@
         // ═══════════════════════════════════════════════════════════════════
         const biofisicoLulcLayer = L.geoJSON(geojsonBiofisicoLulc, {
             style: function(feature) {
-                const p = feature.properties;
+                const p = feature.properties || {};
+                const isMacro = (p.id && p.id.startsWith('MACRO_')) || (p.area_ha >= 50);
+                // Borde segmentado para reflejar la incerteza de la autosegmentación satelital (sin límite legal catastral)
+                const dashPattern = isMacro ? '7, 4' : '4, 3';
                 return {
                     color: p.stroke || p.color,
-                    weight: 1.8,
+                    weight: isMacro ? 2.2 : 1.6,
+                    dashArray: dashPattern,
                     fillColor: p.fillColor || p.color,
                     fillOpacity: p.class === 'espejo_agua' ? 0.45 : 0.22,
                     className: 'lulc-biofisico-poly'
                 };
             },
             onEachFeature: function(feature, layer) {
-                const p = feature.properties;
+                const p = feature.properties || {};
+                const isMacro = (p.id && p.id.startsWith('MACRO_')) || (p.area_ha >= 50);
+                const dashPattern = isMacro ? '7, 4' : '4, 3';
                 layer.on('mouseover', function(e) {
-                    this.setStyle({ fillOpacity: 0.65, weight: 2.8 });
+                    this.setStyle({ fillOpacity: 0.65, weight: 2.8, dashArray: dashPattern });
                     this.bringToFront();
                 });
                 layer.on('mouseout', function(e) {
-                    this.setStyle({ fillOpacity: p.class === 'espejo_agua' ? 0.45 : 0.22, weight: 1.8 });
+                    this.setStyle({ 
+                        fillOpacity: p.class === 'espejo_agua' ? 0.45 : 0.22, 
+                        weight: isMacro ? 2.2 : 1.6,
+                        dashArray: dashPattern 
+                    });
                 });
 
                 const classIcon = p.class === 'espejo_agua' ? '💧' : (p.class === 'biomasa_forestal' ? '🌲' : (p.class === 'matriz_agricola' ? '🌾' : '🌾'));
@@ -2521,6 +2531,9 @@
                         ` : ''}
                         <div style="margin-top: 6px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 9.5px; color: #cbd5e1;">
                             <span style="color: #f59e0b; font-weight: bold;">⚡ Vínculo Territorial:</span> ${p.hazard_link}
+                        </div>
+                        <div style="margin-top: 5px; font-size: 8.5px; color: #a5b4fc; background: rgba(99,102,241,0.15); padding: 3px 6px; border-radius: 4px; border: 1px dashed rgba(165,180,252,0.4);">
+                            ✂️ <b>Borde Segmentado:</b> Incerteza espectral S2 (10m) &bull; No representa deslinde legal catastral.
                         </div>
                         ${p.label_note ? `
                         <div style="margin-top: 4px; font-size: 8.5px; color: #94a3b8; font-style: italic;">

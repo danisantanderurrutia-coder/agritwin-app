@@ -12568,89 +12568,6 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 font-bold">C2 OFICIAL</span>
                 </div>
 
-                <!-- ═══════════════════════════════════════════════════════════════
-                     MÓDULO 2: ESTÁNDAR VECINO INFORMADO - VECTORES DE AMENAZA TRANSFRONTERIZA
-                     Haces vectoriales tácticos militares (Pickett's Charge) con selector de 4 regímenes
-                     ═══════════════════════════════════════════════════════════════ -->
-                <div class="p-3.5 rounded-xl bg-[#140808]/95 border border-red-500/40 space-y-3 font-sans shadow-lg">
-                    <div class="flex items-center justify-between border-b border-red-500/20 pb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base p-1 rounded-lg bg-red-950/80 border border-red-500/30 text-red-400">🏹🔥</span>
-                            <div>
-                                <h3 class="text-xs font-mono font-bold text-red-300 uppercase tracking-wider">
-                                    Vectores de Amenaza Transfronteriza
-                                </h3>
-                                <p class="text-[9px] text-slate-400 font-mono">Estándar Vecino Informado &bull; Balística de Fuego</p>
-                            </div>
-                        </div>
-                        <button onclick="toggleTacticalFireVectorsLayer();" id="btnSidebarFireVectors" class="py-1 px-2.5 rounded-lg bg-red-600/30 hover:bg-red-600/50 text-red-200 border border-red-500/50 text-[10px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
-                            <span>Vectores:</span>
-                            <span id="badgeSidebarFireVectors" class="text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-300 font-mono">ACTIVAR</span>
-                        </button>
-                    </div>
-
-                    <!-- Selector de los 4 Regímenes Eólicos -->
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                            <span>Régimen de Viento Eólico:</span>
-                            <span class="text-amber-400 font-bold">Multi-Escenario</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-1.5">
-                            <button onclick="setTacticalWindRegime('puelche');" id="btnTacticalRegime_puelche" class="py-1.5 px-2 rounded-lg bg-red-600 text-white font-mono font-bold text-[10px] shadow-sm transition-all border border-red-400 cursor-pointer flex items-center justify-center gap-1">
-                                <span>🌪️</span> <span>Puelche (ESE)</span>
-                            </button>
-                            <button onclick="setTacticalWindRegime('surazo');" id="btnTacticalRegime_surazo" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
-                                <span>🌬️</span> <span>Surazo (SSW)</span>
-                            </button>
-                            <button onclick="setTacticalWindRegime('norte');" id="btnTacticalRegime_norte" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
-                                <span>🧭</span> <span>Norte (NNW)</span>
-                            </button>
-                            <button onclick="setTacticalWindRegime('live');" id="btnTacticalRegime_live" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
-                                <span>📡</span> <span>Tiempo Real</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta de Inteligencia Táctica Activa -->
-                    <div class="p-2.5 rounded-lg bg-black/60 border border-white/5 space-y-2 text-xs font-mono">
-                        <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
-                            <span class="text-slate-400 text-[10px]">Escenario Activo:</span>
-                            <strong id="tacticalScenarioTitle" class="text-amber-300 text-[10.5px]">Viento Puelche (Catabático ESE)</strong>
-                        </div>
-                        <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                            <div class="p-1.5 bg-black/40 rounded border border-white/5">
-                                <span class="text-slate-400 block text-[9px]">Viento</span>
-                                <b id="tacticalScenarioSpeed" class="text-red-400">42 km/h</b>
-                            </div>
-                            <div class="p-1.5 bg-black/40 rounded border border-white/5" title="Live Fuel Moisture Content vía Sentinel-2 NDWI (Crítico <80%)">
-                                <span class="text-slate-400 block text-[9px]">LFMC Foliar</span>
-                                <b id="tacticalScenarioLfmc" class="text-amber-400">62%</b>
-                            </div>
-                            <div class="p-1.5 bg-black/40 rounded border border-white/5" title="Dead Fuel Moisture Content (Simard/Nelson)">
-                                <span class="text-slate-400 block text-[9px]">DFMC Muerto</span>
-                                <b id="tacticalScenarioDfmc" class="text-rose-400">4.1%</b>
-                            </div>
-                        </div>
-                        <div class="text-[10px] space-y-1">
-                            <div>
-                                <span class="text-slate-400">Sector Crítico Meniel:</span>
-                                <b id="tacticalScenarioSector" class="text-red-300 block font-sans">Deslinde Este & Noreste (Colindancia Directa Meniel)</b>
-                            </div>
-                            <p id="tacticalScenarioDesc" class="text-[9.5px] text-slate-400 leading-tight font-sans italic">
-                                Viento andino descendente con compresión adiabática seca. Fuego de avance rápido (>18 m/min) con salto masivo de pavesas sobre cortafuegos.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Botón para inspeccionar física en el Vault -->
-                    <button onclick="switchMasterView('docs'); switchDocsTab('docs-vecino');" class="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[10px] font-mono flex items-center justify-between transition-all cursor-pointer">
-                        <span class="flex items-center gap-1.5">
-                            <span>📚</span> <span>Ver Doctrina Física en Vault (KaTeX)</span>
-                        </span>
-                        <span>➔</span>
-                    </button>
-                </div>
-
                 <!-- Ecuación Táctica Canónica -->
                 <div class="p-3.5 rounded-xl bg-black/60 border border-sky-500/40 space-y-2">
                     <div class="flex items-center justify-between">
@@ -12735,23 +12652,106 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                      3 MÓDULOS ESPECÍFICOS POR AMENAZA (ACORDEONES DESPLEGABLES)
                      ═══════════════════════════════════════════════════════════ -->
                 
-                <!-- A. INCENDIOS FORESTALES & VIENTO PUELCHE -->
-                <details id="detailsRiskFire" class="group bg-black/50 rounded-xl border border-rose-500/30 overflow-hidden shadow-lg transition-all" open>
+                <!-- A. INCENDIOS FORESTALES & VIENTO PUELCHE (INTEGRADO CON MÓDULO 2 ESTÁNDAR VECINO INFORMADO) -->
+                <details id="detailsRiskFire" class="group bg-black/50 rounded-xl border border-rose-500/40 overflow-hidden shadow-lg transition-all" open>
                     <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 list-none font-mono">
                         <span class="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🔥</span> a. Incendios Forestales & Puelche
+                            <span>🔥</span> a. Incendios Forestales & Balística Transfronteriza
                         </span>
                         <div class="flex items-center gap-1.5">
-                            <span class="text-[8.5px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/30 font-bold">TRANSECTOS P-01..03</span>
+                            <span class="text-[8.5px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/30 font-bold">VECTORES & REGÍMENES</span>
                             <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
                         </div>
                     </summary>
-                    <div class="p-3 pt-1 border-t border-white/5 space-y-2.5 font-mono text-[10.5px]">
-                        <p class="text-slate-300 font-sans text-xs leading-relaxed">
-                            Viento catabático Puelche canalizado por cajón cordillerano con combustible seco en laderas de exposición norte.
-                        </p>
+                    <div class="p-3 pt-1 border-t border-white/5 space-y-3 font-mono text-[10.5px]">
                         
-                        <div class="space-y-1.5">
+                        <!-- SECCIÓN 1: VECTORES DE AMENAZA TRANSFRONTERIZA (MÓDULO 2 - VECINO INFORMADO) -->
+                        <div class="p-3 rounded-xl bg-gradient-to-b from-[#1c0a0a] to-black/80 border border-red-500/40 space-y-2.5 font-sans">
+                            <div class="flex items-center justify-between border-b border-red-500/20 pb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base p-1 rounded-lg bg-red-950/80 border border-red-500/30 text-red-400">🏹🔥</span>
+                                    <div>
+                                        <h3 class="text-xs font-mono font-bold text-red-300 uppercase tracking-wider">
+                                            Vectores de Amenaza Transfronteriza
+                                        </h3>
+                                        <p class="text-[9px] text-slate-400 font-mono">Módulo 2 &bull; Balística Predio a Predio (Rothermel + Huygens)</p>
+                                    </div>
+                                </div>
+                                <button onclick="toggleTacticalFireVectorsLayer();" id="btnSidebarFireVectors" class="py-1 px-2.5 rounded-lg bg-red-600/30 hover:bg-red-600/50 text-red-200 border border-red-500/50 text-[10px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
+                                    <span>Vectores:</span>
+                                    <span id="badgeSidebarFireVectors" class="text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-300 font-mono">ACTIVAR</span>
+                                </button>
+                            </div>
+
+                            <!-- Selector de los 4 Regímenes Eólicos -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                                    <span>Régimen de Viento Eólico:</span>
+                                    <span class="text-amber-400 font-bold">Multi-Escenario</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-1.5">
+                                    <button onclick="setTacticalWindRegime('puelche');" id="btnTacticalRegime_puelche" class="py-1.5 px-2 rounded-lg bg-red-600 text-white font-mono font-bold text-[10px] shadow-sm transition-all border border-red-400 cursor-pointer flex items-center justify-center gap-1">
+                                        <span>🌪️</span> <span>Puelche (ESE)</span>
+                                    </button>
+                                    <button onclick="setTacticalWindRegime('surazo');" id="btnTacticalRegime_surazo" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
+                                        <span>🌬️</span> <span>Surazo (SSW)</span>
+                                    </button>
+                                    <button onclick="setTacticalWindRegime('norte');" id="btnTacticalRegime_norte" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
+                                        <span>🧭</span> <span>Norte (NNW)</span>
+                                    </button>
+                                    <button onclick="setTacticalWindRegime('live');" id="btnTacticalRegime_live" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
+                                        <span>📡</span> <span>Tiempo Real</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Tarjeta de Inteligencia Táctica Activa -->
+                            <div class="p-2.5 rounded-lg bg-black/60 border border-white/5 space-y-2 text-xs font-mono">
+                                <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
+                                    <span class="text-slate-400 text-[10px]">Escenario Activo:</span>
+                                    <strong id="tacticalScenarioTitle" class="text-amber-300 text-[10.5px]">Viento Puelche (Catabático ESE)</strong>
+                                </div>
+                                <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
+                                    <div class="p-1.5 bg-black/40 rounded border border-white/5">
+                                        <span class="text-slate-400 block text-[9px]">Viento</span>
+                                        <b id="tacticalScenarioSpeed" class="text-red-400">42 km/h</b>
+                                    </div>
+                                    <div class="p-1.5 bg-black/40 rounded border border-white/5" title="Live Fuel Moisture Content vía Sentinel-2 NDWI (Crítico <80%)">
+                                        <span class="text-slate-400 block text-[9px]">LFMC Foliar</span>
+                                        <b id="tacticalScenarioLfmc" class="text-amber-400">62%</b>
+                                    </div>
+                                    <div class="p-1.5 bg-black/40 rounded border border-white/5" title="Dead Fuel Moisture Content (Simard/Nelson)">
+                                        <span class="text-slate-400 block text-[9px]">DFMC Muerto</span>
+                                        <b id="tacticalScenarioDfmc" class="text-rose-400">4.1%</b>
+                                    </div>
+                                </div>
+                                <div class="text-[10px] space-y-1">
+                                    <div>
+                                        <span class="text-slate-400">Sector Crítico Meniel:</span>
+                                        <b id="tacticalScenarioSector" class="text-red-300 block font-sans">Deslinde Este & Noreste (Colindancia Directa Meniel)</b>
+                                    </div>
+                                    <p id="tacticalScenarioDesc" class="text-[9.5px] text-slate-400 leading-tight font-sans italic">
+                                        Viento andino descendente con compresión adiabática seca. Fuego de avance rápido (>18 m/min) con salto masivo de pavesas sobre cortafuegos.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Botón para inspeccionar física en el Vault -->
+                            <button onclick="switchMasterView('docs'); switchDocsTab('docs-vecino');" class="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[9.5px] font-mono flex items-center justify-between transition-all cursor-pointer">
+                                <span class="flex items-center gap-1.5">
+                                    <span>📚</span> <span>Ver Doctrina Física en Vault (KaTeX)</span>
+                                </span>
+                                <span>➔</span>
+                            </button>
+                        </div>
+
+                        <!-- SECCIÓN 2: CAPAS COMPLEMENTARIAS DE ZONIFICACIÓN & DINÁMICA -->
+                        <div class="space-y-1.5 pt-1">
+                            <div class="text-[9.5px] text-slate-400 font-mono uppercase tracking-wider flex items-center justify-between">
+                                <span>Capas Complementarias:</span>
+                                <span class="text-slate-500">Zonificación & Macro-Flujo</span>
+                            </div>
+
                             <label class="flex items-center justify-between p-2 rounded-lg bg-black/40 hover:bg-white/5 border border-white/5 cursor-pointer">
                                 <span class="text-rose-300 flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-sm bg-rose-500"></span>
