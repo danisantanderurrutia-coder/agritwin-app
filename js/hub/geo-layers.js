@@ -4329,6 +4329,220 @@
         }, 300);
 
         // ═══════════════════════════════════════════════════════════════════
+        // 2.5F ESTÁNDAR VECINO PROTEGIDO: MÓDULO 4 - TOPOCLIMATOLOGÍA CATABÁTICA & HELADAS
+        // Corredores de drenaje denso (DEM 30m), Piscinas de Aire Frío (Frost Hollows / CAP)
+        // Represas vegetales transfronterizas y acople de aspersión al Tranque Meniel
+        // ═══════════════════════════════════════════════════════════════════
+        const heladasCatabaticasLayer = L.layerGroup();
+
+        // 1. Corredores de drenaje catabático (Flujo gravitacional por vaguadas)
+        const corredoresCatabaticos = [
+            // Corredor Principal: Estero Los Cristales (Cota 245m -> 196m Meniel)
+            {
+                pts: [[-36.1950, -71.5800], [-36.2020, -71.5920], [-36.2085, -71.6010], [-36.2120, -71.6070]],
+                name: 'Corredor Catabático Los Cristales (Principal)',
+                speed: '1.4 m/s',
+                dispersion: '±20 m',
+                slope: '2.8%',
+                color: '#38bdf8'
+            },
+            // Corredor Sur: Quebrada Honda hacia faldeo agrícola
+            {
+                pts: [[-36.2380, -71.5880], [-36.2290, -71.5970], [-36.2190, -71.6030], [-36.2140, -71.6060]],
+                name: 'Corredor Catabático Quebrada Honda',
+                speed: '1.2 m/s',
+                dispersion: '±25 m',
+                slope: '3.1%',
+                color: '#818cf8'
+            },
+            // Corredor Aluvial Este: Aporte directo a cuartel Lapins
+            {
+                pts: [[-36.2080, -71.5880], [-36.2100, -71.5960], [-36.2110, -71.6020]],
+                name: 'Vaguada Aluvial Este (Aporte Cuartel Cerezos)',
+                speed: '0.9 m/s',
+                dispersion: '±15 m',
+                slope: '1.9%',
+                color: '#a5b4fc'
+            }
+        ];
+
+        corredoresCatabaticos.forEach(c => {
+            const line = L.polyline(c.pts, {
+                color: c.color,
+                weight: 3.8,
+                dashArray: '8, 6',
+                opacity: 0.9,
+                className: 'frost-drainage-vector'
+            });
+            line.bindTooltip(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; background:rgba(7,14,26,0.95); color:#67e8f9; padding:3px 6px; border-radius:4px; border:1px solid #38bdf8;">
+                    ❄️ <b>${c.name}</b><br>
+                    • Velocidad: ${c.speed} (Prandtl) &bull; Pendiente: ${c.slope}<br>
+                    • Dispersión lateral: ${c.dispersion} (DEM 30m)
+                </div>
+            `, { permanent: false });
+            heladasCatabaticasLayer.addLayer(line);
+        });
+
+        // 2. Piscinas de Aire Frío (Cold Air Pools / Frost Hollows)
+        const piscinasHelada = [
+            {
+                coords: [[-36.2090, -71.6070], [-36.2090, -71.6025], [-36.2135, -71.6025], [-36.2135, -71.6070]],
+                name: 'Piscina de Helada: Cuartel Cerezos Lapins (12 ha)',
+                sector: 'Fundo Meniel (Cota 196-198m)',
+                anomalyDeltaT: '-2.2°C (±0.8°C)',
+                criticalTemp: '-2.2°C (Floración Lapins)',
+                riskLevel: 'Crítico en Noches Radiativas',
+                color: '#6366f1',
+                fillColor: '#4f46e5'
+            },
+            {
+                coords: [[-36.2070, -71.6015], [-36.2070, -71.5970], [-36.2115, -71.5970], [-36.2115, -71.6015]],
+                name: 'Piscina de Acumulación Fluvial Externa',
+                sector: 'Deslinde Este Colindante',
+                anomalyDeltaT: '-1.8°C (±0.8°C)',
+                criticalTemp: '-2.0°C',
+                riskLevel: 'Moderado',
+                color: '#3b82f6',
+                fillColor: '#2563eb'
+            }
+        ];
+
+        piscinasHelada.forEach(p => {
+            const poly = L.polygon(p.coords, {
+                color: p.color,
+                weight: 2.2,
+                dashArray: '5, 5', // Incerteza topoclimática
+                fillColor: p.fillColor,
+                fillOpacity: 0.32
+            });
+            poly.bindTooltip(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; background:rgba(7,14,26,0.95); color:#c7d2fe; padding:3px 6px; border-radius:4px; border:1px solid #818cf8;">
+                    ❄️ <b>${p.name}</b> &bull; Anomalía &Delta;T: ${p.anomalyDeltaT}
+                </div>
+            `, { permanent: false });
+            poly.bindPopup(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:11px; min-width:260px; padding:4px; color:#f8fafc;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #818cf8; padding-bottom:4px; margin-bottom:6px;">
+                        <strong style="color:#a5b4fc; font-size:12px;">❄️ Piscina de Aire Frío (CAP)</strong>
+                        <span style="background:rgba(99,102,241,0.25); color:#c7d2fe; padding:1px 5px; border-radius:3px; font-size:8.5px; font-weight:bold;">TOPOCLIMA</span>
+                    </div>
+                    <div style="margin-bottom:3px; font-size:10px;"><span style="color:#94a3b8;">Zona:</span> <b>${p.sector}</b></div>
+                    <div style="margin-bottom:3px; font-size:10px;"><span style="color:#94a3b8;">Anomalía Relativa:</span> <b style="color:#67e8f9;">${p.anomalyDeltaT}</b></div>
+                    <div style="margin-bottom:3px; font-size:10px;"><span style="color:#94a3b8;">Umbral Crítico Lapins:</span> <b style="color:#f87171;">${p.criticalTemp}</b></div>
+                    <div style="margin-bottom:5px; font-size:9px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.1); padding-top:4px;">
+                        🎯 <b>Mitigación recomendada:</b> Aspersión supra-arbórea (40 m³/ha/h) desde Tranque Meniel o ventiladores si inversión &Delta;T &gt; +2°C.
+                    </div>
+                </div>
+            `);
+            heladasCatabaticasLayer.addLayer(poly);
+        });
+
+        // 3. Marcadores de Represas Vegetales (Puntos de Bloqueo)
+        const puntosBloqueo = [
+            {
+                pos: [-36.2085, -71.5995],
+                title: 'Punto de Bloqueo Catabático #1 (Estero Los Cristales)',
+                prob: 'Alta (75%)',
+                cause: 'Macizo denso de eucaliptos del predio vecino corta la vaguada natural.',
+                damHeight: '2.5 metros',
+                recommendation: 'Poda basal (primeros 1.8m) en la franja de vaguada para desahogo hacia el río.'
+            },
+            {
+                pos: [-36.2160, -71.6040],
+                title: 'Punto de Bloqueo Catabático #2 (Zanja Sur)',
+                prob: 'Media (50%)',
+                cause: 'Cortina cortaviento de álamos sin manejo basal.',
+                damHeight: '1.6 metros',
+                recommendation: 'Raleo de ramas bajas en corredor de 30m.'
+            }
+        ];
+
+        puntosBloqueo.forEach(pb => {
+            const icon = L.divIcon({
+                className: 'frost-dam-marker',
+                html: `<div style="background:#4338ca; color:#ffffff; border:1.5px solid #a5b4fc; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:12px; box-shadow:0 0 10px rgba(99,102,241,0.8);">🛑</div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+            const marker = L.marker(pb.pos, { icon });
+            marker.bindTooltip(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; background:#070e1a; color:#fca5a5; padding:3px 6px; border-radius:4px; border:1px solid #ef4444;">
+                    🛑 <b>Represa Vegetal (${pb.prob})</b><br>${pb.title}
+                </div>
+            `, { permanent: false });
+            marker.bindPopup(`
+                <div style="font-family:'JetBrains Mono',monospace; font-size:11px; min-width:250px; padding:4px; color:#f8fafc;">
+                    <div style="border-bottom:1px solid #ef4444; padding-bottom:4px; margin-bottom:5px;">
+                        <strong style="color:#f87171; font-size:11.5px;">🛑 ${pb.title}</strong>
+                    </div>
+                    <div style="font-size:10px; margin-bottom:2px;"><span style="color:#94a3b8;">Severidad:</span> <b style="color:#fbbf24;">Probabilidad ${pb.prob}</b></div>
+                    <div style="font-size:10px; margin-bottom:2px;"><span style="color:#94a3b8;">Causa:</span> ${pb.cause}</div>
+                    <div style="font-size:10px; margin-bottom:4px;"><span style="color:#94a3b8;">Tirante de Represa:</span> <b style="color:#67e8f9;">~${pb.damHeight}</b></div>
+                    <div style="margin-top:5px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1); font-size:9.5px; color:#86efac;">
+                        🤝 <b>Solución Vecinal:</b> ${pb.recommendation}
+                    </div>
+                </div>
+            `);
+            heladasCatabaticasLayer.addLayer(marker);
+        });
+
+        overlayLayers['heladas_catabaticas'] = heladasCatabaticasLayer;
+
+        // Toggle de Capa de Heladas Catabáticas
+        window.toggleHeladasLayer = function(force) {
+            const layer = overlayLayers['heladas_catabaticas'];
+            if (!layer || !map) return;
+            const isActive = map.hasLayer(layer);
+            const shouldBeActive = (force !== undefined) ? force : !isActive;
+
+            if (shouldBeActive) {
+                map.addLayer(layer);
+            } else {
+                map.removeLayer(layer);
+            }
+            updateDockButtonState('heladas_catabaticas', shouldBeActive);
+
+            // Sincronizar botón y badge en el Sidebar
+            const btnSidebar = document.getElementById('btnToggleHeladasSidebar');
+            const lbl = document.getElementById('lblBtnToggleHeladas');
+            const badge = document.getElementById('badgeSidebarHeladas');
+            if (btnSidebar && lbl) {
+                if (shouldBeActive) {
+                    btnSidebar.className = 'flex-1 py-1.5 px-3 rounded-lg bg-indigo-600 text-white border border-indigo-400 text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer';
+                    lbl.innerText = 'Desactivar Corredores Helada';
+                } else {
+                    btnSidebar.className = 'flex-1 py-1.5 px-3 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-400/50 text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm';
+                    lbl.innerText = 'Activar Corredores Catabáticos';
+                }
+            }
+            if (badge) {
+                badge.innerText = shouldBeActive ? 'ACTIVO' : 'OFF';
+                badge.className = shouldBeActive
+                    ? 'text-[8.5px] px-2 py-1 rounded bg-indigo-500/40 text-indigo-200 border border-indigo-400/60 font-mono font-bold'
+                    : 'text-[8.5px] px-2 py-1 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+            }
+        };
+
+        // Calculadora de Demanda Hídrica de Aspersión Anti-Helada
+        window.updateFrostSprinklerDemand = function(hours) {
+            const h = parseInt(hours) || 5;
+            const flowRatePerHa = 40; // m3/ha/h
+            const areaHa = 12; // Cerezos Lapins Meniel
+            const totalM3 = areaHa * flowRatePerHa * h;
+            const tranqueActualM3 = 17020; // Tranque Meniel
+            const impactPct = ((totalM3 / tranqueActualM3) * 100).toFixed(1);
+
+            const lblHours = document.getElementById('lblFrostHours');
+            const valDemand = document.getElementById('valFrostWaterDemand');
+            const valImpact = document.getElementById('valFrostTranqueImpact');
+
+            if (lblHours) lblHours.innerText = `${h} Horas`;
+            if (valDemand) valDemand.innerText = `${totalM3.toLocaleString()} m³`;
+            if (valImpact) valImpact.innerText = `${impactPct}% de 17.020 m³`;
+        };
+
+        // ═══════════════════════════════════════════════════════════════════
         // 2.6 FUNCIONES DE CONTROL DE TRANSECTOS, ENCUADRE CONTEXTUAL & VIENTO
         // ═══════════════════════════════════════════════════════════════════
         
@@ -4405,6 +4619,14 @@
                     activeCls: 'bg-sky-500/30 text-white border-sky-400/60',
                     inactiveCls: 'bg-white/5 text-sky-200 border-white/5',
                     badgeActive: 'bg-sky-500/30 text-sky-300 border-sky-400/50 font-bold',
+                    badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
+                },
+                'heladas_catabaticas': {
+                    id: 'btnDockHeladas',
+                    badgeId: 'badgeDockHeladas',
+                    activeCls: 'bg-indigo-500/30 text-white border-indigo-400/60',
+                    inactiveCls: 'bg-white/5 text-indigo-200 border-white/5',
+                    badgeActive: 'bg-indigo-500/30 text-indigo-300 border-indigo-400/50 font-bold',
                     badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
                 }
             };

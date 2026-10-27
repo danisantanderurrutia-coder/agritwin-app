@@ -7126,7 +7126,7 @@
                 </button>
                 <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-sky-50 text-sky-950 border border-sky-300 shadow-sm">
                     <span>🛡️</span> <span>Estándar Vecino Protegido</span>
-                    <span class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9px] font-mono">MÓDULOS 1-3</span>
+                    <span class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9px] font-mono">MÓDULOS 1-4</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
                     <span>🏛️</span> <span>Arquitectura del Sistema</span>
@@ -7194,7 +7194,9 @@
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-100 text-sky-800 border border-sky-300">ESTÁNDAR OPERATIVO C2</span>
                                 <span class="text-xs text-stone-400">•</span>
-                                <span class="text-xs font-mono text-emerald-700 font-semibold">Módulos 1, 2 y 3 Operativos</span>
+                                <span class="text-xs font-mono text-emerald-700 font-semibold">Módulos 1, 2, 3 y 4 Operativos</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-cyan-700 font-bold">Topoclimatología & Heladas</span>
                                 <span class="text-xs text-stone-400">•</span>
                                 <span class="text-xs font-mono text-sky-600 font-bold">Reserva Hídrica 342.5k m³</span>
                                 <span class="text-xs text-stone-400">•</span>
@@ -7202,7 +7204,7 @@
                             </div>
                             <h3 class="text-lg sm:text-xl font-bold text-stone-900 font-serif">Estándar «Vecino Protegido» de Agrotech (Informado, Colectivo & Defensivo)</h3>
                             <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-3xl leading-relaxed">
-                                Marco de inteligencia territorial compartida y auxilio mutuo que resuelve la brecha entre la tenencia legal (Catastro SII), la física de combustibles (Sentinel-2 L2A) y la disponibilidad de agua colectiva (18 tranques DGA/CNR monitoreados con bandas B03/B11). Permite al agricultor planificar la defensa ante incendios y sequía extrema con datos auditables y respaldo comunitario.
+                                Marco de inteligencia territorial compartida y auxilio mutuo que resuelve la brecha entre la tenencia legal (Catastro SII), la física de combustibles (Sentinel-2 L2A), la reserva hídrica colectiva (18 tranques DGA/CNR) y la microclimatología catabática de heladas (Copernicus DEM 30m y piscinas de frío). Permite al agricultor planificar la defensa ante incendios, heladas radiativas y sequía con datos auditables, cuantificación explícita de incertidumbre y respaldo comunitario.
                             </p>
                         </div>
                     </div>
@@ -7948,6 +7950,153 @@
                         </b>
                         <p class="leading-relaxed text-[11px] text-stone-700">
                             Un ataque aéreo de Conaf o brigada forestal con helicóptero Bell 412 / AS350 consume entre <strong>$0.8\text{ m}^3$ y $1.2\text{ m}^3$ por descarga de Bambi Bucket</strong>, con ciclos de rotación de 4 a 6 minutos si el tranque está dentro del radio de 3 km. La reserva colectiva disponible ($261.916\text{ m}^3$) garantiza una autonomía teórica de más de <strong>$200.000$ rotaciones aéreas</strong> y más de <strong>$26.000$ cargas de camión aljibe de $10.000\text{ L}$</strong>, demostrando que la cuenca cuenta con suficiente agua si está georreferenciada y coordinada tácticamente.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     SECCIÓN 7: TOPOCLIMATOLOGÍA CATABÁTICA & MATRIZ DE INCERTIDUMBRE
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-sm">7</span>
+                            <div>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 4: Topoclimatología Catabática, Drenaje por Gravedad y Matriz de Incertidumbre</h4>
+                                <p class="text-xs text-stone-500 font-sans">Ecuaciones de escurrimiento denso de Prandtl, radiación neta nocturna y cuantificación honesta del error</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-300">
+                            DEM 30M & CALIBRACIÓN LOCAL
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-stone-700 font-sans leading-relaxed">
+                        Durante noches despejadas de primavera con viento en calma ($u_2 < 1.5\text{ m/s}$), el suelo pierde energía hacia el espacio por radiación de onda larga ($R_{nl}$). El aire en contacto con la pendiente se sobre-enfría y adquiere mayor densidad ($\rho_{\text{frío}} > \rho_{\text{cálido}}$), escurriendo gravitacionalmente por las vaguadas hacia el fondo del valle. Para evitar pseudociencia y falsas precisiones, el modelo desglosa con total transparencia la física y sus márgenes de tolerancia:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Tarjeta KaTeX 1: Velocidad Catabática de Prandtl -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🏔️</span> Drenaje Catabático ($u_{\text{catab}}$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$u_{\text{catab}} = \sqrt{\frac{2 \cdot g \cdot h_{\text{capa}} \cdot \Delta \theta}{\theta_0 \cdot (1 + c_d / s)}}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Formulación de <em>Prandtl / Mahrt</em>: para una pendiente $s = \sin(\alpha) \approx 0.03$ y tirante de capa $h_{\text{capa}} \approx 10\text{ m}$, el frente frío avanza a <strong>$0.8\text{ a } 1.8\text{ m/s}$</strong> encauzado por las quebradas hacia Meniel.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Balance Radiativo Nocturno -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🌌</span> Radiación Neta ($R_{nl}$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$R_{nl} = \sigma \cdot \left(\epsilon_{\text{suelo}} T_{\text{suelo}}^4 - \epsilon_{\text{atm}} T_{\text{aire}}^4\right)$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Con cielo despejado ($\text{nubes} < 10\%$) y baja humedad relativa ($\text{HR} < 45\%$), la pérdida radiativa superficial alcanza <strong>$-65\text{ a } -85\text{ W/m}^2$</strong>, induciendo una tasa de enfriamiento foliar de $1.1^\circ\text{C/hora}$.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Matriz de Incertidumbre Asignada -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🎯</span> Tolerancia UQ ($\pm \sigma$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\Delta T_{\text{anomalía}} = \Delta T_{\text{est}} \pm 0.8^\circ\text{C} \quad (W_{\text{flujo}} \pm 20\text{ m})$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                <strong>Principio de Honestidad:</strong> No se reportan temperaturas fijas. El corredor catabático tiene $\pm 20\text{ m}$ de tolerancia lateral por resolución del DEM (30m) y la piscina térmica se expresa como anomalía relativa.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Ficha de Calibración Recomendada -->
+                    <div class="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200 text-xs font-sans text-indigo-950 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🔬</span>
+                            <b class="font-serif text-indigo-900 text-sm">Protocolo de Verificación & Sensores de Bajo Costo</b>
+                        </div>
+                        <p class="leading-relaxed text-[11px] text-indigo-900">
+                            Para validar si la piscina de aire frío predicha en la vaguada del cuartel Lapins desciende efectivamente a $-2.5^\circ\text{C}$, se recomienda ubicar un <strong>termohigrómetro pasivo calibrado ($35.000\text{ CLP}$) a 1.5m</strong> en la cota más baja (196 msnm). El sistema se calibra empíricamente con este dato real sin necesidad de torres costosas de 20 metros.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     SECCIÓN 8: REPRESAS VEGETALES VECINALES & BALANCE HIDRÁULICO
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-800 flex items-center justify-center font-bold text-sm">8</span>
+                            <div>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 4: Puntos de Bloqueo Vecinal (Represas Térmicas) & Demanda Hidráulica Anti-Helada</h4>
+                                <p class="text-xs text-stone-500 font-sans">Efecto presa por cortinas forestales, umbrales de daño en cerezos y consumo de aspersión del Tranque Meniel</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-50 text-cyan-700 border border-cyan-300">
+                            CEREZOS LAPINS & AVELLANOS
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-stone-700 font-sans leading-relaxed">
+                        Cuando el flujo de aire frío desciende por una vaguada natural y se topa con un macizo forestal denso o cortina cortaviento no permeable en el predio vecino, actúa como una <strong>represa hidráulica</strong>, acumulando un lago de aire gélido aguas arriba que sumerge los cuarteles agrícolas adyacentes:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Tarjeta KaTeX 1: Ecuación de Represamiento Vegetal -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🌲</span> Represamiento Vegetal ($dV/dt$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\frac{d V_{\text{frío}}}{dt} = Q_{\text{catab}} \cdot (1 - \beta_{\text{poro}}) - Q_{\text{rebalse}}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Si la porosidad óptica $\beta_{\text{poro}} < 0.25$ (cortina densa de pino/eucalipto en deslinde vecino), el tirante frío se eleva <strong>$2\text{ a } 4\text{ metros}$</strong>, cubriendo el tercio inferior de las copas de cerezos durante horas críticas.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Umbral Crítico de Daño Fenológico -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🌸</span> Umbral Letal ($T_{\text{crítica}}$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$T_{\text{crítica}}(\text{Lapins}) = -2.2^\circ\text{C} \quad (\text{Floración / Caída cáliz})$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                En cerezos Lapins, temperaturas bajo $-2.2^\circ\text{C}$ durante más de 30 minutos causan un <strong>$10\%\text{ a } 50\%$ de necrosis en el pistilo</strong>. En avellano Tonda, el amento resiste hasta $-4.0^\circ\text{C}$.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Demanda Hídrica de Aspersión -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>💧</span> Demanda Hidráulica ($V_{\text{aspersión}}$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$V_{\text{req}} = A_{\text{cuartel}} \cdot q_{\text{asp}} \cdot \Delta t_{\text{evento}} \cdot 10^{-3}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Para $12\text{ ha}$ de Lapins a $q = 40\text{ m}^3\text{/ha/h}$ durante $6\text{ h}$ continuas: requiere <strong>$2.880\text{ m}^3$</strong> ($15.5\%$ del Tranque Meniel de $18.500\text{ m}^3$). Amortiguación 100% garantizada para 6 noches.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Ficha de Conclusión & Cooperación Vecinal -->
+                    <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-sans text-emerald-950 space-y-1">
+                        <b class="font-serif text-stone-900 flex items-center gap-1.5">
+                            <span>🤝</span> Fajas de Alivio Vecinal & Gestión Conjunta de Vaguadas
+                        </b>
+                        <p class="leading-relaxed text-[11px] text-stone-700">
+                            La solución más costo-efectiva ante una represa térmica no es gastar combustible en hélices, sino coordinar con el vecino la <strong>poda basal de los primeros 1.5 a 2 metros</strong> de la cortina cortaviento en el lecho de la vaguada (faja de desahogo catabático). Esto permite que el aire frío continúe drenando ladera abajo hacia el estero sin estancarse sobre los cuarteles productivos de ambos predios.
                         </p>
                     </div>
                 </div>
@@ -11591,6 +11740,15 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     <span id="badgeDockMNDWI" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
                 </button>
 
+                <!-- Módulo 4: Estándar Vecino Protegido - Heladas Catabáticas & Piscinas de Frío -->
+                <button onclick="toggleHeladasLayer();" id="btnDockHeladas" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-indigo-500/15 border border-white/5 hover:border-indigo-500/30 flex items-center justify-between text-xs text-indigo-200 transition-all cursor-pointer" title="Corredores Catabáticos de Aire Frío, Piscinas Térmicas & Represas Vegetales (Módulo 4)">
+                    <span class="flex items-center gap-2">
+                        <span>❄️</span>
+                        <span>Heladas & Drenaje (Módulo 4)</span>
+                    </span>
+                    <span id="badgeDockHeladas" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
+                </button>
+
                 <button onclick="toggleCuencaTacticalLegend();" id="btnDockTacticalLegend" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-purple-500/15 border border-white/5 hover:border-purple-500/30 flex items-center justify-between text-xs text-purple-200 transition-all cursor-pointer">
                     <span class="flex items-center gap-2">
                         <span>🗺️</span>
@@ -13387,6 +13545,154 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                 </div>
                             </div>
                         </details>
+                    </div>
+                </details>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     4. MICROCLIMATOLOGÍA CATABÁTICA & HELADAS RADIATIVAS (MÓDULO 4)
+                     ═══════════════════════════════════════════════════════════════ -->
+                <details id="detailsRiskFrost" class="group bg-black/50 rounded-xl border border-cyan-500/40 overflow-hidden shadow-lg transition-all" open>
+                    <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <span class="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <span>❄️</span> d. Heladas Radiativas & Piscinas de Frío
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 font-bold">MÓDULO 4</span>
+                            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </div>
+                    </summary>
+
+                    <div class="p-3.5 pt-1 border-t border-white/5 space-y-3 font-mono">
+                        
+                        <!-- Botón de Control de Capa -->
+                        <div class="flex items-center justify-between gap-2">
+                            <button onclick="toggleHeladasLayer();" id="btnToggleHeladasSidebar" class="flex-1 py-1.5 px-3 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-400/50 text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm">
+                                <span>❄️</span>
+                                <span id="lblBtnToggleHeladas">Activar Corredores Catabáticos</span>
+                            </button>
+                            <span id="badgeSidebarHeladas" class="text-[8.5px] px-2 py-1 rounded bg-black/60 text-slate-300 border border-white/10 font-mono">OFF</span>
+                        </div>
+
+                        <!-- Panel de Diagnóstico Topoclimático & Incertidumbre Asignada -->
+                        <div class="p-2.5 rounded-lg bg-black/40 border border-cyan-500/30 space-y-1.5 text-[9.5px]">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-1">
+                                <span class="text-cyan-300 font-bold flex items-center gap-1">
+                                    <span>🏔️</span> Drenaje Catabático & Vaguadas
+                                </span>
+                                <span class="text-[8px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">DEM 30m</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-1.5 text-slate-300">
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Velocidad Flujo Frío:</span>
+                                    <b class="text-white">0.8 - 1.8 m/s (Prandtl)</b>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Incertidumbre Flujo:</span>
+                                    <b class="text-amber-300">&plusmn;20 m dispersión</b>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Anomalía Térmica CAP:</span>
+                                    <b class="text-cyan-300">&Delta;T: -1.5° a -2.8°C</b>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Tolerancia Térmica:</span>
+                                    <b class="text-amber-300">&plusmn;0.8°C (Empírico)</b>
+                                </div>
+                            </div>
+                            <div class="text-[8.5px] text-slate-400 pt-0.5 leading-tight">
+                                ℹ️ El aire frío drena por gravedad desde la precordillera hacia Fundo Meniel a través del Estero Los Cristales y quebradas intermedias.
+                            </div>
+                        </div>
+
+                        <!-- Semáforo de Inversión Térmica Macro (ECMWF) -->
+                        <div class="p-2.5 rounded-lg bg-black/40 border border-indigo-500/30 space-y-1 text-[9.5px]">
+                            <div class="flex items-center justify-between">
+                                <span class="text-indigo-300 font-bold flex items-center gap-1">
+                                    <span>🌡️</span> Inversión Térmica Sinóptica
+                                </span>
+                                <span class="text-[8px] px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-500/40">MODELO ECMWF</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-0.5">
+                                <span class="text-slate-400">Gradiente T(20m) - T(2m):</span>
+                                <b id="valInversionTermica" class="text-emerald-400 font-mono text-[11px]">+3.4°C (Fuerte)</b>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400">Aptitud Ventilador / Hélice:</span>
+                                <b id="valAptitudHelice" class="text-emerald-300">Viable (Mezcla aire cálido superior)</b>
+                            </div>
+                            <div class="text-[8px] text-slate-400 pt-0.5">
+                                ⚠️ Inversión macro de modelo numérico regional (±1.2°C). Si &Delta;T &lt; +2.0°C, no encender hélices y priorizar aspersión.
+                            </div>
+                        </div>
+
+                        <!-- Calculadora Hidráulica de Aspersión Anti-Helada (Acople Tranque Meniel) -->
+                        <div class="p-2.5 rounded-lg bg-cyan-950/20 border border-cyan-500/40 space-y-2 text-[9.5px]">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-1">
+                                <span class="text-cyan-300 font-bold flex items-center gap-1">
+                                    <span>💧</span> Demanda de Aspersión Cerezos
+                                </span>
+                                <span class="text-[8px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">12 ha Lapins</span>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-center text-[9px]">
+                                    <span class="text-slate-300">Duración Prevista Helada:</span>
+                                    <span id="lblFrostHours" class="text-cyan-300 font-bold">5 Horas</span>
+                                </div>
+                                <input type="range" id="sliderFrostHours" min="2" max="10" value="5" step="1" oninput="updateFrostSprinklerDemand(this.value)" class="w-full accent-cyan-400 cursor-pointer">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-1.5 bg-black/40 p-1.5 rounded border border-white/5 text-[9px]">
+                                <div>
+                                    <span class="text-slate-400 block">Caudal del Sistema:</span>
+                                    <b class="text-white">480 m³/h (40 m³/ha/h)</b>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block">Consumo Total Noche:</span>
+                                    <b id="valFrostWaterDemand" class="text-cyan-300 font-mono text-[10.5px]">2.400 m³</b>
+                                </div>
+                                <div class="col-span-2 flex justify-between pt-1 border-t border-white/10">
+                                    <span class="text-slate-400">Impacto en Tranque Meniel:</span>
+                                    <b id="valFrostTranqueImpact" class="text-emerald-400">14.1% de 17.020 m³</b>
+                                </div>
+                            </div>
+                            <div class="text-[8.5px] text-emerald-300 font-mono flex items-center gap-1">
+                                <span>✅</span> <span>Autonomía para 7 noches consecutivas de protección continua.</span>
+                            </div>
+                        </div>
+
+                        <!-- Puntos Críticos de Represamiento Vegetal (Vecinos) -->
+                        <div class="p-2.5 rounded-lg bg-black/30 border border-white/10 space-y-1.5 text-[9px]">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-300 font-bold flex items-center gap-1">
+                                    <span>🌲</span> Represas Vegetales en Deslindes Vecinos
+                                </span>
+                                <span class="text-[8px] text-amber-300">PROBABILÍSTICO</span>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between items-center">
+                                    <div>
+                                        <b class="text-slate-200 block">1. Deslinde Estero Los Cristales (Cota 198m):</b>
+                                        <span class="text-slate-400">Macizo de eucalipto denso corta vaguada &bull; Probabilidad Alta (75%)</span>
+                                    </div>
+                                    <button onclick="map.flyTo([-36.2085, -71.5995], 16, {duration: 1.0})" class="px-1.5 py-0.5 rounded bg-white/10 text-cyan-200 hover:bg-cyan-500/30 font-bold cursor-pointer">🔍</button>
+                                </div>
+                                <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between items-center">
+                                    <div>
+                                        <b class="text-slate-200 block">2. Zanja de Desagüe Sur (Cota 204m):</b>
+                                        <span class="text-slate-400">Cortina de álamos sin poda basal &bull; Probabilidad Media (50%)</span>
+                                    </div>
+                                    <button onclick="map.flyTo([-36.2160, -71.6040], 16, {duration: 1.0})" class="px-1.5 py-0.5 rounded bg-white/10 text-cyan-200 hover:bg-cyan-500/30 font-bold cursor-pointer">🔍</button>
+                                </div>
+                            </div>
+                            <div class="text-[8px] text-slate-400 pt-0.5">
+                                💡 Solución vecinal sugerida: Poda basal de los primeros 1.8m en la franja de vaguada para permitir el desahogo libre del aire frío hacia el río.
+                            </div>
+                        </div>
+
                     </div>
                 </details>
 
