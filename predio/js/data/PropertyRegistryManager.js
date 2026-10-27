@@ -303,48 +303,37 @@ Firma Digital: 0x8f2d4a19c6e3b7fa99d140e-AGRITWIN-VISION-DOCK2
     serieSII: 'Serie Agrícola Frutícola',
     avaluoFiscalCLP: 420000000,
     exencionContribuciones: 'Afecto a Contribuciones Cuatrimestrales',
+    verified: false,
     cbr: {
-      conservador: 'Conservador de Bienes Raíces de Curicó',
-      fojas: '312',
-      numero: '450',
-      ano: 2018,
-      registro: 'Registro de Propiedad'
+      conservador: null,
+      fojas: null,
+      numero: null,
+      ano: null,
+      registro: 'Registro de Propiedad',
+      verificado: false
     },
     propietarios: [
-      { nombre: 'Agrícola Valle Central SpA', rut: '77.201.450-3', participacion: '100%' }
+      { nombre: 'Dato no disponible (Pendiente de registro)', rut: 'Sin registrar', participacion: '100%' }
     ],
     superficieTotalHa: 18.5,
     sueloClaseCapacidad: 'Clase II (Aluvial Profundo sin pedregosidad, aptitud frutal alta)',
     deslindes: {
-      norte: 'Con camino público Curicó-Los Niches en 510 metros.',
-      sur: 'Con canal de regadío secundario y Fundo Don Gabriel.',
-      este: 'Con cerro tutelar y bosque esclerófilo nativo.',
-      oeste: 'Con callejón vecinal pavimentado.'
+      norte: 'Dato no disponible',
+      sur: 'Dato no disponible',
+      este: 'Dato no disponible',
+      oeste: 'Dato no disponible'
     },
     derechosAgua: {
-      caudalTotalLs: 52.0,
-      fuente: 'Canal Los Niches & Batería 2 Pozos con Telemetría MEE DGA',
-      fojasAguasCBR: '89 N° 112 Año 2018',
-      codigoCPA_DGA: 'DGA-CURICO-VII-2018-4421',
-      estadoMEE: 'Transmitiendo OK'
+      caudalTotalLs: null,
+      fuente: 'Dato no disponible (Pendiente de consulta DGA)',
+      fojasAguasCBR: null,
+      codigoCPA_DGA: null,
+      estadoMEE: 'Sin telemetría DGA'
     },
     restriccionesLegales: [
-      'Prohibición de subdivisión inferior a 0.5 ha (DL 3516).',
-      'Franja de servidumbre de electroducto de alta tensión (transelec) en costado poniente.'
+      'Prohibición de subdivisión inferior a 0.5 ha (DL 3516).'
     ],
-    documentos: [
-      {
-        id: 'doc-boldo-01',
-        nombre: 'CBR_Curicó_Dominio_Fundo_El_Boldo.pdf',
-        tipo: 'Escritura Pública & CBR',
-        emisor: 'CBR Curicó',
-        fecha: '2018-09-02',
-        tamano: '4.1 MB',
-        verificado: true,
-        hashSha256: 'boldo1a2b3c4d5e6f789012345678abcdef0123456789abcdef0123456789abcdef',
-        nota: 'Título de propiedad vigente con inscripción a Fojas 312 N° 450.'
-      }
-    ]
+    documentos: []
   },
   {
     id: 'quebrada',
@@ -357,49 +346,37 @@ Firma Digital: 0x8f2d4a19c6e3b7fa99d140e-AGRITWIN-VISION-DOCK2
     serieSII: 'Serie Agrícola / Conservación',
     avaluoFiscalCLP: 98000000,
     exencionContribuciones: 'Exención por Fines de Conservación Biológica',
+    verified: false,
     cbr: {
-      conservador: 'Conservador de Bienes Raíces de San Javier',
-      fojas: '88',
-      numero: '92',
-      ano: 2021,
-      registro: 'Registro de Propiedad & Hipotecas/Gravámenes'
+      conservador: null,
+      fojas: null,
+      numero: null,
+      ano: null,
+      registro: 'Registro de Propiedad & Hipotecas/Gravámenes',
+      verificado: false
     },
     propietarios: [
-      { nombre: 'Fundación Ecosistemas del Maule', rut: '65.198.712-4', participacion: '100%' }
+      { nombre: 'Dato no disponible (Pendiente de acreditación)', rut: 'Sin registrar', participacion: '100%' }
     ],
     superficieTotalHa: 62.0,
     sueloClaseCapacidad: 'Clase VII y VIII (Protección Forestal y Quebrada Biológica)',
     deslindes: {
-      norte: 'Con línea de cumbres divisoria de aguas de la cuenca.',
-      sur: 'Con Fundo Las Mercedes y cerco perimetral vivo.',
-      este: 'Con Quebrada de Los Boldos y afloramientos rocosos.',
-      oeste: 'Con camino rural vecinal de tierra.'
+      norte: 'Dato no disponible',
+      sur: 'Dato no disponible',
+      este: 'Dato no disponible',
+      oeste: 'Dato no disponible'
     },
     derechosAgua: {
-      caudalTotalLs: 8.0,
-      fuente: 'Vertientes naturales y vertiente Quebrada Los Boldos (No Consuntivo Ecológico)',
-      fojasAguasCBR: '12 N° 10 Año 2021',
-      codigoCPA_DGA: 'DGA-SANJAVIER-VII-2021-1002',
-      estadoMEE: 'Monitoreo ecológico de estiaje'
+      caudalTotalLs: null,
+      fuente: 'Dato no disponible (Vertientes no aforadas)',
+      fojasAguasCBR: null,
+      codigoCPA_DGA: null,
+      estadoMEE: 'Sin telemetría DGA'
     },
     restriccionesLegales: [
-      'Gravado con Derecho Real de Conservación (Ley 20.930) inscrito a Fojas 45 N° 33 año 2021.',
-      'Prohibición perpetua de subdivisión, tala rasa, caza y actividades industriales o inmobiliarias.',
-      'Sujeto a Plan de Manejo de Preservación de Bosque Nativo CONAF.'
+      'Sujeto a verificación de Derecho Real de Conservación (Ley 20.930).'
     ],
-    documentos: [
-      {
-        id: 'doc-drc-01',
-        nombre: 'Contrato_Derecho_Real_Conservacion_Ley20930.pdf',
-        tipo: 'Contrato Constitutivo DRC',
-        emisor: 'Notaría San Javier / CBR San Javier',
-        fecha: '2021-04-14',
-        tamano: '2.8 MB',
-        verificado: true,
-        hashSha256: 'drc1a2b3c4d5e6f789012345678abcdef0123456789abcdef0123456789abcdef01',
-        nota: 'Constitución voluntaria de DRC a perpetuidad para resguardar cuenca y fauna nativa.'
-      }
-    ]
+    documentos: []
   }
 ];
 
@@ -496,19 +473,28 @@ class PropertyRegistryManager {
     const prop = this.properties.find(p => p.id === propertyId);
     if (!prop) return false;
 
-    Object.assign(prop, patchData);
+    const data = { ...patchData };
+    if (data.cbr) {
+      prop.cbr = { ...(prop.cbr || {}), ...data.cbr };
+      delete data.cbr;
+    }
+    if (data.derechosAgua) {
+      prop.derechosAgua = { ...(prop.derechosAgua || {}), ...data.derechosAgua };
+      delete data.derechosAgua;
+    }
+    if (data.deslindes) {
+      prop.deslindes = { ...(prop.deslindes || {}), ...data.deslindes };
+      delete data.deslindes;
+    }
+    Object.assign(prop, data);
+    prop.verified = !!(prop.cbr && prop.cbr.fojas && prop.cbr.numero && prop.cbr.conservador);
     this.saveProperties();
     bus.emit('ui:show_toast', `⚖️ Datos de propiedad actualizados: ${prop.name}`);
     return prop;
   }
 
   generateDummyHash() {
-    const chars = '0123456789abcdef';
-    let hash = '';
-    for (let i = 0; i < 64; i++) {
-      hash += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return hash;
+    return 'SIN_FIRMA_CRIPTO_VERIFICADA';
   }
 
   /**

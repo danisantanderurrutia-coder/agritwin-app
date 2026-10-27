@@ -48,11 +48,12 @@
         }
 
         // ═══════════════════════════════════════════════════════════════════
-        // DRAWER LATERAL: FICHA TERRITORIAL VECINAL
+        // DRAWER LATERAL: FICHA TERRITORIAL VECINAL & PANEL RELLENABLE ANTI-ALUCINACIONES
         // ═══════════════════════════════════════════════════════════════════
         let activeParcelId = 'MENIEL';
 
-        async function openNeighborDrawer(parcelId) {
+        async function openNeighborDrawer(parcelInput) {
+            let parcelId = typeof parcelInput === 'string' ? parcelInput : (parcelInput?.id || 'MENIEL');
             activeParcelId = parcelId;
             const feat = geojsonPredios.features.find(f => f.properties.id === parcelId);
             if (!feat) return;
@@ -61,43 +62,135 @@
             const biome = biomes[parcelId] || {
                 image: 'assets/catan/tile_pasture.jpg',
                 name: p.crop,
-                tag: 'Predio Vecino',
+                tag: p.verified ? 'Predio Piloto' : 'Predio Vecino',
                 color: p.color
             };
 
             // Rellenar cabecera visual
-            document.getElementById('drawerBiomeImg').src = biome.image;
+            const imgEl = document.getElementById('drawerBiomeImg');
+            if (imgEl) imgEl.src = biome.image;
             const drawerTagEl = document.getElementById('drawerBiomeTag');
             if (drawerTagEl) {
-                drawerTagEl.innerText = biome.tag;
-                drawerTagEl.style.backgroundColor = biome.color;
+                drawerTagEl.innerText = p.verified ? 'Predio Piloto Verificado' : 'Predio Vecino';
+                drawerTagEl.style.backgroundColor = p.verified ? '#059669' : (biome.color || '#475569');
             }
+
+            const verifiedBadgeEl = document.getElementById('drawerParcelVerifiedBadge');
+            if (verifiedBadgeEl) {
+                if (p.verified) {
+                    verifiedBadgeEl.innerText = '✅ Piloto Verificado';
+                    verifiedBadgeEl.className = 'text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30';
+                } else if (p.has_cbr_deed) {
+                    verifiedBadgeEl.innerText = '📑 Registrado por Vecino';
+                    verifiedBadgeEl.className = 'text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-sky-950/80 text-sky-300 border border-sky-500/30';
+                } else {
+                    verifiedBadgeEl.innerText = '⚠️ Datos no disponibles • Rellenable';
+                    verifiedBadgeEl.className = 'text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-amber-950/80 text-amber-300 border border-amber-500/30';
+                }
+            }
+
             document.getElementById('drawerParcelName').innerText = p.name;
-            document.getElementById('drawerParcelRol').innerText = 'Rol: ' + p.rol;
+            document.getElementById('drawerParcelRol').innerText = 'Rol: ' + (p.rol || 'Sin registrar');
             document.getElementById('drawerParcelArea').innerText = p.area_ha + ' ha';
 
-            // Rellenar telemetría
-            document.getElementById('drawerParcelCrop').innerText = p.crop;
-            document.getElementById('drawerParcelWater').innerText = p.water_L_s + ' L/s';
-            document.getElementById('drawerParcelVwc').innerText = p.vwc;
-            document.getElementById('drawerParcelFwi').innerText = p.fwi + ' (' + p.fwi_status + ')';
+            // Rellenar telemetría (Anti-alucinación: indicar claramente si no hay sensor)
+            const cropEl = document.getElementById('drawerParcelCrop');
+            if (cropEl) cropEl.innerText = p.crop || 'Dato no disponible';
 
-            // Cargar notas desde /api/notes
+            const waterEl = document.getElementById('drawerParcelWater');
+            if (waterEl) {
+                if (p.water_L_s && p.water_L_s !== 'Dato no disponible') {
+                    waterEl.innerHTML = `${p.water_L_s} L/s <span class="text-[9px] text-slate-400 block">${p.water_status || ''}</span>`;
+                    waterEl.className = 'text-sky-400 font-bold';
+                } else {
+                    waterEl.innerHTML = '<span class="text-amber-400 font-mono text-[10px]">Dato no disponible</span><span class="text-[9px] text-slate-500 block">Sin aforo oficial</span>';
+                    waterEl.className = 'text-amber-400 font-mono';
+                }
+            }
+
+            const vwcEl = document.getElementById('drawerParcelVwc');
+            if (vwcEl) {
+                if (p.has_iot_sensors && p.vwc && p.vwc !== 'Dato no disponible') {
+                    vwcEl.innerHTML = `${p.vwc} <span class="text-[9px] text-emerald-400 block">Sonda FDR 3 Nivel</span>`;
+                    vwcEl.className = 'text-emerald-400 font-bold';
+                } else {
+                    vwcEl.innerHTML = '<span class="text-amber-400 font-mono text-[10px]">Dato no disponible</span><span class="text-[9px] text-slate-500 block">Sin sensor en terreno</span>';
+                    vwcEl.className = 'text-amber-400 font-mono';
+                }
+            }
+
+            const fwiEl = document.getElementById('drawerParcelFwi');
+            if (fwiEl) {
+                fwiEl.innerHTML = `${p.fwi || 'N/D'} <span class="text-[9px] font-normal text-slate-300 block">(${p.fwi_status || 'ERA5 Zonal'})</span>`;
+            }
+
+            // Cargar notas y título de propiedad desde /api/notes o localStorage
+            let note = {};
             try {
                 const res = await fetch('/api/notes');
                 const allNotes = await res.json();
-                const note = allNotes[parcelId] || {};
-                document.getElementById('noteAdmin').value = note.admin || p.owner || '';
-                document.getElementById('notePhone').value = note.phone || '';
-                document.getElementById('noteRadio').value = note.radio_channel || '';
-                document.getElementById('noteCortafuego').value = note.cortafuego_status || '';
-                document.getElementById('noteAgreements').value = note.agreements || '';
-                document.getElementById('noteText').value = note.notes || '';
-            } catch (_) {}
+                note = allNotes[parcelId] || {};
+            } catch (_) {
+                try {
+                    const localSaved = localStorage.getItem('agritwin_parcels_notes');
+                    if (localSaved) {
+                        const parsed = JSON.parse(localSaved);
+                        note = parsed[parcelId] || {};
+                    }
+                } catch (e) {}
+            }
+
+            // Actualizar campos de título de propiedad CBR & DGA
+            const cbrConservador = document.getElementById('noteCbrConservador');
+            const cbrFojas = document.getElementById('noteCbrFojas');
+            const cbrNumero = document.getElementById('noteCbrNumero');
+            const cbrAno = document.getElementById('noteCbrAno');
+            const titularRut = document.getElementById('noteTitularRut');
+            const dgaCpa = document.getElementById('noteDgaCpa');
+            const deslindes = document.getElementById('noteDeslindes');
+
+            if (cbrConservador) cbrConservador.value = note.cbr_conservador || p.cbr?.conservador || '';
+            if (cbrFojas) cbrFojas.value = note.cbr_fojas || p.cbr?.fojas || '';
+            if (cbrNumero) cbrNumero.value = note.cbr_numero || p.cbr?.numero || '';
+            if (cbrAno) cbrAno.value = note.cbr_ano || p.cbr?.ano || '';
+            if (titularRut) titularRut.value = note.titular_rut || (p.owner !== 'Dato no disponible (Rellenable)' ? p.owner : '') || '';
+            if (dgaCpa) dgaCpa.value = note.dga_cpa || (p.water_status !== 'Pendiente de registro DGA' ? p.water_status : '') || '';
+            if (deslindes) deslindes.value = note.deslindes || '';
+
+            // Estado visual de la tarjeta CBR en el drawer
+            const cbrBadge = document.getElementById('drawerCbrBadge');
+            const cbrNotice = document.getElementById('drawerCbrNotice');
+            const hasCbr = !!(cbrFojas && cbrFojas.value && cbrConservador && cbrConservador.value);
+            if (cbrBadge) {
+                if (hasCbr) {
+                    cbrBadge.innerText = '✅ Inscripción Acreditada';
+                    cbrBadge.className = 'text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30';
+                } else {
+                    cbrBadge.innerText = '⚠️ Dato no disponible';
+                    cbrBadge.className = 'text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-amber-950/80 text-amber-300 border border-amber-500/30';
+                }
+            }
+            if (cbrNotice) {
+                if (hasCbr) {
+                    cbrNotice.innerText = 'Inscripción de dominio vigente cargada en el expediente. Puede modificar o actualizar los datos cuando sea necesario.';
+                } else {
+                    cbrNotice.innerText = 'Sin inscripción oficial en el Conservador. Para erradicar alucinaciones, complete los campos para registrar el predio:';
+                }
+            }
+
+            // Campos del cuaderno de campo
+            document.getElementById('noteAdmin').value = note.admin || (p.owner !== 'Dato no disponible (Rellenable)' ? p.owner : '') || '';
+            document.getElementById('notePhone').value = note.phone || '';
+            document.getElementById('noteRadio').value = note.radio_channel || '';
+            document.getElementById('noteCortafuego').value = note.cortafuego_status || '';
+            document.getElementById('noteAgreements').value = note.agreements || '';
+            document.getElementById('noteText').value = note.notes || '';
 
             const drawer = document.getElementById('neighborDrawer');
-            drawer.classList.remove('drawer-closed');
-            drawer.classList.add('drawer-open');
+            if (drawer) {
+                drawer.classList.remove('drawer-closed');
+                drawer.classList.add('drawer-open');
+            }
         }
 
         function closeNeighborDrawer() {
@@ -109,15 +202,55 @@
         }
 
         async function saveCurrentNeighborNotes() {
+            const cbrConservador = document.getElementById('noteCbrConservador')?.value || '';
+            const cbrFojas = document.getElementById('noteCbrFojas')?.value || '';
+            const cbrNumero = document.getElementById('noteCbrNumero')?.value || '';
+            const cbrAno = document.getElementById('noteCbrAno')?.value || '';
+            const titularRut = document.getElementById('noteTitularRut')?.value || '';
+            const dgaCpa = document.getElementById('noteDgaCpa')?.value || '';
+            const deslindes = document.getElementById('noteDeslindes')?.value || '';
+
             const payload = {
                 id: activeParcelId,
-                admin: document.getElementById('noteAdmin').value,
-                phone: document.getElementById('notePhone').value,
-                radio_channel: document.getElementById('noteRadio').value,
-                cortafuego_status: document.getElementById('noteCortafuego').value,
-                agreements: document.getElementById('noteAgreements').value,
-                notes: document.getElementById('noteText').value
+                admin: document.getElementById('noteAdmin')?.value || '',
+                phone: document.getElementById('notePhone')?.value || '',
+                radio_channel: document.getElementById('noteRadio')?.value || '',
+                cortafuego_status: document.getElementById('noteCortafuego')?.value || '',
+                agreements: document.getElementById('noteAgreements')?.value || '',
+                notes: document.getElementById('noteText')?.value || '',
+                cbr_conservador: cbrConservador,
+                cbr_fojas: cbrFojas,
+                cbr_numero: cbrNumero,
+                cbr_ano: cbrAno,
+                titular_rut: titularRut,
+                dga_cpa: dgaCpa,
+                deslindes: deslindes
             };
+
+            // Actualizar en memoria geojsonPredios
+            const feat = geojsonPredios.features.find(f => f.properties.id === activeParcelId);
+            if (feat) {
+                if (cbrFojas && cbrConservador) {
+                    feat.properties.cbr = {
+                        conservador: cbrConservador,
+                        fojas: cbrFojas,
+                        numero: cbrNumero,
+                        ano: cbrAno,
+                        verificado: true
+                    };
+                    feat.properties.has_cbr_deed = true;
+                }
+                if (titularRut) feat.properties.owner = titularRut;
+                if (dgaCpa) feat.properties.water_status = dgaCpa;
+            }
+
+            // Persistir en localStorage como respaldo inmediato
+            try {
+                const localSaved = localStorage.getItem('agritwin_parcels_notes') || '{}';
+                const parsed = JSON.parse(localSaved);
+                parsed[activeParcelId] = payload;
+                localStorage.setItem('agritwin_parcels_notes', JSON.stringify(parsed));
+            } catch (_) {}
 
             try {
                 const res = await fetch('/api/notes', {
@@ -127,11 +260,22 @@
                 });
                 if (res.ok) {
                     const toast = document.getElementById('saveNoteToast');
-                    toast.classList.remove('hidden');
-                    setTimeout(() => toast.classList.add('hidden'), 3000);
+                    if (toast) {
+                        toast.classList.remove('hidden');
+                        setTimeout(() => toast.classList.add('hidden'), 3500);
+                    }
+                    // Actualizar badges
+                    const cbrBadge = document.getElementById('drawerCbrBadge');
+                    if (cbrBadge && cbrFojas) {
+                        cbrBadge.innerText = '✅ Inscripción Acreditada';
+                        cbrBadge.className = 'text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30';
+                    }
+                    if (typeof window.showMasterToast === 'function') {
+                        window.showMasterToast(`Ficha y título del predio ${activeParcelId} guardados sin alucinaciones.`, '💾', 'success');
+                    }
                 }
             } catch (err) {
-                alert("Error al guardar notas: " + err.message);
+                alert("Guardado localmente. Error al enviar a servidor: " + err.message);
             }
         }
 

@@ -642,7 +642,9 @@
         const FARMER_PORTFOLIOS = {
             'MENIEL': {
                 name: 'Fundo Meniel / Colliguay',
-                rol: 'Rol 142-88 Retiro',
+                rol: 'Rol 418-24 Parral',
+                is_simulated: false,
+                statusLabel: 'Predio Piloto • Calibrado',
                 waterReserve: '18.500 m³',
                 waterSub: 'Tranque Keyline activo (Cap. 18.500 m³)',
                 vwc: '36.2% VWC',
@@ -657,142 +659,162 @@
             'SAN_JOSE': {
                 name: 'Agrícola San José de Longaví',
                 rol: 'Rol 142-12 Retiro',
-                waterReserve: '34.200 m³',
-                waterSub: 'Cuarteles de contención de crecidas',
-                vwc: '48.1% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '34.200 m³ (Valor modelado)',
+                waterSub: 'Cuarteles de contención de crecidas (Modelado satelital)',
+                vwc: '48.1% VWC (Modelado satelital)',
                 waterBar: '95%',
-                biomass: '6.150 kg MS/ha',
-                stocking: '0.8 UA/ha (Rastrojos arroz)',
-                firewall: '1.8 km bordes acequia',
-                fwi: 'FWI 18 (Muy Bajo)',
-                dga: '110.0 L/s consuntivos',
-                dgaReal: 'Consumo real: 95.0 L/s • Drenaje hacia canal matriz activo'
+                biomass: '6.150 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.8 UA/ha (Rastrojos arroz - Estimado)',
+                firewall: '1.8 km bordes acequia (Estimado)',
+                fwi: 'FWI 18 (Muy Bajo • ERA5)',
+                dga: '110.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 95.0 L/s (Sin sensor in situ)'
             },
             'RETIRO_PONIENTE': {
                 name: 'Hacienda Retiro Poniente',
                 rol: 'Rol 138-20 Retiro',
-                waterReserve: '8.200 m³',
-                waterSub: 'Reservorio austral de cabecera',
-                vwc: '31.0% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '8.200 m³ (Valor modelado)',
+                waterSub: 'Reservorio austral de cabecera (Modelado satelital)',
+                vwc: '31.0% VWC (Modelado satelital)',
                 waterBar: '58%',
-                biomass: '3.900 kg MS/ha',
-                stocking: '1.1 UA/ha (Avena forrajera)',
-                firewall: '3.1 km faja arado perimetral',
-                fwi: 'FWI 32 (Moderado)',
-                dga: '75.0 L/s consuntivos',
-                dgaReal: 'Consumo real: 68.5 L/s tecnificado por carretes'
+                biomass: '3.900 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '1.1 UA/ha (Avena forrajera - Estimado)',
+                firewall: '3.1 km faja arado perimetral (Estimado)',
+                fwi: 'FWI 32 (Moderado • ERA5)',
+                dga: '75.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 68.5 L/s (Sin sensor in situ)'
             },
             'STA_LUCIA': {
                 name: 'Agrícola Santa Lucía del Huape',
                 rol: 'Rol 140-15 Retiro',
-                waterReserve: '4.500 m³',
-                waterSub: 'Tranque de ladera secano',
-                vwc: '22.8% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '4.500 m³ (Valor modelado)',
+                waterSub: 'Tranque de ladera secano (Modelado satelital)',
+                vwc: '22.8% VWC (Modelado satelital)',
                 waterBar: '42%',
-                biomass: '1.850 kg MS/ha',
-                stocking: '0.5 UA/ha (Ovinos en invierno)',
-                firewall: '2.0 km franja limpia espinos',
-                fwi: 'FWI 41 (Moderado/Alto)',
-                dga: '18.0 L/s de pozo profundo',
-                dgaReal: 'Consumo real: 14.0 L/s goteo de alta eficiencia'
+                biomass: '1.850 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.5 UA/ha (Ovinos en invierno - Estimado)',
+                firewall: '2.0 km franja limpia espinos (Estimado)',
+                fwi: 'FWI 41 (Moderado/Alto • ERA5)',
+                dga: '18.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 14.0 L/s (Sin sensor in situ)'
             },
             'AJI_RETIRO': {
                 name: 'Coop. Campesina Ají de Retiro',
                 rol: 'Rol 145-30 Retiro',
-                waterReserve: '12.000 m³',
-                waterSub: 'Tranque comunitario INDAP',
-                vwc: '34.5% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '12.000 m³ (Valor modelado)',
+                waterSub: 'Tranque comunitario INDAP (Modelado satelital)',
+                vwc: '34.5% VWC (Modelado satelital)',
                 waterBar: '76%',
-                biomass: '5.200 kg MS/ha',
-                stocking: '0.2 UA/ha (Aves libres)',
-                firewall: '1.4 km cerco vivo quillay',
-                fwi: 'FWI 22 (Bajo)',
-                dga: '38.0 L/s canal comunal',
-                dgaReal: 'Consumo real: 31.2 L/s con compuertas automatizadas'
+                biomass: '5.200 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.2 UA/ha (Aves libres - Estimado)',
+                firewall: '1.4 km cerco vivo quillay (Estimado)',
+                fwi: 'FWI 22 (Bajo • ERA5)',
+                dga: '38.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 31.2 L/s (Sin sensor in situ)'
             },
             'LOS_BOLDOS': {
                 name: 'Fundo Forestal Los Boldos',
                 rol: 'Rol 143-05 Retiro',
-                waterReserve: '2.100 m³',
-                waterSub: 'Drenaje precario de ladera',
-                vwc: '18.4% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '2.100 m³ (Valor modelado)',
+                waterSub: 'Drenaje precario de ladera (Modelado satelital)',
+                vwc: '18.4% VWC (Modelado satelital)',
                 waterBar: '25%',
-                biomass: '7.800 kg MS/ha',
-                stocking: '0.0 UA/ha (Pino denso)',
-                firewall: '0.8 km cortafuegos deficiente',
-                fwi: 'FWI 68 (Crítico Puelche)',
-                dga: '8.0 L/s vertiente',
-                dgaReal: 'Consumo real: 8.0 L/s absorción monocultivo'
+                biomass: '7.800 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.0 UA/ha (Pino denso - Estimado)',
+                firewall: '0.8 km cortafuegos deficiente (Estimado)',
+                fwi: 'FWI 68 (Crítico Puelche • ERA5)',
+                dga: '8.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 8.0 L/s (Sin sensor in situ)'
             },
             'MORA_VERDE': {
                 name: 'Agrícola Mora Verde del Sur',
                 rol: 'Rol 141-02 Retiro',
-                waterReserve: '6.800 m³',
-                waterSub: 'Tranque austral tecnificado',
-                vwc: '38.0% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '6.800 m³ (Valor modelado)',
+                waterSub: 'Tranque austral tecnificado (Modelado satelital)',
+                vwc: '38.0% VWC (Modelado satelital)',
                 waterBar: '80%',
-                biomass: '3.400 kg MS/ha',
-                stocking: '0.3 UA/ha (Manejo integrado)',
-                firewall: '2.1 km franja limpia',
-                fwi: 'FWI 25 (Bajo)',
-                dga: '32.0 L/s consuntivos',
-                dgaReal: 'Consumo real: 26.5 L/s microaspersión'
+                biomass: '3.400 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.3 UA/ha (Manejo integrado - Estimado)',
+                firewall: '2.1 km franja limpia (Estimado)',
+                fwi: 'FWI 25 (Bajo • ERA5)',
+                dga: '32.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 26.5 L/s (Sin sensor in situ)'
             },
             'LOS_MAITENES': {
                 name: 'Fundo Los Maitenes (Bosque Nativo)',
                 rol: 'Rol 144-01 Retiro',
-                waterReserve: '14.200 m³',
-                waterSub: 'Humedal natural & quebrada',
-                vwc: '42.0% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '14.200 m³ (Valor modelado)',
+                waterSub: 'Humedal natural & quebrada (Modelado satelital)',
+                vwc: '42.0% VWC (Modelado satelital)',
                 waterBar: '88%',
-                biomass: '6.500 kg MS/ha',
-                stocking: '0.6 UA/ha (Apicultura & Caprinos)',
-                firewall: '3.5 km faja biológica quillay',
-                fwi: 'FWI 20 (Muy Bajo)',
-                dga: '22.0 L/s vertiente protegida',
-                dgaReal: 'Consumo real: 12.0 L/s recarga cuenca'
+                biomass: '6.500 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.6 UA/ha (Apicultura & Caprinos - Estimado)',
+                firewall: '3.5 km faja biológica quillay (Estimado)',
+                fwi: 'FWI 20 (Muy Bajo • ERA5)',
+                dga: '22.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 12.0 L/s (Sin sensor in situ)'
             },
             'DON_VICTOR': {
                 name: 'Parcela Don Víctor (Frutales)',
                 rol: 'Rol 144-22 Retiro',
-                waterReserve: '7.500 m³',
-                waterSub: 'Tranque familiar Keyline',
-                vwc: '35.0% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '7.500 m³ (Valor modelado)',
+                waterSub: 'Tranque familiar Keyline (Modelado satelital)',
+                vwc: '35.0% VWC (Modelado satelital)',
                 waterBar: '72%',
-                biomass: '4.100 kg MS/ha',
-                stocking: '0.8 UA/ha (Frutales mixtos)',
-                firewall: '1.6 km zanja de infiltración',
-                fwi: 'FWI 28 (Bajo)',
-                dga: '20.0 L/s canal comunal',
-                dgaReal: 'Consumo real: 16.5 L/s goteo solar'
+                biomass: '4.100 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.8 UA/ha (Frutales mixtos - Estimado)',
+                firewall: '1.6 km zanja de infiltración (Estimado)',
+                fwi: 'FWI 28 (Bajo • ERA5)',
+                dga: '20.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 16.5 L/s (Sin sensor in situ)'
             },
             'EL_CARMEN': {
                 name: 'Viña El Carmen (Uva Torontel)',
                 rol: 'Rol 145-10 Retiro',
-                waterReserve: '5.200 m³',
-                waterSub: 'Reservorio de secano interior',
-                vwc: '26.5% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '5.200 m³ (Valor modelado)',
+                waterSub: 'Reservorio de secano interior (Modelado satelital)',
+                vwc: '26.5% VWC (Modelado satelital)',
                 waterBar: '50%',
-                biomass: '2.400 kg MS/ha',
-                stocking: '0.4 UA/ha (Pastoreo en receso)',
-                firewall: '2.8 km callejones limpios',
-                fwi: 'FWI 35 (Moderado)',
-                dga: '15.0 L/s pozo noria',
-                dgaReal: 'Consumo real: 11.8 L/s tecnificado'
+                biomass: '2.400 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.4 UA/ha (Pastoreo en receso - Estimado)',
+                firewall: '2.8 km callejones limpios (Estimado)',
+                fwi: 'FWI 35 (Moderado • ERA5)',
+                dga: '15.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 11.8 L/s (Sin sensor in situ)'
             },
             'LA_PALMA': {
                 name: 'Reserva Precordillera La Palma',
                 rol: 'Rol 146-01 Retiro',
-                waterReserve: '28.000 m³',
-                waterSub: 'Cabecera de cuenca y deshielos',
-                vwc: '45.0% VWC',
+                is_simulated: true,
+                statusLabel: '⚠️ Valor Modelado (Sin sensor in situ)',
+                waterReserve: '28.000 m³ (Valor modelado)',
+                waterSub: 'Cabecera de cuenca y deshielos (Modelado satelital)',
+                vwc: '45.0% VWC (Modelado satelital)',
                 waterBar: '92%',
-                biomass: '8.200 kg MS/ha',
-                stocking: '0.1 UA/ha (Santuario silvestre)',
-                firewall: '5.0 km barrera cortafuego natural',
-                fwi: 'FWI 18 (Muy Bajo)',
-                dga: '50.0 L/s vertientes de altura',
-                dgaReal: 'Consumo real: 10.0 L/s conservación'
+                biomass: '8.200 kg MS/ha (Estimación Sentinel-2)',
+                stocking: '0.1 UA/ha (Santuario silvestre - Estimado)',
+                firewall: '5.0 km barrera cortafuego natural (Estimado)',
+                fwi: 'FWI 18 (Muy Bajo • ERA5)',
+                dga: '50.0 L/s (Referencial DGA)',
+                dgaReal: 'Consumo modelado: 10.0 L/s (Sin sensor in situ)'
             }
         };
 
@@ -803,7 +825,19 @@
             const p = FARMER_PORTFOLIOS[id];
             if (!p) return;
             const elBadge = document.getElementById('farmerBadgeRol');
-            if (elBadge) elBadge.innerText = p.rol;
+            if (elBadge) {
+                elBadge.innerHTML = `${p.rol} <span class="ml-1 text-[8px] font-normal ${p.is_simulated ? 'text-amber-300 bg-amber-950/80 px-1 py-0.5 rounded border border-amber-500/30' : 'text-emerald-300 bg-emerald-950/80 px-1 py-0.5 rounded border border-emerald-500/30'}">${p.is_simulated ? 'MODELADO' : 'PILOTO'}</span>`;
+            }
+            const elNotice = document.getElementById('farmerPortfolioNotice');
+            if (elNotice) {
+                if (p.is_simulated) {
+                    elNotice.classList.remove('hidden');
+                    elNotice.innerHTML = `<span>⚠️</span> <span>${p.statusLabel}</span>`;
+                } else {
+                    elNotice.classList.remove('hidden');
+                    elNotice.innerHTML = `<span class="text-emerald-400">✅</span> <span class="text-emerald-300 font-mono">Predio Piloto Fundo Meniel • Calibración en terreno</span>`;
+                }
+            }
             const elRes = document.getElementById('fpWaterReserve');
             if (elRes) elRes.innerText = p.waterReserve;
             const elSub = document.getElementById('fpWaterSub');

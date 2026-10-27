@@ -30,101 +30,176 @@ const MIME_TYPES = {
   '.wasm': 'application/wasm'
 };
 
-function buildTelemetrySummary() {
-  const now    = new Date();
-  const hour   = now.getHours();
+// ── Cache y Conexión Meteorológica Real (Open-Meteo Parral/Retiro) ─────────
+let cachedLiveWeather = null;
+let lastWeatherFetch = 0;
 
-  const jitter = (base, pct = 0.03) =>
-    +(base * (1 + (Math.random() - 0.5) * 2 * pct)).toFixed(2);
+async function getLiveMauleWeather() {
+  const now = Date.now();
+  if (cachedLiveWeather && (now - lastWeatherFetch) < 10 * 60 * 1000) {
+    return cachedLiveWeather;
+  }
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const resp = await fetch(
+      'https://api.open-meteo.com/v1/forecast?latitude=-36.2115&longitude=-71.6050&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m&daily=et0_fao_evapotranspiration&timezone=America%2FSantiago',
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    if (resp.ok) {
+      const data = await resp.json();
+      const deg = data.current?.wind_direction_10m ?? 75;
+      const degToCard = (d) => {
+        const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSO', 'SO', 'OSO', 'O', 'ONO', 'NO', 'NNO'];
+        return dirs[Math.round(d / 22.5) % 16];
+      };
+      cachedLiveWeather = {
+        is_real: true,
+        source: 'Open-Meteo / WMO (En vivo)',
+        temp_air_c: data.current?.temperature_2m ?? 21.5,
+        humidity_pct: data.current?.relative_humidity_2m ?? 50,
+        precip_24h_mm: data.current?.precipitation ?? 0,
+        wind_speed_kmh: data.current?.wind_speed_10m ?? 12.0,
+        wind_dir: `${degToCard(deg)} (${deg}°)`,
+        eto_mm_day: data.daily?.et0_fao_evapotranspiration?.[0] ?? 4.5,
+        timestamp: new Date().toISOString()
+      };
+      lastWeatherFetch = now;
+      return cachedLiveWeather;
+    }
+  } catch (err) {
+    console.warn('Aviso: Fallback en clima en vivo Open-Meteo:', err.message);
+  }
+  return cachedLiveWeather || {
+    is_real: false,
+    source: 'Modelo agroclimático Maule Sur (Simulado)',
+    temp_air_c: 21.5,
+    humidity_pct: 52,
+    precip_24h_mm: 0,
+    wind_speed_kmh: 12.5,
+    wind_dir: 'ENE (75°)',
+    eto_mm_day: 4.8,
+    timestamp: new Date().toISOString()
+  };
+}
+
+function buildTelemetrySummary(liveWeather = null) {
+  const now    = new Date();
+  const weather = liveWeather || {
+    is_real: false,
+    source: 'Modelo agroclimático Maule Sur (Simulado)',
+    temp_air_c: 21.5,
+    humidity_pct: 52,
+    precip_24h_mm: 0,
+    wind_speed_kmh: 12.5,
+    wind_dir: 'ENE (75°)',
+    eto_mm_day: 4.8
+  };
 
   const kiotNodes = [
     {
       id: 'FDR-01',
-      name: 'Cerezos Lapins',
+      name: 'Cerezos Lapins (Fundo Meniel)',
       type: 'soil_moisture_fdr',
       depth_cm: '0-20',
       lat: -36.2095,
       lng: -71.6060,
-      network: 'KioT Mesh',
-      status: 'online',
+      network: 'KioT Mesh (Simulado)',
+      status: 'simulado',
+      is_simulated: true,
+      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
       readings: {
-        vwc_percent: jitter(36.2),
-        temp_soil_c: jitter(14.8),
-        ec_dS_m: jitter(0.42),
+        vwc_percent: 36.2,
+        temp_soil_c: 14.8,
+        ec_dS_m: 0.42,
         battery_pct: 94,
         lqi: 98,
-        last_tx: now.toISOString()
+        last_tx: now.toISOString(),
+        simulation_notice: 'Lectura modelada'
       }
     },
     {
       id: 'FDR-02',
-      name: 'Avellanos Tonda',
+      name: 'Avellanos Tonda (Fundo Meniel)',
       type: 'soil_moisture_fdr',
       depth_cm: '20-60',
       lat: -36.2120,
       lng: -71.6030,
-      network: 'KioT Mesh',
-      status: 'online',
+      network: 'KioT Mesh (Simulado)',
+      status: 'simulado',
+      is_simulated: true,
+      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
       readings: {
-        vwc_percent: jitter(35.8),
-        temp_soil_c: jitter(13.7),
-        ec_dS_m: jitter(0.38),
+        vwc_percent: 35.8,
+        temp_soil_c: 13.7,
+        ec_dS_m: 0.38,
         battery_pct: 88,
         lqi: 95,
-        last_tx: now.toISOString()
+        last_tx: now.toISOString(),
+        simulation_notice: 'Lectura modelada'
       }
     },
     {
       id: 'FDR-03',
-      name: 'Keyline Sur (Infiltración)',
+      name: 'Keyline Sur (Infiltración - Fundo Meniel)',
       type: 'soil_moisture_fdr',
       depth_cm: '0-40',
       lat: -36.2145,
       lng: -71.6050,
-      network: 'KioT Mesh',
-      status: 'online',
+      network: 'KioT Mesh (Simulado)',
+      status: 'simulado',
+      is_simulated: true,
+      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
       readings: {
-        vwc_percent: jitter(38.4),
-        temp_soil_c: jitter(14.0),
+        vwc_percent: 38.4,
+        temp_soil_c: 14.0,
         infiltration_active: true,
         battery_pct: 95,
         lqi: 97,
-        last_tx: now.toISOString()
+        last_tx: now.toISOString(),
+        simulation_notice: 'Lectura modelada'
       }
     },
     {
       id: 'FDR-04',
-      name: 'Silvopastoril PRV',
+      name: 'Silvopastoril PRV (Fundo Meniel)',
       type: 'soil_moisture_fdr',
       depth_cm: '0-30',
       lat: -36.2105,
       lng: -71.6080,
-      network: 'KioT Mesh',
-      status: 'online',
+      network: 'KioT Mesh (Simulado)',
+      status: 'simulado',
+      is_simulated: true,
+      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
       readings: {
-        vwc_percent: jitter(36.0),
-        temp_soil_c: jitter(13.9),
-        ec_dS_m: jitter(0.52),
+        vwc_percent: 36.0,
+        temp_soil_c: 13.9,
+        ec_dS_m: 0.52,
         battery_pct: 90,
         lqi: 94,
-        last_tx: now.toISOString()
+        last_tx: now.toISOString(),
+        simulation_notice: 'Lectura modelada'
       }
     },
     {
       id: 'PIEZO-TQ',
-      name: 'Piezómetro Tranque Colliguay',
+      name: 'Piezómetro Tranque Colliguay (Fundo Meniel)',
       type: 'piezometer',
       lat: -36.2110,
       lng: -71.6045,
-      network: 'KioT Mesh',
-      status: 'online',
+      network: 'KioT Mesh (Simulado)',
+      status: 'simulado',
+      is_simulated: true,
+      simulation_basis: 'Simulado (Modelo batimétrico de tranque 18.500 m³ - Sin sensor físico conectado)',
       readings: {
-        volume_m3: jitter(18490, 0.005),
+        volume_m3: 18490,
         cota_msnm: 198,
         capacity_pct: 100,
         autonomy_days: 45,
         battery_pct: 99,
-        last_tx: now.toISOString()
+        last_tx: now.toISOString(),
+        simulation_notice: 'Lectura modelada'
       }
     }
   ];
@@ -133,44 +208,51 @@ function buildTelemetrySummary() {
     {
       id: 'INIA-RETIRO',
       name: 'INIA Retiro (Agroclimática)',
-      agency: 'INIA',
+      agency: 'INIA / Open-Meteo',
       lat: -36.0580,
       lng: -71.7610,
-      status: 'online',
+      status: weather.is_real ? 'online' : 'simulado',
+      is_real: weather.is_real,
+      source: weather.source,
       readings: {
-        temp_air_c: jitter(26.5),
-        humidity_pct: jitter(32.0),
-        eto_mm_day: 4.8,
-        radiation_w_m2: 610,
-        precip_24h_mm: 0
+        temp_air_c: weather.temp_air_c,
+        humidity_pct: weather.humidity_pct,
+        eto_mm_day: weather.eto_mm_day,
+        precip_24h_mm: weather.precip_24h_mm,
+        radiation_w_m2: weather.is_real ? 580 : 610
       }
     },
     {
       id: 'DGA-LONGAVI',
       name: 'DGA Fluviométrica Río Longaví',
-      agency: 'DGA',
+      agency: 'DGA (Referencial)',
       lat: -36.1750,
       lng: -71.6700,
-      status: 'online',
+      status: 'simulado',
+      is_real: false,
+      source: 'DGA - Registro histórico de referencia / Estimación de cuenca (Simulado)',
       readings: {
-        caudal_m3_s: jitter(185.0),
-        nivel_m: 2.15,
-        trend: 'estable'
+        caudal_m3_s: 14.5,
+        nivel_m: 1.45,
+        trend: 'estable',
+        simulation_notice: 'Caudal base estacional modelado (sin telemetría continua DGA abierta)'
       }
     },
     {
       id: 'DMC-PARRAL',
       name: 'DMC Parral Centro (Aeronáutica)',
-      agency: 'DMC',
+      agency: 'DMC / Open-Meteo',
       lat: -36.1432,
       lng: -71.8267,
-      status: 'online',
+      status: weather.is_real ? 'online' : 'simulado',
+      is_real: weather.is_real,
+      source: weather.source,
       readings: {
-        wind_speed_kmh: jitter(38.0),
-        wind_dir: 'E-NE',
-        wind_type: 'Puelche (Foehn)',
-        temp_air_c: jitter(27.5),
-        humidity_pct: jitter(26.0)
+        wind_speed_kmh: weather.wind_speed_kmh,
+        wind_dir: weather.wind_dir,
+        wind_type: 'Viento Puelche / Ladera Andina',
+        temp_air_c: weather.temp_air_c,
+        humidity_pct: weather.humidity_pct
       }
     },
     {
@@ -179,7 +261,9 @@ function buildTelemetrySummary() {
       agency: 'DGA',
       lat: -36.2800,
       lng: -71.4200,
-      status: 'online',
+      status: 'referencial',
+      is_real: false,
+      source: 'DGA Embalse Bullileo - Registro oficial estacional (Referencial)',
       readings: {
         volume_hm3: 85.8,
         cota_msnm: 395,
@@ -196,11 +280,14 @@ function buildTelemetrySummary() {
       cuenca: 'Maule Sur (Parral – Retiro)',
       area_ha: 122070,
       timestamp: now.toISOString(),
+      weather_feed: weather.source,
+      weather_is_real: weather.is_real,
       fundo_colliguay: {
-        lat: -36.14,
-        lng: -71.78,
-        rol_sii: '142-88 Retiro',
-        area_ha: 12.8
+        lat: -36.2115,
+        lng: -71.6050,
+        rol_sii: '418-24 Parral',
+        area_ha: 24.8,
+        pilot_status: 'Predio Piloto Fundo Meniel'
       }
     },
     sentinel_network: {
@@ -212,11 +299,12 @@ function buildTelemetrySummary() {
       fwi: {
         value: 28,
         label: 'MODERADO',
-        buffer_mitigation_pct: 45
+        buffer_mitigation_pct: 45,
+        source: 'Estimación índice FWI (Simulado)'
       },
-      longavi_q_m3s: 185.0,
-      puelche_gusts_kmh: 38.0,
-      eto_penman_monteith_mm_day: 4.8,
+      longavi_q_m3s: 14.5,
+      puelche_gusts_kmh: weather.wind_speed_kmh,
+      eto_penman_monteith_mm_day: weather.eto_mm_day,
       avg_vwc_pct: 36.2,
       tranque_keyline_capacity_m3: 18500
     },
@@ -230,7 +318,7 @@ function buildTelemetrySummary() {
   };
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -304,7 +392,8 @@ const server = http.createServer((req, res) => {
 
   // ── Endpoints API ──────────────────────────────────────────────────────
   if (urlPath === '/api/telemetry/summary' && req.method === 'GET') {
-    const payload = buildTelemetrySummary();
+    const liveWeather = await getLiveMauleWeather();
+    const payload = buildTelemetrySummary(liveWeather);
     const body = JSON.stringify(payload, null, 2);
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(body);
@@ -312,11 +401,14 @@ const server = http.createServer((req, res) => {
   }
 
   if (urlPath === '/api/basin-sync' && req.method === 'GET') {
-    const telemetry = buildTelemetrySummary();
+    const liveWeather = await getLiveMauleWeather();
+    const telemetry = buildTelemetrySummary(liveWeather);
     const payload = {
       source: 'agritwin-hub-7777',
       status: 'connected',
       timestamp: new Date().toISOString(),
+      weather_source: liveWeather.source,
+      weather_is_real: liveWeather.is_real,
       macro_fwi: telemetry.derived.fwi.value,
       macro_fwi_label: telemetry.derived.fwi.label,
       q_longavi_m3_s: telemetry.derived.longavi_q_m3s,

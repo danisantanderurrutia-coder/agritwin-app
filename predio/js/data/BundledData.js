@@ -20,17 +20,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Franco Arcilloso Rojo Profundo",
         "irrigation_type": "Secano con Riego Suplementario",
         "status": "Óptimo",
-        "zone": "Zona 3 - Cereales & Cobertura"
+        "zone": "Zona 3 - Cereales & Cobertura",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0836, 37.3888],
-            [-122.0812, 37.3888],
-            [-122.0812, 37.3872],
-            [-122.0836, 37.3872],
-            [-122.0836, 37.3888]
+            [
+              -71.6048,
+              -36.2085
+            ],
+            [
+              -71.6024,
+              -36.2085
+            ],
+            [
+              -71.6024,
+              -36.2101
+            ],
+            [
+              -71.6048,
+              -36.2101
+            ],
+            [
+              -71.6048,
+              -36.2085
+            ]
           ]
         ]
       }
@@ -48,17 +65,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Franco con Estructura Estable",
         "irrigation_type": "Secano con Riego Suplementario",
         "status": "Óptimo",
-        "zone": "Zona 4 - Pastoreo & Forraje"
+        "zone": "Zona 4 - Pastoreo & Forraje",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0858, 37.3888],
-            [-122.0838, 37.3888],
-            [-122.0838, 37.3874],
-            [-122.0858, 37.3874],
-            [-122.0858, 37.3888]
+            [
+              -71.607,
+              -36.2085
+            ],
+            [
+              -71.605,
+              -36.2085
+            ],
+            [
+              -71.605,
+              -36.2099
+            ],
+            [
+              -71.607,
+              -36.2099
+            ],
+            [
+              -71.607,
+              -36.2085
+            ]
           ]
         ]
       }
@@ -76,17 +110,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Cuenca Excavada con Geomembrana 1.5mm",
         "irrigation_type": "Matriz Principal de Presurización",
         "status": "Óptimo",
-        "zone": "Zona 5 - Seguridad Hídrica"
+        "zone": "Zona 5 - Seguridad Hídrica",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0810, 37.3888],
-            [-122.0792, 37.3888],
-            [-122.0792, 37.3872],
-            [-122.0810, 37.3872],
-            [-122.0810, 37.3888]
+            [
+              -71.6022,
+              -36.2085
+            ],
+            [
+              -71.6004,
+              -36.2085
+            ],
+            [
+              -71.6004,
+              -36.2101
+            ],
+            [
+              -71.6022,
+              -36.2101
+            ],
+            [
+              -71.6022,
+              -36.2085
+            ]
           ]
         ]
       }
@@ -104,17 +155,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Suelo Vivo Enmendado con Compost Termófilo",
         "irrigation_type": "Nebulización & Microaspersión",
         "status": "Óptimo",
-        "zone": "Zona 1 - Núcleo de Regeneración"
+        "zone": "Zona 1 - Núcleo de Regeneración",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0836, 37.3870],
-            [-122.0820, 37.3870],
-            [-122.0820, 37.3862],
-            [-122.0836, 37.3862],
-            [-122.0836, 37.3870]
+            [
+              -71.6048,
+              -36.2103
+            ],
+            [
+              -71.6032,
+              -36.2103
+            ],
+            [
+              -71.6032,
+              -36.2111
+            ],
+            [
+              -71.6048,
+              -36.2111
+            ],
+            [
+              -71.6048,
+              -36.2103
+            ]
           ]
         ]
       }
@@ -132,17 +200,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Granítico Meteorizado con Cuarzo",
         "irrigation_type": "Doble Línea de Goteo Subsuperficial",
         "status": "Óptimo",
-        "zone": "Zona 2 - Vitivinicultura de Precisión"
+        "zone": "Zona 2 - Vitivinicultura de Precisión",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0818, 37.3860],
-            [-122.0792, 37.3860],
-            [-122.0792, 37.3846],
-            [-122.0818, 37.3846],
-            [-122.0818, 37.3860]
+            [
+              -71.603,
+              -36.2113
+            ],
+            [
+              -71.6004,
+              -36.2113
+            ],
+            [
+              -71.6004,
+              -36.2127
+            ],
+            [
+              -71.603,
+              -36.2127
+            ],
+            [
+              -71.603,
+              -36.2113
+            ]
           ]
         ]
       }
@@ -160,17 +245,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Franco Aluvial Profundo Bien Drenado",
         "irrigation_type": "Microaspersión Antiheladas + Goteo",
         "status": "Óptimo",
-        "zone": "Zona 2 - Fruticultura de Alta Rentabilidad"
+        "zone": "Zona 2 - Fruticultura de Alta Rentabilidad",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0818, 37.3844],
-            [-122.0792, 37.3844],
-            [-122.0792, 37.3830],
-            [-122.0818, 37.3830],
-            [-122.0818, 37.3844]
+            [
+              -71.603,
+              -36.2129
+            ],
+            [
+              -71.6004,
+              -36.2129
+            ],
+            [
+              -71.6004,
+              -36.2143
+            ],
+            [
+              -71.603,
+              -36.2143
+            ],
+            [
+              -71.603,
+              -36.2129
+            ]
           ]
         ]
       }
@@ -188,17 +290,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Pedregoso con Grava Fluvial",
         "irrigation_type": "Déficit Hídrico Controlado (RDI)",
         "status": "Óptimo",
-        "zone": "Zona 2 - Especies Resilientes"
+        "zone": "Zona 2 - Especies Resilientes",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0838, 37.3844],
-            [-122.0820, 37.3844],
-            [-122.0820, 37.3830],
-            [-122.0838, 37.3830],
-            [-122.0838, 37.3844]
+            [
+              -71.605,
+              -36.2129
+            ],
+            [
+              -71.6032,
+              -36.2129
+            ],
+            [
+              -71.6032,
+              -36.2143
+            ],
+            [
+              -71.605,
+              -36.2143
+            ],
+            [
+              -71.605,
+              -36.2129
+            ]
           ]
         ]
       }
@@ -216,17 +335,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Franco Orgánico Enrichido",
         "irrigation_type": "Aspersión Sectorizada",
         "status": "Óptimo",
-        "zone": "Zona 1 - Suelo Vivo & Pastoreo Rotacional"
+        "zone": "Zona 1 - Suelo Vivo & Pastoreo Rotacional",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0836, 37.3860],
-            [-122.0820, 37.3860],
-            [-122.0820, 37.3846],
-            [-122.0836, 37.3846],
-            [-122.0836, 37.3860]
+            [
+              -71.6048,
+              -36.2113
+            ],
+            [
+              -71.6032,
+              -36.2113
+            ],
+            [
+              -71.6032,
+              -36.2127
+            ],
+            [
+              -71.6048,
+              -36.2127
+            ],
+            [
+              -71.6048,
+              -36.2113
+            ]
           ]
         ]
       }
@@ -244,17 +380,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Limoso Aluvial Ribereño Húmedo",
         "irrigation_type": "Microaspersión Bajo Copa",
         "status": "Óptimo",
-        "zone": "Zona 2 - Agroforestería Frutal"
+        "zone": "Zona 2 - Agroforestería Frutal",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0864, 37.3868],
-            [-122.0840, 37.3868],
-            [-122.0840, 37.3854],
-            [-122.0864, 37.3854],
-            [-122.0864, 37.3868]
+            [
+              -71.6076,
+              -36.2105
+            ],
+            [
+              -71.6052,
+              -36.2105
+            ],
+            [
+              -71.6052,
+              -36.2119
+            ],
+            [
+              -71.6076,
+              -36.2119
+            ],
+            [
+              -71.6076,
+              -36.2105
+            ]
           ]
         ]
       }
@@ -272,17 +425,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Mantillo Húmedo con Capa de Hojarasca",
         "irrigation_type": "Nebulización Fina por Microclima",
         "status": "Óptimo",
-        "zone": "Zona 2 - Micología Aplicada"
+        "zone": "Zona 2 - Micología Aplicada",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0864, 37.3852],
-            [-122.0844, 37.3852],
-            [-122.0844, 37.3842],
-            [-122.0864, 37.3842],
-            [-122.0864, 37.3852]
+            [
+              -71.6076,
+              -36.2121
+            ],
+            [
+              -71.6056,
+              -36.2121
+            ],
+            [
+              -71.6056,
+              -36.2131
+            ],
+            [
+              -71.6076,
+              -36.2131
+            ],
+            [
+              -71.6076,
+              -36.2121
+            ]
           ]
         ]
       }
@@ -300,17 +470,34 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Ripario Aluvial de Alta Infiltración",
         "irrigation_type": "Régimen Fluvial Natural / Napa Freática",
         "status": "Óptimo",
-        "zone": "Zona 4 - Corredor Biológico & Mitigación Inundación"
+        "zone": "Zona 4 - Corredor Biológico & Mitigación Inundación",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0866, 37.3840],
-            [-122.0838, 37.3840],
-            [-122.0838, 37.3826],
-            [-122.0866, 37.3826],
-            [-122.0866, 37.3840]
+            [
+              -71.6078,
+              -36.2133
+            ],
+            [
+              -71.605,
+              -36.2133
+            ],
+            [
+              -71.605,
+              -36.2147
+            ],
+            [
+              -71.6078,
+              -36.2147
+            ],
+            [
+              -71.6078,
+              -36.2133
+            ]
           ]
         ]
       }
@@ -328,51 +515,71 @@ export const BUNDLED_PARCELS = {
         "soil_type": "Secano Costero / Transición Andina",
         "irrigation_type": "Lluvia Estacional / Desbroce Preventivo",
         "status": "Precaución",
-        "zone": "Zona 4 - Barrera Cortafuego Predial"
+        "zone": "Zona 4 - Barrera Cortafuego Predial",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0790, 37.3888],
-            [-122.0770, 37.3888],
-            [-122.0770, 37.3830],
-            [-122.0790, 37.3830],
-            [-122.0790, 37.3888]
+            [
+              -71.6002,
+              -36.2085
+            ],
+            [
+              -71.5982,
+              -36.2085
+            ],
+            [
+              -71.5982,
+              -36.2143
+            ],
+            [
+              -71.6002,
+              -36.2143
+            ],
+            [
+              -71.6002,
+              -36.2085
+            ]
           ]
         ]
       }
     }
   ]
-}
-;
+};
 
 export const BUNDLED_ENTITIES = {
   "house": {
     "id": "house_main",
     "name": "Casa Principal - Predio Meniels",
     "location": {
-      "longitude": -122.0838,
-      "latitude": 37.3858,
+      "longitude": -71.605,
+      "latitude": -36.2115,
       "altitude": 0.5
     },
     "details": {
-      "propertyName": "Meniels",
+      "propertyName": "Fundo Meniel",
       "locationRegion": "Parral, Región del Maule, Chile",
-      "coordinatesLabel": "36.14°S, 71.82°O",
+      "coordinatesLabel": "36.21°S, 71.60°O",
       "houseSizeM2": 180,
       "occupants": 4,
       "solarPanels": {
         "model": "Mono-PERC 550W Tier 1 Bifacial",
         "quantity": 18,
         "capacityKwp": 9.9,
-        "monthlyGenKwh": 1380
+        "monthlyGenKwh": 1380,
+        "is_simulated": true,
+        "simulation_basis": "Simulado (Modelo fotovoltaico proyectado)"
       },
       "heating": {
         "type": "Estufa Bosca Doble Cámara (Combustión Lenta)",
         "model": "Bosca Limit 380",
         "capacityKw": 12,
-        "woodSeasonM3": 4.5
+        "woodSeasonM3": 4.5,
+        "is_simulated": true,
+        "simulation_basis": "Simulado (Modelo térmico proyectado)"
       },
       "metabolism": {
         "dailyKcalTotal": 8000,
@@ -380,8 +587,12 @@ export const BUNDLED_ENTITIES = {
         "monthlyPowerKwh": 320,
         "dailyWaterLiters": 600,
         "monthlyWaterM3": 18,
-        "annualRainHarvestLiters": 240000
-      }
+        "annualRainHarvestLiters": 240000,
+        "is_simulated": true,
+        "simulation_basis": "Simulado (Estimación de consumo prototipo)"
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Estimación de ingeniería bioclimática (Simulado)"
     }
   },
   "sensors": [
@@ -389,24 +600,38 @@ export const BUNDLED_ENTITIES = {
       "id": "IOT-SN-01",
       "name": "Sonda FDR Multinivel Suelo Trigo Candeal",
       "hardware": "ESP32-S3 + Sonda FDR 4 Niveles (20, 40, 60, 100 cm)",
-      "protocol": "LoRaWAN EU868",
+      "protocol": "LoRaWAN US915 / AU915 (Chile SUBTEL)",
       "location": {
-        "longitude": -122.0825,
-        "latitude": 37.3880,
-        "altitude": 15.0
+        "longitude": -71.6037,
+        "latitude": -36.2093,
+        "altitude": 15
       },
       "telemetry": {
         "soilMoisture": 38.5,
         "temperature": 23.8,
-        "humidity": 56.0,
-        "batteryLevel": 96.0,
+        "humidity": 56,
+        "batteryLevel": 96,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 41.2, "temperature": 18.5 },
-        { "time": "09:00", "moisture": 39.8, "temperature": 21.0 },
-        { "time": "10:00", "moisture": 38.5, "temperature": 23.8 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 41.2,
+          "temperature": 18.5
+        },
+        {
+          "time": "09:00",
+          "moisture": 39.8,
+          "temperature": 21
+        },
+        {
+          "time": "10:00",
+          "moisture": 38.5,
+          "temperature": 23.8
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-SN-02",
@@ -414,22 +639,36 @@ export const BUNDLED_ENTITIES = {
       "hardware": "ESP32-WROOM-32U + Sensor TDR Suelo Vivo",
       "protocol": "MQTT / TLS",
       "location": {
-        "longitude": -122.0828,
-        "latitude": 37.3866,
-        "altitude": 15.0
+        "longitude": -71.604,
+        "latitude": -36.2107,
+        "altitude": 15
       },
       "telemetry": {
         "soilMoisture": 45.8,
         "temperature": 24.2,
-        "humidity": 68.0,
-        "batteryLevel": 92.0,
+        "humidity": 68,
+        "batteryLevel": 92,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 48.0, "temperature": 19.2 },
-        { "time": "09:00", "moisture": 46.9, "temperature": 21.8 },
-        { "time": "10:00", "moisture": 45.8, "temperature": 24.2 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 48,
+          "temperature": 19.2
+        },
+        {
+          "time": "09:00",
+          "moisture": 46.9,
+          "temperature": 21.8
+        },
+        {
+          "time": "10:00",
+          "moisture": 45.8,
+          "temperature": 24.2
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-SN-03",
@@ -437,22 +676,36 @@ export const BUNDLED_ENTITIES = {
       "hardware": "ESP32-S3 LoRaWAN + Termometría Subterránea",
       "protocol": "LoRaWAN US915",
       "location": {
-        "longitude": -122.0805,
-        "latitude": 37.3837,
-        "altitude": 15.0
+        "longitude": -71.6017,
+        "latitude": -36.2136,
+        "altitude": 15
       },
       "telemetry": {
         "soilMoisture": 36.4,
         "temperature": 22.4,
         "humidity": 60.5,
-        "batteryLevel": 94.0,
+        "batteryLevel": 94,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 39.0, "temperature": 17.5 },
-        { "time": "09:00", "moisture": 37.6, "temperature": 20.1 },
-        { "time": "10:00", "moisture": 36.4, "temperature": 22.4 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 39,
+          "temperature": 17.5
+        },
+        {
+          "time": "09:00",
+          "moisture": 37.6,
+          "temperature": 20.1
+        },
+        {
+          "time": "10:00",
+          "moisture": 36.4,
+          "temperature": 22.4
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-SN-04",
@@ -460,22 +713,36 @@ export const BUNDLED_ENTITIES = {
       "hardware": "LoRaWAN Sonda Capacitiva Multi-Estrato",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0805,
-        "latitude": 37.3853,
-        "altitude": 15.0
+        "longitude": -71.6017,
+        "latitude": -36.212,
+        "altitude": 15
       },
       "telemetry": {
         "soilMoisture": 32.1,
         "temperature": 25.1,
-        "humidity": 52.0,
-        "batteryLevel": 97.0,
+        "humidity": 52,
+        "batteryLevel": 97,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 34.5, "temperature": 19.8 },
-        { "time": "09:00", "moisture": 33.2, "temperature": 22.5 },
-        { "time": "10:00", "moisture": 32.1, "temperature": 25.1 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 34.5,
+          "temperature": 19.8
+        },
+        {
+          "time": "09:00",
+          "moisture": 33.2,
+          "temperature": 22.5
+        },
+        {
+          "time": "10:00",
+          "moisture": 32.1,
+          "temperature": 25.1
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-SN-05",
@@ -483,45 +750,73 @@ export const BUNDLED_ENTITIES = {
       "hardware": "ESP32-C3 Ultra Low Power",
       "protocol": "LoRaWAN US915",
       "location": {
-        "longitude": -122.0829,
-        "latitude": 37.3837,
-        "altitude": 15.0
+        "longitude": -71.6041,
+        "latitude": -36.2136,
+        "altitude": 15
       },
       "telemetry": {
         "soilMoisture": 27.8,
         "temperature": 25.9,
-        "humidity": 49.0,
-        "batteryLevel": 95.0,
+        "humidity": 49,
+        "batteryLevel": 95,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 30.1, "temperature": 20.4 },
-        { "time": "09:00", "moisture": 28.9, "temperature": 23.2 },
-        { "time": "10:00", "moisture": 27.8, "temperature": 25.9 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 30.1,
+          "temperature": 20.4
+        },
+        {
+          "time": "09:00",
+          "moisture": 28.9,
+          "temperature": 23.2
+        },
+        {
+          "time": "10:00",
+          "moisture": 27.8,
+          "temperature": 25.9
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-SN-06",
       "name": "Sonda Suelo Pradera Regenerativa Polifítica",
       "hardware": "ESP32-S3 + Electrodo Nitratos & Humedad",
-      "protocol": "LoRaWAN EU868",
+      "protocol": "LoRaWAN US915 / AU915 (Chile SUBTEL)",
       "location": {
-        "longitude": -122.0828,
-        "latitude": 37.3853,
-        "altitude": 15.0
+        "longitude": -71.604,
+        "latitude": -36.212,
+        "altitude": 15
       },
       "telemetry": {
-        "soilMoisture": 42.0,
-        "temperature": 23.0,
-        "humidity": 62.0,
-        "batteryLevel": 98.0,
+        "soilMoisture": 42,
+        "temperature": 23,
+        "humidity": 62,
+        "batteryLevel": 98,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 44.5, "temperature": 18.2 },
-        { "time": "09:00", "moisture": 43.1, "temperature": 20.8 },
-        { "time": "10:00", "moisture": 42.0, "temperature": 23.0 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 44.5,
+          "temperature": 18.2
+        },
+        {
+          "time": "09:00",
+          "moisture": 43.1,
+          "temperature": 20.8
+        },
+        {
+          "time": "10:00",
+          "moisture": 42,
+          "temperature": 23
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-DENDRO-01",
@@ -529,23 +824,37 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Dendrómetro de Precisión Ecomatik LVDT 1 µm + LoRaWAN",
       "protocol": "LoRaWAN US915",
       "location": {
-        "longitude": -122.0800,
-        "latitude": 37.3838,
-        "altitude": 16.0
+        "longitude": -71.6012,
+        "latitude": -36.2135,
+        "altitude": 16
       },
       "telemetry": {
         "soilMoisture": 35.8,
         "trunkContractionMicrons": 24.5,
         "temperature": 22.8,
-        "humidity": 58.0,
-        "batteryLevel": 99.0,
+        "humidity": 58,
+        "batteryLevel": 99,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 38.0, "temperature": 17.8 },
-        { "time": "09:00", "moisture": 36.9, "temperature": 20.5 },
-        { "time": "10:00", "moisture": 35.8, "temperature": 22.8 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 38,
+          "temperature": 17.8
+        },
+        {
+          "time": "09:00",
+          "moisture": 36.9,
+          "temperature": 20.5
+        },
+        {
+          "time": "10:00",
+          "moisture": 35.8,
+          "temperature": 22.8
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-DENDRO-02",
@@ -553,23 +862,37 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Micro-dendrómetro de sarmiento LVDT + ESP32 LoRa",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0800,
-        "latitude": 37.3852,
-        "altitude": 16.0
+        "longitude": -71.6012,
+        "latitude": -36.2121,
+        "altitude": 16
       },
       "telemetry": {
         "soilMoisture": 31.9,
         "trunkContractionMicrons": 18.2,
         "temperature": 24.9,
-        "humidity": 53.0,
-        "batteryLevel": 96.0,
+        "humidity": 53,
+        "batteryLevel": 96,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 34.0, "temperature": 19.5 },
-        { "time": "09:00", "moisture": 32.8, "temperature": 22.3 },
-        { "time": "10:00", "moisture": 31.9, "temperature": 24.9 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 34,
+          "temperature": 19.5
+        },
+        {
+          "time": "09:00",
+          "moisture": 32.8,
+          "temperature": 22.3
+        },
+        {
+          "time": "10:00",
+          "moisture": 31.9,
+          "temperature": 24.9
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-PEST-01",
@@ -577,22 +900,36 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Trampa Delta Automatizada con Cámara RGB & Feromona",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0812,
-        "latitude": 37.3855,
-        "altitude": 16.0
+        "longitude": -71.6024,
+        "latitude": -36.2118,
+        "altitude": 16
       },
       "telemetry": {
-        "soilMoisture": 33.0,
+        "soilMoisture": 33,
         "capturasDiarias": 2,
         "temperaturaMedia": 23.5,
-        "batteryLevel": 93.0,
+        "batteryLevel": 93,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 35.0, "temperature": 18.0 },
-        { "time": "09:00", "moisture": 34.0, "temperature": 21.0 },
-        { "time": "10:00", "moisture": 33.0, "temperature": 23.5 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 35,
+          "temperature": 18
+        },
+        {
+          "time": "09:00",
+          "moisture": 34,
+          "temperature": 21
+        },
+        {
+          "time": "10:00",
+          "moisture": 33,
+          "temperature": 23.5
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-RIVER-01",
@@ -600,9 +937,9 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Sensor Ultrasónico de Nivel Hidráulico MaxBotix + ESP32 LoRa",
       "protocol": "LoRaWAN US915",
       "location": {
-        "longitude": -122.0855,
-        "latitude": 37.3833,
-        "altitude": 14.0
+        "longitude": -71.6067,
+        "latitude": -36.214,
+        "altitude": 14
       },
       "telemetry": {
         "soilMoisture": 58.4,
@@ -610,14 +947,28 @@ export const BUNDLED_ENTITIES = {
         "flowRateM3s": 1.42,
         "floodRisk": "Bajo (Caudal Estable)",
         "temperature": 18.2,
-        "batteryLevel": 98.0,
+        "batteryLevel": 98,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 62.0, "temperature": 15.0 },
-        { "time": "09:00", "moisture": 60.1, "temperature": 16.8 },
-        { "time": "10:00", "moisture": 58.4, "temperature": 18.2 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 62,
+          "temperature": 15
+        },
+        {
+          "time": "09:00",
+          "moisture": 60.1,
+          "temperature": 16.8
+        },
+        {
+          "time": "10:00",
+          "moisture": 58.4,
+          "temperature": 18.2
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-PIEZO-01",
@@ -625,47 +976,75 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Transductor Piezoresistivo Subterráneo 0-30m + 4G LTE-M",
       "protocol": "MQTT / TLS",
       "location": {
-        "longitude": -122.0845,
-        "latitude": 37.3848,
-        "altitude": 14.0
+        "longitude": -71.6057,
+        "latitude": -36.2125,
+        "altitude": 14
       },
       "telemetry": {
-        "soilMoisture": 51.0,
+        "soilMoisture": 51,
         "groundwaterDepthMeters": -8.4,
-        "aquiferRecargaPct": 68.0,
+        "aquiferRecargaPct": 68,
         "waterTemperature": 15.6,
-        "batteryLevel": 97.0,
+        "batteryLevel": 97,
         "status": "warning"
       },
       "history": [
-        { "time": "08:00", "moisture": 53.0, "temperature": 15.4 },
-        { "time": "09:00", "moisture": 52.0, "temperature": 15.5 },
-        { "time": "10:00", "moisture": 51.0, "temperature": 15.6 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 53,
+          "temperature": 15.4
+        },
+        {
+          "time": "09:00",
+          "moisture": 52,
+          "temperature": 15.5
+        },
+        {
+          "time": "10:00",
+          "moisture": 51,
+          "temperature": 15.6
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-BOYA-01",
       "name": "Boya Flotante IoT de Calidad de Agua (Tranque Australiano)",
       "hardware": "Boya Marina Mini Solar + Sondas Multiparámetro (OD, pH, CE)",
-      "protocol": "LoRaWAN EU868",
+      "protocol": "LoRaWAN US915 / AU915 (Chile SUBTEL)",
       "location": {
-        "longitude": -122.0801,
-        "latitude": 37.3880,
-        "altitude": 15.0
+        "longitude": -71.6013,
+        "latitude": -36.2093,
+        "altitude": 15
       },
       "telemetry": {
-        "soilMoisture": 100.0,
+        "soilMoisture": 100,
         "waterTempC": 19.4,
         "dissolvedOxygenPpm": 7.8,
         "evaporationRateMmDay": 4.6,
-        "batteryLevel": 99.0,
+        "batteryLevel": 99,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 100.0, "temperature": 16.5 },
-        { "time": "09:00", "moisture": 100.0, "temperature": 18.0 },
-        { "time": "10:00", "moisture": 100.0, "temperature": 19.4 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 100,
+          "temperature": 16.5
+        },
+        {
+          "time": "09:00",
+          "moisture": 100,
+          "temperature": 18
+        },
+        {
+          "time": "10:00",
+          "moisture": 100,
+          "temperature": 19.4
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-SOLAR-01",
@@ -673,24 +1052,38 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Kipp & Zonen CMP3 + Sensor Quantum PAR LI-COR + LoRa",
       "protocol": "Modbus RS485 / LoRaWAN",
       "location": {
-        "longitude": -122.0848,
-        "latitude": 37.3881,
-        "altitude": 18.0
+        "longitude": -71.606,
+        "latitude": -36.2092,
+        "altitude": 18
       },
       "telemetry": {
-        "soilMoisture": 36.0,
-        "solarIrradianceWm2": 860.0,
-        "parUmols": 1720.0,
-        "pvDailyYieldKwh": 485.0,
+        "soilMoisture": 36,
+        "solarIrradianceWm2": 860,
+        "parUmols": 1720,
+        "pvDailyYieldKwh": 485,
         "temperature": 25.2,
-        "batteryLevel": 100.0,
+        "batteryLevel": 100,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 38.0, "temperature": 19.0 },
-        { "time": "09:00", "moisture": 37.1, "temperature": 22.4 },
-        { "time": "10:00", "moisture": 36.0, "temperature": 25.2 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 38,
+          "temperature": 19
+        },
+        {
+          "time": "09:00",
+          "moisture": 37.1,
+          "temperature": 22.4
+        },
+        {
+          "time": "10:00",
+          "moisture": 36,
+          "temperature": 25.2
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-WX-01",
@@ -698,9 +1091,9 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Torre Agrometeorológica Automática Grado OMM + Cell LTE-M / LoRa Gateway",
       "protocol": "HTTP REST / TLS (Red Compartida Microzona)",
       "location": {
-        "longitude": -122.0838,
-        "latitude": 37.3858,
-        "altitude": 20.0
+        "longitude": -71.605,
+        "latitude": -36.2115,
+        "altitude": 20
       },
       "categoryMaule": "microclimate_station",
       "priority": "Critica",
@@ -708,14 +1101,14 @@ export const BUNDLED_ENTITIES = {
         "soilMoisture": 31.4,
         "temperature": 18.5,
         "shelterTemp2mC": 18.5,
-        "humidity": 68.0,
+        "humidity": 68,
         "atmosphericPressureHpa": 1014.2,
-        "solarRadiationWm2": 890.0,
-        "rainAccumMm": 0.0,
+        "solarRadiationWm2": 890,
+        "rainAccumMm": 0,
         "et0PenmanMonteith": 4.2,
         "coldHoursAccumulated": 745,
         "degreeDaysAccumulated": 390,
-        "batteryLevel": 98.0,
+        "batteryLevel": 98,
         "status": "optimal",
         "sprayWindow": {
           "status": "active",
@@ -730,10 +1123,24 @@ export const BUNDLED_ENTITIES = {
         }
       },
       "history": [
-        { "time": "08:00", "moisture": 35.0, "temperature": 14.0 },
-        { "time": "09:00", "moisture": 33.2, "temperature": 16.5 },
-        { "time": "10:00", "moisture": 31.4, "temperature": 18.5 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 35,
+          "temperature": 14
+        },
+        {
+          "time": "09:00",
+          "moisture": 33.2,
+          "temperature": 16.5
+        },
+        {
+          "time": "10:00",
+          "moisture": 31.4,
+          "temperature": 18.5
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-WIND-01",
@@ -741,30 +1148,47 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Gill WindSonic 3D + Davis Anemometer + ESP32-S3 LoRa",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0845,
-        "latitude": 37.3876,
-        "altitude": 22.0
+        "longitude": -71.6057,
+        "latitude": -36.2097,
+        "altitude": 22
       },
       "categoryMaule": "wind_drift",
       "priority": "Alta",
       "telemetry": {
-        "soilMoisture": 28.0,
+        "soilMoisture": 28,
         "temperature": 19.8,
-        "humidity": 45.0,
+        "humidity": 45,
         "windSpeedKmH": 8.4,
         "windDirectionDeg": 75,
         "windDirectionText": "ENE (Precordillera Andina)",
         "gustSpeedKmH": 14.2,
         "fwiIndex": 24.5,
         "spraySuitability": "Apto (Viento bajo umbral de deriva 12 km/h)",
-        "batteryLevel": 99.0,
+        "batteryLevel": 99,
         "status": "optimal"
       },
       "history": [
-        { "time": "08:00", "moisture": 30.0, "temperature": 15.0, "windSpeed": 4.5 },
-        { "time": "09:00", "moisture": 29.1, "temperature": 17.5, "windSpeed": 6.8 },
-        { "time": "10:00", "moisture": 28.0, "temperature": 19.8, "windSpeed": 8.4 }
-      ]
+        {
+          "time": "08:00",
+          "moisture": 30,
+          "temperature": 15,
+          "windSpeed": 4.5
+        },
+        {
+          "time": "09:00",
+          "moisture": 29.1,
+          "temperature": 17.5,
+          "windSpeed": 6.8
+        },
+        {
+          "time": "10:00",
+          "moisture": 28,
+          "temperature": 19.8,
+          "windSpeed": 8.4
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-FROST-01",
@@ -772,8 +1196,8 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Nodo LoRaWAN Ultra-Low-Power (ESP32-C3) + SHT45 Termo-higrómetro a 1.2 m",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0818,
-        "latitude": 37.3832,
+        "longitude": -71.603,
+        "latitude": -36.2141,
         "altitude": 13.5
       },
       "categoryMaule": "frost_fruit_height",
@@ -788,7 +1212,7 @@ export const BUNDLED_ENTITIES = {
         "dewPointC": -2.1,
         "windSpeedKmH": 1.8,
         "frostType": "Radiativa (Inversión Térmica en Cuenca)",
-        "batteryLevel": 97.0,
+        "batteryLevel": 97,
         "status": "critical",
         "decision": {
           "code": "ALERTA_HELADA_BULBO_BAJO",
@@ -799,10 +1223,27 @@ export const BUNDLED_ENTITIES = {
         }
       },
       "history": [
-        { "time": "04:00", "moisture": 37.0, "fruitHeightTemp": 1.2, "temperature": 1.2 },
-        { "time": "05:00", "moisture": 36.8, "fruitHeightTemp": 0.1, "temperature": 0.1 },
-        { "time": "06:00", "moisture": 36.5, "fruitHeightTemp": -0.8, "temperature": -0.8 }
-      ]
+        {
+          "time": "04:00",
+          "moisture": 37,
+          "fruitHeightTemp": 1.2,
+          "temperature": 1.2
+        },
+        {
+          "time": "05:00",
+          "moisture": 36.8,
+          "fruitHeightTemp": 0.1,
+          "temperature": 0.1
+        },
+        {
+          "time": "06:00",
+          "moisture": 36.5,
+          "fruitHeightTemp": -0.8,
+          "temperature": -0.8
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-FROST-02",
@@ -810,8 +1251,8 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Nodo LoRaWAN Ultra-Low-Power + SHT45 a 1.0 m",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0808,
-        "latitude": 37.3846,
+        "longitude": -71.602,
+        "latitude": -36.2127,
         "altitude": 15.2
       },
       "categoryMaule": "frost_fruit_height",
@@ -820,13 +1261,13 @@ export const BUNDLED_ENTITIES = {
         "soilMoisture": 32.8,
         "fruitHeightTempC": 1.4,
         "temperature": 1.4,
-        "shelterTemp2mC": 3.0,
+        "shelterTemp2mC": 3,
         "deltaHeightShelterC": -1.6,
         "wetBulbTempC": 0.5,
         "dewPointC": -0.2,
         "windSpeedKmH": 3.2,
         "frostType": "Flujo de Ladera (Sin acumulación crítica)",
-        "batteryLevel": 98.0,
+        "batteryLevel": 98,
         "status": "warning",
         "decision": {
           "code": "PREVENTIVO_LADERA",
@@ -837,10 +1278,27 @@ export const BUNDLED_ENTITIES = {
         }
       },
       "history": [
-        { "time": "04:00", "moisture": 33.5, "fruitHeightTemp": 2.8, "temperature": 2.8 },
-        { "time": "05:00", "moisture": 33.0, "fruitHeightTemp": 2.0, "temperature": 2.0 },
-        { "time": "06:00", "moisture": 32.8, "fruitHeightTemp": 1.4, "temperature": 1.4 }
-      ]
+        {
+          "time": "04:00",
+          "moisture": 33.5,
+          "fruitHeightTemp": 2.8,
+          "temperature": 2.8
+        },
+        {
+          "time": "05:00",
+          "moisture": 33,
+          "fruitHeightTemp": 2,
+          "temperature": 2
+        },
+        {
+          "time": "06:00",
+          "moisture": 32.8,
+          "fruitHeightTemp": 1.4,
+          "temperature": 1.4
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-LEAF-01",
@@ -848,8 +1306,8 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Sensor de Resistencia Foliar PHYTOS-31 + LoRaWAN",
       "protocol": "LoRaWAN AU915",
       "location": {
-        "longitude": -122.0822,
-        "latitude": 37.3850,
+        "longitude": -71.6034,
+        "latitude": -36.2123,
         "altitude": 15.5
       },
       "categoryMaule": "foliar_wetness",
@@ -857,13 +1315,13 @@ export const BUNDLED_ENTITIES = {
       "telemetry": {
         "soilMoisture": 41.2,
         "leafWetnessHours": 11.5,
-        "leafWetnessPct": 100.0,
+        "leafWetnessPct": 100,
         "temperature": 17.2,
-        "humidity": 94.0,
+        "humidity": 94,
         "botrytisRiskIndex": 0.82,
         "venturiaRiskIndex": 0.65,
-        "oidioRiskIndex": 0.40,
-        "batteryLevel": 96.0,
+        "oidioRiskIndex": 0.4,
+        "batteryLevel": 96,
         "status": "warning",
         "decision": {
           "code": "GATILLAR_FUNGICIDA_RIESGO_REAL",
@@ -874,10 +1332,27 @@ export const BUNDLED_ENTITIES = {
         }
       },
       "history": [
-        { "time": "04:00", "moisture": 41.8, "wetnessHours": 7.5, "temperature": 14.5 },
-        { "time": "05:00", "moisture": 41.5, "wetnessHours": 9.5, "temperature": 15.8 },
-        { "time": "06:00", "moisture": 41.2, "wetnessHours": 11.5, "temperature": 17.2 }
-      ]
+        {
+          "time": "04:00",
+          "moisture": 41.8,
+          "wetnessHours": 7.5,
+          "temperature": 14.5
+        },
+        {
+          "time": "05:00",
+          "moisture": 41.5,
+          "wetnessHours": 9.5,
+          "temperature": 15.8
+        },
+        {
+          "time": "06:00",
+          "moisture": 41.2,
+          "wetnessHours": 11.5,
+          "temperature": 17.2
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     },
     {
       "id": "IOT-FLOW-01",
@@ -885,24 +1360,24 @@ export const BUNDLED_ENTITIES = {
       "hardware": "Caudalímetro Electromagnético DN100 + Modem DGA MEE 4G LTE-M",
       "protocol": "MQTT / TLS (Norma DGA Res. 1238)",
       "location": {
-        "longitude": -122.0835,
-        "latitude": 37.3842,
+        "longitude": -71.6047,
+        "latitude": -36.2131,
         "altitude": 14.8
       },
       "categoryMaule": "water_canal_dga",
       "priority": "Alta",
       "telemetry": {
-        "soilMoisture": 35.0,
+        "soilMoisture": 35,
         "instantFlowLps": 24.5,
-        "accumulatedVolumeM3": 18450.0,
+        "accumulatedVolumeM3": 18450,
         "pumpDailyHours": 5.8,
         "energyCostCLPDaily": 18900,
         "dgaCompliance": "Transmitido Conforme (Resolución MEE DGA)",
-        "dgaBatchCode": "DGA-MEE-2026-PARRAL-0912",
+        "dgaBatchCode": "DGA-MEE-ESTIMADO-SIMULADO",
         "daysToNextCanalTurn": 4,
-        "requiredVolumeTurnM3": 1150.0,
+        "requiredVolumeTurnM3": 1150,
         "soilWaterReserveDays": 4.2,
-        "batteryLevel": 100.0,
+        "batteryLevel": 100,
         "status": "optimal",
         "decision": {
           "code": "GESTION_TURNO_CANAL",
@@ -912,10 +1387,24 @@ export const BUNDLED_ENTITIES = {
         }
       },
       "history": [
-        { "time": "08:00", "flowLps": 0.0, "totalM3": 18450.0 },
-        { "time": "09:00", "flowLps": 24.5, "totalM3": 18538.0 },
-        { "time": "10:00", "flowLps": 24.5, "totalM3": 18626.0 }
-      ]
+        {
+          "time": "08:00",
+          "flowLps": 0,
+          "totalM3": 18450
+        },
+        {
+          "time": "09:00",
+          "flowLps": 24.5,
+          "totalM3": 18538
+        },
+        {
+          "time": "10:00",
+          "flowLps": 24.5,
+          "totalM3": 18626
+        }
+      ],
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Telemetría modelada (Simulado)"
     }
   ],
   "trees": [
@@ -928,8 +1417,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 9.5,
       "canopyDiameterMeters": 6.8,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 0.0,
-      "location": { "longitude": -122.0858, "latitude": 37.3835 }
+      "estimatedYieldKg": 0,
+      "location": {
+        "longitude": -71.607,
+        "latitude": -36.2138
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-BOL-01",
@@ -937,11 +1431,16 @@ export const BUNDLED_ENTITIES = {
       "variety": "Boldo Esclerófilo Nativo",
       "cropCategory": "Bosque Nativo / Medicina",
       "plantedYear": 2010,
-      "heightMeters": 8.0,
+      "heightMeters": 8,
       "canopyDiameterMeters": 5.4,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 140.0,
-      "location": { "longitude": -122.0850, "latitude": 37.3832 }
+      "estimatedYieldKg": 140,
+      "location": {
+        "longitude": -71.6062,
+        "latitude": -36.2141
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-MAI-01",
@@ -952,8 +1451,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 10.2,
       "canopyDiameterMeters": 5.8,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 0.0,
-      "location": { "longitude": -122.0844, "latitude": 37.3830 }
+      "estimatedYieldKg": 0,
+      "location": {
+        "longitude": -71.6056,
+        "latitude": -36.2143
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-SAU-01",
@@ -964,8 +1468,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 11.5,
       "canopyDiameterMeters": 7.2,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 0.0,
-      "location": { "longitude": -122.0862, "latitude": 37.3838 }
+      "estimatedYieldKg": 0,
+      "location": {
+        "longitude": -71.6074,
+        "latitude": -36.2135
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-MAQ-01",
@@ -976,8 +1485,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 3.8,
       "canopyDiameterMeters": 2.6,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 85.0,
-      "location": { "longitude": -122.0848, "latitude": 37.3836 }
+      "estimatedYieldKg": 85,
+      "location": {
+        "longitude": -71.606,
+        "latitude": -36.2137
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-AVE-01",
@@ -988,8 +1502,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 4.8,
       "canopyDiameterMeters": 3.4,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 620.0,
-      "location": { "longitude": -122.0852, "latitude": 37.3862 }
+      "estimatedYieldKg": 620,
+      "location": {
+        "longitude": -71.6064,
+        "latitude": -36.2111
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-AVE-02",
@@ -998,10 +1517,15 @@ export const BUNDLED_ENTITIES = {
       "cropCategory": "Fruto Seco de Exportación",
       "plantedYear": 2019,
       "heightMeters": 4.2,
-      "canopyDiameterMeters": 3.0,
+      "canopyDiameterMeters": 3,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 540.0,
-      "location": { "longitude": -122.0846, "latitude": 37.3860 }
+      "estimatedYieldKg": 540,
+      "location": {
+        "longitude": -71.6058,
+        "latitude": -36.2113
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-NOG-01",
@@ -1012,8 +1536,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 7.5,
       "canopyDiameterMeters": 6.2,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 820.0,
-      "location": { "longitude": -122.0858, "latitude": 37.3864 }
+      "estimatedYieldKg": 820,
+      "location": {
+        "longitude": -71.607,
+        "latitude": -36.2109
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-SHI-01",
@@ -1024,8 +1553,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 0.8,
       "canopyDiameterMeters": 1.4,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 210.0,
-      "location": { "longitude": -122.0854, "latitude": 37.3847 }
+      "estimatedYieldKg": 210,
+      "location": {
+        "longitude": -71.6066,
+        "latitude": -36.2126
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-VIN-01",
@@ -1034,10 +1568,15 @@ export const BUNDLED_ENTITIES = {
       "cropCategory": "Vid Patrimonial del Maule",
       "plantedYear": 2015,
       "heightMeters": 1.8,
-      "canopyDiameterMeters": 2.0,
+      "canopyDiameterMeters": 2,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 4200.0,
-      "location": { "longitude": -122.0805, "latitude": 37.3855 }
+      "estimatedYieldKg": 4200,
+      "location": {
+        "longitude": -71.6017,
+        "latitude": -36.2118
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-VIN-02",
@@ -1046,10 +1585,15 @@ export const BUNDLED_ENTITIES = {
       "cropCategory": "Vid Patrimonial del Maule",
       "plantedYear": 2017,
       "heightMeters": 1.8,
-      "canopyDiameterMeters": 2.0,
+      "canopyDiameterMeters": 2,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 3800.0,
-      "location": { "longitude": -122.0812, "latitude": 37.3850 }
+      "estimatedYieldKg": 3800,
+      "location": {
+        "longitude": -71.6024,
+        "latitude": -36.2123
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-CER-01",
@@ -1060,8 +1604,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 3.6,
       "canopyDiameterMeters": 3.2,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 5600.0,
-      "location": { "longitude": -122.0805, "latitude": 37.3838 }
+      "estimatedYieldKg": 5600,
+      "location": {
+        "longitude": -71.6017,
+        "latitude": -36.2135
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-CER-02",
@@ -1072,8 +1621,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 3.4,
       "canopyDiameterMeters": 2.9,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 4900.0,
-      "location": { "longitude": -122.0812, "latitude": 37.3835 }
+      "estimatedYieldKg": 4900,
+      "location": {
+        "longitude": -71.6024,
+        "latitude": -36.2138
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-OLI-01",
@@ -1082,22 +1636,32 @@ export const BUNDLED_ENTITIES = {
       "cropCategory": "Olivo de Resiliencia Climática",
       "plantedYear": 2017,
       "heightMeters": 4.5,
-      "canopyDiameterMeters": 4.0,
+      "canopyDiameterMeters": 4,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 1850.0,
-      "location": { "longitude": -122.0828, "latitude": 37.3838 }
+      "estimatedYieldKg": 1850,
+      "location": {
+        "longitude": -71.604,
+        "latitude": -36.2135
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-AGRI-01",
-      "species": "Castanea sativa",
-      "variety": "Castaño Marrón de Lyon (Agroforestería)",
-      "cropCategory": "Frutales Mayores & Biomasa",
-      "plantedYear": 2021,
-      "heightMeters": 6.5,
-      "canopyDiameterMeters": 5.0,
+      "species": "Agrivoltaic Array",
+      "variety": "Parque Agrovoltaico Elevado 120 kWp Bifacial",
+      "cropCategory": "Energía Limpia & Sombra Agrícola",
+      "plantedYear": 2023,
+      "heightMeters": 3.5,
+      "canopyDiameterMeters": 14,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 420.0,
-      "location": { "longitude": -122.0848, "latitude": 37.3882 }
+      "estimatedYieldKg": 0,
+      "location": {
+        "longitude": -71.605,
+        "latitude": -36.2091
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-TRANQUE-01",
@@ -1106,10 +1670,15 @@ export const BUNDLED_ENTITIES = {
       "cropCategory": "Infraestructura Hídrica",
       "plantedYear": 2021,
       "heightMeters": 2.5,
-      "canopyDiameterMeters": 18.0,
+      "canopyDiameterMeters": 18,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 0.0,
-      "location": { "longitude": -122.0801, "latitude": 37.3880 }
+      "estimatedYieldKg": 0,
+      "location": {
+        "longitude": -71.6013,
+        "latitude": -36.2093
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-BIO-01",
@@ -1118,10 +1687,15 @@ export const BUNDLED_ENTITIES = {
       "cropCategory": "Biopreparados Agroecológicos",
       "plantedYear": 2022,
       "heightMeters": 4.2,
-      "canopyDiameterMeters": 8.0,
+      "canopyDiameterMeters": 8,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 12000.0,
-      "location": { "longitude": -122.0828, "latitude": 37.3866 }
+      "estimatedYieldKg": 12000,
+      "location": {
+        "longitude": -71.604,
+        "latitude": -36.2107
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-PIN-01",
@@ -1129,11 +1703,16 @@ export const BUNDLED_ENTITIES = {
       "variety": "Pino Insigne con Manejo Silvopastoril",
       "cropCategory": "Cortina Cortafuego Silvopastoril",
       "plantedYear": 2014,
-      "heightMeters": 14.0,
+      "heightMeters": 14,
       "canopyDiameterMeters": 4.8,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 980.0,
-      "location": { "longitude": -122.0782, "latitude": 37.3860 }
+      "estimatedYieldKg": 980,
+      "location": {
+        "longitude": -71.5994,
+        "latitude": -36.2113
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     },
     {
       "id": "CROP-EUC-01",
@@ -1144,9 +1723,13 @@ export const BUNDLED_ENTITIES = {
       "heightMeters": 16.5,
       "canopyDiameterMeters": 4.2,
       "healthStatus": "optimal",
-      "estimatedYieldKg": 1250.0,
-      "location": { "longitude": -122.0778, "latitude": 37.3845 }
+      "estimatedYieldKg": 1250,
+      "location": {
+        "longitude": -71.599,
+        "latitude": -36.2128
+      },
+      "is_simulated": true,
+      "simulation_basis": "Prototipo modelo Meniel - Censo botánico modelado (Simulado)"
     }
   ]
-}
-;
+};

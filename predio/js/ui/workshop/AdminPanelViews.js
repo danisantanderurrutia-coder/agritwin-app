@@ -518,27 +518,92 @@ export class AdminPanelViews {
               ${propSubTab === 'titles' ? `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                   <div style="background: #180d06; border: 1px solid rgba(120,53,15,0.7); border-radius: 10px; padding: 12px;">
-                    <strong style="color: #fbbf24; font-size: 12px; display: block; margin-bottom: 4px;">🏛️ Conservador de Bienes Raíces (CBR)</strong>
-                    <div style="font-size: 11px; color: #cbd5e1; line-height: 1.45;">
-                      • <strong>Jurisdicción:</strong> ${activeProp.cbr.conservador}<br>
-                      • <strong>Inscripción:</strong> Fojas ${activeProp.cbr.fojas} N° ${activeProp.cbr.numero} (${activeProp.cbr.ano})<br>
-                      • <strong>Superficie Física:</strong> ${activeProp.superficieTotalHa} hectáreas
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                      <strong style="color: #fbbf24; font-size: 12px;">🏛️ Conservador de Bienes Raíces (CBR)</strong>
+                      ${activeProp.cbr && activeProp.cbr.fojas ? `
+                        <span style="font-size: 9.5px; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.4); font-weight: bold;">Dominio Vigente</span>
+                      ` : `
+                        <span style="font-size: 9.5px; background: rgba(245,158,11,0.2); color: #fbbf24; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.4); font-weight: bold;">⚠️ Dato no disponible</span>
+                      `}
                     </div>
+                    ${activeProp.cbr && activeProp.cbr.fojas ? `
+                      <div style="font-size: 11px; color: #cbd5e1; line-height: 1.45;">
+                        • <strong>Jurisdicción:</strong> ${activeProp.cbr.conservador || 'No especificado'}<br>
+                        • <strong>Inscripción:</strong> Fojas ${activeProp.cbr.fojas} N° ${activeProp.cbr.numero} (${activeProp.cbr.ano})<br>
+                        • <strong>Superficie Física:</strong> ${activeProp.superficieTotalHa || 'No disponible'} hectáreas
+                      </div>
+                    ` : `
+                      <div style="font-size: 11px; color: #94a3b8; font-style: italic; line-height: 1.4;">
+                        Sin inscripción acreditada en el Conservador. Ingrese los datos en el panel inferior para registrarlos sin alucinaciones.
+                      </div>
+                    `}
                   </div>
 
                   <div style="background: #180d06; border: 1px solid rgba(120,53,15,0.7); border-radius: 10px; padding: 12px;">
-                    <strong style="color: #38bdf8; font-size: 12px; display: block; margin-bottom: 4px;">📑 Servicio de Impuestos Internos (SII)</strong>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                      <strong style="color: #38bdf8; font-size: 12px;">📑 Servicio de Impuestos Internos (SII)</strong>
+                      ${activeProp.rolSII && activeProp.rolSII !== 'Sin registrar' ? `
+                        <span style="font-size: 9.5px; background: rgba(56,189,248,0.2); color: #38bdf8; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56,189,248,0.4); font-weight: bold;">Rol Registrado</span>
+                      ` : `
+                        <span style="font-size: 9.5px; background: rgba(245,158,11,0.2); color: #fbbf24; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.4); font-weight: bold;">⚠️ Dato no disponible</span>
+                      `}
+                    </div>
                     <div style="font-size: 11px; color: #cbd5e1; line-height: 1.45;">
-                      • <strong>Rol de Avalúo:</strong> ${activeProp.rolSII}<br>
-                      • <strong>Destino:</strong> ${activeProp.serieSII}<br>
-                      • <strong>Avalúo Fiscal:</strong> $${activeProp.avaluoFiscalCLP.toLocaleString('es-CL')} CLP
+                      • <strong>Rol de Avalúo:</strong> ${activeProp.rolSII || 'Dato no disponible'}<br>
+                      • <strong>Destino:</strong> ${activeProp.serieSII || 'Dato no disponible'}<br>
+                      • <strong>Avalúo Fiscal:</strong> ${activeProp.avaluoFiscalCLP ? '$' + activeProp.avaluoFiscalCLP.toLocaleString('es-CL') + ' CLP' : 'Dato no disponible'}
                     </div>
                   </div>
                 </div>
 
                 <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.4); border-radius: 10px; padding: 12px; font-size: 11px;">
                   <strong style="color: #38bdf8; font-size: 12px;">💧 Derechos de Agua DGA:</strong>
-                  Caudal: <strong>${activeProp.derechosAgua.caudalTotalLs} L/s</strong> • Fuente: ${activeProp.derechosAgua.fuente} • MEE Res. 1238: <span style="color: #4ade80; font-weight: bold;">${activeProp.derechosAgua.estadoMEE}</span>
+                  ${activeProp.derechosAgua && activeProp.derechosAgua.caudalTotalLs ? `
+                    Caudal: <strong>${activeProp.derechosAgua.caudalTotalLs} L/s</strong> • Fuente: ${activeProp.derechosAgua.fuente || 'No especificada'} • MEE Res. 1238: <span style="color: #4ade80; font-weight: bold;">${activeProp.derechosAgua.estadoMEE || 'Sin transmitir'}</span>
+                  ` : `
+                    <span style="color: #f59e0b; font-weight: bold;">Dato no disponible</span> • Fuente: ${activeProp.derechosAgua?.fuente || 'Pendiente de consulta DGA'}
+                  `}
+                </div>
+
+                <!-- Formulario Rellenable de Actualización Catastral -->
+                <div style="background: #140b06; border: 1px solid #78350f; border-radius: 10px; padding: 12px; margin-top: 4px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; margin-bottom: 8px;">
+                    <strong style="color: #fde68a; font-size: 11.5px;">📝 Panel Rellenable: Registro de Título y CBR (${activeProp.name})</strong>
+                    <span style="font-size: 9px; color: #94a3b8; font-family: monospace;">Sin Alucinaciones • Editable</span>
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 10.5px;">
+                    <div>
+                      <label style="color: #94a3b8; display: block; font-size: 9.5px; margin-bottom: 2px;">Conservador (CBR):</label>
+                      <input id="inputPredioCbr" type="text" value="${activeProp.cbr?.conservador || ''}" placeholder="Ej. Conservador de Parral" style="width: 100%; background: #0c0704; border: 1px solid #78350f; color: #fde68a; padding: 4px 6px; border-radius: 4px; font-size: 10.5px; font-family: monospace;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
+                      <div>
+                        <label style="color: #94a3b8; display: block; font-size: 9.5px; margin-bottom: 2px;">Fojas:</label>
+                        <input id="inputPredioFojas" type="text" value="${activeProp.cbr?.fojas || ''}" placeholder="Ej. 124v" style="width: 100%; background: #0c0704; border: 1px solid #78350f; color: #fde68a; padding: 4px 6px; border-radius: 4px; font-size: 10.5px; font-family: monospace;">
+                      </div>
+                      <div>
+                        <label style="color: #94a3b8; display: block; font-size: 9.5px; margin-bottom: 2px;">N°:</label>
+                        <input id="inputPredioNumero" type="text" value="${activeProp.cbr?.numero || ''}" placeholder="Ej. 189" style="width: 100%; background: #0c0704; border: 1px solid #78350f; color: #fde68a; padding: 4px 6px; border-radius: 4px; font-size: 10.5px; font-family: monospace;">
+                      </div>
+                      <div>
+                        <label style="color: #94a3b8; display: block; font-size: 9.5px; margin-bottom: 2px;">Año:</label>
+                        <input id="inputPredioAno" type="text" value="${activeProp.cbr?.ano || ''}" placeholder="Ej. 2014" style="width: 100%; background: #0c0704; border: 1px solid #78350f; color: #fde68a; padding: 4px 6px; border-radius: 4px; font-size: 10.5px; font-family: monospace;">
+                      </div>
+                    </div>
+                    <div>
+                      <label style="color: #94a3b8; display: block; font-size: 9.5px; margin-bottom: 2px;">Rol de Avalúo SII:</label>
+                      <input id="inputPredioRolSII" type="text" value="${activeProp.rolSII || ''}" placeholder="Ej. 418-24 Parral" style="width: 100%; background: #0c0704; border: 1px solid #78350f; color: #fde68a; padding: 4px 6px; border-radius: 4px; font-size: 10.5px; font-family: monospace;">
+                    </div>
+                    <div>
+                      <label style="color: #94a3b8; display: block; font-size: 9.5px; margin-bottom: 2px;">Caudal DGA Autorizado (L/s):</label>
+                      <input id="inputPredioCaudal" type="text" value="${activeProp.derechosAgua?.caudalTotalLs || ''}" placeholder="Ej. 34.5" style="width: 100%; background: #0c0704; border: 1px solid #78350f; color: #fde68a; padding: 4px 6px; border-radius: 4px; font-size: 10.5px; font-family: monospace;">
+                    </div>
+                  </div>
+                  <div style="margin-top: 8px; display: flex; justify-content: flex-end; gap: 6px;">
+                    <button id="btnSavePropertyLegalForm" style="padding: 5px 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 6px; font-size: 10.5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                      💾 Guardar Título Predial
+                    </button>
+                  </div>
                 </div>
               ` : ''}
 

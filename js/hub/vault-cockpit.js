@@ -250,13 +250,14 @@
             if (tableBody && tableBody.children.length === 0) {
                 tableBody.innerHTML = geojsonPredios.features.map(f => {
                     const p = f.properties;
+                    const waterDisplay = (p.water_L_s && p.water_L_s !== 'Dato no disponible') ? `${p.water_L_s} L/s` : '<span class="text-stone-400 italic text-[11px]">No disponible</span>';
                     return `
                         <tr class="hover:bg-amber-50/50 transition-colors">
                             <td class="py-2.5 px-3 font-bold text-stone-900">${p.name}</td>
                             <td class="py-2.5 px-3 text-stone-500">${p.rol}</td>
                             <td class="py-2.5 px-3 text-sky-800 font-bold">${p.area_ha} ha</td>
                             <td class="py-2.5 px-3 text-stone-700">${p.crop}</td>
-                            <td class="py-2.5 px-3 text-emerald-800 font-bold">${p.water_L_s} L/s</td>
+                            <td class="py-2.5 px-3 text-emerald-800 font-bold">${waterDisplay}</td>
                             <td class="py-2.5 px-3 font-bold ${p.fwi > 50 ? 'text-rose-700' : 'text-emerald-800'}">${p.fwi}</td>
                         </tr>
                     `;
@@ -268,13 +269,14 @@
             if (datasetTableBody && datasetTableBody.children.length === 0) {
                 datasetTableBody.innerHTML = geojsonPredios.features.map(f => {
                     const p = f.properties;
+                    const waterDisplay = (p.water_L_s && p.water_L_s !== 'Dato no disponible') ? `${p.water_L_s} L/s` : '<span class="text-stone-400 italic text-[11px]">No disponible</span>';
                     return `
                         <tr class="hover:bg-amber-50/50 transition-colors">
                             <td class="py-2 px-3 font-bold text-stone-900">${p.name}</td>
                             <td class="py-2 px-3 text-stone-500">${p.rol}</td>
                             <td class="py-2 px-3 text-sky-800 font-bold">${p.area_ha} ha</td>
                             <td class="py-2 px-3 text-stone-700">${p.crop}</td>
-                            <td class="py-2 px-3 text-emerald-800 font-bold">${p.water_L_s} L/s</td>
+                            <td class="py-2 px-3 text-emerald-800 font-bold">${waterDisplay}</td>
                             <td class="py-2 px-3 font-bold ${p.fwi > 50 ? 'text-rose-700' : 'text-emerald-800'}">${p.fwi}</td>
                         </tr>
                     `;

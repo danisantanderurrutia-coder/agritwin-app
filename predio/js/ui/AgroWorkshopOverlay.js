@@ -1303,6 +1303,39 @@ AgriTwin Telemetry Engine v2.4 • Red AgroTech Región del Maule
       });
     }
 
+    // Guardar formulario rellenable de Título Predial y CBR
+    const btnSaveLegalForm = document.getElementById('btnSavePropertyLegalForm');
+    if (btnSaveLegalForm) {
+      btnSaveLegalForm.addEventListener('click', () => {
+        const cbrVal = document.getElementById('inputPredioCbr')?.value?.trim();
+        const fojasVal = document.getElementById('inputPredioFojas')?.value?.trim();
+        const numVal = document.getElementById('inputPredioNumero')?.value?.trim();
+        const anoVal = document.getElementById('inputPredioAno')?.value?.trim();
+        const rolVal = document.getElementById('inputPredioRolSII')?.value?.trim();
+        const caudalVal = parseFloat(document.getElementById('inputPredioCaudal')?.value?.trim());
+
+        const patch = {
+          cbr: {
+            conservador: cbrVal || null,
+            fojas: fojasVal || null,
+            numero: numVal || null,
+            ano: anoVal ? parseInt(anoVal, 10) : null,
+            verificado: !!(cbrVal && fojasVal)
+          }
+        };
+        if (rolVal) patch.rolSII = rolVal;
+        if (!isNaN(caudalVal)) {
+          patch.derechosAgua = {
+            caudalTotalLs: caudalVal,
+            estadoMEE: caudalVal > 0 ? 'Transmitiendo OK' : 'Sin captación'
+          };
+        }
+
+        propertyRegistryManager.updatePropertyLegalData(this.selectedPredioId, patch);
+        this.render();
+      });
+    }
+
     // Botón Enfocar Predio en 3D
     const btnFocus3D = document.getElementById('btnFocusPredioIn3D');
     if (btnFocus3D) {

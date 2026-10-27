@@ -3385,25 +3385,25 @@
                 </div>
             </div>
 
-            <!-- 2. Libro / Pacto: Consolidado Legal & Acuerdos Formales -->
+            <!-- 2. Libro / Pacto: Fuentes Oficiales de Datos, Títulos de Predio & Pactos -->
             <div class="diegetic-sprite-anchor" style="top: 60%; left: 44%; width: 105px; color: #2dd4bf;" onclick="openMesaHotspotModal('pactos')" onmouseenter="playDiegeticAudio('wood')">
-                <img src="assets/ui/sprite_mesa_pacts.png" alt="Carpeta de Pactos" class="diegetic-sprite-img">
+                <img src="assets/ui/sprite_mesa_pacts.png" alt="Carpeta de Fuentes & Pactos" class="diegetic-sprite-img">
                 <span class="diegetic-sprite-ping bg-teal-400"></span>
                 <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaHotspotModal('pactos')">
-                    <div class="aoe-badge-title">📜 Pactos & Estatuto</div>
-                    <div class="aoe-badge-metric">Faja 45m • 9/10 Adhesión</div>
+                    <div class="aoe-badge-title">📜 Fuentes & Títulos</div>
+                    <div class="aoe-badge-metric">CBR • DGA • SII • Satélite</div>
                 </div>
                 <div class="diegetic-tooltip">
                     <div class="flex items-center justify-between text-[10px] font-mono text-teal-400 border-b border-teal-500/20 pb-1 mb-1.5">
                         <span>OBJ-MESA-02</span>
-                        <span class="bg-teal-500/20 px-1.5 py-0.5 rounded text-teal-300">9 DE 10 ADHERIDOS</span>
+                        <span class="bg-teal-500/20 px-1.5 py-0.5 rounded text-teal-300">FUENTES OFICIALES & TÍTULOS</span>
                     </div>
-                    <h4 class="font-extrabold text-sm text-white">Consolidado Formal de Acuerdos y Estatuto</h4>
+                    <h4 class="font-extrabold text-sm text-white">Fuentes Oficiales, Títulos de Predio & Pactos</h4>
                     <p class="text-xs text-slate-300 mt-1 leading-snug">
-                        Convenio de Servidumbre Recíproca de Cortafuegos de 45m, actas de deslinde, estatuto vecinal y personería jurídica comunitaria.
+                        Mapeo integral de procedencia de datos (CBR, SII, DGA, CIREN, Copernicus, INIA) y paneles rellenables de títulos catastrales para erradicar alucinaciones.
                     </p>
                     <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-teal-300">
-                        <span>▶ Clic para abrir pestaña Pactos</span>
+                        <span>▶ Clic para abrir Fuentes & Títulos</span>
                         <span class="text-slate-400">Menú Asamblea</span>
                     </div>
                 </div>
@@ -3575,7 +3575,7 @@
                             <span>📻</span> <span class="font-bold">Radio</span><span class="hidden md:inline text-[10px] opacity-75"> • Online & VHF</span>
                         </button>
                         <button onclick="switchMesaHotspotTab('pactos')" id="tabBtn-pactos" class="mesa-hotspot-tab-btn px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer text-slate-400 hover:text-white hover:bg-white/5">
-                            <span>📜</span> <span class="font-bold">Libro / Pacto</span><span class="hidden md:inline text-[10px] opacity-75"> • Acuerdos</span>
+                            <span>📜</span> <span class="font-bold">Fuentes & Títulos</span><span class="hidden md:inline text-[10px] opacity-75"> • CBR / DGA / Pactos</span>
                         </button>
                         <button onclick="switchMesaHotspotTab('balanza')" id="tabBtn-balanza" class="mesa-hotspot-tab-btn px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer text-slate-400 hover:text-white hover:bg-white/5">
                             <span>⚖️</span> <span class="font-bold">Balanza</span><span class="hidden md:inline text-[10px] opacity-75"> • Voto DAO</span>
@@ -3786,8 +3786,12 @@
                                 </div>
                             </div>
                             <span id="farmerBadgeRol" class="text-[9px] font-mono text-amber-400 font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
-                                Rol 142-88 Retiro
+                                Rol 418-24 Parral
                             </span>
+                        </div>
+
+                        <div id="farmerPortfolioNotice" class="p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[10px] text-emerald-300 flex items-center gap-1.5 font-mono">
+                            <span>✅</span> <span>Predio Piloto Fundo Meniel • Calibración en terreno</span>
                         </div>
 
                         <p class="text-xs text-slate-300 leading-relaxed">
@@ -13318,13 +13322,13 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                 <div class="bg-black/30 border border-white/5 rounded-lg p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="p-2 bg-emerald-900/30 rounded text-emerald-400">💼</div>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">1. Retorno Financiero</h3>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">1. Retorno Financiero (Modelo)</h3>
                     </div>
                     <ul class="text-sm text-slate-300 space-y-2">
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>CAPEX</span><span class="font-mono text-white">$48.5M CLP</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>TIR Anual</span><span class="font-mono text-emerald-400">18.6%</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Payback</span><span class="font-mono text-white">3.8 Años</span></li>
-                        <li class="flex justify-between pb-1"><span>Ahorro OPEX / Año</span><span class="font-mono text-emerald-400">$8.2M CLP</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>CAPEX Estimado</span><span class="font-mono text-white">$48.5M CLP (Modelado)</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>TIR Proyectada</span><span class="font-mono text-emerald-400">18.6% (Teórica)</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Payback Proyectado</span><span class="font-mono text-white">3.8 Años</span></li>
+                        <li class="flex justify-between pb-1"><span>Ahorro OPEX Estimado</span><span class="font-mono text-emerald-400">$8.2M CLP / Año</span></li>
                     </ul>
                 </div>
 
@@ -13332,13 +13336,13 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                 <div class="bg-black/30 border border-white/5 rounded-lg p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="p-2 bg-sky-900/30 rounded text-sky-400">💧</div>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">2. Seguridad Hídrica</h3>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">2. Seguridad Hídrica (Diseño)</h3>
                     </div>
                     <ul class="text-sm text-slate-300 space-y-2">
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Reserva Tranque</span><span class="font-mono text-white">18,500 m³</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Infiltración Suelo</span><span class="font-mono text-sky-400">320 L/s</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Días de Autonomía</span><span class="font-mono text-white">42 Días</span></li>
-                        <li class="flex justify-between pb-1"><span>Mitigación Inundación</span><span class="font-mono text-sky-400">-3.2% Peak</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Reserva Tranque</span><span class="font-mono text-white">18,500 m³ (Capacidad)</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Infiltración Suelo</span><span class="font-mono text-sky-400">320 L/s (Diseño Keyline)</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Días de Autonomía</span><span class="font-mono text-white">42 Días (Estimados)</span></li>
+                        <li class="flex justify-between pb-1"><span>Mitigación Inundación</span><span class="font-mono text-sky-400">-3.2% Peak (Modelado)</span></li>
                     </ul>
                 </div>
 
@@ -13346,13 +13350,13 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                 <div class="bg-black/30 border border-white/5 rounded-lg p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="p-2 bg-amber-900/30 rounded text-amber-400">🔥</div>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">3. Resiliencia al Fuego</h3>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">3. Resiliencia al Fuego (Modelo)</h3>
                     </div>
                     <ul class="text-sm text-slate-300 space-y-2">
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>FWI Predio (Actual)</span><span class="font-mono text-emerald-400">24 (Bajo)</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>FWI Entorno (Monocultivo)</span><span class="font-mono text-red-400">68 (Alto)</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Cortafuego Verde</span><span class="font-mono text-white">2.4 km</span></li>
-                        <li class="flex justify-between pb-1"><span>Pérdida Evitada</span><span class="font-mono text-emerald-400">$140M CLP</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>FWI Predio (Local)</span><span class="font-mono text-emerald-400">24 (Bajo • Modelado)</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>FWI Entorno (Pino)</span><span class="font-mono text-red-400">68 (Alto • ERA5)</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Cortafuego Verde</span><span class="font-mono text-white">2.4 km (Proyectado)</span></li>
+                        <li class="flex justify-between pb-1"><span>Pérdida Evitada Estimada</span><span class="font-mono text-emerald-400">$140M CLP (Activo)</span></li>
                     </ul>
                 </div>
 
@@ -13360,21 +13364,21 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                 <div class="bg-black/30 border border-white/5 rounded-lg p-5">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="p-2 bg-indigo-900/30 rounded text-indigo-400">⚖️</div>
-                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">4. Gobernanza & ESG</h3>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">4. Gobernanza & ESG (Prototipo)</h3>
                     </div>
                     <ul class="text-sm text-slate-300 space-y-2">
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Estructura</span><span class="font-mono text-white text-right">SpA + Cooperativa</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Monitoreo MRV</span><span class="font-mono text-indigo-400">Blockchain (Activo)</span></li>
-                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Certificación Carbono</span><span class="font-mono text-white">En proceso</span></li>
-                        <li class="flex justify-between pb-1"><span>Impacto Social</span><span class="font-mono text-white text-right">30 Familias</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Estructura Propuesta</span><span class="font-mono text-white text-right">SpA + Cooperativa</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Monitoreo MRV</span><span class="font-mono text-indigo-400">Simulación Testnet</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-1"><span>Certificación Carbono</span><span class="font-mono text-white">En estructuración</span></li>
+                        <li class="flex justify-between pb-1"><span>Impacto Social Proyectado</span><span class="font-mono text-white text-right">30 Familias</span></li>
                     </ul>
                 </div>
 
             </div>
             
             <div class="p-4 border-t border-white/10 bg-obsidian-800 flex justify-between items-center">
-                <div class="text-xs text-slate-500 font-mono">
-                    MRV Hash: 0x9f8b...3a2c
+                <div class="text-xs text-slate-400 font-mono">
+                    MRV Hash: <span class="text-slate-300">0x9f8b...3a2c</span> <span class="text-amber-400 text-[10px] ml-1">(Simulación Testnet / Prototipo)</span>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="downloadFormalReport()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded font-semibold transition-colors">
@@ -13444,6 +13448,10 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
             </button>
 
             <div class="absolute bottom-3 left-4 right-4">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span id="drawerBiomeTag" class="text-[9px] font-mono uppercase px-2 py-0.5 rounded font-bold text-white bg-emerald-600">Predio Vecino</span>
+                    <span id="drawerParcelVerifiedBadge" class="text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-amber-950/80 text-amber-300 border border-amber-500/30">⚠️ Sin Verificar</span>
+                </div>
                 <h3 id="drawerParcelName" class="text-lg font-black text-white mt-1 leading-tight">
                     Fundo Meniel
                 </h3>
@@ -13456,13 +13464,16 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
         </div>
 
         <!-- Contenido Desplazable del Drawer -->
-        <div class="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+        <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
             
-            <!-- SECCIÓN 1: DATA AGROTECH AUTOMÁTICA -->
-            <div class="space-y-3">
-                <h4 class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
-                    <span>📡</span> Telemetría & Datos Satelitales
-                </h4>
+            <!-- SECCIÓN 1: DATA AGROTECH AUTOMÁTICA & TELEMETRÍA -->
+            <div class="space-y-2.5">
+                <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+                    <h4 class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
+                        <span>📡</span> Telemetría & Datos Satelitales
+                    </h4>
+                    <span class="text-[9px] font-mono text-slate-500">Sentinel-2 / IoT</span>
+                </div>
 
                 <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
                     <div class="p-2.5 rounded-xl bg-black/40 border border-white/5">
@@ -13474,7 +13485,7 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         <div class="text-sky-400 font-bold" id="drawerParcelWater">42.5 L/s</div>
                     </div>
                     <div class="p-2.5 rounded-xl bg-black/40 border border-white/5">
-                        <div class="text-slate-500 text-[10px]">Humedad FDR</div>
+                        <div class="text-slate-500 text-[10px]">Humedad Suelo</div>
                         <div class="text-emerald-400 font-bold" id="drawerParcelVwc">36.2%</div>
                     </div>
                     <div class="p-2.5 rounded-xl bg-black/40 border border-white/5">
@@ -13484,7 +13495,64 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                 </div>
             </div>
 
-            <!-- SECCIÓN 2: CUADERNO DE INTELIGENCIA VECINAL (EDITABLE) -->
+            <!-- SECCIÓN 2: TÍTULO DE PROPIEDAD & REGISTRO CBR (PANEL RELLENABLE ANTI-ALUCINACIONES) -->
+            <div class="p-4 rounded-2xl bg-black/50 border border-teal-500/30 space-y-3">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                    <h4 class="text-[11px] font-mono uppercase tracking-wider text-teal-300 font-bold flex items-center gap-1.5">
+                        <span>🏛️</span> Título de Propiedad & CBR
+                    </h4>
+                    <span id="drawerCbrBadge" class="text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-amber-950/80 text-amber-300 border border-amber-500/30">
+                        ⚠️ Dato no disponible
+                    </span>
+                </div>
+
+                <p id="drawerCbrNotice" class="text-[10px] text-slate-400 font-sans leading-relaxed">
+                    Para evitar datos inventados, si no hay escritura cargada se declara "no disponible". Complete los campos para registrar el título oficial del predio:
+                </p>
+
+                <div class="space-y-2">
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-mono">Conservador de Bienes Raíces (CBR):</label>
+                        <input type="text" id="noteCbrConservador" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Ej. Conservador de Bienes Raíces de Parral">
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-mono">Fojas:</label>
+                            <input type="text" id="noteCbrFojas" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Ej. 124v">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-mono">Número:</label>
+                            <input type="text" id="noteCbrNumero" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Ej. 189">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-mono">Año:</label>
+                            <input type="text" id="noteCbrAno" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Ej. 2014">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-mono">Titular(es) de Dominio & RUT:</label>
+                        <input type="text" id="noteTitularRut" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Ej. Sucesión González / 76.xxx.xxx-x">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-mono">Derechos de Agua DGA (Caudal L/s & Código CPA):</label>
+                        <input type="text" id="noteDgaCpa" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Ej. 25.0 L/s • CPA DGA-MAULE-VII-2016-8941">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-mono">Deslindes Notariales del Predio:</label>
+                        <textarea id="noteDeslindes" rows="2" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono" placeholder="Norte: con ..., Sur: con camino vecinal, Este: ..., Oeste: ..."></textarea>
+                    </div>
+                </div>
+
+                <button onclick="openMesaHotspotModal('pactos')" class="w-full py-2 px-3 rounded-xl bg-teal-950/60 hover:bg-teal-900/60 border border-teal-500/40 text-teal-300 font-mono text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all">
+                    <span>🗺️</span> Ver Matriz de Fuentes Oficiales (CBR, DGA, SII, Sentinel)
+                </button>
+            </div>
+
+            <!-- SECCIÓN 3: CUADERNO DE INTELIGENCIA VECINAL (EDITABLE) -->
             <div class="p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
                 <div class="flex items-center justify-between border-b border-white/10 pb-2">
                     <h4 class="text-[11px] font-mono uppercase tracking-wider text-amber-300 font-bold flex items-center gap-1.5">
@@ -13526,10 +13594,10 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     </div>
 
                     <button onclick="saveCurrentNeighborNotes()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs font-mono flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95">
-                        <span>💾</span> Guardar Notas en el Servidor
+                        <span>💾</span> Guardar Ficha Completa en el Servidor
                     </button>
                     <div id="saveNoteToast" class="hidden text-center text-[10px] font-mono text-emerald-400 font-bold py-1">
-                        ✅ Notas de campo guardadas con éxito
+                        ✅ Datos y título guardados con éxito
                     </div>
                 </div>
             </div>

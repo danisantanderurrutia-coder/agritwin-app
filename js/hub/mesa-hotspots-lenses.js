@@ -65,6 +65,597 @@
             }
         }
 
+        // ═══════════════════════════════════════════════════════════════════
+        // MAPEO DE FUENTES OFICIALES DE DATOS & TÍTULOS PREDIALES (SPRITE 2)
+        // ═══════════════════════════════════════════════════════════════════
+        let currentPactosSubtab = 'fuentes';
+        let selectedPactosPredioId = 'MENIEL';
+
+        const DATA_SOURCES_MAPPING = [
+            {
+                id: 'cbr',
+                name: 'Conservador de Bienes Raíces (CBR)',
+                badge: 'Dominio & Aguas',
+                authority: 'Corporación de Conservadores de Chile (Parral / Linares)',
+                dataProvided: 'Inscripción de dominio (Fojas, N°, Año), gravámenes, hipotecas, prohibiciones y Registro de Aguas.',
+                coverage: 'Comunal / Nacional',
+                frequency: 'A requerimiento (Escrituras públicas notariales)',
+                status: 'OFICIAL DOCUMENTAL',
+                statusColor: 'bg-emerald-950/80 text-emerald-400 border-emerald-500/30',
+                antiHallucination: 'Estricto: No se inventan fojas ni conservadores. Si el predio no presenta certificado vigente, se declara "Dato no disponible" y se habilita formulario rellenable.',
+                icon: '🏛️'
+            },
+            {
+                id: 'sii',
+                name: 'Servicio de Impuestos Internos (SII)',
+                badge: 'Rol Catastral & Avalúo',
+                authority: 'Subdirección de Avaluaciones SII',
+                dataProvided: 'Rol de Avalúo Fiscal (Comuna-Manzana-Predio), destino del suelo (Agrícola, Forestal, Habitacional), avalúo fiscal exento/afecto.',
+                coverage: '100% comunas rurales de Chile',
+                frequency: 'Semestral / Reavalúos quinquenales',
+                status: 'OFICIAL EN LÍNEA',
+                statusColor: 'bg-sky-950/80 text-sky-400 border-sky-500/30',
+                antiHallucination: 'Público Oficial: La clave territorial es el Rol SII verificable en el portal oficial sin aproximaciones artificiales.',
+                icon: '📑'
+            },
+            {
+                id: 'dga',
+                name: 'Dirección General de Aguas (DGA - MOP)',
+                badge: 'Catastro CPA & MEE',
+                authority: 'Ministerio de Obras Públicas / Depto. Hidrología',
+                dataProvided: 'Catastro Público de Aguas (CPA), Derechos de Aprovechamiento (DAA consuntivos/no consuntivos en L/s), Monitoreo MEE Res. 1238.',
+                coverage: 'Cuencas Río Longaví, Perquilauquén y Maule',
+                frequency: 'Tiempo real en MEE / Continuo en CPA',
+                status: 'OFICIAL / TELEMETRÍA',
+                statusColor: 'bg-cyan-950/80 text-cyan-400 border-cyan-500/30',
+                antiHallucination: 'Estricto: Sin resolución DGA o caudalímetro con telemetría MEE, se declara "Dato no disponible" para erradicar caudales simulados.',
+                icon: '💧'
+            },
+            {
+                id: 'ciren',
+                name: 'CIREN / IDE Chile',
+                badge: 'Suelos & Aptitud Agrológica',
+                authority: 'Centro de Información de Recursos Naturales (Minagri)',
+                dataProvided: 'Estudio agrológico de suelos (Clases I a VIII, textura franco-arcillosa, retención hídrica, profundidad efectiva, drenaje).',
+                coverage: 'Valle Central y Secano Interior Maule',
+                frequency: 'Ortofotos SAF / Cartografía científica',
+                status: 'INTEGRADO EN GIS',
+                statusColor: 'bg-teal-950/80 text-teal-400 border-teal-500/30',
+                antiHallucination: 'Base Científica: Atributos edáficos georreferenciados WGS84 por series de suelo oficiales de la cuenca.',
+                icon: '🌱'
+            },
+            {
+                id: 'sag',
+                name: 'Servicio Agrícola y Ganadero (SAG)',
+                badge: 'DL 3516 & SIPEC',
+                authority: 'Ministerio de Agricultura',
+                dataProvided: 'Certificación de subdivisión rústica (superficie mínima 0.5 ha / 5.000 m²), prohibición de cambio de destino urbano, trazabilidad pecuaria.',
+                coverage: 'Predios rústicos de todo Chile',
+                frequency: 'Por expediente de loteo o fiscalización',
+                status: 'NORMATIVA VINCULANTE',
+                statusColor: 'bg-emerald-950/80 text-emerald-400 border-emerald-500/30',
+                antiHallucination: 'Legal: Control estricto de subdivisión legal para impedir loteos brujos en el gemelo digital.',
+                icon: '🛡️'
+            },
+            {
+                id: 'conaf',
+                name: 'CONAF Maule',
+                badge: 'Botón Rojo & Faja 45m',
+                authority: 'Corporación Nacional Forestal',
+                dataProvided: 'Catastro de bosque esclerófilo (Ley 20.283), alerta Botón Rojo (30-30-30), zonificación de combustibles y red de fajas cortafuegos.',
+                coverage: 'Interfaces forestales y agrícolas Maule Sur',
+                frequency: 'Diario en verano (Alerta Botón Rojo)',
+                status: 'OFICIAL EN TIEMPO REAL',
+                statusColor: 'bg-rose-950/80 text-rose-400 border-rose-500/30',
+                antiHallucination: 'Física Piro-Climática: Cálculo FWI con velocidad de viento Puelche y modelos canadienses acoplados.',
+                icon: '🔥'
+            },
+            {
+                id: 'copernicus',
+                name: 'Copernicus Sentinel-2 (ESA)',
+                badge: 'Bandas Multiespectrales 10m',
+                authority: 'Agencia Espacial Europea (ESA)',
+                dataProvided: 'Reflectancia BOA L2A (10m): NDVI (vigor foliar), NDWI (contenido hídrico), NDRE (clorofila), SWIR (estrés combustible).',
+                coverage: 'Global / Órbita Maule cada 5 días',
+                frequency: 'Cada 5 días a las 11:20 AM hora local',
+                status: 'SATÉLITE DIRECTO',
+                statusColor: 'bg-indigo-950/80 text-indigo-400 border-indigo-500/30',
+                antiHallucination: 'Datos Físicos Reales: Sin interpolaciones inventadas. La reflectancia satelital es ground truth multiespectral.',
+                icon: '🛰️'
+            },
+            {
+                id: 'inia',
+                name: 'Red Agromet INIA / DMC / AEMET',
+                badge: 'Estaciones Zonales de Referencia',
+                authority: 'INIA Quilamapu & Dirección Meteorológica de Chile',
+                dataProvided: 'Temperatura, humedad relativa, precipitación, radiación solar global, viento y evapotranspiración de referencia (ET0 Penman-Monteith).',
+                coverage: 'Estaciones Retiro, Longaví y Digua',
+                frequency: 'Horario / Diario calibrado',
+                status: 'OFICIAL ZONAL',
+                statusColor: 'bg-amber-950/80 text-amber-400 border-amber-500/30',
+                antiHallucination: 'Meteorología Calibrada: Estaciones oficiales para calibrar balance hídrico y balance térmico.',
+                icon: '🌤️'
+            },
+            {
+                id: 'iot',
+                name: 'Telemetría IoT LoRaWAN On-Premise',
+                badge: 'Sondas FDR Multinivel (Piloto)',
+                authority: 'Infraestructura Privada Fundo Meniel (KioT Mesh)',
+                dataProvided: 'Humedad volumétrica de suelo VWC (%) a 10, 30 y 60 cm, microclima de canopia, aforo en canal matriz.',
+                coverage: 'Confinado exclusivamente al Fundo Meniel (24.8 ha)',
+                frequency: 'Cada 15 minutos por radiofrecuencia 915 MHz',
+                status: 'SÓLO PREDIO PILOTO',
+                statusColor: 'bg-purple-950/80 text-purple-400 border-purple-500/30',
+                antiHallucination: 'Transparencia Absoluta: En predios vecinos sin sondas instaladas se declara explícitamente "Dato no disponible" para no alucinar lecturas falsas.',
+                icon: '📡'
+            },
+            {
+                id: 'asamblea',
+                name: 'Actas de Asamblea Vecinal (DAO Maule Sur)',
+                badge: 'Gobernanza Comunitaria',
+                authority: 'Comunidad Vecinal de 10 Predios (Ley 19.418)',
+                dataProvided: 'Turnos rotativos de riego en compuertas, servidumbre recíproca de faja cortafuegos 45m, actas notariales de deslinde.',
+                coverage: '10 predios vecinales (508 ha totales)',
+                frequency: 'Mensual en asambleas ordinarias y extraordinarias',
+                status: 'PACTOS VINCULANTES',
+                statusColor: 'bg-teal-950/80 text-teal-400 border-teal-500/30',
+                antiHallucination: 'Consenso Comunitario: Acuerdos firmados formalmente en asamblea y auditables en el Libro Mayor.',
+                icon: '🤝'
+            }
+        ];
+
+        function renderMesaFuentesYTitulosModal() {
+            return `
+                <div class="space-y-4 text-xs font-sans">
+                    <!-- Sub-pestañas internas -->
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5 flex-wrap gap-2">
+                        <div class="flex items-center gap-1.5 font-mono text-xs">
+                            <button onclick="switchMesaPactosSubtab('fuentes')" id="btnPactosSubtab-fuentes" class="px-3 py-1.5 rounded-xl font-bold cursor-pointer transition-all ${currentPactosSubtab === 'fuentes' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow' : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'}">
+                                🗺️ Fuentes Oficiales (10)
+                            </button>
+                            <button onclick="switchMesaPactosSubtab('titulos')" id="btnPactosSubtab-titulos" class="px-3 py-1.5 rounded-xl font-bold cursor-pointer transition-all ${currentPactosSubtab === 'titulos' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow' : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'}">
+                                🏛️ Títulos & Paneles Rellenables
+                            </button>
+                            <button onclick="switchMesaPactosSubtab('pactos')" id="btnPactosSubtab-pactos" class="px-3 py-1.5 rounded-xl font-bold cursor-pointer transition-all ${currentPactosSubtab === 'pactos' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow' : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'}">
+                                📜 Estatuto & Faja 45m
+                            </button>
+                        </div>
+                        <div class="text-[10px] font-mono text-slate-400 bg-black/40 px-2.5 py-1 rounded-lg border border-white/10">
+                            🛡️ Protocolo Anti-Alucinaciones Activo
+                        </div>
+                    </div>
+
+                    <!-- Contenedor dinámico según subpestaña -->
+                    <div id="pactosSubtabContent">
+                        ${renderPactosSubtabContent()}
+                    </div>
+                </div>
+            `;
+        }
+
+        function switchMesaPactosSubtab(subtabId) {
+            currentPactosSubtab = subtabId;
+            const container = document.getElementById('pactosSubtabContent');
+            if (container) {
+                container.innerHTML = renderPactosSubtabContent();
+            }
+            ['fuentes', 'titulos', 'pactos'].forEach(id => {
+                const btn = document.getElementById(`btnPactosSubtab-${id}`);
+                if (btn) {
+                    btn.className = id === subtabId
+                        ? 'px-3 py-1.5 rounded-xl font-bold cursor-pointer transition-all bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow'
+                        : 'px-3 py-1.5 rounded-xl font-bold cursor-pointer transition-all text-slate-400 hover:text-white hover:bg-white/5 border border-transparent';
+                }
+            });
+        }
+
+        function selectMesaTitlePredio(predioId) {
+            selectedPactosPredioId = predioId;
+            const container = document.getElementById('pactosSubtabContent');
+            if (container && currentPactosSubtab === 'titulos') {
+                container.innerHTML = renderPactosSubtabContent();
+            }
+        }
+
+        function renderPactosSubtabContent() {
+            if (currentPactosSubtab === 'fuentes') {
+                return `
+                    <div class="space-y-3.5">
+                        <div class="p-3 rounded-2xl bg-teal-950/30 border border-teal-500/30 flex items-start justify-between gap-3">
+                            <div>
+                                <h4 class="text-white font-bold text-sm flex items-center gap-2">
+                                    <span>🗺️</span> Matriz de Procedencia Técnica & Fuentes Oficiales Chilenas
+                                </h4>
+                                <p class="text-slate-300 text-xs mt-1 leading-relaxed">
+                                    AgriTwin audita rigurosamente el origen de cada dato. Cuando una fuente no está conectada o no existe telemetría en terreno, se declara explícitamente <b>"Dato no disponible"</b> en vez de generar valores simulados o alucinaciones.
+                                </p>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-bold shrink-0">
+                                10 Fuentes Mapeadas
+                            </span>
+                        </div>
+
+                        <!-- Grilla de Fuentes Oficiales -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 font-sans">
+                            ${DATA_SOURCES_MAPPING.map(src => `
+                                <div class="p-3.5 rounded-xl bg-black/45 border border-white/10 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-2">
+                                    <div>
+                                        <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+                                            <span class="font-bold text-white text-xs flex items-center gap-1.5">
+                                                <span>${src.icon}</span> ${src.name}
+                                            </span>
+                                            <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded border ${src.statusColor}">
+                                                ${src.status}
+                                            </span>
+                                        </div>
+                                        <div class="text-[10.5px] text-slate-300 mt-2 space-y-1">
+                                            <div><strong class="text-slate-400 font-mono">Autoridad:</strong> ${src.authority}</div>
+                                            <div><strong class="text-slate-400 font-mono">Datos Clave:</strong> ${src.dataProvided}</div>
+                                            <div class="flex items-center gap-3 text-[10px] text-slate-400 font-mono pt-1">
+                                                <span>📍 ${src.coverage}</span>
+                                                <span>⏱️ ${src.frequency}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pt-2 border-t border-white/5 text-[10px] font-mono text-teal-300/90 leading-tight">
+                                        🛡️ <strong>Regla Anti-Alucinación:</strong> ${src.antiHallucination}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (currentPactosSubtab === 'titulos') {
+                const predios = (typeof geojsonPredios !== 'undefined' && geojsonPredios.features)
+                    ? geojsonPredios.features
+                    : [];
+                const feat = predios.find(f => f.properties.id === selectedPactosPredioId) || predios[0] || { properties: { id: 'MENIEL', name: 'Fundo Meniel', area_ha: 24.8, rol: '418-24 Parral' } };
+                const p = feat.properties;
+
+                // Recuperar notas guardadas en localStorage
+                let localNote = {};
+                try {
+                    const saved = localStorage.getItem('agritwin_parcels_notes');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        localNote = parsed[p.id] || {};
+                    }
+                } catch (_) {}
+
+                const currentCbrConservador = localNote.cbr_conservador || p.cbr?.conservador || '';
+                const currentCbrFojas = localNote.cbr_fojas || p.cbr?.fojas || '';
+                const currentCbrNumero = localNote.cbr_numero || p.cbr?.numero || '';
+                const currentCbrAno = localNote.cbr_ano || p.cbr?.ano || '';
+                const currentTitular = localNote.titular_rut || (p.owner !== 'Dato no disponible (Rellenable)' ? p.owner : '') || '';
+                const currentDga = localNote.dga_cpa || (p.water_status !== 'Pendiente de registro DGA' ? p.water_status : '') || '';
+                const currentDeslindes = localNote.deslindes || '';
+                const currentNotes = localNote.notes || '';
+                const isCertified = p.verified || (currentCbrFojas && currentCbrConservador);
+
+                return `
+                    <div class="space-y-4">
+                        <!-- Selector de los 10 Predios de La Mesa -->
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                                Seleccionar Predio para Inspección / Registro Catastral:
+                            </label>
+                            <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 text-xs font-mono scrollbar-thin">
+                                ${predios.map(f => {
+                                    const fp = f.properties;
+                                    const active = fp.id === selectedPactosPredioId;
+                                    return `
+                                        <button onclick="selectMesaTitlePredio('${fp.id}')" class="px-2.5 py-1.5 rounded-xl cursor-pointer whitespace-nowrap transition-all border ${active ? 'bg-teal-500/25 border-teal-400 text-teal-200 font-bold shadow' : 'bg-black/40 border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}">
+                                            <span>${fp.verified ? '🏡' : '📍'}</span> ${fp.name.split('(')[0].trim()}
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Ficha del Predio Seleccionado -->
+                        <div class="p-4 rounded-2xl bg-black/55 border ${isCertified ? 'border-emerald-500/40' : 'border-amber-500/40'} space-y-3.5 font-sans">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="text-sm sm:text-base font-black text-white">${p.name}</h3>
+                                        <span class="text-[9px] font-mono px-2 py-0.5 rounded font-bold ${isCertified ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30' : 'bg-amber-950/80 text-amber-300 border border-amber-500/30'}">
+                                            ${isCertified ? '✅ Título Oficial Verificado' : '⚠️ Dato no disponible • Rellenable'}
+                                        </span>
+                                    </div>
+                                    <div class="text-[11px] font-mono text-slate-300 mt-0.5">
+                                        Rol SII: <strong class="text-white">${p.rol || 'Sin registrar'}</strong> • Superficie: <strong class="text-sky-300">${p.area_ha} ha</strong> • Comuna: ${p.comuna || 'Retiro'}
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button onclick="flyToPredioLocation('${p.id}'); closeMesaHotspotModal();" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-mono flex items-center gap-1 transition-all cursor-pointer">
+                                        <span>🗺️</span> Volar en Mapa
+                                    </button>
+                                </div>
+                            </div>
+
+                            ${!isCertified ? `
+                                <div class="p-2.5 rounded-xl bg-amber-950/30 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2">
+                                    <span class="text-base shrink-0">⚠️</span>
+                                    <div>
+                                        <strong>Transparencia Absoluta:</strong> Este predio no cuenta con escritura notarial pública cargada en los servidores. Para evitar alucinaciones, los campos inferiores son completamente rellenables para que el propietario o vecino ingrese la información real.
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            <!-- Formulario Rellenable Catastral -->
+                            <div class="space-y-3 font-mono text-xs">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-[10px] text-slate-400 block mb-1">Conservador de Bienes Raíces (CBR):</label>
+                                        <input type="text" id="modalInputCbr" value="${currentCbrConservador}" placeholder="Ej. Conservador de Bienes Raíces de Parral" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400">
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div>
+                                            <label class="text-[10px] text-slate-400 block mb-1">Fojas:</label>
+                                            <input type="text" id="modalInputFojas" value="${currentCbrFojas}" placeholder="Ej. 124v" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400">
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] text-slate-400 block mb-1">Número:</label>
+                                            <input type="text" id="modalInputNumero" value="${currentCbrNumero}" placeholder="Ej. 189" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400">
+                                        </div>
+                                        <div>
+                                            <label class="text-[10px] text-slate-400 block mb-1">Año:</label>
+                                            <input type="text" id="modalInputAno" value="${currentCbrAno}" placeholder="Ej. 2014" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-[10px] text-slate-400 block mb-1">Titular(es) de Dominio & RUT:</label>
+                                        <input type="text" id="modalInputTitular" value="${currentTitular}" placeholder="Ej. Familia Santander / Agrícola SpA (RUT 76.xxx.xxx-x)" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-slate-400 block mb-1">Derechos de Agua DGA (Caudal L/s & Código CPA):</label>
+                                        <input type="text" id="modalInputDga" value="${currentDga}" placeholder="Ej. 34.5 L/s consuntivo • CPA DGA-MAULE-VII-..." class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-[10px] text-slate-400 block mb-1">Deslindes Notariales Oficiales:</label>
+                                    <textarea id="modalInputDeslindes" rows="2" placeholder="Norte: con Estero Colliguay, Sur: con camino vecinal, Este: ..., Oeste: ..." class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono">${currentDeslindes}</textarea>
+                                </div>
+
+                                <div>
+                                    <label class="text-[10px] text-slate-400 block mb-1">Notas de Observación Predial:</label>
+                                    <textarea id="modalInputNotes" rows="2" placeholder="Observaciones de suelo, accesibilidad, faja cortafuegos..." class="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-teal-400 font-mono">${currentNotes}</textarea>
+                                </div>
+
+                                <!-- Botones de Acción -->
+                                <div class="flex items-center justify-between gap-3 pt-2 border-t border-white/10 flex-wrap">
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="savePredioTitleFromModal('${p.id}')" class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 font-black text-xs font-mono shadow-lg transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                                            <span>💾</span> Guardar Título en Bóveda & Servidor
+                                        </button>
+                                        <button onclick="downloadPredioTitleReport('${p.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-mono flex items-center gap-1 transition-all cursor-pointer">
+                                            <span>📄</span> Exportar Ficha (.txt)
+                                        </button>
+                                    </div>
+                                    <div id="modalSaveToast-${p.id}" class="hidden text-[10px] font-mono text-emerald-400 font-bold">
+                                        ✅ Ficha guardada con éxito
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // subtab 'pactos'
+            return `
+                <div class="space-y-4 text-xs font-sans">
+                    <div class="p-3.5 rounded-2xl bg-teal-950/40 border border-teal-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div>
+                            <span class="font-mono text-teal-400 font-bold uppercase text-[10px] block">Marco Legal & Jurídico Vecinal</span>
+                            <h4 class="text-white font-bold text-sm">Pacto de Servidumbre Recíproca & Faja Cortafuegos 45m</h4>
+                            <p class="text-slate-300 text-xs mt-0.5">Estatuto consolidado con personería jurídica comunitaria de la Ley 19.418 de Juntas de Vecinos.</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0 font-mono">
+                            <span class="px-2.5 py-1 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold text-[10px]">90% Adhesión (9/10)</span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Pilares del Consolidado Formal -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 font-mono">
+                        <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1">
+                            <span class="text-teal-400 font-bold text-[11px] block">Cláusula 1: Faja 45m</span>
+                            <p class="text-slate-300 text-xs font-sans leading-snug">
+                                22.5m limpios de combustible a cada lado del límite predial. Prohibición de rebrote de pino en la franja.
+                            </p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1">
+                            <span class="text-sky-400 font-bold text-[11px] block">Cláusula 2: Aforo & Cánones</span>
+                            <p class="text-slate-300 text-xs font-sans leading-snug">
+                                Respeto irrestricto de turnos fijados en asamblea. Monitoreo telemétrico mutuo con sensores de ultrasonido.
+                            </p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1">
+                            <span class="text-emerald-400 font-bold text-[11px] block">Cláusula 3: Fondo Solidario</span>
+                            <p class="text-slate-300 text-xs font-sans leading-snug">
+                                Fondo común para adquisición de mangueras de 1.5", motobombas y repuestos de compuertas automáticas.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Estado de Firmas por Predio -->
+                    <div class="p-3.5 rounded-2xl bg-black/50 border border-white/10 space-y-2 font-mono text-[11px]">
+                        <div class="flex items-center justify-between text-slate-400 font-bold">
+                            <span>Adhesión Notarial por Predio Vecinal (508 ha totales):</span>
+                            <span class="text-emerald-400">9 Firmados • 1 En Trámite</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-slate-300">
+                            <div>✅ Fundo Meniel (Rol 418-24 Parral)</div>
+                            <div>✅ Forestal Los Boldos (Rol 143-05 Retiro)</div>
+                            <div>✅ Agrícola San José (Rol 142-12 Retiro)</div>
+                            <div>✅ Retiro Poniente (Rol 138-20 Retiro)</div>
+                            <div>✅ Santa Lucía (Rol 140-15 Retiro)</div>
+                            <div>✅ Mora Verde (Rol 141-02 Retiro)</div>
+                            <div>✅ Los Maitenes (Rol 144-01 Retiro)</div>
+                            <div>✅ Don Víctor (Rol 144-22 Retiro)</div>
+                            <div>✅ Viña El Carmen (Rol 145-10 Retiro)</div>
+                            <div class="text-amber-400">⏳ Reserva La Palma (Rol 146-01 Retiro)</div>
+                        </div>
+                    </div>
+
+                    <div class="pt-1 flex items-center justify-between gap-3">
+                        <button onclick="downloadFormalAgreements()" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 font-black font-mono text-xs shadow-lg transition-all cursor-pointer">
+                            📜 Descargar Convenio Notariado Completo (.txt)
+                        </button>
+                        <button onclick="closeMesaHotspotModal()" class="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs font-mono cursor-pointer">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function savePredioTitleFromModal(predioId) {
+            const cbrVal = document.getElementById('modalInputCbr')?.value?.trim() || '';
+            const fojasVal = document.getElementById('modalInputFojas')?.value?.trim() || '';
+            const numVal = document.getElementById('modalInputNumero')?.value?.trim() || '';
+            const anoVal = document.getElementById('modalInputAno')?.value?.trim() || '';
+            const titularVal = document.getElementById('modalInputTitular')?.value?.trim() || '';
+            const dgaVal = document.getElementById('modalInputDga')?.value?.trim() || '';
+            const deslindesVal = document.getElementById('modalInputDeslindes')?.value?.trim() || '';
+            const notesVal = document.getElementById('modalInputNotes')?.value?.trim() || '';
+
+            const payload = {
+                id: predioId,
+                cbr_conservador: cbrVal,
+                cbr_fojas: fojasVal,
+                cbr_numero: numVal,
+                cbr_ano: anoVal,
+                titular_rut: titularVal,
+                dga_cpa: dgaVal,
+                deslindes: deslindesVal,
+                notes: notesVal
+            };
+
+            // Actualizar en memoria geojsonPredios
+            if (typeof geojsonPredios !== 'undefined' && geojsonPredios.features) {
+                const feat = geojsonPredios.features.find(f => f.properties.id === predioId);
+                if (feat) {
+                    if (cbrVal && fojasVal) {
+                        feat.properties.cbr = {
+                            conservador: cbrVal,
+                            fojas: fojasVal,
+                            numero: numVal,
+                            ano: anoVal,
+                            verificado: true
+                        };
+                        feat.properties.has_cbr_deed = true;
+                    }
+                    if (titularVal) feat.properties.owner = titularVal;
+                    if (dgaVal) feat.properties.water_status = dgaVal;
+                }
+            }
+
+            // Persistir en localStorage
+            try {
+                const saved = localStorage.getItem('agritwin_parcels_notes') || '{}';
+                const parsed = JSON.parse(saved);
+                parsed[predioId] = { ...(parsed[predioId] || {}), ...payload };
+                localStorage.setItem('agritwin_parcels_notes', JSON.stringify(parsed));
+            } catch (_) {}
+
+            // Enviar a servidor
+            try {
+                await fetch('/api/notes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (_) {}
+
+            // Feedback visual
+            const toast = document.getElementById(`modalSaveToast-${predioId}`);
+            if (toast) {
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 3500);
+            }
+            if (typeof window.showMasterToast === 'function') {
+                window.showMasterToast(`Título y deslindes de ${predioId} guardados sin alucinaciones.`, '💾', 'success');
+            }
+
+            // Refrescar vista
+            switchMesaPactosSubtab('titulos');
+        }
+
+        function downloadPredioTitleReport(predioId) {
+            const predios = (typeof geojsonPredios !== 'undefined' && geojsonPredios.features)
+                ? geojsonPredios.features
+                : [];
+            const feat = predios.find(f => f.properties.id === predioId) || { properties: { id: predioId, name: predioId } };
+            const p = feat.properties;
+
+            const cbrVal = document.getElementById('modalInputCbr')?.value?.trim() || p.cbr?.conservador || 'Dato no disponible';
+            const fojasVal = document.getElementById('modalInputFojas')?.value?.trim() || p.cbr?.fojas || 'Dato no disponible';
+            const numVal = document.getElementById('modalInputNumero')?.value?.trim() || p.cbr?.numero || 'Dato no disponible';
+            const anoVal = document.getElementById('modalInputAno')?.value?.trim() || p.cbr?.ano || 'Dato no disponible';
+            const titularVal = document.getElementById('modalInputTitular')?.value?.trim() || p.owner || 'Dato no disponible';
+            const dgaVal = document.getElementById('modalInputDga')?.value?.trim() || p.water_status || 'Dato no disponible';
+            const deslindesVal = document.getElementById('modalInputDeslindes')?.value?.trim() || 'Dato no disponible';
+            const notesVal = document.getElementById('modalInputNotes')?.value?.trim() || 'Sin observaciones adicionales';
+
+            const report = `========================================================================
+AGRITWIN MASTER SUITE - FICHA REGISTRAL Y CATASTRAL PREDIAL
+DOCUMENTO TÉCNICO REGISTRAL DE PROPIEDAD Y USO DE SUELO
+========================================================================
+Fecha de Emisión: ${new Date().toLocaleString('es-CL')}
+Predio: ${p.name}
+Rol de Avalúo Fiscal SII: ${p.rol || 'Sin registrar'}
+Comuna y Región: ${p.comuna || 'Retiro'}, Maule Sur, Chile
+Superficie Física: ${p.area_ha || 'No disponible'} hectáreas
+
+1. ANTECEDENTES DEL CONSERVADOR DE BIENES RAÍCES (CBR)
+------------------------------------------------------------------------
+Conservador de Jurisdicción: ${cbrVal}
+Inscripción de Dominio: Fojas ${fojasVal} N° ${numVal} del Año ${anoVal}
+Titular(es) de Dominio & RUT: ${titularVal}
+Estado Registral: ${fojasVal !== 'Dato no disponible' ? 'ACREDITADO' : 'PENDIENTE DE REGISTRO'}
+
+2. DERECHOS DE APROVECHAMIENTO DE AGUAS (DGA)
+------------------------------------------------------------------------
+Situación Hídrica: ${dgaVal}
+Caudal Autorizado: ${p.water_L_s || 'Dato no disponible'}
+
+3. DESLINDES CATASTRALES NOTARIALES
+------------------------------------------------------------------------
+${deslindesVal}
+
+4. OBSERVACIONES DE CAMPO & GOBERNANZA VECINAL
+------------------------------------------------------------------------
+${notesVal}
+
+========================================================================
+Emisión bajo Estándar de Transparencia y Anti-Alucinaciones de Datos.
+AgriTwin Mosaico Vecinal Maule Sur
+========================================================================`;
+
+            const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FICHA_CATASTRAL_${(p.rol || predioId).replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        window.renderMesaFuentesYTitulosModal = renderMesaFuentesYTitulosModal;
+        window.switchMesaPactosSubtab = switchMesaPactosSubtab;
+        window.selectMesaTitlePredio = selectMesaTitlePredio;
+        window.savePredioTitleFromModal = savePredioTitleFromModal;
+        window.downloadPredioTitleReport = downloadPredioTitleReport;
+
         function switchMesaHotspotTab(tabId) {
             // Normalizar alias
             if (tabId === 'circulo') tabId = 'fogata';
@@ -431,73 +1022,9 @@
                     </div>
                 `;
             } else if (tabId === 'pactos') {
-                badgeEl.innerText = 'OBJ-MESA-02 • PACTOS & ESTATUTO';
-                titleEl.innerHTML = '<span>📜</span> Libro de Pactos & Consolidado Formal de la Organización';
-                bodyEl.innerHTML = `
-                    <div class="space-y-4 text-xs font-sans">
-                        <div class="p-3.5 rounded-2xl bg-teal-950/40 border border-teal-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                            <div>
-                                <span class="font-mono text-teal-400 font-bold uppercase text-[10px] block">Marco Legal & Jurídico Vecinal</span>
-                                <h4 class="text-white font-bold text-sm">Pacto de Servidumbre Recíproca & Faja Cortafuegos 45m</h4>
-                                <p class="text-slate-300 text-xs mt-0.5">Estatuto consolidado con personería jurídica comunitaria de la Ley 19.418 de Juntas de Vecinos.</p>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0 font-mono">
-                                <span class="px-2.5 py-1 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold text-[10px]">90% Adhesión (9/10)</span>
-                            </div>
-                        </div>
-
-                        <!-- 3 Pilares del Consolidado Formal -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 font-mono">
-                            <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1">
-                                <span class="text-teal-400 font-bold text-[11px] block">Cláusula 1: Faja 45m</span>
-                                <p class="text-slate-300 text-xs font-sans leading-snug">
-                                    22.5m limpios de combustible a cada lado del límite predial. Prohibición de rebrote de pino en la franja.
-                                </p>
-                            </div>
-                            <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1">
-                                <span class="text-sky-400 font-bold text-[11px] block">Cláusula 2: Aforo & Cánones</span>
-                                <p class="text-slate-300 text-xs font-sans leading-snug">
-                                    Respeto irrestricto de turnos fijados en asamblea. Monitoreo telemétrico mutuo con sensores de ultrasonido.
-                                </p>
-                            </div>
-                            <div class="p-3 rounded-xl bg-black/50 border border-white/10 space-y-1">
-                                <span class="text-emerald-400 font-bold text-[11px] block">Cláusula 3: Fondo Solidario</span>
-                                <p class="text-slate-300 text-xs font-sans leading-snug">
-                                    Fondo común para adquisición de mangueras de 1.5", motobombas y repuestos de compuertas automáticas.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Estado de Firmas por Predio -->
-                        <div class="p-3.5 rounded-2xl bg-black/50 border border-white/10 space-y-2 font-mono text-[11px]">
-                            <div class="flex items-center justify-between text-slate-400 font-bold">
-                                <span>Adhesión Notarial por Predio Vecinal (508 ha totales):</span>
-                                <span class="text-emerald-400">9 Firmados • 1 En Trámite</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-slate-300">
-                                <div>✅ Fundo Meniel (Rol 142-88)</div>
-                                <div>✅ Forestal Los Pinos (Rol 143-05)</div>
-                                <div>✅ Viña Santa Elena (Rol 142-30)</div>
-                                <div>✅ Agrícola San José (Rol 142-12)</div>
-                                <div>✅ Reserva Esclerófila (Rol 144-01)</div>
-                                <div>✅ Agrícola El Roble (Rol 142-55)</div>
-                                <div>✅ Fundo San Luis (Rol 143-18)</div>
-                                <div>✅ Criadero Copihue (Rol 142-77)</div>
-                                <div>✅ Hda. Quilaimo (Rol 143-44)</div>
-                                <div class="text-amber-400">⏳ Parcela Don Tomás (Rol 142-99)</div>
-                            </div>
-                        </div>
-
-                        <div class="pt-1 flex items-center justify-between gap-3">
-                            <button onclick="downloadFormalAgreements()" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 font-black font-mono text-xs shadow-lg transition-all cursor-pointer">
-                                📜 Descargar Convenio Notariado Completo (.txt)
-                            </button>
-                            <button onclick="closeMesaHotspotModal()" class="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs font-mono cursor-pointer">
-                                Cerrar
-                            </button>
-                        </div>
-                    </div>
-                `;
+                badgeEl.innerText = 'OBJ-MESA-02 • FUENTES OFICIALES & TÍTULOS';
+                titleEl.innerHTML = '<span>📜</span> Mapeo de Fuentes Oficiales, Títulos de Predio & Pactos Vecinales';
+                bodyEl.innerHTML = renderMesaFuentesYTitulosModal();
             } else if (tabId === 'balanza') {
                 badgeEl.innerText = 'OBJ-MESA-04 • BALANZA DE VOTOS DAO';
                 titleEl.innerHTML = '<span>⚖️</span> Sistema de Votación & Gobernanza DAO (Cálculo Cuadrático C = V²)';

@@ -50,16 +50,16 @@ export class LivestockManager {
     this.activePaddockId = 'P3';
     this.coopPaddockId = 'P8';
 
-    // 8 Potreros PRV distribuidos estratégicamente
+    // 8 Potreros PRV distribuidos estratégicamente (Modelo forrajero inicial)
     this.paddocks = [
-      { id: 'P1', name: 'Potrero 1 - Trébol Blanco & Festuca', x: -34, z: 28, w: 7, d: 7, restDays: 44, forrajeCm: 24, kgMsHa: 2850, status: 'ready' },
-      { id: 'P2', name: 'Potrero 2 - Alfalfa & Raygrass Perenne', x: -26, z: 28, w: 7, d: 7, restDays: 41, forrajeCm: 22, kgMsHa: 2600, status: 'ready' },
-      { id: 'P3', name: 'Potrero 3 - Pastura Sur-Oeste (Vacas Activo)', x: -34, z: 36, w: 7.5, d: 7.5, restDays: 1, forrajeCm: 25, kgMsHa: 3100, status: 'active' },
-      { id: 'P4', name: 'Potrero 4 - Silvopastoreo Borde Cerezos', x: -26, z: 36, w: 7, d: 7, restDays: 32, forrajeCm: 18, kgMsHa: 1950, status: 'resting' },
-      { id: 'P5', name: 'Potrero 5 - Trébol Subterráneo & Dáctilo (Ovejas)', x: -29, z: 4, w: 8, d: 7, restDays: 24, forrajeCm: 16, kgMsHa: 1750, status: 'resting' },
-      { id: 'P6', name: 'Potrero 6 - Pradera Regenerativa Este', x: 16, z: 9, w: 6.5, d: 6.5, restDays: 16, forrajeCm: 12, kgMsHa: 1250, status: 'resting' },
-      { id: 'P7', name: 'Potrero 7 - Franja de Infiltración Sur', x: 18, z: 24, w: 8, d: 6.5, restDays: 8, forrajeCm: 10, kgMsHa: 950, status: 'resting' },
-      { id: 'P8', name: 'Potrero 8 - Cuadro Nor-Este (Egg Mobile)', x: 6, z: -2, w: 8, d: 6, restDays: 4, forrajeCm: 8, kgMsHa: 750, status: 'coop' }
+      { id: 'P1', name: 'Potrero 1 - Trébol Blanco & Festuca', x: -34, z: 28, w: 7, d: 7, restDays: 44, forrajeCm: 24, kgMsHa: 2850, status: 'ready', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P2', name: 'Potrero 2 - Alfalfa & Raygrass Perenne', x: -26, z: 28, w: 7, d: 7, restDays: 41, forrajeCm: 22, kgMsHa: 2600, status: 'ready', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P3', name: 'Potrero 3 - Pastura Sur-Oeste (Vacas Activo)', x: -34, z: 36, w: 7.5, d: 7.5, restDays: 1, forrajeCm: 25, kgMsHa: 3100, status: 'active', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P4', name: 'Potrero 4 - Silvopastoreo Borde Cerezos', x: -26, z: 36, w: 7, d: 7, restDays: 32, forrajeCm: 18, kgMsHa: 1950, status: 'resting', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P5', name: 'Potrero 5 - Trébol Subterráneo & Dáctilo (Ovejas)', x: -29, z: 4, w: 8, d: 7, restDays: 24, forrajeCm: 16, kgMsHa: 1750, status: 'resting', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P6', name: 'Potrero 6 - Pradera Regenerativa Este', x: 16, z: 9, w: 6.5, d: 6.5, restDays: 16, forrajeCm: 12, kgMsHa: 1250, status: 'resting', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P7', name: 'Potrero 7 - Franja de Infiltración Sur', x: 18, z: 24, w: 8, d: 6.5, restDays: 8, forrajeCm: 10, kgMsHa: 950, status: 'resting', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' },
+      { id: 'P8', name: 'Potrero 8 - Cuadro Nor-Este (Egg Mobile)', x: 6, z: -2, w: 8, d: 6, restDays: 4, forrajeCm: 8, kgMsHa: 750, status: 'coop', is_simulated: true, simulation_basis: 'Aforo modelado Voisin' }
     ];
 
     // Registro maestro de animales individuales

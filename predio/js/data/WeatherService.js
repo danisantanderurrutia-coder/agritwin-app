@@ -120,7 +120,9 @@ export class WeatherService {
     const tempNoise = (Math.random() - 0.5) * 1.5;
 
     return {
-      source: 'Maule Agro-Clima (Estación Sincronizada)',
+      source: 'Simulación Maule Offline (API no configurada • Valor modelado)',
+      is_simulated: true,
+      simulation_basis: 'Modelo climático estacional Maule Sur (Sin API conectada)',
       timestamp: new Date().toISOString(),
       location: 'Parral - Retiro, Región del Maule',
       condition: isDay ? 'Intervalos Nubosos / Brisa Andina' : 'Cielos Despejados / Inversión Térmica',

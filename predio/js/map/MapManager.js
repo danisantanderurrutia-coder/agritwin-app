@@ -125,15 +125,15 @@ export class MapManager {
    * - Maule / Chilean coordinates (lon ~ -71.8°, lat ~ -36.1°) -> centered on Parral terrain
    */
   static latLonToVector3(lon, lat, height = 0) {
-    let centerLon = -71.820;  // Parral, Maule
-    let centerLat = -36.145; // Parral, Maule
+    let centerLon = -71.6050; // Parral, Maule Sur (Fundo Meniel)
+    let centerLat = -36.2115; // Parral, Maule Sur (Fundo Meniel)
     let scaleX = 8800;
     let scaleZ = 11100;
 
-    // Bundled farm dataset uses California reference frame
+    // Respaldo de compatibilidad para coordenadas de referencia históricas
     if (lon < -100 && lat > 20) {
       centerLon = -122.0838;
-      centerLat = 37.3860;
+      centerLat = 37.3858;
     }
 
     const x = (lon - centerLon) * scaleX;

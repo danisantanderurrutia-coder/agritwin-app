@@ -14,17 +14,34 @@
         "soil_type": "Franco Arcilloso Rojo Profundo",
         "irrigation_type": "Secano con Riego Suplementario",
         "status": "Óptimo",
-        "zone": "Zona 3 - Cereales & Cobertura"
+        "zone": "Zona 3 - Cereales & Cobertura",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0836, 37.3888],
-            [-122.0812, 37.3888],
-            [-122.0812, 37.3872],
-            [-122.0836, 37.3872],
-            [-122.0836, 37.3888]
+            [
+              -71.6048,
+              -36.2085
+            ],
+            [
+              -71.6024,
+              -36.2085
+            ],
+            [
+              -71.6024,
+              -36.2101
+            ],
+            [
+              -71.6048,
+              -36.2101
+            ],
+            [
+              -71.6048,
+              -36.2085
+            ]
           ]
         ]
       }
@@ -42,17 +59,34 @@
         "soil_type": "Franco con Estructura Estable",
         "irrigation_type": "Secano con Riego Suplementario",
         "status": "Óptimo",
-        "zone": "Zona 4 - Pastoreo & Forraje"
+        "zone": "Zona 4 - Pastoreo & Forraje",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0858, 37.3888],
-            [-122.0838, 37.3888],
-            [-122.0838, 37.3874],
-            [-122.0858, 37.3874],
-            [-122.0858, 37.3888]
+            [
+              -71.607,
+              -36.2085
+            ],
+            [
+              -71.605,
+              -36.2085
+            ],
+            [
+              -71.605,
+              -36.2099
+            ],
+            [
+              -71.607,
+              -36.2099
+            ],
+            [
+              -71.607,
+              -36.2085
+            ]
           ]
         ]
       }
@@ -70,17 +104,34 @@
         "soil_type": "Cuenca Excavada con Geomembrana 1.5mm",
         "irrigation_type": "Matriz Principal de Presurización",
         "status": "Óptimo",
-        "zone": "Zona 5 - Seguridad Hídrica"
+        "zone": "Zona 5 - Seguridad Hídrica",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0810, 37.3888],
-            [-122.0792, 37.3888],
-            [-122.0792, 37.3872],
-            [-122.0810, 37.3872],
-            [-122.0810, 37.3888]
+            [
+              -71.6022,
+              -36.2085
+            ],
+            [
+              -71.6004,
+              -36.2085
+            ],
+            [
+              -71.6004,
+              -36.2101
+            ],
+            [
+              -71.6022,
+              -36.2101
+            ],
+            [
+              -71.6022,
+              -36.2085
+            ]
           ]
         ]
       }
@@ -98,17 +149,34 @@
         "soil_type": "Suelo Vivo Enmendado con Compost Termófilo",
         "irrigation_type": "Nebulización & Microaspersión",
         "status": "Óptimo",
-        "zone": "Zona 1 - Núcleo de Regeneración"
+        "zone": "Zona 1 - Núcleo de Regeneración",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0836, 37.3870],
-            [-122.0820, 37.3870],
-            [-122.0820, 37.3862],
-            [-122.0836, 37.3862],
-            [-122.0836, 37.3870]
+            [
+              -71.6048,
+              -36.2103
+            ],
+            [
+              -71.6032,
+              -36.2103
+            ],
+            [
+              -71.6032,
+              -36.2111
+            ],
+            [
+              -71.6048,
+              -36.2111
+            ],
+            [
+              -71.6048,
+              -36.2103
+            ]
           ]
         ]
       }
@@ -126,17 +194,34 @@
         "soil_type": "Granítico Meteorizado con Cuarzo",
         "irrigation_type": "Doble Línea de Goteo Subsuperficial",
         "status": "Óptimo",
-        "zone": "Zona 2 - Vitivinicultura de Precisión"
+        "zone": "Zona 2 - Vitivinicultura de Precisión",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0818, 37.3860],
-            [-122.0792, 37.3860],
-            [-122.0792, 37.3846],
-            [-122.0818, 37.3846],
-            [-122.0818, 37.3860]
+            [
+              -71.603,
+              -36.2113
+            ],
+            [
+              -71.6004,
+              -36.2113
+            ],
+            [
+              -71.6004,
+              -36.2127
+            ],
+            [
+              -71.603,
+              -36.2127
+            ],
+            [
+              -71.603,
+              -36.2113
+            ]
           ]
         ]
       }
@@ -154,17 +239,34 @@
         "soil_type": "Franco Aluvial Profundo Bien Drenado",
         "irrigation_type": "Microaspersión Antiheladas + Goteo",
         "status": "Óptimo",
-        "zone": "Zona 2 - Fruticultura de Alta Rentabilidad"
+        "zone": "Zona 2 - Fruticultura de Alta Rentabilidad",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0818, 37.3844],
-            [-122.0792, 37.3844],
-            [-122.0792, 37.3830],
-            [-122.0818, 37.3830],
-            [-122.0818, 37.3844]
+            [
+              -71.603,
+              -36.2129
+            ],
+            [
+              -71.6004,
+              -36.2129
+            ],
+            [
+              -71.6004,
+              -36.2143
+            ],
+            [
+              -71.603,
+              -36.2143
+            ],
+            [
+              -71.603,
+              -36.2129
+            ]
           ]
         ]
       }
@@ -182,17 +284,34 @@
         "soil_type": "Pedregoso con Grava Fluvial",
         "irrigation_type": "Déficit Hídrico Controlado (RDI)",
         "status": "Óptimo",
-        "zone": "Zona 2 - Especies Resilientes"
+        "zone": "Zona 2 - Especies Resilientes",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0838, 37.3844],
-            [-122.0820, 37.3844],
-            [-122.0820, 37.3830],
-            [-122.0838, 37.3830],
-            [-122.0838, 37.3844]
+            [
+              -71.605,
+              -36.2129
+            ],
+            [
+              -71.6032,
+              -36.2129
+            ],
+            [
+              -71.6032,
+              -36.2143
+            ],
+            [
+              -71.605,
+              -36.2143
+            ],
+            [
+              -71.605,
+              -36.2129
+            ]
           ]
         ]
       }
@@ -210,17 +329,34 @@
         "soil_type": "Franco Orgánico Enrichido",
         "irrigation_type": "Aspersión Sectorizada",
         "status": "Óptimo",
-        "zone": "Zona 1 - Suelo Vivo & Pastoreo Rotacional"
+        "zone": "Zona 1 - Suelo Vivo & Pastoreo Rotacional",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0836, 37.3860],
-            [-122.0820, 37.3860],
-            [-122.0820, 37.3846],
-            [-122.0836, 37.3846],
-            [-122.0836, 37.3860]
+            [
+              -71.6048,
+              -36.2113
+            ],
+            [
+              -71.6032,
+              -36.2113
+            ],
+            [
+              -71.6032,
+              -36.2127
+            ],
+            [
+              -71.6048,
+              -36.2127
+            ],
+            [
+              -71.6048,
+              -36.2113
+            ]
           ]
         ]
       }
@@ -238,17 +374,34 @@
         "soil_type": "Limoso Aluvial Ribereño Húmedo",
         "irrigation_type": "Microaspersión Bajo Copa",
         "status": "Óptimo",
-        "zone": "Zona 2 - Agroforestería Frutal"
+        "zone": "Zona 2 - Agroforestería Frutal",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0864, 37.3868],
-            [-122.0840, 37.3868],
-            [-122.0840, 37.3854],
-            [-122.0864, 37.3854],
-            [-122.0864, 37.3868]
+            [
+              -71.6076,
+              -36.2105
+            ],
+            [
+              -71.6052,
+              -36.2105
+            ],
+            [
+              -71.6052,
+              -36.2119
+            ],
+            [
+              -71.6076,
+              -36.2119
+            ],
+            [
+              -71.6076,
+              -36.2105
+            ]
           ]
         ]
       }
@@ -266,17 +419,34 @@
         "soil_type": "Mantillo Húmedo con Capa de Hojarasca",
         "irrigation_type": "Nebulización Fina por Microclima",
         "status": "Óptimo",
-        "zone": "Zona 2 - Micología Aplicada"
+        "zone": "Zona 2 - Micología Aplicada",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0864, 37.3852],
-            [-122.0844, 37.3852],
-            [-122.0844, 37.3842],
-            [-122.0864, 37.3842],
-            [-122.0864, 37.3852]
+            [
+              -71.6076,
+              -36.2121
+            ],
+            [
+              -71.6056,
+              -36.2121
+            ],
+            [
+              -71.6056,
+              -36.2131
+            ],
+            [
+              -71.6076,
+              -36.2131
+            ],
+            [
+              -71.6076,
+              -36.2121
+            ]
           ]
         ]
       }
@@ -294,17 +464,34 @@
         "soil_type": "Ripario Aluvial de Alta Infiltración",
         "irrigation_type": "Régimen Fluvial Natural / Napa Freática",
         "status": "Óptimo",
-        "zone": "Zona 4 - Corredor Biológico & Mitigación Inundación"
+        "zone": "Zona 4 - Corredor Biológico & Mitigación Inundación",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0866, 37.3840],
-            [-122.0838, 37.3840],
-            [-122.0838, 37.3826],
-            [-122.0866, 37.3826],
-            [-122.0866, 37.3840]
+            [
+              -71.6078,
+              -36.2133
+            ],
+            [
+              -71.605,
+              -36.2133
+            ],
+            [
+              -71.605,
+              -36.2147
+            ],
+            [
+              -71.6078,
+              -36.2147
+            ],
+            [
+              -71.6078,
+              -36.2133
+            ]
           ]
         ]
       }
@@ -322,17 +509,34 @@
         "soil_type": "Secano Costero / Transición Andina",
         "irrigation_type": "Lluvia Estacional / Desbroce Preventivo",
         "status": "Precaución",
-        "zone": "Zona 4 - Barrera Cortafuego Predial"
+        "zone": "Zona 4 - Barrera Cortafuego Predial",
+        "is_simulated": true,
+        "simulation_basis": "Prototipo modelo Meniel - Delimitación cuarteles (Simulado)"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-122.0790, 37.3888],
-            [-122.0770, 37.3888],
-            [-122.0770, 37.3830],
-            [-122.0790, 37.3830],
-            [-122.0790, 37.3888]
+            [
+              -71.6002,
+              -36.2085
+            ],
+            [
+              -71.5982,
+              -36.2085
+            ],
+            [
+              -71.5982,
+              -36.2143
+            ],
+            [
+              -71.6002,
+              -36.2143
+            ],
+            [
+              -71.6002,
+              -36.2085
+            ]
           ]
         ]
       }
