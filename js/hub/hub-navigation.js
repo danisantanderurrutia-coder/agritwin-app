@@ -2143,7 +2143,9 @@ function openIncursionModeDirect() {
 }
 
 function openCerroModeDirect() {
-    openCerroMapWithTab('tab-tiempo');
+    switchMasterView('cerro');
+    if (typeof setCerroSubView === 'function') setCerroSubView('panorama');
+    if (typeof toggleCerroCampaignBoard === 'function') toggleCerroCampaignBoard(true);
 }
 
 function openMesaModeDirect() {
@@ -2637,4 +2639,70 @@ window.openCerroModeDirect = openCerroModeDirect;
 window.openMesaModeDirect = openMesaModeDirect;
 window.openCerroMapWithTab = openCerroMapWithTab;
 window.flyToCerroLocation = flyToCerroLocation;
+
+// ─── DOCTRINA FÍSICA IN-SITU MODAL EN CUENCA (KaTeX) ───
+window.openCuencaDoctrinaModal = function(targetModule) {
+    const modal = document.getElementById('cuencaDoctrinaModal');
+    const modalBody = document.getElementById('cuencaDoctrinaModalBody');
+    if (!modal) return;
+    
+    if (modalBody && modalBody.children.length === 0) {
+        const sourceDoc = document.getElementById('docs-vecino');
+        if (sourceDoc) {
+            modalBody.innerHTML = sourceDoc.innerHTML;
+            if (typeof window.renderLatexInContainer === 'function') {
+                window.renderLatexInContainer('cuencaDoctrinaModalBody');
+            }
+        }
+    }
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    if (targetModule) {
+        setTimeout(() => {
+            window.scrollCuencaDoctrina(targetModule);
+        }, 150);
+    }
+};
+
+window.closeCuencaDoctrinaModal = function() {
+    const modal = document.getElementById('cuencaDoctrinaModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+};
+
+window.scrollCuencaDoctrina = function(moduleKey) {
+    const modalBody = document.getElementById('cuencaDoctrinaModalBody');
+    if (!modalBody) return;
+    
+    let targetEl = null;
+    const allEls = Array.from(modalBody.querySelectorAll('h3, h4, h2, div, span'));
+    if (moduleKey === 'm2-fuego' || moduleKey === 'incendios') {
+        targetEl = allEls.find(el => el.innerText && (el.innerText.includes('MÓDULO 2: DOCTRINA') || el.innerText.includes('Rothermel & Huygens') || el.innerText.includes('BALÍSTICA DE FUEGO')));
+    } else if (moduleKey === 'm3-tranques' || moduleKey === 'tranques' || moduleKey === 'recursos') {
+        targetEl = allEls.find(el => el.innerText && (el.innerText.includes('Módulo 3: Formulación') || el.innerText.includes('MNDWI')));
+    } else if (moduleKey === 'm4-heladas' || moduleKey === 'heladas') {
+        targetEl = allEls.find(el => el.innerText && (el.innerText.includes('Módulo 4: Topoclimatología') || el.innerText.includes('Drenaje por Gravedad')));
+    } else if (moduleKey === 'm1-lulc' || moduleKey === 'lulc') {
+        targetEl = allEls.find(el => el.innerText && (el.innerText.includes('LULC Biofísico') || el.innerText.includes('Módulo 1')));
+    }
+    
+    if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
+// Escuchar tecla Escape para cerrar modal de doctrina
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('cuencaDoctrinaModal');
+        if (modal && !modal.classList.contains('hidden')) {
+            window.closeCuencaDoctrinaModal();
+        }
+    }
+});
+
 
