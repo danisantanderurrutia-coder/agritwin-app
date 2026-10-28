@@ -34,7 +34,7 @@ export class SimulationEngine {
     this.simulatedHour = 10; // Start simulation at 10:00 AM
     this.latestBasinTelemetry = null;
 
-    // Conexión y sincronización periódica con Cuenca Regional (:7774)
+    // Conexión y sincronización periódica con Cuenca Regional (vía Tronco Hub :7777 /api/basin-sync)
     this.syncBasinTelemetry();
     this.basinInterval = setInterval(() => this.syncBasinTelemetry(), 20000);
   }

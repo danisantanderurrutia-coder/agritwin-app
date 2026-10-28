@@ -102,6 +102,7 @@ export class ObjectPlacementManager {
         <button class="aoe3-tab-btn" data-cat="water"><span>💧</span> Agua & Albercas</button>
         <button class="aoe3-tab-btn" data-cat="paths"><span>🛤️</span> Caminos</button>
         <button class="aoe3-tab-btn" data-cat="fences"><span>🚪</span> Portones & Rejas</button>
+        <button class="aoe3-tab-btn" data-cat="fire"><span>🔥</span> Defensa Incendios</button>
         <button class="aoe3-tab-btn" data-cat="vehicles"><span>🚜</span> Vehículos</button>
         <button class="aoe3-tab-btn" data-cat="sensors"><span>📡</span> Sensores IoT</button>
         <button class="aoe3-tab-btn" data-cat="trees"><span>🌳</span> Árboles</button>
@@ -117,6 +118,9 @@ export class ObjectPlacementManager {
         <div id="aoe3-dock-status-summary" style="color: #dfc8a5; display: flex; align-items: center; gap: 8px;">
           <span>🏛️ <strong>0</strong> Asentados</span> • <span style="color:#fbbf24;">CAPEX: <strong>$0</strong></span>
         </div>
+        <button id="btn-test-fire-system" style="background: linear-gradient(180deg, #1e5a7a 0%, #0f3347 100%); border: 1px solid #7dd3fc; color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+          <span>💦</span> Probar Humectación
+        </button>
         <button id="btn-open-whatif-drawer" style="background: linear-gradient(180deg, #6c4b28 0%, #3e2815 100%); border: 1px solid #fde047; color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">
           <span>📜</span> Análisis What-If Permacultura
         </button>
@@ -134,6 +138,8 @@ export class ObjectPlacementManager {
     });
 
     document.getElementById('btn-close-aoe3-dock').onclick = () => this.closeDock();
+    const btnFire = document.getElementById('btn-test-fire-system');
+    if (btnFire) btnFire.onclick = () => this.testFireSystem();
     const btnWhatIf = document.getElementById('btn-open-whatif-drawer');
     if (btnWhatIf) {
       btnWhatIf.onclick = () => {
@@ -683,6 +689,9 @@ export class ObjectPlacementManager {
     } else if (item.category === 'fences') {
       permaVerdict = `🚪 Delimitación Perimetral PRV: ${count} seccion${count > 1 ? 'es' : ''} de cerco/portón. Permite subdivisión de potreros para pastoreo regenerativo de ultra-alta densidad sin sobrepastoreo.`;
       zoneBadge.style.color = '#34d399';
+    } else if (item.category === 'fire') {
+      permaVerdict = this.buildFireVerdict(item, batch, avgX, avgZ, count);
+      zoneBadge.style.color = '#f87171';
     } else if (item.category === 'water') {
       permaVerdict = `💧 Infraestructura Hídrica Yeomans: ${count} cuerpo${count > 1 ? 's' : ''} de agua/albercas. Aumenta la capacidad de retención predial, recarga napas freáticas y crea microclimas contra heladas.`;
       zoneBadge.style.color = '#38bdf8';
@@ -712,6 +721,90 @@ export class ObjectPlacementManager {
     document.getElementById('aoe3-perma-dist').textContent = `${dist.toFixed(0)} m`;
 
     modal.style.display = 'flex';
+  }
+
+  /**
+   * Evaluación de Espacio Defendible WUI (sin análisis de consumo de agua: es un sistema de emergencia)
+   */
+  buildFireVerdict(item, batch, avgX, avgZ, count) {
+    const structures = this.placedObjects.filter(o => o.category === 'structures');
+    const refs = [{ x: this.originX, z: this.originZ, name: 'Casona Central' }, ...structures.map(o => ({ x: o.x, z: o.z, name: o.name }))];
+    const nearest = (x, z) => Math.min(...refs.map(r => Math.hypot(x - r.x, z - r.z)));
+    const d = nearest(avgX, avgZ);
+    let wuiZone, advice;
+    if (d <= 10) { wuiZone = 'Zona 1 (0–10 m)'; advice = 'Limpieza total de combustible: ideal para rociadores de techo y grifos.'; }
+    else if (d <= 30) { wuiZone = 'Zona 2 (10–30 m)'; advice = 'Raleo y aspersión: ubicación recomendada para aspersores de impacto.'; }
+    else if (d <= 100) { wuiZone = 'Zona 3 (30–100 m)'; advice = 'Manejo de combustible: apta para cortinas esclerófilas y fajas minerales.'; }
+    else { wuiZone = 'Fuera de 100 m'; advice = 'Muy lejos de las estructuras: aporta poca protección directa.'; }
+
+    let cover = '';
+    if (item.fireRadius) {
+      const protectedCount = refs.filter(r => batch.some(b => Math.hypot(b.x - r.x, b.z - r.z) <= item.fireRadius)).length;
+      cover = ` Cobertura húmeda de ${item.fireRadius} m: ${protectedCount} de ${refs.length} estructura(s) (incl. Casona Central) bajo resguardo.`;
+    }
+    return `🔥 Defensa WUI (${count} uds) — ${wuiZone} a ${d.toFixed(0)} m de la estructura más cercana. ${advice}${cover}`;
+  }
+
+  /**
+   * Prueba visual del sistema: chorros de agua desde todos los aspersores asentados (efecto temporal)
+   */
+  testFireSystem() {
+    const sources = [];
+    this.placedObjectsGroup.children.forEach(g => {
+      if (g.userData?.fireRadius) sources.push(g);
+    });
+    if (!sources.length) {
+      bus.emit('ui:show_toast', '🚿 No hay aspersores asentados. Agrega uno desde la pestaña Defensa Incendios.');
+      return;
+    }
+    if (this._fireFx) this.stopFireTest();
+    const N = 140;
+    const fx = [];
+    sources.forEach(g => {
+      const R = g.userData.fireRadius;
+      const pos = new Float32Array(N * 3);
+      const vel = [];
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const pts = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0x7dd3fc, size: 0.35, transparent: true, opacity: 0.85, depthWrite: false }));
+      pts.frustumCulled = false;
+      pts.raycast = () => {};
+      g.add(pts);
+      for (let i = 0; i < N; i++) vel.push(null);
+      fx.push({ g, pts, pos, vel, R, h: g.userData.sprayHeight || 2.5, t: Array.from({ length: N }, () => Math.random()) });
+    });
+    this._fireFx = fx;
+    const start = performance.now();
+    const step = () => {
+      if (!this._fireFx) return;
+      const el = (performance.now() - start) / 1000;
+      fx.forEach(f => {
+        for (let i = 0; i < N; i++) {
+          f.t[i] = (f.t[i] + 0.012) % 1;
+          const t = f.t[i];
+          const ang = (i / N) * Math.PI * 2 + el * 0.8;
+          const r = f.R * t;
+          f.pos[i * 3] = Math.cos(ang) * r;
+          f.pos[i * 3 + 1] = Math.max(0.1, f.h + Math.sin(Math.PI * t) * f.R * 0.35 - f.h * t * t);
+          f.pos[i * 3 + 2] = Math.sin(ang) * r;
+        }
+        f.pts.geometry.attributes.position.needsUpdate = true;
+      });
+      if (el > 8) { this.stopFireTest(); return; }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    bus.emit('ui:show_toast', `💦 Humectación activa en ${sources.length} aspersor(es) (8 s).`);
+  }
+
+  stopFireTest() {
+    if (!this._fireFx) return;
+    this._fireFx.forEach(f => {
+      f.g.remove(f.pts);
+      f.pts.geometry.dispose();
+      f.pts.material.dispose();
+    });
+    this._fireFx = null;
   }
 
   closeModal() {

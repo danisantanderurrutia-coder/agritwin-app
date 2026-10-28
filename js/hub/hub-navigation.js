@@ -642,7 +642,7 @@
         const FARMER_PORTFOLIOS = {
             'MENIEL': {
                 name: 'Fundo Meniel / Colliguay',
-                rol: 'Rol 418-24 Parral',
+                rol: 'Rol 142-88 Retiro',
                 is_simulated: false,
                 statusLabel: 'Predio Piloto • Calibrado',
                 waterReserve: '18.500 m³',
@@ -1027,29 +1027,44 @@
         // ═══════════════════════════════════════════════════════════════════
         window.agroTwinStateBus = {
             predio: {
-                name: 'Fundo Colliguay (Predio Twin)',
-                lastSync: 'En línea',
-                metrics: { aforoLps: 28.0, tranqueM3: 18500, soilVwc: '36.2%', fwi: 24, biomassKgHa: 4820 }
+                name: 'Fundo Meniel • Casa Patronal Zona 0 (Predio Twin 24.8 ha)',
+                lastSync: 'En línea (Híbrido)',
+                metrics: {
+                    aforoDgaLps: 28.0,
+                    tranqueM3: 18500,
+                    soilVwc: '36.2% (Simulado Prototipo)',
+                    fwi: 24,
+                    biomassKgHa: 4820,
+                    referenceOrigin: 'Casa Patronal (0m N, 0m E)'
+                }
             },
             mesa: {
-                name: 'La Mesa de Vecinos (508 ha)',
+                name: 'La Mesa de Vecinos (10 Predios • 508 ha)',
                 lastSync: 'En línea',
                 metrics: { prediosConectados: 10, firewallKm: 2.4, daoCredits: 100, consensus: '94%' }
             },
             cuenca: {
-                name: 'La Cumbre del Cerro (122k ha)',
+                name: 'La Cumbre del Cerro (122.070 ha)',
                 lastSync: 'En línea',
-                metrics: { dgaStation: 'Longaví', caudalLps: 42.5, fwiRegional: 48, alertLevel: 'Verde' }
+                metrics: {
+                    dgaStation: 'Río Longaví (Simulado Estacional)',
+                    caudalRioM3s: 14.5,
+                    derechosPredioLps: 28.0,
+                    fwiRegional: 28,
+                    windPuelcheKmh: 12.5,
+                    weatherFeed: 'Open-Meteo (En vivo)',
+                    alertLevel: 'Verde'
+                }
             },
             establo: {
-                name: 'Establo Inteligente & Bienestar Animal',
-                lastSync: 'En línea',
-                metrics: { thiIndice: 68.2, rumiaMinDia: 465, bcsPromedio: 3.4, confortBovino: '96%' }
+                name: 'Establo Inteligente & Bienestar Animal (Prototipo)',
+                lastSync: 'En línea (Simulado)',
+                metrics: { thiIndice: 68.2, rumiaMinDia: 465, bcsPromedio: 3.4, confortBovino: '96%', ugmHa: 1.8 }
             },
             invernadero: {
-                name: 'Invernadero Clima Controlado & CEA',
-                lastSync: 'En línea',
-                metrics: { vpdKpa: 1.15, tempIntC: 22.4, rhPct: 68.5, parUmol: 840 }
+                name: 'Invernadero Clima Controlado & CEA (Prototipo)',
+                lastSync: 'En línea (Simulado)',
+                metrics: { vpdKpa: 1.15, tempIntC: 22.4, rhPct: 68.5, parUmol: 840, et0MmDia: 4.5 }
             },
             excursion: {
                 name: 'Excursión / Incursión Biodiversidad & Pirogestión',
@@ -1057,6 +1072,73 @@
                 metrics: { camarasActivas: 6, indiceNDVI: 0.74, biomasaCombustible: '8.2 t/ha', alertasFauna: 0 }
             }
         };
+
+        // Sincroniza el Bus del Tronco con la telemetría viva/simulada del servidor unificado (:7777)
+        window.refreshHubTelemetryFromBackend = async function(silent = true) {
+            try {
+                const resp = await fetch('/api/telemetry/summary');
+                if (!resp.ok) return null;
+                const summary = await resp.json();
+                const now = new Date().toLocaleTimeString();
+
+                const avgVwc = summary.derived?.avg_vwc_pct ?? 36.2;
+                const fwiVal = summary.derived?.fwi?.value ?? 28;
+                const fwiLbl = summary.derived?.fwi?.label ?? 'MODERADO';
+                const qLongavi = summary.derived?.longavi_q_m3s ?? 14.5;
+                const windKmh = summary.derived?.puelche_gusts_kmh ?? 12.5;
+                const etoVal = summary.derived?.eto_penman_monteith_mm_day ?? 4.5;
+                const isRealWeather = !!summary.meta?.weather_is_real;
+                const feedLabel = summary.meta?.weather_feed || 'Modelo Maule Sur';
+
+                window.agroTwinStateBus.cuenca.lastSync = now;
+                window.agroTwinStateBus.cuenca.metrics = {
+                    ...window.agroTwinStateBus.cuenca.metrics,
+                    caudalRioM3s: qLongavi,
+                    fwiRegional: fwiVal,
+                    fwiLabel: fwiLbl,
+                    windPuelcheKmh: windKmh,
+                    et0MmDia: etoVal,
+                    weatherFeed: feedLabel,
+                    weatherIsReal: isRealWeather,
+                    alertLevel: fwiVal > 30 ? 'Ámbar' : 'Verde'
+                };
+
+                window.agroTwinStateBus.predio.metrics = {
+                    ...window.agroTwinStateBus.predio.metrics,
+                    aforoDgaLps: summary.meta?.fundo_colliguay?.derechos_dga_lps ?? 28.0,
+                    tranqueM3: summary.derived?.tranque_keyline_capacity_m3 ?? 18500,
+                    soilVwc: `${avgVwc}% (Prototipo KioT)`,
+                    fwi: fwiVal
+                };
+
+                window.agroTwinStateBus.invernadero.metrics.et0MmDia = etoVal;
+
+                if (!silent && typeof updateArbolEventLog === 'function') {
+                    updateArbolEventLog('cuenca', `TELEMETRÍA UNIFICADA (${isRealWeather ? 'Clima Open-Meteo Real' : 'Fallback Simulado'} + Nodos Prototipo)`, {
+                        weatherFeed: feedLabel,
+                        windPuelcheKmh: windKmh,
+                        et0MmDia: etoVal,
+                        caudalLongaviM3s: qLongavi,
+                        kiotVwcPct: `${avgVwc}% (Simulado Prototipo)`
+                    });
+                }
+                return summary;
+            } catch (err) {
+                return null;
+            }
+        };
+
+        // Iniciar refresco automático en segundo plano cada 60s
+        setTimeout(() => {
+            if (typeof window.refreshHubTelemetryFromBackend === 'function') {
+                window.refreshHubTelemetryFromBackend(true);
+            }
+        }, 800);
+        setInterval(() => {
+            if (typeof window.refreshHubTelemetryFromBackend === 'function') {
+                window.refreshHubTelemetryFromBackend(true);
+            }
+        }, 60000);
 
         window.showMasterToast = function(msg, icon = '🌳', type = 'info') {
             const bgClass = type === 'success' ? 'bg-emerald-950 border-emerald-500' : type === 'warning' ? 'bg-amber-950 border-amber-500' : 'bg-stone-900 border-amber-500';
@@ -1076,29 +1158,34 @@
             window.showMasterToast(msg, '✅', 'info');
         };
 
-        window.syncBranchWithHub = function(branchName) {
+        window.syncBranchWithHub = async function(branchName) {
             const now = new Date().toLocaleTimeString();
+            await window.refreshHubTelemetryFromBackend(true);
             if (branchName === 'mesa') {
                 window.agroTwinStateBus.mesa.lastSync = now;
                 window.showMasterToast(`Rama MESA VECINAL sincronizada: 10 predios, 508 ha y consenso DAO consolidados en el Tronco Hub.`, '🤝', 'success');
             } else if (branchName === 'cuenca') {
                 window.agroTwinStateBus.cuenca.lastSync = now;
-                window.showMasterToast(`Rama CUENCA sincronizada: Macro-hidrología 122k ha y alertas FWI consolidadas en el Tronco Hub.`, '🏔️', 'success');
+                const m = window.agroTwinStateBus.cuenca.metrics;
+                window.showMasterToast(`Rama CUENCA sincronizada: Río Longaví ${m.caudalRioM3s} m³/s, Viento ${m.windPuelcheKmh} km/h (${m.weatherFeed}) y FWI ${m.fwiRegional}.`, '🏔️', 'success');
             } else if (branchName === 'predio') {
                 window.agroTwinStateBus.predio.lastSync = now;
-                window.showMasterToast(`Rama PREDIO sincronizada: Aforo 28 L/s, Tranque 18.5k m³ y FDR consolidados en el Tronco Hub.`, '🚜', 'success');
+                const m = window.agroTwinStateBus.predio.metrics;
+                window.showMasterToast(`Rama PREDIO sincronizada (Origen Casa Zona 0): Derechos DGA ${m.aforoDgaLps} L/s, Tranque ${m.tranqueM3} m³ y FDR ${m.soilVwc}.`, '🚜', 'success');
             } else if (branchName === 'establo') {
                 window.agroTwinStateBus.establo.lastSync = now;
-                window.showMasterToast(`Rama ESTABLO sincronizada: THI 68.2, rumia 465 min y confort 96% consolidados en el Tronco Hub.`, '🐄', 'success');
+                const m = window.agroTwinStateBus.establo.metrics;
+                window.showMasterToast(`Rama ESTABLO sincronizada (Prototipo): Carga ${m.ugmHa} UGM/ha, THI ${m.thiIndice}, rumia ${m.rumiaMinDia} min y confort ${m.confortBovino}.`, '🐄', 'success');
             } else if (branchName === 'invernadero') {
                 window.agroTwinStateBus.invernadero.lastSync = now;
-                window.showMasterToast(`Rama INVERNADERO sincronizada: VPD 1.15 kPa, clima dinámico y fertirriego consolidados en el Tronco Hub.`, '🌿', 'success');
+                const m = window.agroTwinStateBus.invernadero.metrics;
+                window.showMasterToast(`Rama INVERNADERO sincronizada (Prototipo): VPD ${m.vpdKpa} kPa, ET0 ${m.et0MmDia} mm/d y fertirriego consolidados.`, '🌿', 'success');
             } else if (branchName === 'excursion') {
                 window.agroTwinStateBus.excursion.lastSync = now;
                 window.showMasterToast(`Rama EXCURSIÓN sincronizada: Fototrampeo, NDVI 0.74 y fajas de contención consolidados en el Tronco Hub.`, '🥾', 'success');
             }
             if (typeof updateArbolEventLog === 'function') {
-                updateArbolEventLog(branchName, 'SINCRONIZACIÓN MANUAL');
+                updateArbolEventLog(branchName, 'SINCRONIZACIÓN CON TRONCO HUB');
             }
         };
 
@@ -1117,7 +1204,22 @@
 
         // Escucha de mensajes entrantes desde la rama Predio (Three.js WebGL en iframe)
         window.addEventListener('message', (event) => {
-            if (event.data && event.data.type === 'SYNC_BRANCH_STATE') {
+            if (!event.data) return;
+            if (event.data.type === 'PREDIO_IFRAME_READY') {
+                // El Gemelo 3D acaba de inicializar: sincronizar perfil activo, etiquetas y modo Plan Maestro sin carreras
+                window.syncPanelTagsToIframe(window.isPanelTagsVisible());
+                if (window.farmProfileManager) {
+                    const activeProfile = window.farmProfileManager.getActiveProfile();
+                    if (activeProfile) {
+                        window.farmProfileManager.broadcastProfileChange(activeProfile);
+                    }
+                }
+                if (typeof hubPlanMaestroActive !== 'undefined' && hubPlanMaestroActive) {
+                    setPlanMaestroState(true);
+                }
+                return;
+            }
+            if (event.data.type === 'SYNC_BRANCH_STATE') {
                 const b = event.data.branch || 'predio';
                 const now = new Date().toLocaleTimeString();
                 if (window.agroTwinStateBus[b]) {
@@ -1133,7 +1235,7 @@
             }
         });
 
-        // --- SIMULADORES EN VIVO PARA SCRIPTS DEL VAULT ---
+        // --- SIMULADORES EN VIVO PARA SCRIPTS DEL VAULT (CONECTADOS AL BUS DEL TRONCO) ---
         function runInteractivePRV() {
             const ugm = parseFloat(document.getElementById('prv-ugm')?.value || 1.8);
             const rest = parseInt(document.getElementById('prv-rest')?.value || 38);
@@ -1153,6 +1255,11 @@
             const forageAvail = paddockArea * biomass * 0.70;
             const daysSupp = +(forageAvail / dailyHerdCons).toFixed(1);
             const compliant = occDays <= 3.0 ? '✅ 2ª Ley Voisin Cumplida (<3d)' : '⚠️ Ajustar a <3d (rotación rápida)';
+
+            if (window.agroTwinStateBus?.establo) {
+                window.agroTwinStateBus.establo.metrics.ugmHa = instStocking;
+                window.agroTwinStateBus.predio.metrics.biomassKgHa = biomass;
+            }
 
             const resEl = document.getElementById('prv-result');
             if (resEl) {
@@ -1182,6 +1289,11 @@
             const et0 = +(numerator / denominator).toFixed(2);
             const m3ha = (et0 * 10).toFixed(1);
 
+            if (window.agroTwinStateBus?.invernadero) {
+                window.agroTwinStateBus.invernadero.metrics.et0MmDia = et0;
+                window.agroTwinStateBus.invernadero.metrics.tempIntC = t;
+            }
+
             const resEl = document.getElementById('fao-result');
             if (resEl) resEl.innerText = `${et0} mm/día (${m3ha} m³/ha/día)`;
         }
@@ -1205,6 +1317,12 @@
             if (fwi >= 50) { cat = 'EXTREMO'; color = '#ef4444'; }
             else if (fwi >= 35) { cat = 'ALTO'; color = '#f97316'; }
             else if (fwi >= 20) { cat = 'MODERADO'; color = '#eab308'; }
+
+            if (window.agroTwinStateBus?.cuenca) {
+                window.agroTwinStateBus.cuenca.metrics.fwiRegional = fwi;
+                window.agroTwinStateBus.cuenca.metrics.windPuelcheKmh = wind;
+                window.agroTwinStateBus.predio.metrics.fwi = fwi;
+            }
 
             const puelche = wind > 30 && rh < 30;
             const resEl = document.getElementById('fwi-result');
@@ -2686,6 +2804,8 @@ window.scrollCuencaDoctrina = function(moduleKey) {
         targetEl = allEls.find(el => el.innerText && (el.innerText.includes('Módulo 3: Formulación') || el.innerText.includes('MNDWI')));
     } else if (moduleKey === 'm4-heladas' || moduleKey === 'heladas') {
         targetEl = allEls.find(el => el.innerText && (el.innerText.includes('Módulo 4: Topoclimatología') || el.innerText.includes('Drenaje por Gravedad')));
+    } else if (moduleKey === 'm5-tornados-cape' || moduleKey === 'tornados') {
+        targetEl = allEls.find(el => el.innerText && (el.innerText.includes('Módulo 5: Termodinámica Convectiva') || el.innerText.includes('Integral de Flotabilidad')));
     } else if (moduleKey === 'm1-lulc' || moduleKey === 'lulc') {
         targetEl = allEls.find(el => el.innerText && (el.innerText.includes('LULC Biofísico') || el.innerText.includes('Módulo 1')));
     }

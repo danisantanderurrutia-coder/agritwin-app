@@ -14,22 +14,25 @@
 (function(window) {
   class FarmProfileManager {
     constructor() {
-      this.storageKey = 'agritwin_profiles_v1';
-      this.activeKey = 'agritwin_active_profile_v1';
+      this.storageKey = 'agritwin_profiles_v2';
+      this.activeKey = 'agritwin_active_profile_v2';
       
+      // Punto representativo central: Casa Patronal / El Galpón (Zona 0)
+      this.CASA_ORIGIN = { lat: -36.2115, lon: -71.6050 };
+
       // Perfil de Referencia Maestro (Pre-poblado al 100%)
       this.defaultMenielProfile = {
         id: 'meniel',
         userName: 'Familia Meniel & AgroTech',
         farmName: 'Fundo Meniel',
-        location: 'Parral, Región del Maule, Chile',
-        coordinates: { lat: -36.14, lon: -71.82 },
-        areaHa: 12.8,
-        rolSii: '142-05',
+        location: 'Sector Río Longaví (Parral - Retiro), Maule, Chile',
+        coordinates: { lat: -36.2115, lon: -71.6050, refPoint: 'Casa Patronal / Galpón (Zona 0: 0m E, 0m N)' },
+        areaHa: 24.8,
+        rolSii: '142-88 Retiro',
         isReference: true,
         created: '2026-09-25T00:00:00.000Z',
         status: 'active',
-        description: 'Predio de referencia agroecológico de alta resolución con 8 cuarteles, parque agrovoltaico, tranque Keyline y manejo PRV.',
+        description: 'Predio de referencia agroecológico de alta resolución (24.8 ha) con coordenadas relativas a la Casa Patronal (Zona 0), 8 cuarteles, parque agrovoltaico, tranque Keyline 18.500 m³ y manejo PRV.',
         
         // Matriz de las 6 Ramas (Instancia Particular de Meniel)
         branches: {
@@ -39,7 +42,7 @@
             waterStorageM3: 18500,
             solarKwp: 9.9,
             sensorsCount: 6,
-            statusLabel: 'Operativo 100%'
+            statusLabel: 'Operativo 100% (24.8 ha)'
           },
           vecinal: {
             configured: true,
@@ -310,7 +313,7 @@
                 </div>
                 <h3 class="text-sm font-bold text-amber-200 font-serif mt-2 group-hover:text-amber-100">Fundo Meniel</h3>
                 <p class="text-[10px] text-stone-300 mt-1 line-clamp-2">
-                  Parral, Maule • 12.8 ha modeladas con 8 cuarteles, tranque 18.5k m³, rebaño PRV y 18 asesores activos.
+                  Parral–Retiro, Maule • 24.8 ha (Rol 142-88) centradas en Casa Patronal (Zona 0), 8 cuarteles, tranque 18.5k m³, PRV y 18 asesores.
                 </p>
                 <div class="mt-2.5 flex items-center gap-1.5 flex-wrap text-[9px] font-mono text-amber-400/80">
                   <span class="bg-black/40 px-1.5 py-0.5 rounded">6 Ramas</span>
@@ -442,5 +445,76 @@
 
   window.FarmProfileManager = FarmProfileManager;
   window.farmProfileManager = new FarmProfileManager();
+
+  // Inicializador del Portal de Acceso Alquímico & Deep-Linking por URL del Hub
+  window.initAlchemicalSplashAndRouting = function() {
+    let splashDismissed = false;
+    const splashEl = document.getElementById('alchemicalAppSplash');
+    if (!splashEl) return;
+
+    if (window.farmProfileManager) {
+      window.farmProfileManager.renderSplashConsole();
+      window.farmProfileManager.updateHeaderUI(window.farmProfileManager.getActiveProfile());
+    }
+
+    function dismissSplash() {
+      if (splashDismissed) return;
+      splashDismissed = true;
+      if (splashEl) {
+        splashEl.style.opacity = '0';
+        splashEl.style.pointerEvents = 'none';
+        setTimeout(() => {
+          splashEl.style.display = 'none';
+        }, 800);
+      }
+    }
+
+    window.dismissAlchemicalSplash = dismissSplash;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetMode = urlParams.get('mode') || urlParams.get('view');
+    if (targetMode) {
+      dismissSplash();
+      setTimeout(() => {
+        if (targetMode === 'map' || targetMode === 'cuenca_map' || targetMode === 'territory') {
+          if (typeof openCerroMap === 'function') openCerroMap();
+        } else if (targetMode === 'cerro' || targetMode === 'cuenca') {
+          if (typeof openCerroModeDirect === 'function') openCerroModeDirect();
+          else if (typeof switchMasterView === 'function') switchMasterView('cerro');
+        } else if (typeof switchMasterView === 'function') {
+          switchMasterView(targetMode);
+        }
+      }, 350);
+    }
+
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' || e.key === ' ' || e.code === 'Space') {
+        if (splashEl && splashEl.style.display !== 'none' && !splashDismissed) {
+          dismissSplash();
+        }
+      }
+    });
+  };
+
+  window.openComparativeStatusModal = function() {
+    if (typeof switchMasterView === 'function') switchMasterView('docs');
+    if (typeof switchDocsTab === 'function') switchDocsTab('docs-dossier');
+    setTimeout(() => {
+      const iframe = document.getElementById('iframeDossier');
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ action: 'openComparativeModal' }, '*');
+      }
+      const modalIframe = document.getElementById('iframeDossierModal');
+      if (modalIframe && modalIframe.contentWindow) {
+        modalIframe.contentWindow.postMessage({ action: 'openComparativeModal' }, '*');
+      }
+    }, 150);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.initAlchemicalSplashAndRouting);
+  } else {
+    window.initAlchemicalSplashAndRouting();
+  }
 
 })(window);

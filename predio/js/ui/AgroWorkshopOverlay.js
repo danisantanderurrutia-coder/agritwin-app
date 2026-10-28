@@ -2169,11 +2169,11 @@ graph TB
         ESP -->|SPI| TFT["📟 Display ILI9341 3.5''<br/>(Pantalla de Campo)"]:::iot
     end
 
-    subgraph BACK["⚡ CAPA 2: Backend & Sincronización Local (Node.js :7773)"]
+    subgraph BACK["⚡ CAPA 2: Backend & Sincronización Local (Puerto Único :7777)"]
         direction LR
         API_TEL["📡 API REST Telemetría<br/>/api/enclosure/telemetry"]:::srv
         SRV(["🖥️ Servidor HTTP Nativo<br/>server.cjs (Zero Deps)"]):::srv
-        SYNC_CUENCA["🏔️ Acople Cuenca Longaví<br/>/api/basin-sync (:7774)"]:::srv
+        SYNC_CUENCA["🏔️ Acople Cuenca Longaví<br/>/api/basin-sync (:7777)"]:::srv
         API_TEL --- SRV --- SYNC_CUENCA
     end
 

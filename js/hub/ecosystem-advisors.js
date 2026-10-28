@@ -17,7 +17,36 @@
                     aquifer: false,
                     floodWave: false,
                     fireWave: false,
-                    landslideWave: false
+                    landslideWave: false,
+                    tornadoWave: false
+                };
+
+                // Configuración del Simulador Hipotético de Tornado (Nivel 3 What-If)
+                this.tornadoState = {
+                    ef: 'EF1',
+                    corridor: 'meniel_core',
+                    windbreak: true,
+                    vortexProgress: 0.35
+                };
+                this.tornadoCorridors = {
+                    meniel_core: [
+                        [-36.1985, -71.6280],
+                        [-36.2055, -71.6155],
+                        [-36.2115, -71.6053], // Fundo Meniel Centro
+                        [-36.2175, -71.5940]
+                    ],
+                    apr_retiro: [
+                        [-36.1720, -71.6620],
+                        [-36.1810, -71.6450],
+                        [-36.1910, -71.6260],
+                        [-36.1995, -71.6100]
+                    ],
+                    piedemonte: [
+                        [-36.2240, -71.5680],
+                        [-36.2320, -71.5520],
+                        [-36.2410, -71.5350],
+                        [-36.2490, -71.5180]
+                    ]
                 };
 
                 // Path coordinates (Lat, Lng)
@@ -1033,10 +1062,11 @@
                     });
                 }
 
-                // 5. Flujos Dinámicos Específicos de Amenaza (Onda Crecida, Fuego Puelche & Alud)
+                // 5. Flujos Dinámicos Específicos de Amenaza (Onda Crecida, Fuego Puelche, Alud & Escenario Tornado)
                 this.renderFloodWave(ctx);
                 this.renderFireWave(ctx);
                 this.renderLandslideWave(ctx);
+                this.renderTornadoWave(ctx);
             }
 
             // ═══════════════════════════════════════════════════════════════════
@@ -1556,6 +1586,142 @@
                 const labelCoord = [-36.2600, -71.4390];
                 const lPt = this.map.latLngToContainerPoint(labelCoord);
                 this.drawHighContrastLabel(ctx, '⛰️ ALUD GRAVITACIONAL • PENDIENTE 34° ➔ CONO L-110 (28.5k m³)', lPt.x + 10, lPt.y - 18, '#fef3c7', '#d97706');
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // SIMULADOR DE ESCENARIO HIPOTÉTICO DE TORNADO / VÓRTICE RANKINE (60 FPS)
+            // ═══════════════════════════════════════════════════════════════════
+            renderTornadoWave(ctx) {
+                if (!this.toggles.tornadoWave) return;
+
+                const st = this.tornadoState || { ef: 'EF1', corridor: 'meniel_core', windbreak: true };
+                const pts = (this.tornadoCorridors && this.tornadoCorridors[st.corridor]) || this.tornadoCorridors.meniel_core;
+                if (!pts || pts.length < 2) return;
+
+                const now = performance.now();
+                const efMeta = {
+                    EF0: { speedKmh: 120, color: '#f59e0b', coreRadius: 24, outerRadius: 52, qPa: 710 },
+                    EF1: { speedKmh: 165, color: '#a855f7', coreRadius: 32, outerRadius: 68, qPa: 1285 },
+                    EF2: { speedKmh: 205, color: '#e11d48', coreRadius: 40, outerRadius: 84, qPa: 1985 }
+                }[st.ef] || { speedKmh: 165, color: '#a855f7', coreRadius: 32, outerRadius: 68, qPa: 1285 };
+
+                // 1. Punto de entrada del corredor hipotético (NO -> SE)
+                this.drawRtsRadarEmitter(
+                    ctx,
+                    pts[0],
+                    `ENTRADA TRAZA HIPOTÉTICA (${st.ef})`,
+                    `RUMBO NO➔SE • ${efMeta.speedKmh} km/h (SIMULACIÓN WHAT-IF)`,
+                    efMeta.color
+                );
+
+                // 2. Franja de traza hipotética y eje central punteado
+                ctx.save();
+                ctx.beginPath();
+                pts.forEach((coord, i) => {
+                    const pt = this.map.latLngToContainerPoint(coord);
+                    if (i === 0) ctx.moveTo(pt.x, pt.y);
+                    else ctx.lineTo(pt.x, pt.y);
+                });
+                ctx.strokeStyle = st.ef === 'EF2' ? 'rgba(225, 29, 72, 0.26)' : (st.ef === 'EF0' ? 'rgba(245, 158, 11, 0.24)' : 'rgba(168, 85, 247, 0.26)');
+                ctx.lineWidth = efMeta.outerRadius * 0.85;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+
+                ctx.beginPath();
+                pts.forEach((coord, i) => {
+                    const pt = this.map.latLngToContainerPoint(coord);
+                    if (i === 0) ctx.moveTo(pt.x, pt.y);
+                    else ctx.lineTo(pt.x, pt.y);
+                });
+                ctx.strokeStyle = '#f3e8ff';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 6]);
+                ctx.stroke();
+                ctx.restore();
+
+                // 3. Chevrons de avance de traza NO -> SE
+                [0.25, 0.55, 0.82].forEach((station) => {
+                    const pt = this.getPointOnPolyline(pts, station);
+                    const prevPt = this.getPointOnPolyline(pts, Math.max(0, station - 0.04));
+                    if (!pt || !prevPt) return;
+                    const angle = Math.atan2(pt.y - prevPt.y, pt.x - prevPt.x);
+                    const pulsePhase = now * 0.004 - station * 5;
+                    this.drawRtsTacticalChevron(ctx, pt.x, pt.y, angle, 34, 26, efMeta.color, '#f3e8ff', 0.55, pulsePhase);
+                });
+
+                // 4. Vórtice Ciclónico Rankine en traslación sobre la traza (Rotación Horaria Hemisferio Sur / Ciclónica)
+                const cycleProgress = ((now * 0.000095) % 1.0);
+                const vortexPt = this.getPointOnPolyline(pts, cycleProgress);
+                if (vortexPt) {
+                    ctx.save();
+                    ctx.translate(vortexPt.x, vortexPt.y);
+
+                    const baseSpin = now * 0.0065; // Giro ciclónico rápido a 60 FPS
+                    const numArms = 4;
+
+                    // Brazos espirales logarítmicos convergentes hacia la pared del vórtice
+                    for (let arm = 0; arm < numArms; arm++) {
+                        const armOffset = (arm * Math.PI * 2) / numArms + baseSpin;
+                        ctx.beginPath();
+                        for (let s = 0; s <= 28; s++) {
+                            const frac = s / 28; // 1 afuera -> 0 adentro
+                            const r = efMeta.coreRadius * 0.35 + (1 - frac) * efMeta.outerRadius;
+                            const theta = armOffset + frac * 3.6;
+                            const sx = r * Math.cos(theta);
+                            const sy = r * Math.sin(theta);
+                            if (s === 0) ctx.moveTo(sx, sy);
+                            else ctx.lineTo(sx, sy);
+                        }
+                        ctx.strokeStyle = arm % 2 === 0 ? efMeta.color : '#e9d5ff';
+                        ctx.lineWidth = 2.6;
+                        ctx.shadowColor = efMeta.color;
+                        ctx.shadowBlur = 10;
+                        ctx.stroke();
+                    }
+
+                    // Anillo de velocidad tangencial máxima (Radio de Rankine R_max)
+                    ctx.beginPath();
+                    ctx.arc(0, 0, efMeta.coreRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#fde047';
+                    ctx.lineWidth = 2.2;
+                    ctx.setLineDash([5, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // Ojo de baja presión central (Delta P)
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fill();
+                    ctx.strokeStyle = '#f8fafc';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.restore();
+
+                    // Etiqueta flotante junto al vórtice dejando explícito que es un ESCENARIO HIPOTÉTICO
+                    const qDisplay = st.windbreak ? Math.round(efMeta.qPa * 0.42) : efMeta.qPa;
+                    this.drawHighContrastLabel(
+                        ctx,
+                        `🌪️ ESCENARIO HIPOTÉTICO ${st.ef} (${efMeta.speedKmh} km/h • q=${qDisplay} Pa ${st.windbreak ? 'CON CORTINA z₀' : 'SIN CORTINA'})`,
+                        vortexPt.x + 18,
+                        vortexPt.y - 24,
+                        '#f3e8ff',
+                        '#6b21a8'
+                    );
+                }
+
+                // 5. Si la cortina cortaviento nativa (z0) está activa, dibujar la barrera disipadora en el borde Poniente/Noroeste
+                if (st.windbreak) {
+                    this.drawRtsDefenseWall(
+                        ctx,
+                        [-36.2055, -71.6120],
+                        [-36.2155, -71.6085],
+                        'CORTINA NATIVA TRIPLE ESTRATO (z₀=0.85m • -58% CARGA q)',
+                        '#10b981'
+                    );
+                }
             }
         }
 

@@ -97,6 +97,17 @@ function buildTelemetrySummary(liveWeather = null) {
     eto_mm_day: 4.8
   };
 
+  // Punto Central Representativo: Casa Patronal / Galpón (Zona 0 = [0m E, 0m N])
+  const CASA_CENTER = { lat: -36.2115, lng: -71.6050, name: 'Casa Patronal / Galpón (Zona 0)' };
+  const toRelMeters = (lat, lng) => {
+    const dNorthM = Math.round((lat - CASA_CENTER.lat) * 111111);
+    const dEastM  = Math.round((lng - CASA_CENTER.lng) * 111111 * Math.cos(CASA_CENTER.lat * Math.PI / 180));
+    const ns = dNorthM >= 0 ? `${dNorthM}m N` : `${Math.abs(dNorthM)}m S`;
+    const ew = dEastM >= 0 ? `${dEastM}m E` : `${Math.abs(dEastM)}m O`;
+    const distM = Math.round(Math.hypot(dEastM, dNorthM));
+    return { dEastM, dNorthM, distFromHouseM: distM, relativeLabel: `${ns}, ${ew} de Casa (${distM}m)` };
+  };
+
   const kiotNodes = [
     {
       id: 'FDR-01',
@@ -105,10 +116,11 @@ function buildTelemetrySummary(liveWeather = null) {
       depth_cm: '0-20',
       lat: -36.2095,
       lng: -71.6060,
-      network: 'KioT Mesh (Simulado)',
+      relative_to_house: toRelMeters(-36.2095, -71.6060),
+      network: 'KioT Mesh (Simulado - Prototipo)',
       status: 'simulado',
       is_simulated: true,
-      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
+      simulation_basis: 'Simulado (Prototipo de ingeniería bioclimática - Modelo de balance hídrico FAO-56)',
       readings: {
         vwc_percent: 36.2,
         temp_soil_c: 14.8,
@@ -116,7 +128,7 @@ function buildTelemetrySummary(liveWeather = null) {
         battery_pct: 94,
         lqi: 98,
         last_tx: now.toISOString(),
-        simulation_notice: 'Lectura modelada'
+        simulation_notice: 'Lectura modelada (Prototipo)'
       }
     },
     {
@@ -126,10 +138,11 @@ function buildTelemetrySummary(liveWeather = null) {
       depth_cm: '20-60',
       lat: -36.2120,
       lng: -71.6030,
-      network: 'KioT Mesh (Simulado)',
+      relative_to_house: toRelMeters(-36.2120, -71.6030),
+      network: 'KioT Mesh (Simulado - Prototipo)',
       status: 'simulado',
       is_simulated: true,
-      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
+      simulation_basis: 'Simulado (Prototipo de ingeniería bioclimática - Modelo de balance hídrico FAO-56)',
       readings: {
         vwc_percent: 35.8,
         temp_soil_c: 13.7,
@@ -137,7 +150,7 @@ function buildTelemetrySummary(liveWeather = null) {
         battery_pct: 88,
         lqi: 95,
         last_tx: now.toISOString(),
-        simulation_notice: 'Lectura modelada'
+        simulation_notice: 'Lectura modelada (Prototipo)'
       }
     },
     {
@@ -147,10 +160,11 @@ function buildTelemetrySummary(liveWeather = null) {
       depth_cm: '0-40',
       lat: -36.2145,
       lng: -71.6050,
-      network: 'KioT Mesh (Simulado)',
+      relative_to_house: toRelMeters(-36.2145, -71.6050),
+      network: 'KioT Mesh (Simulado - Prototipo)',
       status: 'simulado',
       is_simulated: true,
-      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
+      simulation_basis: 'Simulado (Prototipo de ingeniería bioclimática - Modelo de balance hídrico FAO-56)',
       readings: {
         vwc_percent: 38.4,
         temp_soil_c: 14.0,
@@ -158,7 +172,7 @@ function buildTelemetrySummary(liveWeather = null) {
         battery_pct: 95,
         lqi: 97,
         last_tx: now.toISOString(),
-        simulation_notice: 'Lectura modelada'
+        simulation_notice: 'Lectura modelada (Prototipo)'
       }
     },
     {
@@ -168,10 +182,11 @@ function buildTelemetrySummary(liveWeather = null) {
       depth_cm: '0-30',
       lat: -36.2105,
       lng: -71.6080,
-      network: 'KioT Mesh (Simulado)',
+      relative_to_house: toRelMeters(-36.2105, -71.6080),
+      network: 'KioT Mesh (Simulado - Prototipo)',
       status: 'simulado',
       is_simulated: true,
-      simulation_basis: 'Simulado (Modelo de balance hídrico de suelo - Sin sensor físico conectado)',
+      simulation_basis: 'Simulado (Prototipo de ingeniería bioclimática - Modelo de balance hídrico FAO-56)',
       readings: {
         vwc_percent: 36.0,
         temp_soil_c: 13.9,
@@ -179,7 +194,7 @@ function buildTelemetrySummary(liveWeather = null) {
         battery_pct: 90,
         lqi: 94,
         last_tx: now.toISOString(),
-        simulation_notice: 'Lectura modelada'
+        simulation_notice: 'Lectura modelada (Prototipo)'
       }
     },
     {
@@ -188,10 +203,11 @@ function buildTelemetrySummary(liveWeather = null) {
       type: 'piezometer',
       lat: -36.2110,
       lng: -71.6045,
-      network: 'KioT Mesh (Simulado)',
+      relative_to_house: toRelMeters(-36.2110, -71.6045),
+      network: 'KioT Mesh (Simulado - Prototipo)',
       status: 'simulado',
       is_simulated: true,
-      simulation_basis: 'Simulado (Modelo batimétrico de tranque 18.500 m³ - Sin sensor físico conectado)',
+      simulation_basis: 'Simulado (Prototipo batimétrico de tranque 18.500 m³)',
       readings: {
         volume_m3: 18490,
         cota_msnm: 198,
@@ -199,7 +215,7 @@ function buildTelemetrySummary(liveWeather = null) {
         autonomy_days: 45,
         battery_pct: 99,
         last_tx: now.toISOString(),
-        simulation_notice: 'Lectura modelada'
+        simulation_notice: 'Lectura modelada (Prototipo)'
       }
     }
   ];
@@ -285,8 +301,10 @@ function buildTelemetrySummary(liveWeather = null) {
       fundo_colliguay: {
         lat: -36.2115,
         lng: -71.6050,
-        rol_sii: '418-24 Parral',
+        reference_origin: 'Casa Patronal / Galpón (Zona 0: 0m N, 0m E)',
+        rol_sii: '142-88 Retiro',
         area_ha: 24.8,
+        derechos_dga_lps: 28.0,
         pilot_status: 'Predio Piloto Fundo Meniel'
       }
     },
@@ -400,7 +418,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (urlPath === '/api/basin-sync' && req.method === 'GET') {
+  if ((urlPath === '/api/basin-sync' || urlPath === '/predio/api/basin-sync') && req.method === 'GET') {
     const liveWeather = await getLiveMauleWeather();
     const telemetry = buildTelemetrySummary(liveWeather);
     const payload = {
@@ -523,7 +541,47 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── Servir Gemelo Predial y Regional Integrados en Puerto 7777 ───
+  // ─── API: ESP32 Hardware Bridge (Telemetría y Estado de Relés en Puerto Único 7777) ───
+  if ((urlPath === '/api/enclosure/status' || urlPath === '/predio/api/enclosure/status') && req.method === 'GET') {
+    const responsePayload = {
+      bridgeMode: 'ready_for_hardware',
+      timestamp: new Date().toISOString(),
+      relays: {
+        r1_cherries_valve: false,
+        r2_frost_sprinklers: false,
+        r3_deepwell_pump: false,
+        r4_water_trough: true,
+        r5_barn_curtains: false,
+        r6_prv_gate: false
+      },
+      interlocks: {
+        frostSprinklersLocked: true,
+        cherryIrrigationLocked: true
+      }
+    };
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify(responsePayload));
+    return;
+  }
+
+  if ((urlPath === '/api/enclosure/telemetry' || urlPath === '/predio/api/enclosure/telemetry') && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const parsed = JSON.parse(body);
+        console.log('[ESP32 Hardware Bridge] Telemetría recibida desde hardware:', parsed);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'success', receivedAt: new Date().toISOString() }));
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
+      }
+    });
+    return;
+  }
+
+  // ── Servir Gemelo Predial (agritwin-predio) Integrado en Puerto Único 7777 ───
   if (urlPath === '/predio' || urlPath === '/galpon') {
     res.writeHead(302, { 'Location': '/predio/' });
     res.end();
@@ -532,7 +590,7 @@ const server = http.createServer(async (req, res) => {
   if (urlPath.startsWith('/predio/')) {
     let rel = urlPath.replace('/predio/', '') || 'index.html';
     if (rel.endsWith('/')) rel += 'index.html';
-    const PREDIO_DIR = path.join(ROOT_DIR, '..', 'agritwin');
+    const PREDIO_DIR = path.join(ROOT_DIR, '..', 'agritwin-predio');
     const predioFile = path.join(PREDIO_DIR, path.normalize(rel));
     if (predioFile.startsWith(PREDIO_DIR) && fs.existsSync(predioFile) && fs.statSync(predioFile).isFile()) {
       const ext = path.extname(predioFile).toLowerCase();
@@ -542,28 +600,6 @@ const server = http.createServer(async (req, res) => {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
       });
       fs.createReadStream(predioFile).pipe(res);
-      return;
-    }
-  }
-
-  if (urlPath === '/regional') {
-    res.writeHead(302, { 'Location': '/regional/' });
-    res.end();
-    return;
-  }
-  if (urlPath.startsWith('/regional/')) {
-    let rel = urlPath.replace('/regional/', '') || 'index.html';
-    if (rel.endsWith('/')) rel += 'index.html';
-    const REGIONAL_DIR = path.join(ROOT_DIR, '..', 'agritwin-regional');
-    const regionalFile = path.join(REGIONAL_DIR, path.normalize(rel));
-    if (regionalFile.startsWith(REGIONAL_DIR) && fs.existsSync(regionalFile) && fs.statSync(regionalFile).isFile()) {
-      const ext = path.extname(regionalFile).toLowerCase();
-      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-      res.writeHead(200, {
-        'Content-Type': contentType,
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
-      });
-      fs.createReadStream(regionalFile).pipe(res);
       return;
     }
   }

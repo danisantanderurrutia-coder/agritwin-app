@@ -106,7 +106,7 @@
                     "properties": {
                         "id": "MENIEL",
                         "name": "Fundo Meniel (Predio Piloto)",
-                        "rol": "418-24 Parral",
+                        "rol": "142-88 Retiro",
                         "comuna": "Parral",
                         "area_ha": 24.8,
                         "crop": "Cerezos Lapins (12 ha) & Avellano Tonda (10 ha)",
@@ -2793,7 +2793,8 @@
         };
 
         window.TACTICAL_WIND_REGIMES = TACTICAL_WIND_REGIMES;
-        window.currentTacticalWindRegime = 'puelche';
+        window.currentTacticalWindRegime = null;
+        window.isTacticalFireVectorsActive = false;
 
         const tacticalFireVectorsLayer = L.layerGroup();
         overlayLayers['fire_threat_vectors'] = tacticalFireVectorsLayer;
@@ -3173,19 +3174,15 @@
             });
         }
 
-        // Conmutador del Régimen Eólico Activo
-        window.setTacticalWindRegime = function(regimeKey) {
-            if (!TACTICAL_WIND_REGIMES[regimeKey]) regimeKey = 'puelche';
-            window.currentTacticalWindRegime = regimeKey;
-            
-            // Re-renderizar los vectores si la capa está activa
-            renderTacticalFireVectorsForRegime(regimeKey);
+        // Sincronizador visual de los botones y badges de Vectores de Fuego (ON/OFF)
+        function syncTacticalFireVectorsUI(isActive, regimeKey) {
+            const activeRegime = isActive ? (regimeKey || 'puelche') : null;
 
-            // Actualizar botones de selección en el Sidebar
+            // 1. Actualizar botones de selección de los 4 regímenes en el Sidebar
             ['puelche', 'surazo', 'norte', 'live'].forEach(rk => {
                 const btn = document.getElementById('btnTacticalRegime_' + rk);
                 if (btn) {
-                    if (rk === regimeKey) {
+                    if (isActive && rk === activeRegime) {
                         btn.className = 'py-1.5 px-2 rounded-lg bg-red-600 text-white font-mono font-bold text-[10px] shadow-sm transition-all border border-red-400 cursor-pointer flex items-center justify-center gap-1';
                     } else {
                         btn.className = 'py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1';
@@ -3193,8 +3190,31 @@
                 }
             });
 
-            // Actualizar tarjeta de inteligencia táctica del escenario activo
-            const reg = TACTICAL_WIND_REGIMES[regimeKey];
+            // 2. Actualizar botón de desactivación explícita y badge de resumen del acordeón
+            const btnDeact = document.getElementById('btnDeactivateFireVectors');
+            if (btnDeact) {
+                if (isActive) btnDeact.classList.remove('hidden');
+                else btnDeact.classList.add('hidden');
+            }
+            const summaryBadge = document.getElementById('badgeSummaryRiskFire');
+            if (summaryBadge) {
+                summaryBadge.innerText = isActive ? 'VECTOR ACTIVO' : 'INACTIVO';
+                summaryBadge.className = isActive
+                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40 font-bold'
+                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-white/10 font-bold';
+            }
+
+            // 3. Actualizar botón y badge de cabecera de Vectores
+            const sbBadge = document.getElementById('badgeSidebarFireVectors');
+            if (sbBadge) {
+                sbBadge.innerText = isActive ? 'DESACTIVAR ✕' : 'ACTIVAR';
+                sbBadge.className = isActive
+                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-red-500/40 text-red-100 border border-red-400/60 font-mono font-bold'
+                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+            }
+
+            // 4. Actualizar tarjeta de inteligencia táctica del escenario
+            const reg = TACTICAL_WIND_REGIMES[activeRegime || 'puelche'];
             const titleEl = document.getElementById('tacticalScenarioTitle');
             const speedEl = document.getElementById('tacticalScenarioSpeed');
             const lfmcEl = document.getElementById('tacticalScenarioLfmc');
@@ -3202,12 +3222,26 @@
             const sectorEl = document.getElementById('tacticalScenarioSector');
             const descEl = document.getElementById('tacticalScenarioDesc');
 
-            if (titleEl) titleEl.innerText = reg.name;
+            if (titleEl) {
+                titleEl.innerText = isActive ? reg.name : 'Desactivado (Mapa Limpio)';
+                titleEl.className = isActive ? 'text-amber-300 text-[10.5px]' : 'text-slate-400 text-[10.5px]';
+            }
             if (speedEl) speedEl.innerText = reg.windSpeedKmh + ' km/h';
             if (lfmcEl) lfmcEl.innerText = reg.lfmcPct + '%';
             if (dfmcEl) dfmcEl.innerText = reg.dfmcPct + '%';
             if (sectorEl) sectorEl.innerText = reg.primaryThreatSector;
             if (descEl) descEl.innerText = reg.description;
+        }
+
+        // Conmutador del Régimen Eólico Activo (permite activar o desactivar al hacer clic de nuevo)
+        window.setTacticalWindRegime = function(regimeKey) {
+            if (!regimeKey || regimeKey === 'off' || (window.isTacticalFireVectorsActive && window.currentTacticalWindRegime === regimeKey)) {
+                window.toggleTacticalFireVectorsLayer(false);
+                return;
+            }
+            if (!TACTICAL_WIND_REGIMES[regimeKey]) regimeKey = 'puelche';
+            window.currentTacticalWindRegime = regimeKey;
+            window.toggleTacticalFireVectorsLayer(true);
         };
 
         // Toggle principal de la capa de Vectores Tácticos (Módulo 2)
@@ -3215,29 +3249,70 @@
             const layer = overlayLayers['fire_threat_vectors'];
             if (!layer || !map) return;
             const isActive = map.hasLayer(layer);
-            const shouldBeActive = (force !== undefined) ? force : !isActive;
+            const shouldBeActive = (force !== undefined) ? !!force : !isActive;
 
             if (shouldBeActive) {
-                renderTacticalFireVectorsForRegime(window.currentTacticalWindRegime || 'puelche');
-                map.addLayer(layer);
+                if (!window.currentTacticalWindRegime || !TACTICAL_WIND_REGIMES[window.currentTacticalWindRegime]) {
+                    window.currentTacticalWindRegime = 'puelche';
+                }
+                renderTacticalFireVectorsForRegime(window.currentTacticalWindRegime);
+                if (!map.hasLayer(layer)) {
+                    map.addLayer(layer);
+                }
+                window.isTacticalFireVectorsActive = true;
             } else {
-                map.removeLayer(layer);
+                if (map.hasLayer(layer)) {
+                    map.removeLayer(layer);
+                }
+                tacticalFireVectorsLayer.clearLayers();
+                window.isTacticalFireVectorsActive = false;
+                window.currentTacticalWindRegime = null;
+                if (window.isClickToIgniteActive && typeof window.toggleClickToIgniteMode === 'function') {
+                    window.toggleClickToIgniteMode(false);
+                }
+                if (typeof window.clearCustomIgnition === 'function') {
+                    window.clearCustomIgnition();
+                }
+                if (typeof map.closePopup === 'function') {
+                    map.closePopup();
+                }
             }
 
             updateDockButtonState('fire_threat_vectors', shouldBeActive);
+            syncTacticalFireVectorsUI(shouldBeActive, window.currentTacticalWindRegime);
+        };
 
-            // Sincronizar badge lateral si existe
-            const sbBadge = document.getElementById('badgeSidebarFireVectors');
-            if (sbBadge) {
-                sbBadge.innerText = shouldBeActive ? 'ACTIVO' : 'ACTIVAR';
-                sbBadge.className = shouldBeActive 
-                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-red-500/40 text-red-200 border border-red-400/60 font-mono font-bold'
-                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+        // Toggle para el botón de Frente de Fuego & Simulación FWI (ON/OFF)
+        window.isFireFrontSimActive = false;
+        window.toggleFireFrontSimulation = function(force) {
+            const nextState = (force !== undefined) ? !!force : !window.isFireFrontSimActive;
+            window.isFireFrontSimActive = nextState;
+            const chk = document.getElementById('toggleFlowFireWave');
+            const badge = document.getElementById('badgeSimulateFireFrontFwi');
+
+            if (nextState) {
+                if (typeof window.setCuencaWindyVariable === 'function') window.setCuencaWindyVariable('fwi');
+                if (window.energyFlowEngine) window.energyFlowEngine.toggle('fireWave', true);
+                if (chk) chk.checked = true;
+                if (typeof window.simulateBasinPreset === 'function') window.simulateBasinPreset('puelche');
+                if (badge) {
+                    badge.innerText = 'DESACTIVAR ✕';
+                    badge.className = 'text-[9px] bg-red-600 px-1.5 py-0.5 rounded text-white border border-red-300 font-mono font-bold';
+                }
+            } else {
+                if (window.energyFlowEngine) window.energyFlowEngine.toggle('fireWave', false);
+                if (chk) chk.checked = false;
+                if (typeof window.setPuelcheState === 'function') window.setPuelcheState(false);
+                if (typeof window.toggleTacticalFireVectorsLayer === 'function') window.toggleTacticalFireVectorsLayer(false);
+                if (badge) {
+                    badge.innerText = 'SIMULAR ↗';
+                    badge.className = 'text-[9px] bg-rose-950 px-1.5 py-0.5 rounded text-rose-300 border border-rose-500/40 font-mono';
+                }
             }
         };
 
-        // Renderizado inicial en memoria de los vectores
-        renderTacticalFireVectorsForRegime('puelche');
+        // Inicializar Vectores Tácticos de Fuego en estado DESACTIVADO (OFF) al entrar
+        syncTacticalFireVectorsUI(false, null);
 
         // ═══════════════════════════════════════════════════════════════════
         // 2.5D SIMULADOR DE IGNICIÓN TÁCTICA INTERACTIVA (CLICK-TO-IGNITE) & CHOQUE CON FAJA 45M
@@ -3493,7 +3568,7 @@
                         "id": "TR_MENIEL_01",
                         "name": "Tranque Keyline Fundo Meniel (Piloto)",
                         "sector": "Parral / Fundo Meniel",
-                        "rol": "418-24 Parral",
+                        "rol": "142-88 Retiro",
                         "dist_km": 0.0,
                         "bearing": "Centro",
                         "center": [-36.2105, -71.6045],
@@ -4813,6 +4888,12 @@
 
         // Helper para desactivar una capa de riesgo y sus flujos asociados de forma consistente
         window.deactivateRiskLayer = function(type) {
+            if (type === 'tornado') {
+                if (typeof window.toggleTornadoScenario === 'function' && window.isTornadoScenarioActive) {
+                    window.toggleTornadoScenario(false);
+                }
+                return;
+            }
             const layer = overlayLayers[type];
             if (layer && map.hasLayer(layer)) {
                 map.removeLayer(layer);
@@ -4833,6 +4914,12 @@
                     window.energyFlowEngine.toggles.fireWave = false;
                     const chkFire = document.getElementById('toggleFlowFireWave');
                     if (chkFire) chkFire.checked = false;
+                    if (typeof window.toggleTacticalFireVectorsLayer === 'function') {
+                        window.toggleTacticalFireVectorsLayer(false);
+                    }
+                    if (typeof window.isFireFrontSimActive !== 'undefined' && window.isFireFrontSimActive) {
+                        window.toggleFireFrontSimulation(false);
+                    }
                 } else if (type === 'landslides') {
                     window.energyFlowEngine.toggles.landslideWave = false;
                     const chkSlide = document.getElementById('toggleFlowLandslideWave');
@@ -4856,12 +4943,13 @@
             const newState = !isActive;
             updateDockButtonState(type, newState);
 
-            // Mutua exclusión física entre Inundación e Incendios
+            // Mutua exclusión física entre Inundación, Incendios y Escenario de Tornado
             if (newState) {
                 if (type === 'inundacion') {
                     window.deactivateRiskLayer('incendios');
                 } else if (type === 'incendios') {
                     window.deactivateRiskLayer('inundacion');
+                    window.deactivateRiskLayer('tornado');
                 }
             }
 
@@ -6175,9 +6263,14 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                 const pyrogenicCells = [cellP01, cellP02, cellP03].filter(c => c && c.poly);
                 const landslideCells = [cellM01, cellM02].filter(c => c && c.poly);
 
+                // Actualizar Semáforo Convectivo (Nivel 1 Watch) según el Momento Climático
+                if (typeof window.updateConvectiveWatchByPreset === 'function') {
+                    window.updateConvectiveWatchByPreset(presetKey);
+                }
+
                 // Matriz de compatibilidad y mutua exclusión física en los 8 Momentos
                 if (presetKey === 'storm_t100' || presetKey === 'storm_t10') {
-                    // Crecidas / Lluvia extrema: apagar activamente Incendios y Puelche
+                    // Crecidas / Lluvia extrema: apagar activamente Incendios y Puelche (compatible con Convección Severa / Tornados)
                     if (typeof window.deactivateRiskLayer === 'function') {
                         window.deactivateRiskLayer('incendios');
                     }
@@ -6193,9 +6286,10 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                     }
                 } else if (presetKey === 'puelche_fire') {
                     // Momento 5: Puelche Catabático (Tiempo extremo: Viento ESE 58 km/h, HR 11%)
-                    // Desacople: NO activa incendios automáticamente. Apaga inundaciones.
+                    // Desacople: NO activa incendios automáticamente. Apaga inundaciones y escenario tornado post-frontal.
                     if (typeof window.deactivateRiskLayer === 'function') {
                         window.deactivateRiskLayer('inundacion');
+                        window.deactivateRiskLayer('tornado');
                     }
                     if (typeof window.setPuelcheState === 'function') {
                         window.setPuelcheState(true);
@@ -6205,9 +6299,10 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#0369a1', fillOpacity: 0.08, dashArray: '4, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
                 } else if (presetKey === 'heatwave') {
-                    // Ola de calor: desactiva inundaciones y desactiva puelche (viento sur calmo 14 km/h)
+                    // Ola de calor: desactiva inundaciones, tornado post-frontal y puelche (viento sur calmo 14 km/h)
                     if (typeof window.deactivateRiskLayer === 'function') {
                         window.deactivateRiskLayer('inundacion');
+                        window.deactivateRiskLayer('tornado');
                     }
                     if (typeof window.setPuelcheState === 'function') {
                         window.setPuelcheState(false);
@@ -6217,9 +6312,10 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#0369a1', fillOpacity: 0.08, dashArray: '4, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
                 } else if (presetKey === 'drought') {
-                    // Megasequía: desactiva inundaciones y desactiva puelche
+                    // Megasequía: desactiva inundaciones, tornado post-frontal y puelche
                     if (typeof window.deactivateRiskLayer === 'function') {
                         window.deactivateRiskLayer('inundacion');
+                        window.deactivateRiskLayer('tornado');
                     }
                     if (typeof window.setPuelcheState === 'function') {
                         window.setPuelcheState(false);
@@ -6229,9 +6325,10 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                     fluvialCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#0284c7', fillOpacity: 0.08, dashArray: '4, 4' }));
                     landslideCells.forEach(c => c.poly.setStyle({ weight: 1.5, color: '#64748b', fillOpacity: 0.08, dashArray: '4, 4' }));
                 } else if (presetKey === 'winter_dry') {
-                    // Helada polar: desactiva incendios
+                    // Helada polar anticiclónica en calma: desactiva incendios y escenario tornado
                     if (typeof window.deactivateRiskLayer === 'function') {
                         window.deactivateRiskLayer('incendios');
+                        window.deactivateRiskLayer('tornado');
                     }
                     if (typeof window.setPuelcheState === 'function') {
                         window.setPuelcheState(false);
@@ -6842,7 +6939,7 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             const LON_CUMBRE = -71.22000;
             const ELEV_CUMBRE = 1850;
 
-            const urlValle = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_VALLE}&longitude=${LON_VALLE}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&forecast_days=7&timezone=auto`;
+            const urlValle = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_VALLE}&longitude=${LON_VALLE}&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure,cape,wind_speed_500hPa,wind_direction_500hPa&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&forecast_days=7&timezone=auto`;
             const urlCumbre = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_CUMBRE}&longitude=${LON_CUMBRE}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m&forecast_days=7&timezone=auto`;
 
             try {
@@ -6878,6 +6975,20 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                         snowRegime = (iso0 > 2400) ? 'Lluvia Cálida (Riesgo Aluvial)' : (iso0 < 1600 ? 'Nieve Eficaz (SWE)' : 'Mixto Nivo-Pluvial');
                     }
 
+                    // Variables convectivas de Nivel 1 (Watch): CAPE [J/kg], Shear 0-6km [m/s] y LCL [m]
+                    const capeVal = Math.round(h.cape ? (h.cape[i] || 0) : 0);
+                    const tdValle = h.dew_point_2m ? h.dew_point_2m[i] : (tValle - (100 - h.relative_humidity_2m[i]) / 5);
+                    const lclMeters = Math.max(180, Math.round(125 * Math.max(0.5, tValle - tdValle)));
+                    const v10_ms = (h.wind_speed_10m[i] || 0) / 3.6;
+                    const v500_ms = (h.wind_speed_500hPa && h.wind_speed_500hPa[i] !== undefined)
+                        ? (h.wind_speed_500hPa[i] / 3.6)
+                        : (v10_ms * 2.4 + 6.0);
+                    const d10_rad = ((h.wind_direction_10m[i] || 0) * Math.PI) / 180;
+                    const d500_rad = ((h.wind_direction_500hPa ? h.wind_direction_500hPa[i] : (h.wind_direction_10m[i] + 45)) * Math.PI) / 180;
+                    const du = v500_ms * Math.sin(d500_rad) - v10_ms * Math.sin(d10_rad);
+                    const dv = v500_ms * Math.cos(d500_rad) - v10_ms * Math.cos(d10_rad);
+                    const shear06_ms = Math.round(Math.hypot(du, dv) * 10) / 10;
+
                     hourly.push({
                         timeStr: h.time[i],
                         temp: Math.round(tValle * 10) / 10,
@@ -6890,7 +7001,10 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                         windGusts: Math.round(h.wind_gusts_10m[i] || h.wind_speed_10m[i] * 1.3),
                         iso0: iso0,
                         gamma: Math.round(gammaReal * 10) / 10,
-                        snowRegime: snowRegime
+                        snowRegime: snowRegime,
+                        cape: capeVal,
+                        shear06: shear06_ms,
+                        lcl: lclMeters
                     });
                 }
 
@@ -7032,6 +7146,15 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                     if (andesPrecipMetric && entry.precipCumbre !== undefined) andesPrecipMetric.innerText = `${entry.precipCumbre} mm 🏔️`;
                     if (snowRegimeMetric && entry.snowRegime) snowRegimeMetric.innerText = entry.snowRegime;
 
+                    // Actualizar Semáforo de Vigilancia Convectiva (Nivel 1 Watch) con CAPE, Shear 0-6 km y LCL reales
+                    if (typeof window.updateConvectiveWatchUI === 'function') {
+                        window.updateConvectiveWatchUI(
+                            entry.cape !== undefined ? entry.cape : 45,
+                            entry.shear06 !== undefined ? entry.shear06 : 8.5,
+                            entry.lcl !== undefined ? entry.lcl : 1420
+                        );
+                    }
+
                     // Conectar dinámicamente al régimen del motor de flujos energéticos
                     if (window.energyFlowEngine) {
                         if (entry.windSpeed > 35 || entry.precip > 5.0) {
@@ -7125,6 +7248,396 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                 clearInterval(cuencaForecastState.playTimer);
                 cuencaForecastState.playTimer = null;
             }
+        };
+
+        // ═══════════════════════════════════════════════════════════════════
+        // SISTEMA DE 3 NIVELES ANTE TORNADOS & CONVECCIÓN SEVERA (WATCH, NOWCASTING DEMO, WHAT-IF)
+        // ═══════════════════════════════════════════════════════════════════
+
+        // NIVEL 1 (WATCH): Semáforo de Entorno Convectivo Severo (CAPE + Cizalladura 0-6 km + LCL)
+        window.updateConvectiveWatchUI = function(capeVal, shearVal, lclVal) {
+            const cape = Math.round(Number(capeVal) || 0);
+            const shear = Math.round((Number(shearVal) || 0) * 10) / 10;
+            const lcl = Math.round(Number(lclVal) || 1400);
+
+            const elCape = document.getElementById('valConvectiveCape');
+            const elShear = document.getElementById('valConvectiveShear');
+            const elLcl = document.getElementById('valConvectiveLcl');
+            const elBadge = document.getElementById('convectiveWatchBadge');
+            const elCard = document.getElementById('convectiveWatchCard');
+
+            if (elCape) elCape.innerText = `${cape} J/kg`;
+            if (elShear) elShear.innerText = `${shear} m/s`;
+            if (elLcl) elLcl.innerText = `${lcl.toLocaleString()} m`;
+
+            if (!elBadge || !elCard) return;
+
+            // Criterio HSLC (High-Shear, Low-CAPE) para el Centro-Sur de Chile (36°S)
+            if (cape >= 350 && shear >= 20 && lcl <= 1050) {
+                elBadge.innerText = '🟠 POTENCIAL ROTACIONAL (MESOCICLÓN)';
+                elBadge.className = 'text-[8.5px] px-2 py-0.5 rounded bg-orange-950 text-orange-200 border border-orange-400/60 font-bold animate-pulse';
+                elCard.className = 'p-2.5 rounded-lg bg-orange-950/25 border border-orange-500/50 space-y-1.5 font-mono transition-all';
+            } else if (cape >= 180 || shear >= 15) {
+                elBadge.innerText = '🟡 FAVORABLE A CONVECCIÓN SEVERA';
+                elBadge.className = 'text-[8.5px] px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-bold';
+                elCard.className = 'p-2.5 rounded-lg bg-amber-950/20 border border-amber-500/40 space-y-1.5 font-mono transition-all';
+            } else {
+                elBadge.innerText = '🟢 ESTABLE';
+                elBadge.className = 'text-[8.5px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold';
+                elCard.className = 'p-2.5 rounded-lg bg-black/50 border border-emerald-500/30 space-y-1.5 font-mono transition-all';
+            }
+        };
+
+        window.updateConvectiveWatchByPreset = function(presetKey) {
+            if (presetKey === 'storm_t100') {
+                // Frente frío intenso / Río atmosférico con intrusión fría post-frontal (HSLC rotacional)
+                window.updateConvectiveWatchUI(620, 24.8, 680);
+            } else if (presetKey === 'storm_t10') {
+                // Temporal frontal invernal (favorable a convección / ráfagas descendentes)
+                window.updateConvectiveWatchUI(285, 17.4, 890);
+            } else if (presetKey === 'puelche_fire') {
+                // Viento Puelche: seco, subsidente, LCL altísimo (>2600m), CAPE ~ 0 -> Estable para tornados
+                window.updateConvectiveWatchUI(10, 14.2, 2650);
+            } else if (presetKey === 'heatwave' || presetKey === 'drought') {
+                window.updateConvectiveWatchUI(35, 6.4, 2400);
+            } else if (presetKey === 'winter_dry') {
+                window.updateConvectiveWatchUI(0, 4.1, 1600);
+            } else {
+                window.updateConvectiveWatchUI(45, 8.2, 1420);
+            }
+        };
+
+        // NIVEL 2 (NOWCASTING DEMO): Red Micro-Barométrica BMP390 LoRaWAN (1 Hz)
+        const baroNodesDemoGroup = L.layerGroup();
+        const baroNodesCatalog = [
+            { id: 'BARO-01', name: 'Nodo BMP390-Oeste (Avanzada Parral)', coords: [-36.1995, -71.6240], pBase: 1014.2, dp: 0.0 },
+            { id: 'BARO-02', name: 'Nodo BMP390-Meniel Centro (Galpón)', coords: [-36.2115, -71.6053], pBase: 1013.8, dp: -0.1 },
+            { id: 'BARO-03', name: 'Nodo BMP390-Norte (APR Quilaimo)', coords: [-36.1945, -71.6095], pBase: 1014.0, dp: 0.0 },
+            { id: 'BARO-04', name: 'Nodo BMP390-Sur (Tranque Keyline)', coords: [-36.2165, -71.5960], pBase: 1013.6, dp: 0.0 }
+        ];
+
+        function buildBaroNodesMarkers(isAlert = false) {
+            baroNodesDemoGroup.clearLayers();
+            baroNodesCatalog.forEach((n, idx) => {
+                const triggered = isAlert && (idx === 0 || idx === 1);
+                const dpVal = triggered ? (idx === 0 ? -14.2 : -9.8) : n.dp;
+                const pNow = triggered ? (n.pBase + dpVal).toFixed(1) : n.pBase.toFixed(1);
+                const badgeCol = triggered ? '#e11d48' : '#10b981';
+
+                const icon = L.divIcon({
+                    className: 'baro-demo-marker',
+                    html: `<div style="background:${badgeCol}; color:#fff; border:2px solid #fff; border-radius:9999px; padding:2px 6px; font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; white-space:nowrap; box-shadow:0 0 12px ${badgeCol};">
+                        📡 ${n.id}: ${dpVal} hPa/m
+                    </div>`,
+                    iconSize: [110, 22],
+                    iconAnchor: [55, 11]
+                });
+                const marker = L.marker(n.coords, { icon });
+                marker.bindPopup(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#f8fafc; min-width:230px;">
+                        <div style="border-bottom:1px solid ${badgeCol}; padding-bottom:4px; margin-bottom:5px; display:flex; justify-content:space-between;">
+                            <strong style="color:#fda4af;">${n.name}</strong>
+                            <span style="background:rgba(245,158,11,0.25); color:#fcd34d; padding:1px 4px; border-radius:3px; font-size:8px;">DEMO</span>
+                        </div>
+                        <div>Presión Actual: <b>${pNow} hPa</b></div>
+                        <div>Tasa &Delta;P/&Delta;t (1 Hz): <b style="color:${triggered ? '#f43f5e' : '#34d399'};">${dpVal} hPa/min</b></div>
+                        <div style="margin-top:4px; font-size:9px; color:#cbd5e1;">Sensor: Bosch BMP390 LoRaWAN (&sim;$65 USD) + Anemómetro Ultrasónico 2D.</div>
+                    </div>
+                `);
+                baroNodesDemoGroup.addLayer(marker);
+            });
+        }
+        buildBaroNodesMarkers(false);
+        overlayLayers['baro_nodes_demo'] = baroNodesDemoGroup;
+
+        window.toggleBaroNodesLayer = function(active) {
+            if (!map) return;
+            const shouldShow = (active !== undefined) ? !!active : !map.hasLayer(baroNodesDemoGroup);
+            if (shouldShow) {
+                if (!map.hasLayer(baroNodesDemoGroup)) map.addLayer(baroNodesDemoGroup);
+                map.flyTo([-36.2085, -71.6095], 13, { duration: 1.0 });
+            } else {
+                if (map.hasLayer(baroNodesDemoGroup)) map.removeLayer(baroNodesDemoGroup);
+            }
+            const chk = document.getElementById('chk-layer-baro-nodes');
+            if (chk) chk.checked = shouldShow;
+        };
+
+        window.triggerSimulatedBaroDrop = function() {
+            window.toggleBaroNodesLayer(true);
+            buildBaroNodesMarkers(true);
+
+            const n1 = document.getElementById('valBaroNode1');
+            const n2 = document.getElementById('valBaroNode2');
+            if (n1) {
+                n1.innerText = '1000.0 hPa (-14.2/min) 🚨';
+                n1.className = 'text-rose-400 font-extrabold animate-pulse';
+            }
+            if (n2) {
+                n2.innerText = '1004.0 hPa (-9.8/min) ⚠️';
+                n2.className = 'text-amber-300 font-bold';
+            }
+
+            const banner = document.getElementById('baroHyperlocalAlertBanner');
+            if (banner) banner.classList.remove('hidden');
+
+            // Mostrar Pestaña 1 Resumen para que el usuario vea la alerta hiperlocal activada
+            if (typeof window.selectSidebarTab === 'function') {
+                window.selectSidebarTab('tab-tiempo');
+            }
+            if (typeof window.switchTiempoSubTab === 'function') {
+                window.switchTiempoSubTab('resumen');
+            }
+        };
+
+        window.clearSimulatedBaroDrop = function() {
+            buildBaroNodesMarkers(false);
+            const n1 = document.getElementById('valBaroNode1');
+            const n2 = document.getElementById('valBaroNode2');
+            if (n1) {
+                n1.innerText = '1014.2 hPa (0.0/min)';
+                n1.className = 'text-emerald-300';
+            }
+            if (n2) {
+                n2.innerText = '1013.8 hPa (-0.1/min)';
+                n2.className = 'text-emerald-300';
+            }
+            const banner = document.getElementById('baroHyperlocalAlertBanner');
+            if (banner) banner.classList.add('hidden');
+        };
+
+        // NIVEL 3 (WHAT-IF): Simulador de Escenario Hipotético de Tornado (EF0-EF2 + Cortinas z0)
+        window.isTornadoScenarioActive = false;
+        const tornadoScenarioLayerGroup = L.layerGroup();
+        overlayLayers['tornado_whatif'] = tornadoScenarioLayerGroup;
+
+        window.setTornadoScenarioEf = function(efKey) {
+            if (!window.energyFlowEngine) return;
+            window.energyFlowEngine.tornadoState.ef = efKey;
+
+            ['EF0', 'EF1', 'EF2'].forEach(k => {
+                const btn = document.getElementById('btnTornado' + k.charAt(0) + k.slice(1).toLowerCase());
+                if (!btn) return;
+                if (k === efKey) {
+                    btn.className = 'py-1.5 px-2 rounded bg-purple-900/70 border border-purple-400 text-white text-[9px] font-bold cursor-pointer transition-all shadow';
+                } else {
+                    btn.className = 'py-1.5 px-2 rounded bg-black/40 border border-white/15 text-slate-300 hover:bg-white/10 text-[9px] font-bold cursor-pointer transition-all';
+                }
+            });
+
+            window.updateTornadoScenarioParams();
+        };
+
+        window.updateTornadoScenarioParams = function() {
+            const st = (window.energyFlowEngine && window.energyFlowEngine.tornadoState)
+                ? window.energyFlowEngine.tornadoState
+                : { ef: 'EF1', corridor: 'meniel_core', windbreak: true };
+
+            const selCorr = document.getElementById('selTornadoCorridor');
+            const chkWb = document.getElementById('chkTornadoWindbreak');
+            if (selCorr) st.corridor = selCorr.value;
+            if (chkWb) st.windbreak = !!chkWb.checked;
+
+            const efSpecs = {
+                EF0: {
+                    label: 'EF0 (120 km/h • 33.3 m/s)',
+                    v_ms: 33.3,
+                    qFree: 680,
+                    wbFactor: 0.38, // 62% reducción de presión q por cortina z0=0.85m
+                    widthText: '110 m × 2.1 km',
+                    halfWidthDeg: 0.00065,
+                    color: '#f59e0b',
+                    tailH: 0.62
+                },
+                EF1: {
+                    label: 'EF1 (165 km/h • 45.8 m/s)',
+                    v_ms: 45.8,
+                    qFree: 1285,
+                    wbFactor: 0.42, // 58% reducción de presión q
+                    widthText: '180 m × 2.8 km',
+                    halfWidthDeg: 0.00105,
+                    color: '#a855f7',
+                    tailH: 0.80
+                },
+                EF2: {
+                    label: 'EF2 (205 km/h • 56.9 m/s)',
+                    v_ms: 56.9,
+                    qFree: 1985,
+                    wbFactor: 0.58, // En EF2 parte de la cortina sufre desrame, 42% reducción
+                    widthText: '280 m × 3.6 km',
+                    halfWidthDeg: 0.00155,
+                    color: '#e11d48',
+                    tailH: 0.95
+                }
+            }[st.ef] || {};
+
+            const qMit = st.windbreak ? Math.round(efSpecs.qFree * efSpecs.wbFactor) : efSpecs.qFree;
+            const redPct = st.windbreak ? Math.round((1 - efSpecs.wbFactor) * 100) : 0;
+
+            const lblEf = document.getElementById('lblTornadoEfSelected');
+            const elQFree = document.getElementById('valTornadoQFree');
+            const elQMit = document.getElementById('valTornadoQMitigated');
+            const elWidth = document.getElementById('valTornadoWidth');
+            const elList = document.getElementById('listTornadoStructuralDamage');
+            const elTail = document.getElementById('valTornadoTailRisk');
+
+            if (lblEf) lblEf.innerText = efSpecs.label;
+            if (elQFree) elQFree.innerText = `${efSpecs.qFree.toLocaleString()} Pa`;
+            if (elQMit) {
+                elQMit.innerText = st.windbreak ? `${qMit.toLocaleString()} Pa (-${redPct}%)` : `${qMit.toLocaleString()} Pa (Sin z₀)`;
+                elQMit.className = st.windbreak ? 'text-emerald-300 text-[10.5px]' : 'text-rose-400 text-[10.5px]';
+            }
+            if (elWidth) elWidth.innerText = efSpecs.widthText;
+
+            // Evaluar cascada de falla estructural según la presión efectiva qMit
+            if (elList) {
+                const stGreenhouse = qMit > 650
+                    ? '<b class="text-rose-400">Colapso / Voladura de cubierta LDPE</b>'
+                    : (qMit > 420 ? '<b class="text-amber-300">Daño Moderado (Protegido por z₀)</b>' : '<b class="text-emerald-300">Resiste (Carga &lt; 450 Pa)</b>');
+                const stPacking = qMit > 1100
+                    ? '<b class="text-rose-400">Desprendimiento de cerchas y zinc</b>'
+                    : (qMit > 820 ? '<b class="text-amber-300">Fatiga en costaneras de borde</b>' : '<b class="text-emerald-300">Resiste con anclaje</b>');
+                const stApr = qMit > 1350
+                    ? '<b class="text-rose-400">Caída de postación / Corte eléctrico APR</b>'
+                    : (qMit > 750 ? '<b class="text-amber-300">Riesgo por proyección de ramas</b>' : '<b class="text-emerald-300">Operativo sin corte</b>');
+
+                elList.innerHTML = `
+                    <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between">
+                        <span>1° Invernaderos LDPE &amp; Mallas (450 Pa):</span>
+                        ${stGreenhouse}
+                    </div>
+                    <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between">
+                        <span>2° Techumbre Galpón Packing (900 Pa):</span>
+                        ${stPacking}
+                    </div>
+                    <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between">
+                        <span>3° Postación Eléctrica APR (1.150 Pa):</span>
+                        ${stApr}
+                    </div>
+                `;
+            }
+
+            // Riesgo de Cola por Escenario (H * V * E) reportado por separado
+            const vuln = st.windbreak ? 0.52 : 0.86;
+            const exp = st.corridor === 'meniel_core' ? 0.88 : (st.corridor === 'apr_retiro' ? 0.82 : 0.64);
+            const tailScore = (efSpecs.tailH * vuln * exp).toFixed(2);
+            if (elTail) {
+                const lvlTxt = tailScore >= 0.60 ? ' Severo' : (tailScore >= 0.38 ? ' Moderado-Alto' : ' Moderado');
+                elTail.innerText = `${tailScore} (${lvlTxt} • ${st.windbreak ? 'Con Cortina z₀' : 'Sin Cortina'})`;
+            }
+
+            // Actualizar geometría en Leaflet si el escenario está activo
+            if (window.isTornadoScenarioActive) {
+                renderTornadoScenarioPolygon(st, efSpecs, qMit);
+                if (window.energyFlowEngine) window.energyFlowEngine.render();
+            }
+        };
+
+        function renderTornadoScenarioPolygon(st, efSpecs, qMit) {
+            tornadoScenarioLayerGroup.clearLayers();
+            const pts = (window.energyFlowEngine && window.energyFlowEngine.tornadoCorridors[st.corridor]) || [
+                [-36.1985, -71.6280],
+                [-36.2055, -71.6155],
+                [-36.2115, -71.6053],
+                [-36.2175, -71.5940]
+            ];
+
+            const hw = efSpecs.halfWidthDeg || 0.00105;
+            const upperSide = pts.map(p => [p[0] + hw, p[1] + hw * 0.6]);
+            const lowerSide = pts.slice().reverse().map(p => [p[0] - hw, p[1] - hw * 0.6]);
+            const swathCoords = upperSide.concat(lowerSide);
+
+            // Anillo exterior EF0 (daño leve-moderado)
+            const outerHw = hw * 1.65;
+            const outerUpper = pts.map(p => [p[0] + outerHw, p[1] + outerHw * 0.6]);
+            const outerLower = pts.slice().reverse().map(p => [p[0] - outerHw, p[1] - outerHw * 0.6]);
+            const outerPoly = L.polygon(outerUpper.concat(outerLower), {
+                color: '#f59e0b',
+                weight: 1.5,
+                dashArray: '6, 5',
+                fillColor: '#f59e0b',
+                fillOpacity: 0.14
+            });
+            tornadoScenarioLayerGroup.addLayer(outerPoly);
+
+            // Núcleo de traza hipotética (EF seleccionado)
+            const corePoly = L.polygon(swathCoords, {
+                color: efSpecs.color,
+                weight: 2.8,
+                dashArray: '8, 4',
+                fillColor: efSpecs.color,
+                fillOpacity: 0.32
+            });
+            corePoly.bindTooltip(
+                `<div style="font-family:'JetBrains Mono',monospace; font-size:10px; background:#090d18; color:#f3e8ff; padding:4px 8px; border-radius:6px; border:1px solid ${efSpecs.color};">
+                    🌪️ <b>ESCENARIO HIPOTÉTICO ${st.ef} (WHAT-IF)</b><br>
+                    • Presión libre $q_0$: ${efSpecs.qFree} Pa &bull; Mitigada: <b>${qMit} Pa</b><br>
+                    • Rumbo de prueba: NO &rarr; SE (${efSpecs.widthText})
+                </div>`,
+                { sticky: true }
+            );
+            tornadoScenarioLayerGroup.addLayer(corePoly);
+        }
+
+        window.toggleTornadoScenario = function(forceState) {
+            const nextState = (forceState !== undefined) ? !!forceState : !window.isTornadoScenarioActive;
+            window.isTornadoScenarioActive = nextState;
+
+            // Exclusión mutua: si se enciende el escenario de tornado, apagar Incendios y Puelche
+            if (nextState) {
+                if (typeof window.deactivateRiskLayer === 'function') {
+                    window.deactivateRiskLayer('incendios');
+                }
+                if (typeof window.setPuelcheState === 'function') {
+                    window.setPuelcheState(false);
+                }
+            }
+
+            const btn = document.getElementById('btnToggleTornadoScenario');
+            const dot = document.getElementById('dotTornadoScenario');
+            const txt = document.getElementById('txtToggleTornadoScenario');
+            const statusLbl = document.getElementById('lblTornadoScenarioStatus');
+
+            if (btn && dot && txt) {
+                if (nextState) {
+                    btn.className = 'px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-purple-900/90 text-purple-100 border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.45)] cursor-pointer';
+                    dot.className = 'w-2 h-2 rounded-full bg-purple-300 animate-pulse';
+                    txt.innerText = 'SIMULAR TRAZA: ON';
+                } else {
+                    btn.className = 'px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-slate-800 text-slate-200 border-slate-600 hover:bg-purple-900/60 hover:border-purple-400 cursor-pointer shadow';
+                    dot.className = 'w-2 h-2 rounded-full bg-slate-400';
+                    txt.innerText = 'SIMULAR TRAZA: OFF';
+                }
+            }
+            if (statusLbl) {
+                statusLbl.innerText = nextState ? 'Activo en Mapa (Escenario Hipotético)' : 'Inactivo en el lienzo SIG';
+                statusLbl.className = nextState ? 'text-[8.5px] text-purple-300 font-bold' : 'text-[8.5px] text-slate-400';
+            }
+
+            if (window.energyFlowEngine) {
+                window.energyFlowEngine.toggles.tornadoWave = nextState;
+            }
+
+            if (nextState) {
+                window.updateTornadoScenarioParams();
+                if (map && !map.hasLayer(tornadoScenarioLayerGroup)) {
+                    map.addLayer(tornadoScenarioLayerGroup);
+                }
+                const st = window.energyFlowEngine?.tornadoState || { corridor: 'meniel_core' };
+                const pts = window.energyFlowEngine?.tornadoCorridors?.[st.corridor];
+                if (map && pts && pts.length) {
+                    map.flyTo(pts[2] || pts[0], 14, { duration: 1.0 });
+                }
+            } else {
+                if (map && map.hasLayer(tornadoScenarioLayerGroup)) {
+                    map.removeLayer(tornadoScenarioLayerGroup);
+                }
+            }
+
+            if (window.energyFlowEngine) {
+                window.energyFlowEngine.render();
+            }
+            return nextState;
         };
 
         // ═══════════════════════════════════════════════════════════════════
@@ -8143,6 +8656,43 @@ window.renderLatexInContainer = function(target) {
             </div>
             <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
                 Simplificación poligonal dinámica según nivel de zoom para garantizar navegación fluida en navegador.
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">5. Termodinámica Convectiva (CAPE), Cizalladura Vertical &amp; Doctrina de 3 Niveles ante Tornados</h2>
+    <div class="grid-2">
+        <div class="card">
+            <b>A. Energía Potencial Convectiva Disponible (CAPE):</b>
+            <div class="equation-box">
+                $$\\text{CAPE} = \\int_{z_{\\text{LFC}}}^{z_{\\text{EL}}} g \\left( \\frac{T_{v,\\text{parcela}}(z) - T_{v,\\text{ambiente}}(z)}{T_{v,\\text{ambiente}}(z)} \\right) dz \\quad [\\text{J/kg}]$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                Trabajo de flotabilidad positiva entre el Nivel de Convección Libre ($z_{\\text{LFC}}$) y el Nivel de Equilibrio ($z_{\\text{EL}}$).
+            </div>
+        </div>
+        <div class="card">
+            <b>B. Velocidad Ascendente Máxima ($w_{\\max}$) y Cizalladura $0\\text{--}6\\text{ km}$:</b>
+            <div class="equation-box">
+                $$w_{\\max} = \\sqrt{2 \\cdot \\text{CAPE}}, \\qquad S_{0-6} = \\left\\| \\vec{V}_{500\\text{hPa}} - \\vec{V}_{10\\text{m}} \\right\\|$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                En entornos HSLC del Centro-Sur de Chile, $\\text{CAPE} \\ge 300\\text{ J/kg}$ con $S_{0-6} \\ge 20\\text{ m/s}$ permite inclinar vorticidad horizontal.
+            </div>
+        </div>
+        <div class="card">
+            <b>C. Presión Dinámica de Viento ($q$) y Rugosidad ($z_0$):</b>
+            <div class="equation-box">
+                $$q = \\frac{1}{2}\\rho_{\\text{aire}} v^2 \\quad [\\text{Pa}], \\qquad v(z) = \\frac{u_*}{\\kappa}\\ln\\left(\\frac{z - d}{z_0}\\right)$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                Cortinas cortaviento nativas ($z_0 = 0.85\\text{ m}$) abaten hasta en un $58\\%$ la presión dinámica $q$ en eventos EF0/EF1.
+            </div>
+        </div>
+        <div class="card">
+            <b>D. Doctrina Honesta de 3 Niveles:</b>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                <b>Nivel 1 (Watch):</b> Semáforo $\\text{CAPE} + S_{0-6}$ (sin predecir coordenada). <b>Nivel 2 (Nowcasting):</b> Micro-barómetros LoRaWAN BMP390 ($\\Delta P/\\Delta t$). <b>Nivel 3 (What-If):</b> Simulador de traza hipotética EF0&ndash;EF2.
             </div>
         </div>
     </div>

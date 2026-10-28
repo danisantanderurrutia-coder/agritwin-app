@@ -38,7 +38,7 @@ window.generateMarkdownReport = function() {
     md += `---\n\n`;
 
     md += `## 1. RESUMEN EJECUTIVO DEL ECOSISTEMA\n`;
-    md += `- **Superficie Predial:** 12.8 ha (Manejo Keyline, PRV & Agroecología)\n`;
+    md += `- **Superficie Predial:** 24.8 ha (Rol SII 142-88 Retiro • Origen Referencial: Casa Patronal Zona 0)\n`;
     md += `- **Cuenca Hidrológica:** 122.070 ha (Río Longaví Cota 680m)\n`;
     md += `- **Comunidad Contigua:** 10 Predios asociados (508 ha Comunales)\n`;
     md += `- **Índice Sintético de Salud Ecosistémica:** 88 / 100 (Óptimo)\n\n`;

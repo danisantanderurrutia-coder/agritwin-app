@@ -568,6 +568,80 @@ export const OBJECT_CATALOG = [
     idealZone: 3,
     description: 'Varillas plásticas con aisladores y cinta conductora de alta visibilidad para subdivisiones diarias de pastoreo.',
     roleDefault: 'Manejo de parcelas diarias de alta densidad y 42 días de descanso del pasto'
+  },
+
+  // ─── 10. DEFENSA CONTRA INCENDIOS FORESTALES (WUI) ───
+  {
+    id: 'fire_sprinkler_gun',
+    category: 'fire',
+    name: 'Aspersor de Impacto WUI (Cañón Perimetral)',
+    shortName: 'Aspersor WUI 20m',
+    icon: '🚿',
+    modelType: 'procedural_fire_sprinkler',
+    fireRadius: 20,
+    scale: 1.0,
+    baseCostClp: 420000,
+    buildHours: 6,
+    idealZone: 2,
+    description: 'Cañón de impacto en poste metálico (radio 20 m) que crea una cortina de humedad previa en el borde monte/vivienda.',
+    roleDefault: 'Cortina de humedad perimetral contra frente de llamas y pavesas'
+  },
+  {
+    id: 'fire_roof_drencher',
+    category: 'fire',
+    name: 'Rociador de Techo y Aleros (Anti-Pavesas)',
+    shortName: 'Rociador de Techo',
+    icon: '🏠',
+    modelType: 'procedural_fire_roof',
+    fireRadius: 8,
+    scale: 1.0,
+    baseCostClp: 650000,
+    buildHours: 8,
+    idealZone: 0,
+    description: 'Rociadores en cumbrera y aleros que saturan la techumbre y neutralizan el ataque de pavesas.',
+    roleDefault: 'Protección de Casona, galpón e invernaderos frente a pavesas'
+  },
+  {
+    id: 'fire_hydrant_storz',
+    category: 'fire',
+    name: 'Boca de Incendios con Acople Storz 70/52',
+    shortName: 'Grifo Storz',
+    icon: '🚒',
+    modelType: 'procedural_fire_hydrant',
+    scale: 1.0,
+    baseCostClp: 380000,
+    buildHours: 5,
+    idealZone: 1,
+    description: 'Salida a presión con acople universal Storz para motobombas de brigadistas (CONAF / Bomberos) y mangueras de ataque rápido.',
+    roleDefault: 'Punto de abastecimiento para brigadas y ataque rápido inicial'
+  },
+  {
+    id: 'fire_mineral_break',
+    category: 'fire',
+    name: 'Faja Cortafuego Mineral (4 m)',
+    shortName: 'Faja Cortafuego',
+    icon: '🛡️',
+    modelType: 'procedural_fire_break',
+    scale: 1.0,
+    baseCostClp: 180000,
+    buildHours: 4,
+    idealZone: 3,
+    description: 'Franja de suelo mineral o ripio compactado que rompe la continuidad del combustible a ras de suelo.',
+    roleDefault: 'Discontinuidad de combustible fino y acceso de brigadas'
+  },
+  {
+    id: 'fire_sclerophyll_curtain',
+    category: 'fire',
+    name: 'Cortina Cortafuego Esclerófila (Quillay / Maitén)',
+    shortName: 'Cortina Esclerófila',
+    icon: '🌳',
+    modelType: 'procedural_fire_curtain',
+    scale: 1.0,
+    baseCostClp: 260000,
+    buildHours: 6,
+    idealZone: 3,
+    description: 'Hilera densa de quillay, maitén y boldo de baja inflamabilidad que actúa como escudo térmico y trampa de pavesas.',
+    roleDefault: 'Escudo térmico biológico y barrera contra pavesas'
   }
 ];
 

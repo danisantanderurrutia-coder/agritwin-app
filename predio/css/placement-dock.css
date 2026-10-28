@@ -71,18 +71,18 @@
   text-shadow: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
-.aoe3-grid-container {
+.aoe3-grid-container,
+.aoe3-grid {
   padding: 10px;
   max-height: 240px;
   overflow-y: auto;
   background: radial-gradient(circle at center, #26170d 0%, #120a05 100%);
-}
-.aoe3-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 8px;
 }
-.aoe3-card {
+.aoe3-card,
+.aoe3-card-btn {
   background: linear-gradient(180deg, #3a2616 0%, #1e130a 100%);
   border: 1px solid #73511c;
   border-radius: 6px;
@@ -97,12 +97,14 @@
   transition: all 0.18s ease;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.5);
 }
-.aoe3-card:hover {
+.aoe3-card:hover,
+.aoe3-card-btn:hover {
   transform: translateY(-2px);
   border-color: #fbbf24;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 16px rgba(0,0,0,0.7), 0 0 12px rgba(245,158,11,0.4);
 }
-.aoe3-card.selected {
+.aoe3-card.selected,
+.aoe3-card-btn.selected {
   border: 2px solid #38bdf8;
   background: linear-gradient(180deg, #1e3a4f 0%, #0c1c28 100%);
 }
@@ -134,7 +136,8 @@
 }
 
 /* Modal de Inserción / Parámetros */
-#aoe3-insert-modal {
+#aoe3-insert-modal,
+#aoe3-placement-modal {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -146,7 +149,8 @@
   padding: 16px;
   font-family: 'Plus Jakarta Sans', Georgia, serif;
 }
-.aoe3-modal-dialog {
+.aoe3-modal-dialog,
+.aoe3-modal-box {
   width: 520px;
   max-width: 95vw;
   background: linear-gradient(180deg, #2b1b10 0%, #150d07 100%);
@@ -176,17 +180,28 @@
   gap: 12px;
   font-size: 12px;
 }
-.aoe3-form-group {
+.aoe3-form-group,
+.aoe3-field-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.aoe3-form-group label {
+.aoe3-form-group label,
+.aoe3-field-group label {
   font-size: 10.5px;
   font-weight: 700;
   color: #fde047;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+.aoe3-perma-box {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid #8c6721;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .aoe3-input, .aoe3-select {
   background: #140b06;
@@ -210,7 +225,8 @@
   justify-content: flex-end;
   gap: 10px;
 }
-.aoe3-btn-action {
+.aoe3-btn-action,
+.btn-aoe3-action {
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 11px;
@@ -218,22 +234,26 @@
   cursor: pointer;
   transition: all 0.15s;
 }
-.aoe3-btn-cancel {
+.aoe3-btn-cancel,
+.btn-aoe3-cancel {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.2);
   color: #cbd5e1;
 }
-.aoe3-btn-cancel:hover {
+.aoe3-btn-cancel:hover,
+.btn-aoe3-cancel:hover {
   background: rgba(255,255,255,0.15);
   color: #fff;
 }
-.aoe3-btn-confirm {
+.aoe3-btn-confirm,
+.btn-aoe3-primary {
   background: linear-gradient(180deg, #10b981 0%, #047857 100%);
   border: 1px solid #34d399;
   color: #fff;
   box-shadow: 0 2px 8px rgba(16,185,129,0.4);
 }
-.aoe3-btn-confirm:hover {
+.aoe3-btn-confirm:hover,
+.btn-aoe3-primary:hover {
   filter: brightness(1.15);
   transform: translateY(-1px);
 }

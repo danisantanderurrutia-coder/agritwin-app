@@ -45,7 +45,7 @@
     <!-- KaTeX for Scientific & Mathematical Equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');window.renderLatexInContainer('docs-vecino');}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');window.renderLatexInContainer('docs-vecino');window.renderLatexInContainer('tab-tiempo');window.renderLatexInContainer('detailsRiskTornado');}"></script>
 
 
     <!-- Chart.js -->
@@ -3786,7 +3786,7 @@
                                 </div>
                             </div>
                             <span id="farmerBadgeRol" class="text-[9px] font-mono text-amber-400 font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
-                                Rol 418-24 Parral
+                                Rol 142-88 Retiro
                             </span>
                         </div>
 
@@ -8302,6 +8302,70 @@
                         </p>
                     </div>
                 </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     SECCIÓN 9: MÓDULO 5 - TERMODINÁMICA CONVECTIVA (CAPE), CIZALLADURA Y DOCTRINA DE 3 NIVELES ANTE TORNADOS
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div id="doctrina-m5-tornados-cape" class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-sm">9</span>
+                            <div>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 5: Termodinámica Convectiva ($\text{CAPE}$), Cizalladura Vertical y Gestión de Tornados en 3 Niveles</h4>
+                                <p class="text-xs text-stone-500 font-sans">Por qué el $\text{CAPE}$ es el combustible de flotabilidad vertical, por qué requiere cizalladura $0\text{--}6\text{ km}$ y cómo se separa Vigilancia (Watch), Detección (Nowcasting) y Escenario Hipotético (What-If)</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-300">
+                            CONVECCIÓN SEVERA &bull; HSLC 36°S
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-stone-700 font-sans leading-relaxed">
+                        En meteorología física, <strong>no es posible predecir con horas o días de anticipación la coordenada exacta donde tocará tierra un tornado</strong>. Sin embargo, sí es físicamente riguroso cuantificar la energía termodinámica disponible para las corrientes ascendentes mediante el <strong>$\text{CAPE}$ (<i>Convective Available Potential Energy</i>)</strong>, evaluar el cizalle vertical que induce la rotación mesociclónica y simular el impacto estructural de la presión dinámica del viento ($q = \frac{1}{2}\rho v^2$) sobre activos prediales:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Tarjeta KaTeX 1: Definición Integral del CAPE y Velocidad Ascendente -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>⚡</span> 1. Integral de Flotabilidad ($\text{CAPE}$ y $w_{\max}$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\text{CAPE} = \int_{z_{\text{LFC}}}^{z_{\text{EL}}} g \left(\frac{T_{v,p}(z) - T_{v,e}(z)}{T_{v,e}(z)}\right) dz$$
+                                $$w_{\max} = \sqrt{2 \cdot \text{CAPE}} \quad [\text{m/s}]$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Representa la energía potencial por unidad de masa ($\text{J/kg}$) que gana una parcela húmeda más cálida ($T_{v,p}$) que su entorno ($T_{v,e}$) entre el Nivel de Convección Libre ($z_{\text{LFC}}$) y el Nivel de Equilibrio ($z_{\text{EL}}$). Un $\text{CAPE} = 500\text{ J/kg}$ impulsa una corriente ascendente teórica de $w_{\max} \approx 31.6\text{ m/s}$ ($114\text{ km/h}$), capaz de estirar tubos de vorticidad verticalmente.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Cizalladura 0-6 km y Helicidad SRH -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🌀</span> 2. Cizalladura Vertical y Entorno HSLC
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$S_{0-6} = \left\|\vec{V}_{500\text{hPa}} - \vec{V}_{10\text{m}}\right\|, \quad \vec{\omega}_h = \nabla \times \vec{V}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                El $\text{CAPE}$ por sí solo sólo produce ascenso vertical. Para que la tormenta rote se requiere <strong>cizalladura vertical fuerte ($S_{0-6} \ge 20\text{ m/s}$)</strong> entre la superficie y los $500\text{ hPa}$ ($\sim 5.5\text{ km}$). En el Centro-Sur de Chile ($35^\circ\text{S--}40^\circ\text{S}$) dominan los eventos invernales <strong>HSLC (<i>High-Shear, Low-CAPE</i>)</strong>: $\text{CAPE}$ moderado ($300\text{--}800\text{ J/kg}$) pero altísima cizalladura post-frontal y base de nube baja ($z_{\text{LCL}} &lt; 900\text{ m}$).
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Presión Dinámica q y Atenuación por Cortinas z0 -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🛡️</span> 3. Presión Dinámica ($q$) y Cortinas ($z_0$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$q = \frac{1}{2}\rho v^2 \quad [\text{Pa}], \qquad v(z) = \frac{u_*}{\kappa}\ln\left(\frac{z-d}{z_0}\right)$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Un tornado <strong>EF1 ($165\text{ km/h} = 45.8\text{ m/s}$)</strong> ejerce $q \approx 1.285\text{ Pa}$, superando la resistencia de invernaderos LDPE ($450\text{ Pa}$) y techumbres livianas ($900\text{ Pa}$). Una cortina nativa multi-estrato ($z_0 = 0.85\text{ m}$, porosidad $35\%$) reduce la velocidad basal un $35\%$, abatiendo la presión dinámica en un <strong>$58\%$</strong> ($q_{z_0} \approx 540\text{ Pa}$).
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
@@ -10756,6 +10820,107 @@
                                         </p>
                                     </div>
                                 </div>
+
+                                <!-- ═══════════════════════════════════════════════════════════════════
+                                     SECCIÓN E: TERMODINÁMICA CONVECTIVA (CAPE), CIZALLADURA & DOCTRINA 3 NIVELES ANTE TORNADOS
+                                     ═══════════════════════════════════════════════════════════════════ -->
+                                <div class="mt-4 p-4 sm:p-5 rounded-xl bg-amber-50/70 border border-amber-300 space-y-4">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200 pb-2.5">
+                                        <div>
+                                            <span class="px-2 py-0.5 rounded bg-amber-900 text-amber-100 font-mono text-[10px] font-bold uppercase">Física Mesoescalar &bull; Convección Severa</span>
+                                            <h5 class="text-sm font-bold text-stone-900 mt-1">
+                                                🌪️ E. Termodinámica Convectiva ($\text{CAPE}$), Cizalladura Vertical y Doctrina de 3 Niveles ante Tornados
+                                            </h5>
+                                        </div>
+                                        <span class="text-[10.5px] font-mono text-amber-900 bg-white px-2.5 py-1 rounded-lg border border-amber-300 font-bold">
+                                            Centro-Sur de Chile (36°S &ndash; 38°S)
+                                        </span>
+                                    </div>
+
+                                    <p class="text-xs text-stone-700 leading-relaxed">
+                                        A diferencia de las inundaciones fluviales o heladas radiativas &mdash;cuya trayectoria está gobernada por la topografía fija del DEM&mdash;, <b>la coordenada exacta de toque a tierra de un tornado no es predecible con días ni horas de anticipación</b>, pues depende de inestabilidades turbulentas de sub-kilómetro ($&lt;200\text{ m}$). Sin embargo, la atmósfera sí revela cuándo posee la <b>energía potencial termodinámica ($\text{CAPE}$)</b> y el <b>cizalle cinemático ($\Delta \vec{V}$)</b> necesarios para engendrar superceldas rotantes o trombas terrestres (<i>landspouts</i>) post-frontales en el Valle Central.
+                                    </p>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                                        <!-- E.1: Integral Física del CAPE -->
+                                        <div class="p-3.5 rounded-xl bg-white border border-amber-200 space-y-2 shadow-sm">
+                                            <b class="text-amber-900">E.1 Energía Potencial Convectiva Disponible ($\text{CAPE}$):</b>
+                                            <div class="p-2.5 rounded bg-amber-50/60 border border-amber-200 text-stone-900 text-center shadow-inner overflow-x-auto">
+                                                $$\text{CAPE} = \int_{z_{\text{LFC}}}^{z_{\text{EL}}} g \left( \frac{T_{v,\text{parcela}}(z) - T_{v,\text{ambiente}}(z)}{T_{v,\text{ambiente}}(z)} \right) dz \;\left[\frac{\text{J}}{\text{kg}}\right]$$
+                                            </div>
+                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                                Mide el trabajo mecánico total por unidad de masa realizado por la fuerza de flotabilidad (<i>buoyancy</i>) sobre una parcela de aire húmedo que asciende entre el <b>Nivel de Convección Libre ($z_{\text{LFC}}$)</b> y el <b>Nivel de Equilibrio ($z_{\text{EL}}$)</b>, donde $g = 9.81\text{ m/s}^2$ y $T_v = T(1 + 0.61\,r_v)$ es la temperatura virtual. Cuando aire frío en altura ($500\text{ hPa}$, $-22^\circ\text{C}$) irrumpe sobre aire húmedo superficial post-frontal ($14^\circ\text{C}$), el integrando se vuelve fuertemente positivo.
+                                            </p>
+                                        </div>
+
+                                        <!-- E.2: Velocidad Vertical Máxima del Updraft -->
+                                        <div class="p-3.5 rounded-xl bg-white border border-amber-200 space-y-2 shadow-sm">
+                                            <b class="text-amber-900">E.2 Límite Termodinámico de Corriente Ascendente ($w_{\max}$):</b>
+                                            <div class="p-2.5 rounded bg-amber-50/60 border border-amber-200 text-stone-900 text-center shadow-inner overflow-x-auto">
+                                                $$\frac{1}{2} w_{\max}^2 = \text{CAPE} \implies w_{\max} = \sqrt{2 \cdot \text{CAPE}} \quad \left[\frac{\text{m}}{\text{s}}\right]$$
+                                            </div>
+                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                                Convirtiendo toda la energía potencial convectiva en energía cinética vertical: un entorno invernal del Maule/Ñuble con $\text{CAPE} = 450\text{ J/kg}$ produce una corriente ascendente teórica de $w_{\max} = \sqrt{900} = 30\text{ m/s}$ ($108\text{ km/h}$ hacia arriba). Este <i>updraft</i> actúa como una aspiradora vertical capaz de estirar vórtices horizontales por conservación de momento angular (<i>vortex stretching</i>).
+                                            </p>
+                                        </div>
+
+                                        <!-- E.3: Por qué el CAPE solo no basta: Cizalladura, SRH y STP -->
+                                        <div class="p-3.5 rounded-xl bg-white border border-purple-200 space-y-2 shadow-sm">
+                                            <b class="text-purple-900">E.3 Cizalladura $0\text{--}6\text{ km}$, Helicidad ($\text{SRH}$) y Entorno HSLC:</b>
+                                            <div class="p-2.5 rounded bg-purple-50/60 border border-purple-200 text-stone-900 text-center shadow-inner overflow-x-auto">
+                                                $$S_{0-6} = \left\| \vec{V}_{6\text{km}} - \vec{V}_{10\text{m}} \right\|, \quad \text{SRH}_{0-1} = -\int_{0}^{1\text{km}} \hat{k} \cdot \left(\vec{V} - \vec{C}\right) \times \frac{\partial \vec{V}}{\partial z}\,dz$$
+                                            </div>
+                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                                Un $\text{CAPE}$ alto sin viento en altura sólo genera chaparrones verticales que se ahogan con su propia lluvia. Para que nazca un mesociclón o tornado se requiere <b>cizalladura vertical intensa</b> ($S_{0-6} \ge 20\text{ m/s}$) que genere vorticidad horizontal ($\vec{\omega}_h = \nabla \times \vec{V}$) para ser inclinada por el <i>updraft</i> ($w_{\max}$). En el Centro-Sur de Chile predominan los entornos <b>HSLC (High-Shear, Low-CAPE)</b>: basta un $\text{CAPE}$ modesto ($300\text{--}800\text{ J/kg}$) combinado con un chorro en niveles bajos ($S_{0-6} &gt; 22\text{ m/s}$) y base de nube baja ($z_{\text{LCL}} &lt; 900\text{ m}$) para elevar el <b>Parámetro de Tornado Significativo ($\text{STP}$)</b>.
+                                            </p>
+                                        </div>
+
+                                        <!-- E.4: Presión Dinámica de Impacto & Cortinas Cortaviento -->
+                                        <div class="p-3.5 rounded-xl bg-white border border-emerald-200 space-y-2 shadow-sm">
+                                            <b class="text-emerald-900">E.4 Presión Dinámica Estructural ($q$) y Rugosidad ($z_0$):</b>
+                                            <div class="p-2.5 rounded bg-emerald-50/60 border border-emerald-200 text-stone-900 text-center shadow-inner overflow-x-auto">
+                                                $$q = \frac{1}{2}\rho_{\text{aire}} v^2 \quad [\text{Pa}], \qquad v(z) = \frac{u_*}{\kappa}\ln\left(\frac{z - d}{z_0}\right)$$
+                                            </div>
+                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                                La carga destructiva sobre invernaderos LDPE, mallas antigranizo y techumbres crece con el <b>cuadrado de la velocidad ($v^2$)</b>: duplicar la ráfaga de $80$ a $160\text{ km/h}$ (EF1) cuadruplica la presión dinámica ($q \approx 1.210\text{ Pa}$). Una cortina cortaviento multi-estrato nativa (Peumo/Quillay/Maqui, porosidad óptica $\beta \approx 35\%$) incrementa la longitud de rugosidad aerodinámica superficial $z_0$ de $0.05\text{ m}$ a $0.85\text{ m}$, reduciendo la velocidad a nivel de cultivo en un $32\text{--}45\%$ y abatiendo la carga estructural $q$ hasta en un <b>$55\text{--}68\%$</b> en eventos EF0/EF1.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabla de los 3 Niveles de Gestión de Riesgo Tornádico -->
+                                    <div class="overflow-x-auto rounded-xl border border-amber-300 bg-white">
+                                        <table class="w-full text-left text-[11px] font-sans">
+                                            <thead class="bg-amber-900/90 text-amber-50 font-mono text-[10px] uppercase">
+                                                <tr>
+                                                    <th class="p-2.5">Nivel y Horizonte</th>
+                                                    <th class="p-2.5">Pestaña en el Gemelo</th>
+                                                    <th class="p-2.5">Variables &amp; Sensores</th>
+                                                    <th class="p-2.5">Alcance Científico Honesto (Qué SÍ y Qué NO hace)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-amber-100 text-stone-700">
+                                                <tr>
+                                                    <td class="p-2.5 font-mono font-bold text-amber-900">Nivel 1: Entorno Propicio (Watch)<br><span class="text-[9.5px] font-normal text-stone-500">Horizonte: 6h a 48h</span></td>
+                                                    <td class="p-2.5 font-mono text-sky-800 font-bold">Pestaña 1 (🌦️ Tiempo &amp; Hídrico)</td>
+                                                    <td class="p-2.5 font-mono text-[10px]">Open-Meteo API: $\text{CAPE}$, $S_{0-6\text{km}}$ ($500\text{ hPa}$ vs $10\text{ m}$) y $z_{\text{LCL}}$ ($T - T_d$).</td>
+                                                    <td class="p-2.5">Advierte que la atmósfera del valle tiene ingredientes termodinámicos y de cizalle para tormentas rotantes. <b>NO predice</b> si un tornado tocará tierra ni en qué coordenada.</td>
+                                                </tr>
+                                                <tr class="bg-amber-50/40">
+                                                    <td class="p-2.5 font-mono font-bold text-emerald-900">Nivel 2: Detección In-Situ (Nowcasting)<br><span class="text-[9.5px] font-normal text-stone-500">Horizonte: 1 a 10 min</span></td>
+                                                    <td class="p-2.5 font-mono text-emerald-800 font-bold">Pestaña 2 (🗺️ Capas SIG &bull; Demo)</td>
+                                                    <td class="p-2.5 font-mono text-[10px]">Micro-barómetros LoRaWAN (Bosch BMP390, $\pm 3\text{ Pa}$ a $1\text{ Hz}$, $\sim\$45\text{--}\$85\text{ USD/nodo}$) + ultrasónico ($\sim\$250\text{ USD}$).</td>
+                                                    <td class="p-2.5">Detecta desplomes barométricos bruscos ($\Delta P/\Delta t \le -4\text{ hPa/min}$) de un vórtice que ya está pasando por un nodo vecino, dando segundos/minutos para refugio humano.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-2.5 font-mono font-bold text-purple-900">Nivel 3: Escenario Hipotético (What-If)<br><span class="p-0.5 text-[9.5px] font-normal text-stone-500">Planificación Estructural</span></td>
+                                                    <td class="p-2.5 font-mono text-purple-800 font-bold">Pestaña 3 (🛡️ Riesgos Climáticos)</td>
+                                                    <td class="p-2.5 font-mono text-[10px]">Escala Fujita Mejorada ($\text{EF0}$, $\text{EF1}$, $\text{EF2}$), corredor hipotético y cortinas $z_0$.</td>
+                                                    <td class="p-2.5">Evalúa qué activos colapsarían ($q = \frac{1}{2}\rho v^2$) <b>SI</b> una traza cruzara el predio y cuánto mitigan las cortinas cortaviento. Reporta el <i>Riesgo de Cola por Escenario</i> por separado.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Footer del Módulo 13 -->
@@ -12779,6 +12944,45 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                             <span id="cuencaWindySnowRegimeMetric" class="text-emerald-300 font-bold text-[9.5px]">Seco</span>
                         </div>
                     </div>
+
+                    <!-- NIVEL 1 (WATCH): SEMÁFORO DE ENTORNO CONVECTIVO SEVERO (CAPE + CIZALLADURA 0-6KM + LCL) -->
+                    <div id="convectiveWatchCard" class="p-2.5 rounded-lg bg-black/50 border border-emerald-500/30 space-y-1.5 font-mono transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                                <span>🌪️</span> Vigilancia Convectiva (Nivel 1 • Watch)
+                            </span>
+                            <span id="convectiveWatchBadge" class="text-[8.5px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold">
+                                🟢 ESTABLE
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 text-center bg-black/40 p-1.5 rounded border border-white/5 text-[9.5px]">
+                            <div title="Convective Available Potential Energy (Energía de flotabilidad parcelaria)">
+                                <span class="text-slate-400 block text-[8.5px]">CAPE Valle</span>
+                                <b id="valConvectiveCape" class="text-emerald-300">45 J/kg</b>
+                            </div>
+                            <div title="Cizalladura vertical de viento entre 10m y 500 hPa (~5.5 km)">
+                                <span class="text-slate-400 block text-[8.5px]">Shear 0-6 km</span>
+                                <b id="valConvectiveShear" class="text-sky-300">8.2 m/s</b>
+                            </div>
+                            <div title="Altura estimada de base de nube (Lifting Condensation Level)">
+                                <span class="text-slate-400 block text-[8.5px]">Base Nube (LCL)</span>
+                                <b id="valConvectiveLcl" class="text-amber-200">1.420 m</b>
+                            </div>
+                        </div>
+                        <!-- Banner de Alerta Hiperlocal Nowcasting (Nivel 2 - Oculto hasta activar pulso demo) -->
+                        <div id="baroHyperlocalAlertBanner" class="hidden p-2 rounded bg-rose-950/90 border border-rose-500 text-[9.5px] text-rose-100 space-y-1 animate-pulse">
+                            <div class="flex items-center justify-between font-bold text-rose-300">
+                                <span>🚨 ALERTA HIPERLOCAL NOWCASTING (DEMO)</span>
+                                <button onclick="window.clearSimulatedBaroDrop()" class="text-[8.5px] px-1.5 py-0.5 rounded bg-black/40 hover:bg-black/70 text-rose-200 border border-rose-400/40 cursor-pointer">Cerrar ✕</button>
+                            </div>
+                            <p id="baroHyperlocalAlertText" class="leading-tight font-sans text-[10px]">
+                                Nodo Barométrico BMP390-Oeste reporta caída brusca <b>&Delta;P/&Delta;t = -14.2 hPa/min</b> + ráfaga 118 km/h NO&rarr;SE. Protocolo de refugio inmediato en galpón/estructura firme (ventana estimada: 90&ndash;180 s).
+                            </p>
+                        </div>
+                        <p class="text-[8.5px] text-slate-400 font-sans leading-tight italic">
+                            ℹ️ Indica condiciones ambientales propicias a escala de valle ($w_{\max}=\sqrt{2\cdot\text{CAPE}}$), <b>NO predice</b> la ocurrencia ni coordenada exacta de un tornado.
+                        </p>
+                    </div>
                 </div>
 
 
@@ -13052,7 +13256,7 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                             <span>🌪️</span> Dinámica Microclimática Local
                         </span>
-                        <span class="text-[9px] px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/30 font-bold">3 MODELOS</span>
+                        <span class="text-[9px] px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/30 font-bold">4 MODELOS</span>
                     </div>
 
                     <!-- 1. Viento Puelche -->
@@ -13113,6 +13317,28 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                             <p class="leading-relaxed">
                                 Demanda evaporativa contrastada en tiempo real contra las sondas FDR a 0-20 cm y 20-60 cm en Fundo Meniel.
                             </p>
+                        </div>
+                    </details>
+
+                    <!-- 4. Termodinámica Convectiva (CAPE & Cizalladura HSLC) -->
+                    <details class="group bg-black/40 rounded-lg border border-amber-500/30 overflow-hidden">
+                        <summary class="flex items-center justify-between p-2 cursor-pointer select-none hover:bg-white/5 list-none">
+                            <span class="text-amber-300 text-xs font-bold flex items-center gap-1.5">
+                                <span>⚡</span> 4. Termodinámica Convectiva (CAPE &amp; Shear)
+                            </span>
+                            <span id="badgeMicroCapeModel" class="text-[8.5px] bg-amber-950 text-amber-300 border border-amber-500/40 px-1.5 py-0.5 rounded font-bold">HSLC 36°S</span>
+                        </summary>
+                        <div class="p-2.5 pt-1 text-[11px] text-slate-300 font-sans space-y-1.5 border-t border-white/5">
+                            <p class="leading-relaxed">
+                                Evalúa la flotabilidad convectiva ($\text{CAPE}$, en $\text{J/kg}$) que impulsa corrientes ascendentes $w_{\max} = \sqrt{2\cdot\text{CAPE}}$ y la cizalladura vertical $0\text{--}6\text{ km}$ ($\|\vec{V}_{500\text{hPa}} - \vec{V}_{10\text{m}}\|$) capaz de inclinar vorticidad horizontal en frentes fríos invernales.
+                            </p>
+                            <div class="p-1.5 rounded bg-amber-950/40 text-[9.5px] text-amber-200 border border-amber-900/50 font-mono">
+                                📐 <b>Criterio HSLC Maule/Ñuble:</b> $\text{CAPE} \ge 300\text{ J/kg}$ + $\text{Shear} \ge 20\text{ m/s}$ + $\text{LCL} &lt; 1000\text{ m}$ habilita potencial rotacional post-frontal.
+                            </div>
+                            <button onclick="openCuencaDoctrinaModal('m5-tornados-cape')" class="w-full mt-1 py-1 px-2.5 rounded bg-amber-950/60 hover:bg-amber-900/60 text-amber-200 border border-amber-500/40 text-[9.5px] font-mono flex items-center justify-between cursor-pointer transition-all">
+                                <span>📚 Ver Ecuaciones LaTeX de CAPE &amp; Cizalladura</span>
+                                <span>➔</span>
+                            </button>
                         </div>
                     </details>
                 </div>
@@ -13275,6 +13501,47 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                     </button>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- NIVEL 2 (NOWCASTING DEMO): RED MICRO-BAROMÉTRICA DE ALERTA RÁPIDA (BMP390 LoRaWAN) -->
+                        <div class="space-y-2 pt-2.5 border-t border-white/10 font-mono">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span>🌪️</span> Red Micro-Barométrica Nowcasting (Nivel 2)
+                                </span>
+                                <span class="text-[8.5px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-bold">
+                                    SIMULADO / DEMO
+                                </span>
+                            </div>
+
+                            <label class="flex items-center justify-between p-2 rounded-lg bg-black/40 border border-rose-500/30 cursor-pointer hover:bg-white/5 transition-all">
+                                <div class="text-[10px]">
+                                    <b class="text-slate-200 block">Nodos Barométricos 1 Hz (BMP390 LoRaWAN)</b>
+                                    <span class="text-[9px] text-slate-400">4 nodos propuestos (&sim;$65 USD/nodo) &bull; Muestreo &Delta;P/&Delta;t</span>
+                                </div>
+                                <input type="checkbox" id="chk-layer-baro-nodes" onchange="window.toggleBaroNodesLayer(this.checked)" class="w-4 h-4 accent-rose-500 cursor-pointer">
+                            </label>
+
+                            <div class="grid grid-cols-2 gap-1.5 text-[9px]">
+                                <div class="p-1.5 rounded bg-black/40 border border-white/5">
+                                    <span class="text-slate-400 block">BARO-01 Poniente (Parral)</span>
+                                    <b id="valBaroNode1" class="text-emerald-300">1014.2 hPa (0.0/min)</b>
+                                </div>
+                                <div class="p-1.5 rounded bg-black/40 border border-white/5">
+                                    <span class="text-slate-400 block">BARO-02 Meniel Centro</span>
+                                    <b id="valBaroNode2" class="text-emerald-300">1013.8 hPa (-0.1/min)</b>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="window.triggerSimulatedBaroDrop()" class="flex-1 py-1.5 px-2.5 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-500/50 text-rose-200 text-[9.5px] font-bold cursor-pointer transition-all shadow-sm">
+                                    ⚡ Simular Pulso Vórtice (&Delta;P = -14.2 hPa/min)
+                                </button>
+                            </div>
+
+                            <p class="text-[8.5px] text-slate-400 font-sans leading-tight">
+                                ⚠️ <b>Límites declarados:</b> Detecta vórtices o micro-ráfagas que <i>ya tocaron tierra</i> sobre un nodo vecino (aviso de <b>60s a 5 min</b> para refugio humano; sujeto a falsos positivos por frentes de ráfaga).
+                            </p>
                         </div>
                     </div>
                 </details>
@@ -13501,13 +13768,13 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                      ═══════════════════════════════════════════════════════════ -->
                 
                 <!-- A. INCENDIOS FORESTALES & VIENTO PUELCHE (INTEGRADO CON MÓDULO 2 ESTÁNDAR VECINO INFORMADO) -->
-                <details id="detailsRiskFire" class="group bg-black/50 rounded-xl border border-rose-500/40 overflow-hidden shadow-lg transition-all" open>
+                <details id="detailsRiskFire" class="group bg-black/50 rounded-xl border border-rose-500/40 overflow-hidden shadow-lg transition-all">
                     <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 list-none font-mono">
                         <span class="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
                             <span>🔥</span> a. Incendios Forestales & Balística Transfronteriza
                         </span>
                         <div class="flex items-center gap-1.5">
-                            <span class="text-[8.5px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/30 font-bold">VECTORES & REGÍMENES</span>
+                            <span id="badgeSummaryRiskFire" class="text-[8.5px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-white/10 font-bold">INACTIVO</span>
                             <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
                         </div>
                     </summary>
@@ -13531,14 +13798,16 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                 </button>
                             </div>
 
-                            <!-- Selector de los 4 Regímenes Eólicos -->
+                            <!-- Selector de los 4 Regímenes Eólicos + Botón Desactivar -->
                             <div class="space-y-1.5">
                                 <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                                    <span>Régimen de Viento Eólico:</span>
-                                    <span class="text-amber-400 font-bold">Multi-Escenario</span>
+                                    <span>Régimen de Viento Eólico (Clic para activar/desactivar):</span>
+                                    <button onclick="toggleTacticalFireVectorsLayer(false);" id="btnDeactivateFireVectors" class="hidden text-[9px] px-2 py-0.5 rounded bg-rose-950/90 hover:bg-rose-800 text-rose-200 border border-rose-500/50 font-bold cursor-pointer transition-all">
+                                        ✕ Desactivar Vector
+                                    </button>
                                 </div>
                                 <div class="grid grid-cols-2 gap-1.5">
-                                    <button onclick="setTacticalWindRegime('puelche');" id="btnTacticalRegime_puelche" class="py-1.5 px-2 rounded-lg bg-red-600 text-white font-mono font-bold text-[10px] shadow-sm transition-all border border-red-400 cursor-pointer flex items-center justify-center gap-1">
+                                    <button onclick="setTacticalWindRegime('puelche');" id="btnTacticalRegime_puelche" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
                                         <span>🌪️</span> <span>Puelche (ESE)</span>
                                     </button>
                                     <button onclick="setTacticalWindRegime('surazo');" id="btnTacticalRegime_surazo" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1">
@@ -13557,7 +13826,7 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                             <div class="p-2.5 rounded-lg bg-black/60 border border-white/5 space-y-2 text-xs font-mono">
                                 <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
                                     <span class="text-slate-400 text-[10px]">Escenario Activo:</span>
-                                    <strong id="tacticalScenarioTitle" class="text-amber-300 text-[10.5px]">Viento Puelche (Catabático ESE)</strong>
+                                    <strong id="tacticalScenarioTitle" class="text-slate-400 text-[10.5px]">Desactivado (Mapa Limpio)</strong>
                                 </div>
                                 <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
                                     <div class="p-1.5 bg-black/40 rounded border border-white/5">
@@ -13676,7 +13945,7 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                     <span class="w-2.5 h-2.5 rounded-sm bg-amber-500"></span>
                                     <span>Severidad CAL FIRE & Faja WUI 45m</span>
                                 </span>
-                                <input type="checkbox" id="chk-layer-calfire" checked onchange="toggleOverlayByName('calfire_fhsz', this)" class="accent-amber-400 cursor-pointer">
+                                <input type="checkbox" id="chk-layer-calfire" onchange="toggleOverlayByName('calfire_fhsz', this)" class="accent-amber-400 cursor-pointer">
                             </label>
 
                             <label class="flex items-center justify-between p-2 rounded-lg bg-black/40 hover:bg-white/5 border border-rose-500/20 cursor-pointer">
@@ -13687,13 +13956,13 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                 <input type="checkbox" id="toggleFlowFireWave" onchange="window.energyFlowEngine?.toggle('fireWave', this.checked)" class="accent-rose-500 cursor-pointer">
                             </label>
 
-                            <!-- Botón Táctico: Frente de Fuego & Simulación FWI Puelche -->
-                            <button onclick="setCuencaWindyVariable('fwi'); if(window.energyFlowEngine){ window.energyFlowEngine.toggle('fireWave', true); const chk = document.getElementById('toggleFlowFireWave'); if(chk) chk.checked = true; } if(typeof simulateBasinPreset === 'function') simulateBasinPreset('puelche');" class="w-full p-2.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/50 text-rose-200 hover:text-white font-mono text-[10.5px] font-bold transition-all cursor-pointer flex items-center justify-between shadow-sm">
+                            <!-- Botón Táctico: Frente de Fuego & Simulación FWI Puelche (Toggle ON/OFF) -->
+                            <button id="btnSimulateFireFrontFwi" onclick="window.toggleFireFrontSimulation();" class="w-full p-2.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/50 text-rose-200 hover:text-white font-mono text-[10.5px] font-bold transition-all cursor-pointer flex items-center justify-between shadow-sm">
                                 <span class="flex items-center gap-1.5">
                                     <span>🔥</span>
                                     <span>Frente de Fuego & Piro-Riesgo FWI</span>
                                 </span>
-                                <span class="text-[9px] bg-rose-950 px-1.5 py-0.5 rounded text-rose-300 border border-rose-500/40 font-mono">SIMULAR ↗</span>
+                                <span id="badgeSimulateFireFrontFwi" class="text-[9px] bg-rose-950 px-1.5 py-0.5 rounded text-rose-300 border border-rose-500/40 font-mono">SIMULAR ↗</span>
                             </button>
                         </div>
 
@@ -13975,6 +14244,148 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                         <button onclick="openCuencaDoctrinaModal('m4-heladas')" class="w-full py-1.5 px-3 rounded-lg bg-cyan-950/40 hover:bg-cyan-900/40 text-cyan-200 hover:text-white border border-cyan-500/40 text-[9.5px] font-mono flex items-center justify-between transition-all cursor-pointer shadow-sm">
                             <span class="flex items-center gap-1.5">
                                 <span>📚</span> <span>Ver Doctrina Topoclimática (KaTeX)</span>
+                            </span>
+                            <span>➔</span>
+                        </button>
+                    </div>
+                </details>
+
+                <!-- 5. MÓDULO e: TORNADOS & MICRO-RÁFAGAS CONVECTIVAS (NIVEL 3 • SIMULADOR HIPOTÉTICO WHAT-IF) -->
+                <details id="detailsRiskTornado" class="group rounded-xl bg-purple-950/20 border border-purple-500/30 overflow-hidden transition-all">
+                    <summary class="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-purple-950/30">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🌪️</span>
+                            <div>
+                                <span class="text-xs font-mono font-bold text-purple-300 uppercase block">e. Tornados &amp; Micro-Ráfagas (What-If)</span>
+                                <span class="text-[9px] text-slate-400 font-mono">Simulador de Impacto Estructural EF0&ndash;EF2 &bull; Presión Dinámica $q = \frac{1}{2}\rho v^2$</span>
+                            </div>
+                        </div>
+                        <span class="text-[8.5px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-200 border border-purple-400/50 font-bold">ESCENARIO HIPOTÉTICO ▾</span>
+                    </summary>
+                    <div class="p-3 pt-2 border-t border-purple-500/20 space-y-2.5 text-[10px] font-mono">
+                        <!-- Aviso explícito de Honestidad Científica -->
+                        <div class="p-2 rounded-lg bg-amber-950/40 border border-amber-500/40 text-[9px] font-sans text-amber-200 leading-snug">
+                            ⚠️ <b>Simulador de Escenario Hipotético (No Predictivo):</b> Un tornado no tiene un &ldquo;cauce fijo&rdquo; como un río. Este módulo evalúa <b>qué activos colapsarían SI</b> un vórtice EF0&ndash;EF2 cruzara la traza seleccionada y cuánto mitigan las cortinas cortaviento ($z_0$).
+                        </div>
+
+                        <!-- Botón Activador del Escenario en el Mapa + Motor RTS 60 FPS -->
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-black/50 border border-purple-500/40">
+                            <div>
+                                <span class="text-slate-200 font-bold block text-[10px]">Traza Hipotética &amp; Vórtice 60 FPS</span>
+                                <span id="lblTornadoScenarioStatus" class="text-[8.5px] text-slate-400">Inactivo en el lienzo SIG</span>
+                            </div>
+                            <button id="btnToggleTornadoScenario" onclick="window.toggleTornadoScenario()" class="px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-slate-800 text-slate-200 border-slate-600 hover:bg-purple-900/60 hover:border-purple-400 cursor-pointer shadow">
+                                <span id="dotTornadoScenario" class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                <span id="txtToggleTornadoScenario">SIMULAR TRAZA: OFF</span>
+                            </button>
+                        </div>
+
+                        <!-- Selector 1: Intensidad Escala Fujita Mejorada (EF0 / EF1 / EF2) -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[9.5px]">
+                                <span class="text-slate-300 font-bold">1. Categoría Escala Fujita Mejorada:</span>
+                                <span id="lblTornadoEfSelected" class="text-purple-300 font-bold">EF1 (165 km/h &bull; 45.8 m/s)</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <button type="button" id="btnTornadoEf0" onclick="window.setTornadoScenarioEf('EF0')" class="py-1.5 px-2 rounded bg-black/40 border border-amber-500/30 text-amber-300 hover:bg-amber-950/50 text-[9px] font-bold cursor-pointer transition-all">
+                                    EF0 (120 km/h)
+                                </button>
+                                <button type="button" id="btnTornadoEf1" onclick="window.setTornadoScenarioEf('EF1')" class="py-1.5 px-2 rounded bg-purple-900/60 border border-purple-400 text-white text-[9px] font-bold cursor-pointer transition-all shadow">
+                                    EF1 (165 km/h)
+                                </button>
+                                <button type="button" id="btnTornadoEf2" onclick="window.setTornadoScenarioEf('EF2')" class="py-1.5 px-2 rounded bg-black/40 border border-rose-500/30 text-rose-300 hover:bg-rose-950/50 text-[9px] font-bold cursor-pointer transition-all">
+                                    EF2 (205 km/h)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Selector 2: Corredor / Rumbo Hipotético NO -> SE -->
+                        <div class="space-y-1">
+                            <label for="selTornadoCorridor" class="text-slate-300 font-bold block text-[9.5px]">2. Traza Hipotética de Prueba (Rumbo NO &rarr; SE):</label>
+                            <select id="selTornadoCorridor" onchange="window.updateTornadoScenarioParams()" class="w-full p-1.5 rounded bg-black/60 border border-purple-500/40 text-slate-200 text-[9.5px] font-mono cursor-pointer">
+                                <option value="meniel_core" selected>Traza A: Poniente &rarr; Fundo Meniel (Invernaderos, Cerezos y Galpón)</option>
+                                <option value="apr_retiro">Traza B: Valle Retiro Sur &rarr; Red APR &amp; Línea Media Tensión</option>
+                                <option value="piedemonte">Traza C: Piedemonte Precordillerano &rarr; Bosquete &amp; Bocatoma</option>
+                            </select>
+                        </div>
+
+                        <!-- Selector 3: Switch Comparativo de Mitigación con Cortinas Cortaviento Nativas (z0) -->
+                        <div class="p-2 rounded-lg bg-emerald-950/25 border border-emerald-500/40 flex items-center justify-between">
+                            <div class="pr-2">
+                                <span class="text-emerald-300 font-bold block text-[9.5px]">🌳 Cortinas Cortaviento Nativas Escalonadas ($z_0$)</span>
+                                <span class="text-[8.5px] text-slate-300 font-sans">Triple estrato (Quillay/Peumo/Maqui, $z_0 = 0.85\text{ m}$) disipa energía a nivel de cultivo</span>
+                            </div>
+                            <input type="checkbox" id="chkTornadoWindbreak" checked onchange="window.updateTornadoScenarioParams()" class="w-4 h-4 accent-emerald-400 cursor-pointer flex-shrink-0">
+                        </div>
+
+                        <!-- Tarjeta de Diagnóstico Físico y Cascada de Falla Estructural -->
+                        <div class="p-2.5 rounded-lg bg-black/50 border border-white/10 space-y-2">
+                            <div class="grid grid-cols-3 gap-1.5 text-center border-b border-white/10 pb-2">
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Presión Libre ($q_0$)</span>
+                                    <b id="valTornadoQFree" class="text-rose-300 text-[10.5px]">1.285 Pa</b>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Presión Mitigada ($q_{z_0}$)</span>
+                                    <b id="valTornadoQMitigated" class="text-emerald-300 text-[10.5px]">540 Pa (-58%)</b>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block text-[8px]">Ancho de Traza</span>
+                                    <b id="valTornadoWidth" class="text-purple-300 text-[10.5px]">180 m &times; 2.8 km</b>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1 text-[9px]">
+                                <span class="text-slate-300 font-bold block">Secuencia de Falla Estructural en la Traza:</span>
+                                <div id="listTornadoStructuralDamage" class="space-y-1 text-slate-200 font-sans text-[9.5px]">
+                                    <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between">
+                                        <span>1° Invernaderos LDPE &amp; Mallas Frutales (Umbral 450 Pa):</span>
+                                        <b class="text-amber-300">Daño Moderado (Protegido por $z_0$)</b>
+                                    </div>
+                                    <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between">
+                                        <span>2° Techumbre Galpón Packing (Umbral 900 Pa):</span>
+                                        <b class="text-emerald-300">Resiste con anclaje</b>
+                                    </div>
+                                    <div class="p-1 rounded bg-white/5 border border-white/5 flex justify-between">
+                                        <span>3° Postación Eléctrica APR / Bombeo (Umbral 1.150 Pa):</span>
+                                        <b class="text-amber-300">Riesgo por caída de ramas</b>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Riesgo de Cola por Escenario (Separado del riesgo basal de cuenca) -->
+                            <div class="pt-1.5 border-t border-white/10 flex items-center justify-between text-[9.5px]">
+                                <span class="text-slate-300" title="Calculado de forma independiente para no distorsionar el índice basal de la cuenca">Riesgo de Cola por Escenario ($H \times V \times E$):</span>
+                                <b id="valTornadoTailRisk" class="text-purple-300 bg-purple-950/80 px-2 py-0.5 rounded border border-purple-500/40">0.42 (Moderado-Alto &bull; Mitigado)</b>
+                            </div>
+                        </div>
+
+                        <!-- LEYENDA DESPLEGABLE EF0-EF2 (ALTO CONTRASTE text-slate-200 font-mono) -->
+                        <details class="p-2.5 rounded-lg bg-[#050b14] border border-purple-500/40 text-slate-200 font-mono text-[9.5px]" open>
+                            <summary class="cursor-pointer font-bold text-purple-200 flex items-center justify-between select-none">
+                                <span>🎨 Leyenda Escala Fujita Mejorada (EF0&ndash;EF2)</span>
+                                <span class="text-[8.5px] text-slate-200 bg-purple-950 px-1.5 py-0.5 rounded border border-purple-400/40">PRESIÓN $q$ ▾</span>
+                            </summary>
+                            <div class="pt-2 mt-1.5 border-t border-white/15 space-y-1.5 text-slate-200 font-mono">
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-400 inline-block border border-white/30"></span> <b>EF0 (105&ndash;137 km/h)</b></span>
+                                    <span class="text-slate-200">$q \approx 520\text{--}890\text{ Pa}$ &bull; Rasga plásticos/ramas</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-orange-500 inline-block border border-white/30"></span> <b>EF1 (138&ndash;178 km/h)</b></span>
+                                    <span class="text-slate-200">$q \approx 900\text{--}1.500\text{ Pa}$ &bull; Voladura techos/mallas</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-purple-500 inline-block border border-white/30"></span> <b>EF2 (179&ndash;218 km/h)</b></span>
+                                    <span class="text-slate-200">$q \approx 1.510\text{--}2.250\text{ Pa}$ &bull; Colapso galpones/postes</span>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Botón para inspeccionar Doctrina de CAPE & Tornados en KaTeX -->
+                        <button onclick="openCuencaDoctrinaModal('m5-tornados-cape')" class="w-full py-1.5 px-3 rounded-lg bg-purple-950/50 hover:bg-purple-900/60 text-purple-200 hover:text-white border border-purple-500/40 text-[9.5px] font-mono flex items-center justify-between transition-all cursor-pointer shadow-sm">
+                            <span class="flex items-center gap-1.5">
+                                <span>📚</span> <span>Ver Física de CAPE, Cizalladura y Presión $q$ (LaTeX)</span>
                             </span>
                             <span>➔</span>
                         </button>
@@ -15422,83 +15833,6 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
 
 <script src="js/hub/hub-diegetic-modals.js"></script>
 <script src="js/hub/hub-report-generator.js"></script>
-
-
-
 <script src="js/hub/farm-profile-manager.js"></script>
-
-    <script>
-        // Controlador del Portal de Acceso Alquímico & Multi-Predio del Hub
-        (function() {
-            let splashDismissed = false;
-            const splashEl = document.getElementById('alchemicalAppSplash');
-
-            if (!splashEl) return;
-
-            // Renderizar la consola de selección/creación de predios inmediatamente
-            if (window.farmProfileManager) {
-                window.farmProfileManager.renderSplashConsole();
-                window.farmProfileManager.updateHeaderUI(window.farmProfileManager.getActiveProfile());
-            }
-
-            function dismissSplash() {
-                if (splashDismissed) return;
-                splashDismissed = true;
-                if (splashEl) {
-                    splashEl.style.opacity = '0';
-                    splashEl.style.pointerEvents = 'none';
-                    setTimeout(() => {
-                        splashEl.style.display = 'none';
-                    }, 800);
-                }
-            }
-
-            window.dismissAlchemicalSplash = dismissSplash;
-
-            // Soporte de deep-linking directo por URL (ej. ?mode=cerro o ?view=cuenca)
-            const urlParams = new URLSearchParams(window.location.search);
-            const targetMode = urlParams.get('mode') || urlParams.get('view');
-            if (targetMode) {
-                dismissSplash();
-                setTimeout(() => {
-                    if (targetMode === 'map' || targetMode === 'cuenca_map' || targetMode === 'territory') {
-                        if (typeof openCerroMap === 'function') openCerroMap();
-                    } else if (targetMode === 'cerro' || targetMode === 'cuenca') {
-                        if (typeof openCerroModeDirect === 'function') openCerroModeDirect();
-                        else if (typeof switchMasterView === 'function') switchMasterView('cerro');
-                    } else if (typeof switchMasterView === 'function') {
-                        switchMasterView(targetMode);
-                    }
-                }, 350);
-            }
-
-            // Permitir entrar directamente con tecla Esc o Espacio (carga Meniel por defecto)
-            window.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' || e.key === ' ' || e.code === 'Space') {
-                    if (splashEl && splashEl.style.display !== 'none' && !splashDismissed) {
-                        dismissSplash();
-                    }
-                }
-            });
-        })();
-    
-    function openComparativeStatusModal() {
-        // Ensure Docs master view and subtab 'docs-dossier' are active
-        if (typeof switchMasterView === 'function') switchMasterView('docs');
-        if (typeof switchDocsTab === 'function') switchDocsTab('docs-dossier');
-        // Scroll smoothly to dossier iframe if needed
-        setTimeout(() => {
-            const iframe = document.getElementById('iframeDossier');
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({ action: 'openComparativeModal' }, '*');
-            }
-            const modalIframe = document.getElementById('iframeDossierModal');
-            if (modalIframe && modalIframe.contentWindow) {
-                modalIframe.contentWindow.postMessage({ action: 'openComparativeModal' }, '*');
-            }
-        }, 150);
-    }
-
-</script>
 </body>
 </html>

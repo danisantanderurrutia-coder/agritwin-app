@@ -311,7 +311,7 @@
                 const predios = (typeof geojsonPredios !== 'undefined' && geojsonPredios.features)
                     ? geojsonPredios.features
                     : [];
-                const feat = predios.find(f => f.properties.id === selectedPactosPredioId) || predios[0] || { properties: { id: 'MENIEL', name: 'Fundo Meniel', area_ha: 24.8, rol: '418-24 Parral' } };
+                const feat = predios.find(f => f.properties.id === selectedPactosPredioId) || predios[0] || { properties: { id: 'MENIEL', name: 'Fundo Meniel', area_ha: 24.8, rol: '142-88 Retiro' } };
                 const p = feat.properties;
 
                 // Recuperar notas guardadas en localStorage
@@ -491,7 +491,7 @@
                             <span class="text-emerald-400">9 Firmados • 1 En Trámite</span>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-slate-300">
-                            <div>✅ Fundo Meniel (Rol 418-24 Parral)</div>
+                            <div>✅ Fundo Meniel (Rol 142-88 Retiro)</div>
                             <div>✅ Forestal Los Boldos (Rol 143-05 Retiro)</div>
                             <div>✅ Agrícola San José (Rol 142-12 Retiro)</div>
                             <div>✅ Retiro Poniente (Rol 138-20 Retiro)</div>

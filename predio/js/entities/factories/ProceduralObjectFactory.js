@@ -607,6 +607,95 @@ export class ProceduralObjectFactory {
       return 1.4;
     }
 
+    // ──────────────── 23. DEFENSA CONTRA INCENDIOS (WUI) ────────────────
+    else if (t === 'procedural_fire_sprinkler' || t === 'procedural_fire_roof') {
+      const steel = new THREE.MeshStandardMaterial({ color: '#94a3b8', metalness: 0.85, roughness: 0.3 });
+      const red = new THREE.MeshStandardMaterial({ color: '#dc2626', roughness: 0.4 });
+      const isRoof = t === 'procedural_fire_roof';
+      const h = isRoof ? 1.6 : 2.6;
+      const pole = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, h, 8), steel));
+      pole.position.y = h / 2;
+      group.add(pole);
+      const head = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.18, 10), red));
+      head.position.y = h + 0.05;
+      group.add(head);
+      const nozzle = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.5, 8), steel));
+      nozzle.position.set(0.22, h + 0.18, 0);
+      nozzle.rotation.z = -Math.PI / 3;
+      group.add(nozzle);
+      if (isRoof) {
+        const pipe = cast(new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.06), steel));
+        pipe.position.y = h;
+        group.add(pipe);
+      }
+      // Disco semitransparente de cobertura de agua
+      const radius = item.fireRadius || 10;
+      const disc = new THREE.Mesh(
+        new THREE.CircleGeometry(radius, 48),
+        new THREE.MeshBasicMaterial({ color: '#38bdf8', transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false })
+      );
+      disc.rotation.x = -Math.PI / 2;
+      disc.position.y = 0.12;
+      disc.name = 'fireCoverage';
+      disc.raycast = () => {};
+      group.add(disc);
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(radius - 0.2, radius, 64),
+        new THREE.MeshBasicMaterial({ color: '#7dd3fc', transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false })
+      );
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.y = 0.14;
+      ring.name = 'fireCoverage';
+      ring.raycast = () => {};
+      group.add(ring);
+      group.userData.fireRadius = radius;
+      group.userData.sprayHeight = h + 0.2;
+      return h + 0.5;
+    }
+    else if (t === 'procedural_fire_hydrant') {
+      const red = new THREE.MeshStandardMaterial({ color: '#dc2626', roughness: 0.35, metalness: 0.4 });
+      const brass = new THREE.MeshStandardMaterial({ color: '#d4af37', metalness: 0.9, roughness: 0.3 });
+      const body = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.9, 12), red));
+      body.position.y = 0.45;
+      group.add(body);
+      const cap = cast(new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), red));
+      cap.position.y = 0.9;
+      group.add(cap);
+      for (const s of [-1, 1]) {
+        const port = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.18, 10), brass));
+        port.rotation.z = Math.PI / 2;
+        port.position.set(s * 0.25, 0.6, 0);
+        group.add(port);
+      }
+      return 1.1;
+    }
+    else if (t === 'procedural_fire_break') {
+      const soil = new THREE.MeshStandardMaterial({ color: '#a8a29e', roughness: 1.0 });
+      const strip = cast(new THREE.Mesh(new THREE.BoxGeometry(8, 0.08, 4), soil));
+      strip.position.y = 0.05;
+      group.add(strip);
+      const edgeMat = new THREE.MeshStandardMaterial({ color: '#f59e0b', roughness: 0.6 });
+      for (const z of [-2, 2]) {
+        const edge = new THREE.Mesh(new THREE.BoxGeometry(8, 0.1, 0.1), edgeMat);
+        edge.position.set(0, 0.07, z);
+        group.add(edge);
+      }
+      return 0.4;
+    }
+    else if (t === 'procedural_fire_curtain') {
+      const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a3220', roughness: 0.95 });
+      const leafMat = new THREE.MeshStandardMaterial({ color: '#2f6b3a', roughness: 0.75 });
+      for (let i = -3; i <= 3; i++) {
+        const tr = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 1.6, 7), trunkMat));
+        tr.position.set(i * 1.2, 0.8, 0);
+        group.add(tr);
+        const cr = cast(new THREE.Mesh(new THREE.SphereGeometry(0.85, 9, 8), leafMat));
+        cr.position.set(i * 1.2, 2.1, (i % 2) * 0.2);
+        group.add(cr);
+      }
+      return 3.2;
+    }
+
     // ──────────────── FALLBACK GENÉRICO ────────────────
     else {
       const mat = new THREE.MeshStandardMaterial({ color: '#b45309', roughness: 0.8 });

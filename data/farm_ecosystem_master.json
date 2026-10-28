@@ -2,7 +2,7 @@
   "version": "2.0.0-holistic",
   "farmName": "Fundo Meniel (Estero Colliguay)",
   "region": "Parral, Maule Sur, Chile",
-  "totalHectares": 12.8,
+  "totalHectares": 24.8,
   "subscriptionPlan": "Full Suite Holistic (Admin)",
   "availableModules": {
     "galpon": {
@@ -208,8 +208,13 @@
       "variety": "Quillay Nativo (Corredor Ribereño)",
       "category": "Bosque Nativo / Protección Fluvial",
       "location": {
-        "longitude": -122.0858,
-        "latitude": 37.3835
+        "latitude": -36.213,
+        "longitude": -71.6078,
+        "relativeToHouseM": {
+          "eastM": -251,
+          "northM": -167,
+          "label": "167m S, 251m O de Casa"
+        }
       },
       "heightMeters": 9.5,
       "plantingYear": 2012,
@@ -230,8 +235,13 @@
       "variety": "Boldo Esclerófilo Nativo",
       "category": "Bosque Nativo / Medicina",
       "location": {
-        "longitude": -122.085,
-        "latitude": 37.3832
+        "latitude": -36.2133,
+        "longitude": -71.607,
+        "relativeToHouseM": {
+          "eastM": -179,
+          "northM": -200,
+          "label": "200m S, 179m O de Casa"
+        }
       },
       "heightMeters": 8,
       "plantingYear": 2010,
@@ -252,8 +262,13 @@
       "variety": "Maitén Andino-Ribereño",
       "category": "Bosque Nativo / Amortiguación",
       "location": {
-        "longitude": -122.0844,
-        "latitude": 37.383
+        "latitude": -36.2135,
+        "longitude": -71.6064,
+        "relativeToHouseM": {
+          "eastM": -126,
+          "northM": -222,
+          "label": "222m S, 126m O de Casa"
+        }
       },
       "heightMeters": 10.2,
       "plantingYear": 2014,
@@ -274,8 +289,13 @@
       "variety": "Sauce Chileno Fluvial",
       "category": "Bosque Nativo / Fijación de Riberas",
       "location": {
-        "longitude": -122.0862,
-        "latitude": 37.3838
+        "latitude": -36.2127,
+        "longitude": -71.6082,
+        "relativeToHouseM": {
+          "eastM": -287,
+          "northM": -133,
+          "label": "133m S, 287m O de Casa"
+        }
       },
       "heightMeters": 11.5,
       "plantingYear": 2011,
@@ -296,8 +316,13 @@
       "variety": "Maqui Silvestre Antioxidante",
       "category": "Fruto Nativo / Superalimento",
       "location": {
-        "longitude": -122.0848,
-        "latitude": 37.3836
+        "latitude": -36.2129,
+        "longitude": -71.6068,
+        "relativeToHouseM": {
+          "eastM": -161,
+          "northM": -156,
+          "label": "156m S, 161m O de Casa"
+        }
       },
       "heightMeters": 3.8,
       "plantingYear": 2017,
@@ -318,8 +343,13 @@
       "variety": "Avellano Europeo (Barcelona)",
       "category": "Fruto Seco de Exportación",
       "location": {
-        "longitude": -122.0852,
-        "latitude": 37.3862
+        "latitude": -36.2103,
+        "longitude": -71.6072,
+        "relativeToHouseM": {
+          "eastM": -197,
+          "northM": 133,
+          "label": "+133m N, 197m O de Casa"
+        }
       },
       "heightMeters": 4.8,
       "plantingYear": 2018,
@@ -340,8 +370,13 @@
       "variety": "Avellano Europeo (Tonda di Giffoni)",
       "category": "Fruto Seco de Exportación",
       "location": {
-        "longitude": -122.0846,
-        "latitude": 37.386
+        "latitude": -36.2105,
+        "longitude": -71.6066,
+        "relativeToHouseM": {
+          "eastM": -143,
+          "northM": 111,
+          "label": "+111m N, 143m O de Casa"
+        }
       },
       "heightMeters": 4.2,
       "plantingYear": 2019,
@@ -362,8 +397,13 @@
       "variety": "Nogal Chandler de Exportación",
       "category": "Fruto Seco de Exportación",
       "location": {
-        "longitude": -122.0858,
-        "latitude": 37.3864
+        "latitude": -36.2101,
+        "longitude": -71.6078,
+        "relativeToHouseM": {
+          "eastM": -251,
+          "northM": 156,
+          "label": "+156m N, 251m O de Casa"
+        }
       },
       "heightMeters": 7.5,
       "plantingYear": 2016,
@@ -384,8 +424,13 @@
       "variety": "Hongo Shiitake en Troncos de Roble",
       "category": "Micología Agroecológica",
       "location": {
-        "longitude": -122.0854,
-        "latitude": 37.3847
+        "latitude": -36.2118,
+        "longitude": -71.6074,
+        "relativeToHouseM": {
+          "eastM": -215,
+          "northM": -33,
+          "label": "33m S, 215m O de Casa"
+        }
       },
       "heightMeters": 0.8,
       "plantingYear": 2022,
@@ -406,8 +451,13 @@
       "variety": "Cepa País Centenaria (Espaldera)",
       "category": "Vid Patrimonial del Maule",
       "location": {
-        "longitude": -122.0805,
-        "latitude": 37.3855
+        "latitude": -36.211,
+        "longitude": -71.6025,
+        "relativeToHouseM": {
+          "eastM": 224,
+          "northM": 56,
+          "label": "+56m N, +224m E de Casa"
+        }
       },
       "heightMeters": 1.8,
       "plantingYear": 2015,
@@ -428,8 +478,13 @@
       "variety": "Cepa Carignan Secano Interior",
       "category": "Vid Patrimonial del Maule",
       "location": {
-        "longitude": -122.0812,
-        "latitude": 37.385
+        "latitude": -36.2115,
+        "longitude": -71.6032,
+        "relativeToHouseM": {
+          "eastM": 161,
+          "northM": 0,
+          "label": "+0m N, +161m E de Casa"
+        }
       },
       "heightMeters": 1.8,
       "plantingYear": 2017,
@@ -450,8 +505,13 @@
       "variety": "Cerezo Lapins con Microaspersión",
       "category": "Fruta Fresca Exportación",
       "location": {
-        "longitude": -122.0805,
-        "latitude": 37.3838
+        "latitude": -36.2127,
+        "longitude": -71.6025,
+        "relativeToHouseM": {
+          "eastM": 224,
+          "northM": -133,
+          "label": "133m S, +224m E de Casa"
+        }
       },
       "heightMeters": 3.6,
       "plantingYear": 2019,
@@ -472,8 +532,13 @@
       "variety": "Cerezo Santina Temprano",
       "category": "Fruta Fresca Exportación",
       "location": {
-        "longitude": -122.0812,
-        "latitude": 37.3835
+        "latitude": -36.213,
+        "longitude": -71.6032,
+        "relativeToHouseM": {
+          "eastM": 161,
+          "northM": -167,
+          "label": "167m S, +161m E de Casa"
+        }
       },
       "heightMeters": 3.4,
       "plantingYear": 2020,
@@ -494,8 +559,13 @@
       "variety": "Olivo Frantoio & Arbequina",
       "category": "Olivo de Resiliencia Climática",
       "location": {
-        "longitude": -122.0828,
-        "latitude": 37.3838
+        "latitude": -36.2127,
+        "longitude": -71.6048,
+        "relativeToHouseM": {
+          "eastM": 18,
+          "northM": -133,
+          "label": "133m S, +18m E de Casa"
+        }
       },
       "heightMeters": 4.5,
       "plantingYear": 2017,
@@ -516,8 +586,13 @@
       "variety": "Seguidor Solar Fotovoltaico Elevado 120 kWp",
       "category": "Energía Limpia & Sombra Agrícola",
       "location": {
-        "longitude": -122.0848,
-        "latitude": 37.3882
+        "latitude": -36.2083,
+        "longitude": -71.6068,
+        "relativeToHouseM": {
+          "eastM": -161,
+          "northM": 356,
+          "label": "+356m N, 161m O de Casa"
+        }
       },
       "heightMeters": 3.5,
       "plantingYear": 2023,
@@ -538,8 +613,13 @@
       "variety": "Embalse Australiano 18.000 m³ con Geomembrana",
       "category": "Infraestructura Hídrica",
       "location": {
-        "longitude": -122.0801,
-        "latitude": 37.388
+        "latitude": -36.2085,
+        "longitude": -71.6021,
+        "relativeToHouseM": {
+          "eastM": 260,
+          "northM": 333,
+          "label": "+333m N, +260m E de Casa"
+        }
       },
       "heightMeters": 2.5,
       "plantingYear": 2021,
@@ -560,8 +640,13 @@
       "variety": "Invernadero Bioclimático & Compost Bokashi",
       "category": "Biopreparados Agroecológicos",
       "location": {
-        "longitude": -122.0828,
-        "latitude": 37.3866
+        "latitude": -36.2099,
+        "longitude": -71.6048,
+        "relativeToHouseM": {
+          "eastM": 18,
+          "northM": 178,
+          "label": "+178m N, +18m E de Casa"
+        }
       },
       "heightMeters": 4.2,
       "plantingYear": 2022,
@@ -582,8 +667,13 @@
       "variety": "Pino Insigne con Manejo Silvopastoril",
       "category": "Cortina Cortafuego Silvopastoril",
       "location": {
-        "longitude": -122.0782,
-        "latitude": 37.386
+        "latitude": -36.2105,
+        "longitude": -71.6002,
+        "relativeToHouseM": {
+          "eastM": 430,
+          "northM": 111,
+          "label": "+111m N, +430m E de Casa"
+        }
       },
       "heightMeters": 14,
       "plantingYear": 2014,
@@ -604,8 +694,13 @@
       "variety": "Eucaliptus Manejado con Faja Desbrozada",
       "category": "Barrera Perimetral Cortafuego",
       "location": {
-        "longitude": -122.0778,
-        "latitude": 37.3845
+        "latitude": -36.212,
+        "longitude": -71.5998,
+        "relativeToHouseM": {
+          "eastM": 466,
+          "northM": -56,
+          "label": "56m S, +466m E de Casa"
+        }
       },
       "heightMeters": 16.5,
       "plantingYear": 2015,
@@ -951,5 +1046,15 @@
       "notes": "Desmenuzan la bosta de vaca en 24h, esparciendo nutrientes y comiendo moscas.",
       "image": "assets/ui/establo_landing_bg.jpg"
     }
-  ]
+  ],
+  "rolSii": "142-88 Retiro",
+  "referenceOrigin": {
+    "name": "Casa Patronal / Galpón (Zona 0)",
+    "latitude": -36.2115,
+    "longitude": -71.605,
+    "relativeMeters": {
+      "eastM": 0,
+      "northM": 0
+    }
+  }
 }

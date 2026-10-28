@@ -683,10 +683,10 @@ export class UIController {
   onBasinUpdated(basin) {
     const el = document.getElementById('basinSyncStatus');
     if (!el || !basin) return;
-    const isLive = basin.status === 'ok';
-    const flow = basin.flowRateM3s || 185;
+    const isLive = basin.status === 'ok' || basin.status === 'connected';
+    const flow = basin.q_longavi_m3_s ?? basin.flowRateM3s ?? 14.5;
     el.style.color = isLive ? '#10b981' : '#f59e0b';
-    el.textContent = isLive ? `En Vivo :7774 (${flow} m³/s)` : `Calibrado (${flow} m³/s)`;
+    el.textContent = isLive ? `En Vivo Tronco :7777 (${flow} m³/s)` : `Calibrado (${flow} m³/s)`;
   }
 
   setupSensorCardsButtons() {

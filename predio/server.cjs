@@ -4,7 +4,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.PORT || 7773;
+const PORT = process.env.PORT || 7777;
 const ROOT_DIR = __dirname;
 
 const MIME_TYPES = {
@@ -46,17 +46,17 @@ const server = http.createServer((req, res) => {
 
   const urlPath = decodeURI(req.url.split('?')[0]);
 
-  // ─── API: Acople Regional ↔ Predial (:7773 ↔ :7774) ─────────────────────────
+  // ─── API: Acople Regional ↔ Predial (Unificado en Tronco Hub :7777) ─────────
   if (urlPath === '/api/basin-sync') {
-    // Intentar conectar con el servidor regional en :7774
-    const regionalReq = http.get('http://127.0.0.1:7774/api/telemetry/summary', { timeout: 1200 }, (regRes) => {
+    const regionalReq = http.get('http://127.0.0.1:7777/api/telemetry/summary', { timeout: 1200 }, (regRes) => {
       let data = '';
       regRes.on('data', chunk => data += chunk);
       regRes.on('end', () => {
         try {
           const regJson = JSON.parse(data);
           const combined = {
-            source: 'regional-live-7774',
+            source: 'agritwin-hub-7777',
+            status: 'connected',
             timestamp: new Date().toISOString(),
             fundoMeniel: {
               areaHa: 24.8,
