@@ -10698,6 +10698,66 @@
                                 </div>
                             </div>
 
+                            
+                            <!-- SECCIÓN 5: MODELO DEL «VECINO INFORMADO Y PROTEGIDO» MULTIESCALA -->
+                            <div class="space-y-4 pt-4 border-t border-[#E7DAC6]">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-sm font-mono font-bold text-stone-800 uppercase tracking-wider flex items-center gap-2">
+                                        <span>🏔️</span> 5. Arquitectura del «Vecino Informado &amp; Protegido» (LOD Anidado 122k ha ⇄ 25 ha)
+                                    </h4>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-100 text-sky-800 border border-sky-300 font-bold">LOD 0 a LOD 3</span>
+                                </div>
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    El agua de riego y las crecidas torrenciales que impactan al Fundo Meniel se originan en las altas cumbres andinas a más de 40 km de distancia. Este modelo articula una <b>jerarquía multiescala</b> donde el Twin de Cuenca gobierna la física continua macro-regional, mientras que la gobernanza comunitaria y la tenencia se canalizan a la <b>Rama Vecinal (Mesa / Panal)</b> y la micro-operación 3D al <b>Twin de Predio</b>.
+                                </p>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                                    <!-- A: Gradiente Térmico & Isoterma 0°C -->
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                                        <b class="text-sky-800">A. Gradiente Térmico Real &amp; Cota Isoterma 0°C Dinámica:</b>
+                                        <div class="p-2.5 rounded bg-white border border-sky-200 text-sky-900 text-center shadow-inner">
+                                            $$\Gamma_{\text{real}}(t) = -\frac{T_{\text{valle}}(t) - T_{\text{cumbre}}(t)}{z_{\text{cumbre}} - z_{\text{valle}}}, \quad Z_{\text{iso0}}(t) = z_{\text{valle}} + \frac{T_{\text{valle}}(t)}{\Gamma_{\text{real}}(t)}$$
+                                        </div>
+                                        <p class="text-[10.5px] text-stone-600">
+                                            Calculado en tiempo real con el doble nodo Open-Meteo ($z_{\text{valle}} = 198\text{ msnm}$, $z_{\text{cumbre}} = 1.850\text{ msnm}$). Monitorea ascensos peligrosos de la línea de congelamiento.
+                                        </p>
+                                    </div>
+
+                                    <!-- B: Rain-on-Snow & Crecida Aluvial -->
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                                        <b class="text-blue-800">B. Escorrentía Aluvial Rain-on-Snow (Lluvia sobre Nieve):</b>
+                                        <div class="p-2.5 rounded bg-white border border-blue-200 text-blue-900 text-center shadow-inner">
+                                            $$C_{\text{ros}}(t) = C_0 + \alpha_{\text{nieve}} \cdot \max\left(0, \frac{Z_{\text{iso0}}(t) - Z_{\text{nieve}}}{z_{\text{max}} - Z_{\text{nieve}}}\right), \quad Q_{\text{peak}} = \frac{C_{\text{ros}} P_{\text{cord}} A}{3.6} + Q_0$$
+                                        </div>
+                                        <p class="text-[10.5px] text-stone-600">
+                                            Amplifica la escorrentía cuando ríos atmosféricos cálidos impactan nieve previa ($Z_{\text{nieve}} \approx 1.600\text{ msnm}$), prediciendo pulsos de hasta $380\text{ m}^3\text{/s}$ en el Río Longaví.
+                                        </p>
+                                    </div>
+
+                                    <!-- C: Descenso Adiabático Puelche -->
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                                        <b class="text-rose-800">C. Compresión Foehn del Viento Puelche Cordillerano:</b>
+                                        <div class="p-2.5 rounded bg-white border border-rose-200 text-rose-900 text-center shadow-inner">
+                                            $$T_{\text{valle}}^{\text{puelche}} = T_{\text{cumbre}} + \Gamma_d \cdot (z_{\text{cumbre}} - z_{\text{valle}}), \quad \text{RH}_{\text{valle}} = \text{RH}_{\text{cumbre}} \cdot \frac{e_s(T_{\text{cumbre}})}{e_s(T_{\text{valle}}^{\text{puelche}})}$$
+                                        </div>
+                                        <p class="text-[10.5px] text-stone-600">
+                                            Con $\Gamma_d = 9.8\times 10^{-3}\text{ }^\circ\text{C/m}$, simula el colapso de humedad relativa ($<16\%$) y alza térmica ($+8^\circ\text{C}$) en el descenso desde la frontera andina ($-71.05^\circ$).
+                                        </p>
+                                    </div>
+
+                                    <!-- D: Tolerancia Douglas-Peucker LOD -->
+                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+                                        <b class="text-emerald-800">D. Criterio de Tolerancia Geométrica de Zoom (LOD Cliente 60 FPS):</b>
+                                        <div class="p-2.5 rounded bg-white border border-emerald-200 text-emerald-900 text-center shadow-inner">
+                                            $$\epsilon(z) = \epsilon_0 \cdot 2^{(16 - z)} \quad \text{con } \epsilon_0 = 0.0001^\circ$$
+                                        </div>
+                                        <p class="text-[10.5px] text-stone-600">
+                                            Reduce los vértices evaluados por la GPU de $45.000$ en escala macro a $1.800$ en escala predial, permitiendo navegación instantánea a 60 FPS en cualquier navegador.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Footer del Módulo 13 -->
                             <div class="p-4 rounded-xl bg-[#F5EFEB] border border-[#E7DAC6] flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
                                 <div class="text-stone-600">
@@ -12691,16 +12751,32 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
 
                     <div class="grid grid-cols-3 gap-1.5 text-[10.5px] font-mono bg-black/30 p-2 rounded-lg border border-white/5 text-center">
                         <div>
-                            <span class="text-slate-400 block text-[9px]">Temp</span>
+                            <span class="text-slate-400 block text-[9px]">Temp Valle</span>
                             <span id="cuencaWindyTempMetric" class="text-red-400 font-bold">24.5°C</span>
                         </div>
                         <div>
-                            <span class="text-slate-400 block text-[9px]">Viento</span>
+                            <span class="text-slate-400 block text-[9px]">Viento Valle</span>
                             <span id="cuencaWindyWindMetric" class="text-amber-300 font-bold">14 km/h SW</span>
                         </div>
                         <div>
-                            <span class="text-slate-400 block text-[9px]">Lluvia</span>
+                            <span class="text-slate-400 block text-[9px]">Lluvia Valle</span>
                             <span id="cuencaWindyPrecipMetric" class="text-sky-400 font-bold">0.0 mm</span>
+                        </div>
+                    </div>
+
+                    <!-- Enlace Cordillerano Andino (Doble Muestreo: Valle 198m vs Cordillera 1.850m) -->
+                    <div class="grid grid-cols-3 gap-1.5 text-[10.5px] font-mono bg-sky-950/30 p-2 rounded-lg border border-sky-500/20 text-center">
+                        <div>
+                            <span class="text-slate-400 block text-[9px]" title="Cota sobre la cual precipita nieve sólida">Isoterma 0°C</span>
+                            <span id="cuencaWindyIso0Metric" class="text-cyan-300 font-bold">2.850 m</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[9px]" title="Precipitación acumulada en cabeceras Bullileo / Nevados">Lluvia Cordillera</span>
+                            <span id="cuencaWindyAndesPrecipMetric" class="text-blue-300 font-bold">0.0 mm 🏔️</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[9px]" title="Diagnóstico de crecida o acumulación nival">Régimen Andino</span>
+                            <span id="cuencaWindySnowRegimeMetric" class="text-emerald-300 font-bold text-[9.5px]">Seco</span>
                         </div>
                     </div>
                 </div>

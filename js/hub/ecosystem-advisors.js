@@ -118,11 +118,11 @@
                     ]
                 ];
 
-                // Viento Puelche: Descenso cordillerano ESE a ONO
+                // Viento Puelche: Descenso cordillerano ESE a ONO desde Altas Cumbres Andinas (-71.05°)
                 this.windPaths = [
-                    [[-36.1600, -71.3600], [-36.1800, -71.4500], [-36.1900, -71.5500], [-36.1800, -71.6800], [-36.1600, -71.7800]],
-                    [[-36.2200, -71.3800], [-36.2300, -71.4800], [-36.2200, -71.5900], [-36.2000, -71.7200], [-36.1800, -71.8200]],
-                    [[-36.2800, -71.4000], [-36.2600, -71.5200], [-36.2400, -71.6300], [-36.2100, -71.7500], [-36.1900, -71.8500]]
+                    [[-36.1400, -71.0600], [-36.1600, -71.2200], [-36.1800, -71.3800], [-36.1900, -71.5500], [-36.1800, -71.6800], [-36.1600, -71.7800]],
+                    [[-36.2000, -71.0500], [-36.2200, -71.2500], [-36.2300, -71.4200], [-36.2200, -71.5900], [-36.2000, -71.7200], [-36.1800, -71.8200]],
+                    [[-36.2600, -71.0800], [-36.2800, -71.2600], [-36.2600, -71.4500], [-36.2400, -71.6300], [-36.2100, -71.7500], [-36.1900, -71.8500]]
                 ];
 
                 // Curvas de Nivel Topográficas
@@ -201,10 +201,10 @@
                     });
                 }
 
-                // Partículas de flujo continuo 2D sobre la Cuenca 122k ha (Estilo Windy)
+                // Partículas de flujo continuo 2D sobre la Cuenca 122k ha (Estilo Windy - Andes a Valle)
                 this.basinBounds = {
-                    minLat: -36.3300, maxLat: -36.0400,
-                    minLng: -71.8600, maxLng: -71.3600
+                    minLat: -36.4200, maxLat: -36.0400,
+                    minLng: -71.8600, maxLng: -71.0500 // Extendido a las Altas Cumbres Andinas (Divisoria Continental)
                 };
                 this.flowFieldCount = 2800;
                 this.flowFieldParticles = [];
@@ -461,8 +461,15 @@
                         if (p.age >= p.maxAge ||
                             p.lat < this.basinBounds.minLat || p.lat > this.basinBounds.maxLat ||
                             p.lng < this.basinBounds.minLng || p.lng > this.basinBounds.maxLng) {
-                            p.lat = this.basinBounds.minLat + Math.random() * (this.basinBounds.maxLat - this.basinBounds.minLat);
-                            p.lng = this.basinBounds.minLng + Math.random() * (this.basinBounds.maxLng - this.basinBounds.minLng);
+                            // Viewport Seeding dinámico: prioriza el área visible para máximo rendimiento
+                            const mb = this.map ? this.map.getBounds() : null;
+                            const sMinLat = mb ? Math.max(this.basinBounds.minLat, mb.getSouth()) : this.basinBounds.minLat;
+                            const sMaxLat = mb ? Math.min(this.basinBounds.maxLat, mb.getNorth()) : this.basinBounds.maxLat;
+                            const sMinLng = mb ? Math.max(this.basinBounds.minLng, mb.getWest()) : this.basinBounds.minLng;
+                            const sMaxLng = mb ? Math.min(this.basinBounds.maxLng, mb.getEast()) : this.basinBounds.maxLng;
+
+                            p.lat = sMinLat + Math.random() * (sMaxLat - sMinLat);
+                            p.lng = sMinLng + Math.random() * (sMaxLng - sMinLng);
                             p.prevLat = p.lat;
                             p.prevLng = p.lng;
                             p.trail = [];

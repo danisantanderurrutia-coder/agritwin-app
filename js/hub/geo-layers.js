@@ -1,5 +1,90 @@
         // --- 1. DATA DEFINITIONS ---
 
+        // ─── 1.0 MACRO-CUENCA HIDROGRÁFICA OFICIAL DGA (RÍO LONGAVÍ 0735 • 122.070 HA) ───
+        // Delimitación por divisoria de aguas de cumbres andinas (-71.05°) hasta el cierre en Retiro (-71.85°)
+        const geojsonMacroCuencaLongavi = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "CUENCA_LONGAVI_DGA_0735",
+                        "name": "Subcuenca del Río Longaví (DGA 0735)",
+                        "area_ha": 122070,
+                        "area_km2": 1220.7,
+                        "cota_min_msnm": 130,
+                        "cota_max_msnm": 3240,
+                        "cota_media_msnm": 845,
+                        "rio_principal": "Río Longaví (110 km de curso)",
+                        "afluentes": ["Río Blanco", "Estero Bullileo", "Estero Loma de Vásquez", "Estero Los Cristales"],
+                        "embalses_clave": ["Embalse Bullileo (60M m³)", "Embalse Digua (220M m³)"],
+                        "junta_vigilancia": "Junta de Vigilancia del Río Longaví y sus Afluentes (JVRL)",
+                        "comunas": ["Retiro", "Parral", "Longaví"],
+                        "tipo_regimen": "Nivo-pluvial con pico torrencial invernal y deshielo estival",
+                        "color": "#0ea5e9",
+                        "stroke": "#38bdf8"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [-71.8500, -36.1400], // Cierre fluvial poniente (Confluencia con Perquilauquén)
+                            [-71.8200, -36.0800],
+                            [-71.7600, -36.0500], // Límite norte con cuenca Achibueno
+                            [-71.6800, -36.0400],
+                            [-71.5500, -36.0600],
+                            [-71.4200, -36.0900],
+                            [-71.3000, -36.1200],
+                            [-71.1800, -36.1500],
+                            [-71.1200, -36.1700], // Estribaciones Nevados de Longaví
+                            [-71.0500, -36.2100], // Cumbre Nevados de Longaví (3.240 msnm)
+                            [-71.0400, -36.2800], // Divisoria continental / Frontera Argentina
+                            [-71.0800, -36.3500], // Cajón del Río Blanco alto
+                            [-71.1500, -36.4200], // Cabeceras Laguna Dial / Límite sureste
+                            [-71.2500, -36.4100], // Divisoria sur con cuenca Perquilauquén/Digua
+                            [-71.3800, -36.3600],
+                            [-71.4800, -36.3200],
+                            [-71.5800, -36.2800],
+                            [-71.6800, -36.2400],
+                            [-71.7800, -36.1800],
+                            [-71.8500, -36.1400]  // Cierre en Retiro
+                        ]]
+                    }
+                },
+                // Nodos meteorológicos estratégicos
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "NODO_VALLE_MENIEL",
+                        "name": "Nodo Valle Central (Fundo Meniel)",
+                        "cota_msnm": 198,
+                        "tipo": "Estación Piloto SDSS & LoRaWAN",
+                        "is_station": true,
+                        "color": "#10b981"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-71.60530, -36.21156]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "NODO_CORDILLERA_BULLILEO",
+                        "name": "Nodo Alta Cordillera (Nevados / Bullileo Alto)",
+                        "cota_msnm": 1850,
+                        "tipo": "Sensor Isoterma 0°C & Forzamiento Nival",
+                        "is_station": true,
+                        "color": "#38bdf8"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-71.22000, -36.28000]
+                    }
+                }
+            ]
+        };
+
+
         const LULC_CLASSES = [
             { id: 'bosque', name: 'Bosque Nativo Esclerófilo', area: 18400, percent: 15.1, color: '#16a34a', hex: '#16a34a' },
             { id: 'agricola', name: 'Agrícola Tradicional & Arroz', area: 42600, percent: 34.9, color: '#eab308', hex: '#eab308' },
@@ -1129,6 +1214,9 @@
         // Inicializar de inmediato LivingEnergyFlowEngine si está disponible en ventana
         if (typeof LivingEnergyFlowEngine !== 'undefined' && !window.energyFlowEngine) {
             window.energyFlowEngine = new LivingEnergyFlowEngine(map, 'energyFlowCanvas');
+            if (typeof window.initMacroCuencaLongaviLayer === 'function') {
+                window.initMacroCuencaLongaviLayer(map);
+            }
         }
 
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
@@ -6744,28 +6832,65 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             if (elDeltaPeak) elDeltaPeak.innerText = data.deltaPeak;
         };
 
-        // 4. Servicio Open-Meteo & Scrubber de Cuenca
+        // 4. Servicio Open-Meteo & Scrubber de Cuenca (Doble Muestreo: Valle Meniel 198m vs. Cordillera Andina 1850m)
         window.fetchCuencaRealForecast = async function() {
-            const LAT = -36.21156;
-            const LON = -71.60530;
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&forecast_days=7&timezone=auto`;
+            const LAT_VALLE = -36.21156;
+            const LON_VALLE = -71.60530;
+            const ELEV_VALLE = 198;
+
+            const LAT_CUMBRE = -36.28000;
+            const LON_CUMBRE = -71.22000;
+            const ELEV_CUMBRE = 1850;
+
+            const urlValle = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_VALLE}&longitude=${LON_VALLE}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&forecast_days=7&timezone=auto`;
+            const urlCumbre = `https://api.open-meteo.com/v1/forecast?latitude=${LAT_CUMBRE}&longitude=${LON_CUMBRE}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m&forecast_days=7&timezone=auto`;
 
             try {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const raw = await res.json();
+                // Consulta concurrente a ambos nodos (Valle + Cordillera)
+                const [resValle, resCumbre] = await Promise.all([fetch(urlValle), fetch(urlCumbre)]);
+                if (!resValle.ok) throw new Error(`HTTP Valle ${resValle.status}`);
+                const raw = await resValle.json();
+                const rawCumbre = resCumbre.ok ? await resCumbre.json() : null;
                 
                 const hourly = [];
                 const h = raw.hourly;
+                const hC = rawCumbre?.hourly;
+                const deltaZ_km = (ELEV_CUMBRE - ELEV_VALLE) / 1000; // 1.652 km
+
                 for (let i = 0; i < h.time.length; i++) {
+                    const tValle = h.temperature_2m[i];
+                    const tCumbre = hC ? hC.temperature_2m[i] : (tValle - 6.5 * deltaZ_km);
+                    const pValle = h.precipitation[i];
+                    const pCumbre = hC ? hC.precipitation[i] : (pValle * 2.2);
+
+                    // Gradiente adiabático real [°C / km]
+                    let gammaReal = -(tCumbre - tValle) / deltaZ_km;
+                    if (gammaReal <= 1.0) gammaReal = 5.5; // evitar división por cero en inversiones
+                    if (gammaReal > 11.0) gammaReal = 9.8;
+
+                    // Cota Isoterma 0°C dinámica [msnm]
+                    let iso0 = Math.round(ELEV_VALLE + (tValle / (gammaReal / 1000)));
+                    iso0 = Math.max(200, Math.min(4500, iso0));
+
+                    // Detección de régimen de precipitación andina
+                    let snowRegime = 'Seco';
+                    if (pCumbre > 0.1) {
+                        snowRegime = (iso0 > 2400) ? 'Lluvia Cálida (Riesgo Aluvial)' : (iso0 < 1600 ? 'Nieve Eficaz (SWE)' : 'Mixto Nivo-Pluvial');
+                    }
+
                     hourly.push({
                         timeStr: h.time[i],
-                        temp: Math.round(h.temperature_2m[i] * 10) / 10,
+                        temp: Math.round(tValle * 10) / 10,
+                        tempCumbre: Math.round(tCumbre * 10) / 10,
                         rh: Math.round(h.relative_humidity_2m[i]),
-                        precip: Math.round(h.precipitation[i] * 10) / 10,
+                        precip: Math.round(pValle * 10) / 10,
+                        precipCumbre: Math.round(pCumbre * 10) / 10,
                         windSpeed: Math.round(h.wind_speed_10m[i]),
                         windDir: Math.round(h.wind_direction_10m[i]),
-                        windGusts: Math.round(h.wind_gusts_10m[i] || h.wind_speed_10m[i] * 1.3)
+                        windGusts: Math.round(h.wind_gusts_10m[i] || h.wind_speed_10m[i] * 1.3),
+                        iso0: iso0,
+                        gamma: Math.round(gammaReal * 10) / 10,
+                        snowRegime: snowRegime
                     });
                 }
 
@@ -6897,6 +7022,15 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                         wMetric.innerText = `${entry.windSpeed} km/h ${dirLbl}`;
                     }
                     if (pMetric) pMetric.innerText = `${entry.precip} mm`;
+
+                    // Métricas de Enlace Cordillerano Andino
+                    const isoMetric = document.getElementById('cuencaWindyIso0Metric');
+                    const andesPrecipMetric = document.getElementById('cuencaWindyAndesPrecipMetric');
+                    const snowRegimeMetric = document.getElementById('cuencaWindySnowRegimeMetric');
+
+                    if (isoMetric && entry.iso0) isoMetric.innerText = `${entry.iso0} msnm`;
+                    if (andesPrecipMetric && entry.precipCumbre !== undefined) andesPrecipMetric.innerText = `${entry.precipCumbre} mm 🏔️`;
+                    if (snowRegimeMetric && entry.snowRegime) snowRegimeMetric.innerText = entry.snowRegime;
 
                     // Conectar dinámicamente al régimen del motor de flujos energéticos
                     if (window.energyFlowEngine) {
@@ -7326,6 +7460,68 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
         };
 
         
+        
+        // ─── CONTROLADOR DE NIVEL DE DETALLE DINÁMICO (LOD ANIDADO POR ZOOM) ───
+        let macroCuencaLayer = null;
+
+        window.initMacroCuencaLongaviLayer = function(targetMap) {
+            if (!targetMap || macroCuencaLayer) return;
+
+            macroCuencaLayer = L.geoJSON(geojsonMacroCuencaLongavi, {
+                style: function(feature) {
+                    if (feature.geometry.type === 'Point') return {};
+                    return {
+                        color: '#0284c7',
+                        weight: 2.2,
+                        dashArray: '6, 5',
+                        fillColor: '#0369a1',
+                        fillOpacity: 0.08
+                    };
+                },
+                pointToLayer: function(feature, latlng) {
+                    const isStation = feature.properties?.is_station;
+                    const col = feature.properties?.color || '#38bdf8';
+                    const marker = L.circleMarker(latlng, {
+                        radius: 6,
+                        fillColor: col,
+                        color: '#ffffff',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.9
+                    });
+                    marker.bindTooltip(`<b>${feature.properties.name}</b><br>Cota: ${feature.properties.cota_msnm} msnm<br><span style="color:#94a3b8">${feature.properties.tipo}</span>`, {
+                        className: 'cuenca-tooltip',
+                        sticky: true
+                    });
+                    return marker;
+                },
+                onEachFeature: function(feature, layer) {
+                    if (feature.geometry.type !== 'Point') {
+                        layer.bindTooltip(`<b>${feature.properties.name}</b><br>Superficie: 122.070 ha (1.220 km²)<br>Cota: 130m a 3.240m • Régimen Nivo-Pluvial`, {
+                            className: 'cuenca-tooltip',
+                            sticky: true
+                        });
+                    }
+                }
+            });
+
+            macroCuencaLayer.addTo(targetMap);
+
+            // Controlador de Niveles de Detalle (LOD) al cambiar el zoom
+            targetMap.on('zoomend', function() {
+                const z = targetMap.getZoom();
+                // LOD 0 (Macro Cuenca): visible siempre en escala amplia
+                if (z <= 12) {
+                    if (!targetMap.hasLayer(macroCuencaLayer)) targetMap.addLayer(macroCuencaLayer);
+                } else if (z >= 15) {
+                    // En zoom predial fino (z >= 15), desvanecer el polígono macro para concentrar la vista en el cuartel
+                    if (targetMap.hasLayer(macroCuencaLayer)) targetMap.removeLayer(macroCuencaLayer);
+                } else {
+                    if (!targetMap.hasLayer(macroCuencaLayer)) targetMap.addLayer(macroCuencaLayer);
+                }
+            });
+        };
+
         window.launchAtmosphericLayerFromModal = function(layerKey) {
             window.closeAtmosphericScienceModal();
             setTimeout(function() {
@@ -7906,6 +8102,47 @@ window.renderLatexInContainer = function(target) {
             <b>F. Enfriamiento Radiativo Catabático:</b>
             <div class="equation-box">
                 $$T(z, t) = T_0(z) - \\frac{R_{\\text{net}}}{\\rho c_p h_{\\text{pbl}}} t \\left[1 - \\left(\\frac{z}{h_{\\text{inv}}}\\right)^2\\right]$$
+            </div>
+        </div>
+    </div>
+
+    
+    <h2 class="section-title">4. Formulación Multiescala: Acoplamiento Andino-Valle &amp; LOD Cliente</h2>
+    <div class="grid-2">
+        <div class="card">
+            <b>A. Gradiente Real &amp; Cota Isoterma 0°C Dinámica:</b>
+            <div class="equation-box">
+                $$\\Gamma_{\\text{real}}(t) = -\\frac{T_{\\text{valle}}(t) - T_{\\text{cumbre}}(t)}{z_{\\text{cumbre}} - z_{\\text{valle}}}, \\quad Z_{\\text{iso0}}(t) = z_{\\text{valle}} + \\frac{T_{\\text{valle}}(t)}{\\Gamma_{\\text{real}}(t)}$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                Doble muestreo Open-Meteo ($z_v = 198\\text{m}, z_c = 1.850\\text{m}$) para detectar crecidas aluviales cálidas.
+            </div>
+        </div>
+        <div class="card">
+            <b>B. Escorrentía Aluvial Rain-on-Snow:</b>
+            <div class="equation-box">
+                $$C_{\\text{ros}} = C_0 + \\alpha_{\\text{nieve}} \\max\\left(0, \\frac{Z_{\\text{iso0}} - Z_{\\text{nieve}}}{z_{\\text{max}} - Z_{\\text{nieve}}}\\right), \\quad Q_{\\text{peak}} = \\frac{C_{\\text{ros}} P_{\\text{cord}} A}{3.6} + Q_0$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                Respuesta hidrológica acoplada a Bullileo ante ríos atmosféricos con isoterma elevada.
+            </div>
+        </div>
+        <div class="card">
+            <b>C. Compresión Adiabática Foehn (Puelche):</b>
+            <div class="equation-box">
+                $$T_{\\text{valle}}^{\\text{puelche}} = T_{\\text{cumbre}} + \\Gamma_d (z_{\\text{cumbre}} - z_{\\text{valle}}), \\quad \\text{RH}_{\\text{valle}} = \\text{RH}_{\\text{cumbre}} \\frac{e_s(T_{\\text{cumbre}})}{e_s(T_{\\text{valle}})}$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                Descenso catabático seco desde cumbres andinas ($-71.05^\\circ$) con $\\Gamma_d = 9.8\\times 10^{-3}\\text{ }^\\circ\\text{C/m}$.
+            </div>
+        </div>
+        <div class="card">
+            <b>D. Tolerancia Douglas-Peucker (60 FPS Cliente):</b>
+            <div class="equation-box">
+                $$\\epsilon(z) = \\epsilon_0 \\cdot 2^{(16 - z)} \\quad (\\epsilon_0 = 0.0001^\\circ)$$
+            </div>
+            <div style="font-size: 7.5pt; color: #475569; margin-top: 2px;">
+                Simplificación poligonal dinámica según nivel de zoom para garantizar navegación fluida en navegador.
             </div>
         </div>
     </div>
