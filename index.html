@@ -7165,6 +7165,9 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2 font-mono text-xs shrink-0">
+                        <button onclick="openComparativeStatusModal()" class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer" title="Ver Estado de Implementación Comparativo vs los 11 referentes">
+                            <span>📊</span> <span>Estado Comparativo</span>
+                        </button>
                         <button onclick="openDossierModal()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
                             <span>⛶</span> <span>Modo Modal Full</span>
                         </button>
@@ -15402,6 +15405,24 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                 }
             });
         })();
-    </script>
+    
+    function openComparativeStatusModal() {
+        // Ensure Docs master view and subtab 'docs-dossier' are active
+        if (typeof switchMasterView === 'function') switchMasterView('docs');
+        if (typeof switchDocsTab === 'function') switchDocsTab('docs-dossier');
+        // Scroll smoothly to dossier iframe if needed
+        setTimeout(() => {
+            const iframe = document.getElementById('iframeDossier');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ action: 'openComparativeModal' }, '*');
+            }
+            const modalIframe = document.getElementById('iframeDossierModal');
+            if (modalIframe && modalIframe.contentWindow) {
+                modalIframe.contentWindow.postMessage({ action: 'openComparativeModal' }, '*');
+            }
+        }, 150);
+    }
+
+</script>
 </body>
 </html>

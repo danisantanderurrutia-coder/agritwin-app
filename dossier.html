@@ -559,6 +559,475 @@
     .custom-table tr:hover td {
       background: #F8FAFC;
     }
+
+    /* ========================================================
+       COMPARATIVE IMPLEMENTATION STATUS MODAL & BUTTON
+       ======================================================== */
+    .nav-btn.comparative {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      color: #92400E;
+      border: 1px solid #F59E0B;
+      font-weight: 800;
+      box-shadow: 0 1px 3px rgba(217, 119, 6, 0.15);
+      position: relative;
+    }
+
+    .nav-btn.comparative:hover {
+      background: linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%);
+      border-color: #D97706;
+      color: #78350F;
+      box-shadow: 0 3px 8px rgba(217, 119, 6, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .comp-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .comp-modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .comp-modal-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 1240px;
+      height: 92vh;
+      max-height: 920px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.08);
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      animation: compModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes compModalPop {
+      from { transform: translateY(18px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .comp-header {
+      background: #FAF7F2;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .comp-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      border: 1px solid #FCD34D;
+      color: #92400E;
+      font-size: 7pt;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .comp-header-title {
+      font-size: 15pt;
+      font-weight: 800;
+      color: #1C1917;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .comp-header-sub {
+      font-size: 8.2pt;
+      color: #57534E;
+      margin-top: 4px;
+      max-width: 860px;
+      line-height: 1.45;
+    }
+
+    .comp-header-close-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .comp-close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #475569;
+      font-size: 14pt;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .comp-close-btn:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+      border-color: #94A3B8;
+      transform: scale(1.05);
+    }
+
+    .comp-esc-hint {
+      font-size: 6.8pt;
+      color: #94A3B8;
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .comp-toolbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .comp-filter-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .comp-filter-chip {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: #64748B;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .comp-filter-chip:hover {
+      background: #F1F5F9;
+      color: #1E293B;
+    }
+
+    .comp-filter-chip.active {
+      background: #059669;
+      color: #FFFFFF;
+      border-color: #059669;
+      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25);
+    }
+
+    .comp-search-box {
+      display: flex;
+      align-items: center;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 5px 12px;
+      gap: 8px;
+      width: 270px;
+    }
+
+    .comp-search-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 8pt;
+      color: #1E293B;
+      width: 100%;
+    }
+
+    .comp-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #F8FAFC;
+    }
+
+    .comp-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .comp-card:hover {
+      border-color: #CBD5E1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .comp-card-header {
+      padding: 12px 18px;
+      background: #FAF7F2;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .comp-card-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .comp-card-icon {
+      font-size: 16pt;
+    }
+
+    .comp-card-name {
+      font-size: 11.5pt;
+      font-weight: 800;
+      color: #1C1917;
+      letter-spacing: -0.2px;
+    }
+
+    .comp-card-origin {
+      font-size: 7.2pt;
+      color: #78716C;
+      font-weight: 700;
+      background: #F5F5F4;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid #E7E5E4;
+    }
+
+    .comp-card-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 7.2pt;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .comp-status-adapted {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+
+    .comp-status-excluded {
+      background: #FEF2F2;
+      color: #B91C1C;
+      border: 1px solid #FECACA;
+    }
+
+    .comp-status-public {
+      background: #F0F9FF;
+      color: #0369A1;
+      border: 1px solid #BAE6FD;
+    }
+
+    .comp-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.35fr;
+      gap: 0;
+    }
+
+    @media (max-width: 950px) {
+      .comp-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comp-col {
+      padding: 14px 18px;
+    }
+
+    .comp-col-have {
+      background: #FAFCF9;
+      border-right: 1px solid #E2E8F0;
+    }
+
+    .comp-col-nothave {
+      background: #FFFDFD;
+      border-right: 1px solid #E2E8F0;
+    }
+
+    .comp-col-reasons {
+      background: #FFFFFF;
+    }
+
+    .comp-col-heading {
+      font-size: 7pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .heading-have { color: #059669; }
+    .heading-nothave { color: #DC2626; }
+    .heading-reasons { color: #D97706; }
+
+    .comp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 7.8pt;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    .comp-list li {
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .comp-list.have li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: #059669;
+      font-weight: 800;
+      font-size: 7pt;
+    }
+
+    .comp-list.nothave li::before {
+      content: "✕";
+      position: absolute;
+      left: 0;
+      color: #DC2626;
+      font-weight: 800;
+      font-size: 7pt;
+    }
+
+    .comp-reason-box {
+      font-size: 7.8pt;
+      color: #475569;
+      line-height: 1.45;
+      background: #FFFBEB;
+      border-left: 3px solid #F59E0B;
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .comp-reason-box strong {
+      color: #92400E;
+    }
+
+    .comp-card-footer {
+      padding: 8px 18px;
+      background: #FFFFFF;
+      border-top: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comp-tag-pill {
+      font-size: 6.8pt;
+      font-weight: 700;
+      color: #64748B;
+      background: #F1F5F9;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .comp-jump-btn {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: #15803D;
+      font-size: 7.2pt;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .comp-jump-btn:hover {
+      background: #DCFCE7;
+      border-color: #86EFAC;
+      color: #166534;
+      transform: translateY(-1px);
+    }
+
+    .comp-footer-bar {
+      background: #FAF7F2;
+      border-top: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 7.5pt;
+      color: #57534E;
+      flex-shrink: 0;
+    }
+
+    .comp-footer-summary {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .comp-summary-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .comp-summary-item strong {
+      color: #1C1917;
+    }
+
   </style>
 </head>
 <body>
@@ -573,6 +1042,10 @@
     </div>
 
     <div class="nav-actions">
+      <button class="nav-btn comparative" id="btnOpenComparative" onclick="openComparativeModal()" title="Ver Estado de Implementación Comparativo vs Referentes">
+        <span>📊</span> Estado de Implementación Comparativo
+      </button>
+
       <button class="nav-btn copy" onclick="copyCurrentLink()" title="Copiar enlace con slug directo para compartir">
         <span>🔗</span> Copiar Enlace Directo
       </button>
@@ -619,6 +1092,529 @@
       </div>
     </div>
   </main>
+
+  
+  <!-- ========================================================
+       MODAL: ESTADO DE IMPLEMENTACIÓN COMPARATIVO VS REFERENTES
+       ======================================================== -->
+  <div id="comparativeModal" class="comp-modal-overlay" onclick="handleCompOverlayClick(event)">
+    <div class="comp-modal-card">
+      
+      <!-- Modal Header -->
+      <div class="comp-header">
+        <div>
+          <div class="comp-header-badge">
+            <span>📊</span>
+            <span>Auditoría Estratégica & Doctrina Biofísica</span>
+          </div>
+          <h2 class="comp-header-title">Estado de Implementación Comparativo vs. Referentes</h2>
+          <p class="comp-header-sub">
+            Auditoría rigurosa de las 11 iniciativas analizadas en el Dossier: qué capacidades fueron <strong>Sharingan-adaptadas</strong> para la cuenca Longaví / Fundo Meniel, qué componentes se <strong>dejaron fuera deliberadamente</strong> y los fundamentos técnicos, biofísicos, económicos y regulatorios chilenos (Código de Aguas, Juntas de Vigilancia y la Tesis Anti-Trampa del Fierro).
+          </p>
+        </div>
+        <div class="comp-header-close-box">
+          <button class="comp-close-btn" onclick="closeComparativeModal()" title="Cerrar ventana comparativa (Esc)">✕</button>
+          <span class="comp-esc-hint">Esc para cerrar</span>
+        </div>
+      </div>
+
+      <!-- Toolbar: Category Chips & Realtime Search -->
+      <div class="comp-toolbar">
+        <div class="comp-filter-group" id="compFilterGroup">
+          <button class="comp-filter-chip active" onclick="filterCompCategory('all', this)">Todos (11)</button>
+          <button class="comp-filter-chip" onclick="filterCompCategory('riego', this)">💧 Riego & Agua (4)</button>
+          <button class="comp-filter-chip" onclick="filterCompCategory('clima', this)">❄️ Clima & Heladas (1)</button>
+          <button class="comp-filter-chip" onclick="filterCompCategory('fuego', this)">🔥 Piro-Defensa (1)</button>
+          <button class="comp-filter-chip" onclick="filterCompCategory('carbono', this)">🌱 Carbono, Suelo & IoT (3)</button>
+          <button class="comp-filter-chip" onclick="filterCompCategory('cuenca', this)">🏛️ Cuenca & Fiscalización (2)</button>
+        </div>
+        <div class="comp-search-box">
+          <span style="font-size: 9pt; color: #94A3B8;">🔍</span>
+          <input type="text" id="compSearchInput" class="comp-search-input" placeholder="Buscar referente, algoritmo o razón..." oninput="handleCompSearch(this.value)">
+        </div>
+      </div>
+
+      <!-- Scrollable Cards Body -->
+      <div class="comp-body" id="compCardsContainer">
+
+        <!-- CARD 1: KILIMO -->
+        <div class="comp-card" data-category="riego" data-keywords="kilimo riego evapotranspiracion kc fao-56 agua water stewardship big tech microsoft google juntas de vigilancia dga longavi offset bonos">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">💧</span>
+              <div>
+                <span class="comp-card-name">1. Kilimo</span>
+                <span class="comp-card-origin">🇦🇷 Argentina & Latam • Riego Satelital</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-adapted">⚡ Adaptado Biofísico (Riego)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Balance hídrico continuo FAO-56:</strong> Estimación diaria de evapotranspiración de cultivo ($ET_c = ET_0 \times K_c$).</li>
+                <li><strong>Cálculo de $K_c$ espectral:</strong> Asignación dinámica mediante reflectancia de Sentinel-2 L2A (10m) y calibración fenológica por cuartel.</li>
+                <li><strong>Detección de estrés hídrico precoz:</strong> Alerta de agotamiento de agua fácilmente aprovechable (RAW) sin sondas físicas obligatorias.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Marketplace de Water Stewardship:</strong> Venta de "agua ahorrada" como créditos o compensación de huella hídrica a corporaciones Big Tech (Google, Microsoft, AWS).</li>
+                <li><strong>Certificación de offsets hídricos privados:</strong> Auditoría de terceros para venta de cuotas en mercados voluntarios.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Regulatoria (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Incompatibilidad Legal con el Código de Aguas:</strong> En Chile, los derechos de aprovechamiento de agua superficial en la cuenca Longaví se gestionan comunitariamente mediante la Junta de Vigilancia (JVRL). El agua ahorrada no es propiedad enajenable para bonos privados; legalmente debe continuar en el cauce natural para el reparto a prorrata de los regantes aguas abajo.</div>
+                <div><strong>Prioridad Agronómica Real:</strong> El agricultor del Maule busca asegurar el calibre y llenado de fruta de sus cerezos y arándanos en enero/febrero, no intermediar créditos financieros abstractos con multinacionales.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 02 • Riego & Water Stewardship</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(1)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 2: INSTACROPS -->
+        <div class="comp-card" data-category="clima" data-keywords="instacrops heladas catabaticas cap dem alos palsar iot whatsapp hardware valvulas telemetria chile">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">❄️</span>
+              <div>
+                <span class="comp-card-name">2. Instacrops AI</span>
+                <span class="comp-card-origin">🇨🇱 Chile & Latam • IoT & Prevención de Heladas</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-adapted">⚡ Adaptado Biofísico (Topoclima)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Topoclimatología catabática de heladas:</strong> Modelación del flujo gravitacional de aire frío nocturno mediante DEM ALOS PALSAR 12.5m.</li>
+                <li><strong>Identificación de piscinas de frío (CAP):</strong> Detección de hondonadas de inversión térmica y acumulación estancada de helada.</li>
+                <li><strong>Gemelo Digital 3D/2.5D:</strong> Representación tridimensional geoespacial interactiva del huerto y sus cuarteles.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Hardware propietario cautivo:</strong> Estaciones meteorológicas y torres propietarias con telemetría celular propia.</li>
+                <li><strong>Asistente autónomo LLM en WhatsApp:</strong> Bot conversacional con control de telemetría remota para apertura y cierre de electroválvulas.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Estratégica (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Tesis "Anti-Trampa del Fierro":</strong> Fabricar y mantener hardware en campo destruye el margen de un SaaS: sensores sulfatados, baterías agotadas por frío, cables mordidos por roedores o rotos por tractores exigen visitas técnicas de alto costo en zonas rurales.</div>
+                <div><strong>Fase del Roadmap:</strong> La interfaz WhatsApp se postergó para la Fase Móvil (v3.0); en la etapa fundacional la prioridad absoluta es la robustez física determinista del modelo y su auditoría en el Vault.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 03 • IoT & Asistente Conversacional</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(2)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 3: PACHAMA & SATELLIENCE -->
+        <div class="comp-card" data-category="carbono" data-keywords="pachama satellience carbono bosque lidar biomasa dosel arboles seguros parametricos verra smart contracts">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🌲</span>
+              <div>
+                <span class="comp-card-name">3. Pachama & Satellience</span>
+                <span class="comp-card-origin">🇺🇸 Silicon Valley / Latam • Carbono 3D & Seguros</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-excluded">🛡️ Exclusión Estratégica (Scope)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Visualización de dosel y vigor fotosintético:</strong> Mapeo espectral de biomasa relativa (NDVI, NDRE) sobre Sentinel-2 (10m).</li>
+                <li><strong>Segmentación de cuarteles:</strong> Análisis multitemporal de uniformidad de copa en huertos perennes.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Certificación de créditos de carbono forestal:</strong> Verificación de adición forestal para venta en mercados voluntarios (Verra VCS / Gold Standard).</li>
+                <li><strong>LiDAR aéreo continuo & Seguros paramétricos:</strong> Contratos automatizados en blockchain para pagos por catástrofes climáticas.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Agronómica (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Incompatibilidad Agronómica de Frutales:</strong> Los huertos comerciales (cerezos, avellanos, arándanos) sufren podas anuales severas, rejuvenecimiento de copas y aplicaciones químicas intensivas; bajo los estándares internacionales de carbono (Verra VM0007), no califican como sumideros permanentes a 30-50 años.</div>
+                <div><strong>Regulación de Seguros en Chile:</strong> Estructurar seguros paramétricos exige constituirse como entidad reaseguradora fiscalizada por la CMF (Comisión para el Mercado Financiero), desviando el foco agronómico.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 04 • Verificación Digital 3D & Seguros</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(3)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 4: FIRETRACE & ORORATECH -->
+        <div class="comp-card" data-category="fuego" data-keywords="firetrace ororatech incendios fuego rothermel huygens lfmc b08 b11 cubsat infrarrojo termico satelite torres conaf">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🔥</span>
+              <div>
+                <span class="comp-card-name">4. Firetrace & OroraTech</span>
+                <span class="comp-card-origin">🇩🇪 Alemania • Satélites Térmicos & Detección de Fuego</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-adapted">⚡ Adaptado Biofísico (Incendios)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Modelo de propagación física de Rothermel (1972):</strong> Ecuaciones biofísicas de intensidad de reacción y velocidad de avance lineal ($R_0$).</li>
+                <li><strong>Principio de elipses de Huygens:</strong> Simulación de onda de frente de fuego propagada por pendiente y viento vectorizado.</li>
+                <li><strong>Humedad de Combustible Foliar Vivo (LFMC):</strong> Cálculo satelital continuo combinando bandas NIR (B08) y SWIR (B11) de Sentinel-2.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Constelación propia de nanosatélites térmicos:</strong> Lanzamiento de CubeSats en órbita LEO con sensores infrarrojos térmicos propietarios.</li>
+                <li><strong>Cámaras fijas PTZ de vigilancia en torres:</strong> Red de cámaras de video perimetral con detección óptica in-situ.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Económica (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Tesis de Costo Marginal $0:</strong> Diseñar y lanzar satélites cuesta decenas de millones de dólares. AgriTwin democratiza la protección de cuenca consumiendo las constelaciones públicas y gratuitas de Copernicus (Sentinel-2) y NASA FIRMS (VIIRS/MODIS), alcanzando costo de datos cero por hectárea.</div>
+                <div><strong>Clasificación de Hardware:</strong> Las cámaras perimetrales físicas implican CAPEX e infraestructura física que queda catalogada como optativa en el "Estándar Vecino Protegido".</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 05 • Piro-Detección Satelital Térmica</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(4)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 5: AGRO-SATÉLITE / CIREN / DGA -->
+        <div class="comp-card" data-category="cuenca" data-keywords="ciren odepa cenia dga codigo de aguas policia hidrica mndwi tranques pozos multas fiscalizacion sii catastro">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🏛️</span>
+              <div>
+                <span class="comp-card-name">5. Agro-Satélite (ODEPA/CIREN/CENIA) & DGA</span>
+                <span class="comp-card-origin">🇨🇱 Chile • Monitoreo Público & Fiscalización DGA</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-adapted">⚡ Adaptado Biofísico (Tranques)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Censo satelital de 18 tranques de cuenca:</strong> Mapeo con Índice MNDWI (Xu, 2006) a 10m de resolución espacial.</li>
+                <li><strong>Curvas hipsométricas de almacenamiento:</strong> Estimación de volumen de agua embalsada ($V = \frac{1}{3} A \cdot h$).</li>
+                <li><strong>Monitoreo de red DGA/CNR:</strong> Cruce de derechos de aprovechamiento de aguas superficiales y subterráneas.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Enfoque de fiscalización punitiva:</strong> Detección orientada a denuncias sancionatorias y multas de la DGA.</li>
+                <li><strong>Alineación ciega al catastro del SII:</strong> Uso de límites de rol del Servicio de Impuestos Internos como verdad física.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Filosófica (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Confianza y Cooperación Comunitaria:</strong> AgriTwin es una plataforma de gestión productiva y colaboración vecinal. Si el productor siente que la plataforma es una herramienta persecutoria de la policía hídrica del Estado, la adopción se derrumba.</div>
+                <div><strong>Inexactitud del Rol SII:</strong> Los vectores catastrales del SII presentan descalces de 30 a 50 metros con respecto a los cercos vivos y cauces reales, provocando falsos positivos graves en fiscalización.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 06 • Modelo Soberano Chileno & DGA</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(5)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 6: REGROW AG -->
+        <div class="comp-card" data-category="carbono" data-keywords="regrow flurosat dndc scope 3 emisiones gei kellogg general mills commodities maiz trigo suelo">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🌾</span>
+              <div>
+                <span class="comp-card-name">6. Regrow Ag (DNDC)</span>
+                <span class="comp-card-origin">🇺🇸 EE.UU. & Global • Resiliencia & Emisiones Scope 3</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-excluded">🛡️ Exclusión Estratégica (Scope 3)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Índices multiespectrales de vigor y clorofila:</strong> NDRE (Red Edge Sentinel-2) para huertos de follaje cerrado.</li>
+                <li><strong>Ajuste por reflectancia de suelo:</strong> MSAVI para cuarteles recién plantados con suelo expuesto.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Modelo biogeoquímico DNDC (DeNitrification-DeComposition):</strong> Simulación de balance de nitrógeno, metano y carbono a nivel píxel.</li>
+                <li><strong>Plataforma de reporte Scope 3 corporativo:</strong> Auditoría de huella de carbono para multinacionales agroalimentarias (General Mills, Kellanova).</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & de Mercado (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Inviabilidad de Parámetros de Suelo:</strong> El modelo DNDC requiere datos analíticos profundos de laboratorio (fracciones de carbono lábil, mineralización de nitrógeno a 100 cm, pH estratificado) que no están disponibles ni son costeables para un predio frutícola mediano.</div>
+                <div><strong>Mercado Objetivo Incompatible:</strong> El Scope 3 premia cereales y oleaginosas extensivas del Midwest de EE.UU.; la fruticultura intensiva chilena compite por calibre, condición de viaje a China y eficiencia hídrica.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 07 • Carbono en Suelo & Cadenas Scope 3</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(6)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 7: CROPX -->
+        <div class="comp-card" data-category="carbono" data-keywords="cropx sensores espirales suelo barrena hardware humedad penetracion salinidad conductividad israel">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🔩</span>
+              <div>
+                <span class="comp-card-name">7. CropX</span>
+                <span class="comp-card-origin">🇮🇱 Israel & Global • Sensores Espirales de Suelo</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-excluded">🛡️ Exclusión Estratégica (Hardware)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Zonificación agronómica de sectores de riego:</strong> Delimitación de unidades de manejo homogéneo según topografía y reflectancia.</li>
+                <li><strong>Mapeo de variabilidad edáfica:</strong> Detección de zonas de mayor retención de humedad mediante índices térmicos y ópticos multitemporales.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Sondas físicas de barrena espiral ("corkscrew"):</strong> Sensores clavados al suelo a 10, 20 y 30 cm con telemetría propia.</li>
+                <li><strong>Medición física in-situ de conductividad eléctrica (EC):</strong> Sensores galvánicos de salinidad en bulbo radicular.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Operativa & "Trampa del Fierro" (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Destrucción Mecánica Sistemática:</strong> En huertos frutales, las sondas de suelo son arrancadas o decapitadas por desmalezadoras, rastras de discos y tractores en labores periódicas.</div>
+                <div><strong>Efecto "Cracking" en Suelos Arcillosos:</strong> En el Valle Central chileno, el secado del suelo en verano contrae la arcilla y crea grietas alrededor de la sonda espiral, perdiendo contacto físico y registrando lecturas de aire falsas que inducen a sobre-riego.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 08 • Sensores Espirales & Telemetría</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(7)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 8: OPENET -->
+        <div class="comp-card" data-category="riego" data-keywords="openet nasa usgs google dri evapotranspiracion ensamble eddy covariance metric sebal sims disalexi chile">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🌐</span>
+              <div>
+                <span class="comp-card-name">8. OpenET (NASA / USGS / Google)</span>
+                <span class="comp-card-origin">🇺🇸 EE.UU. • Consorcio Público de Evapotranspiración</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-public">🔬 Síntesis Pública (ET Abierta)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Filosofía de ciencia y datos abiertos:</strong> Modelos biofísicos basados en teledetección pública sin barreras de pago por hectárea.</li>
+                <li><strong>Balance hídrico de superficie estandarizado:</strong> Transparencia en la formulación física auditable en el Vault de AgriTwin.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Ensamble multi-modelo de 6 algoritmos de ET:</strong> Ejecución concurrente de SIMS, geeSEBAL, METRIC, SSEBop, DisALEXI y PT-JPL.</li>
+                <li><strong>Calibración con red de torres micrometeorológicas Eddy Covariance:</strong> Ponderación estadística en tiempo real de torres de flujo.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Geográfica (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Restricción Geográfica a EE.UU.:</strong> OpenET está limitado a los 17 estados occidentales de EE.UU. porque su ensamble ponderado depende intrínsecamente de la densa red de torres de flujo Eddy Covariance del USGS y Ameriflux.</div>
+                <div><strong>Inexistencia de Torres Públicas en Cuencas Chilenas:</strong> En el Río Longaví y el Maule no existe una red pública de torres micrometeorológicas de covarianza de torbellinos; ejecutar 6 modelos sin datos de anclaje generaría incertidumbre acumulada y divergencia.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 09 • El Estándar Público de Evapotranspiración</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(8)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 9: HYDROSAT -->
+        <div class="comp-card" data-category="riego" data-keywords="hydrosat infrarrojo termico satelite van zyl microsatelite estres hidrico celular clorofila suscripcion hectarea">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🛰️</span>
+              <div>
+                <span class="comp-card-name">9. Hydrosat</span>
+                <span class="comp-card-origin">🇺🇸 / 🇱🇺 EE.UU. & Luxemburgo • Satélites Térmicos Propios</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-excluded">🛡️ Exclusión Estratégica (Satélites Propios)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Detección de estrés hídrico precoz mediante SWIR:</strong> Uso de bandas B11 (1610 nm) y B12 (2190 nm) de Sentinel-2 para captar deshidratación del mesófilo foliar antes de que se degrade la clorofila visible.</li>
+                <li><strong>Integración térmica pública de Landsat 8/9:</strong> Canal TIRS (100m remuestreado a 30m) para anomalías térmicas macro.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Constelación privada de satélites térmicos de alta resolución:</strong> Red propietaria de microsatélites infrarrojos en órbita baja.</li>
+                <li><strong>Modelo de suscripción privada por hectárea:</strong> Cobro de $15 a $30 USD/ha/año por capas termales propietarias.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Económica & Soberanía de Datos (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Barrera de Costo Inasumible:</strong> El cobro recurrente por hectárea de los proveedores comerciales de satélites térmicos hace inviable la adopción masiva en cuencas de agricultura familiar o mediana.</div>
+                <div><strong>Poder del Infrarrojo de Onda Corta (SWIR):</strong> La ciencia demuestra que las bandas SWIR de Sentinel-2 L2A permiten anticipar el estrés hídrico con precisión suficiente para la toma de decisiones de riego, con 5 días de revisita y costo marginal cero.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 10 • Infrarrojo Térmico & Microsatélites</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(9)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 10: KAYRROS -->
+        <div class="comp-card" data-category="cuenca" data-keywords="kayrros metano ch4 petroleo gas oil gas tropomi sentinel-5p tanques sar radar mineria">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🏭</span>
+              <div>
+                <span class="comp-card-name">10. Kayrros</span>
+                <span class="comp-card-origin">🇫🇷 Francia • Clima, Metano & Mercados Energéticos</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-excluded">🛡️ Exclusión Estratégica (Sectorial)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Detección espectral de anomalías territoriales:</strong> Algoritmia automatizada de detección de cambios estacionales en cuenca.</li>
+                <li><strong>Integración de alertas tempranas:</strong> Avisos de estrés o eventos extremos multitemporales.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Medición de plumas de emisión de metano ($CH_4$):</strong> Sensores atmosféricos Sentinel-5P TROPOMI para industria de hidrocarburos.</li>
+                <li><strong>Monitoreo de inventarios globales de petróleo/gas:</strong> Análisis con radar SAR para niveles de techos flotantes en refinerías.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón de Escala & Sectorial (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Incompatibilidad Total de Escala:</strong> El instrumento TROPOMI (Sentinel-5P) tiene un píxel de 5.5 x 3.5 kilómetros. En un solo píxel caben más de 50 huertos frutales del Maule; es completamente inútil para la gestión agronómica predial.</div>
+                <div><strong>Enfoque en Oil & Gas:</strong> Kayrros diseña su tecnología para fondos de inversión y gigantes energéticos; AgriTwin está optimizado exclusivamente para agronomía, balance hídrico y piro-defensa comunitaria.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 11 • Emisiones Globales & Gigantes del Clima</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(10)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+        <!-- CARD 11: ELEAF / WATERWATCH -->
+        <div class="comp-card" data-category="riego" data-keywords="eleaf waterwatch sebal bastiaanssen wapor fao balance energetico holanda royalties patente">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🇳🇱</span>
+              <div>
+                <span class="comp-card-name">11. eLEAF (WaterWatch)</span>
+                <span class="comp-card-origin">🇳🇱 Países Bajos • Algoritmo SEBAL & Hidrología Global</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-excluded">🛡️ Exclusión Estratégica (Caja Negra)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué tenemos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Principio de balance biofísico de energía:</strong> Descomposición de la radiación neta incidente en flujo de calor sensible y latente.</li>
+                <li><strong>Monitoreo de biomasa relativa:</strong> Modelación del consumo de agua en base a la fisiología del cultivo.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Algoritmo cerrado y patentado SEBAL:</strong> Surface Energy Balance Algorithm for Land comercial (Bastiaanssen).</li>
+                <li><strong>Licenciamiento comercial de datos de cuenca:</strong> Cobro de royalties por kilómetro cuadrado procesado para organismos multilaterales (WaPOR FAO).</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón de Soberanía & Doctrina Abierta (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Rechazo a la "Caja Negra" Patentada:</strong> SEBAL es una fórmula cerrada protegida por propiedad intelectual privada que cobra derechos por área. AgriTwin se rige por la doctrina de física auditable y reproducible por cualquier ingeniero o agricultor.</div>
+                <div><strong>Modelos Transparentes y Validados:</strong> AgriTwin utiliza la metodología FAO-56 dual y modelos de transferencia radiativa públicos, cuyos parámetros están completamente abiertos y verificables en el Vault.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 11 • Hidrología Global & Algoritmo SEBAL</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(10)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer Summary -->
+      <div class="comp-footer-bar">
+        <div class="comp-footer-summary">
+          <div class="comp-summary-item">
+            <span>🛡️</span>
+            <span><strong>Tesis Software-Only:</strong> 0 fierros en campo = 0 fallas mecánicas = 99.9% disponibilidad.</span>
+          </div>
+          <div class="comp-summary-item">
+            <span>🛰️</span>
+            <span><strong>Costo Marginal $0:</strong> Datos abiertos de Copernicus (ESA) y NASA sin cobros por hectárea.</span>
+          </div>
+          <div class="comp-summary-item">
+            <span>🇨🇱</span>
+            <span><strong>Realidad Chilena:</strong> Diseñado para el Código de Aguas, Juntas de Vigilancia y fruticultura de exportación.</span>
+          </div>
+        </div>
+        <button class="nav-btn primary" onclick="closeComparativeModal()" style="font-size: 7.5pt; padding: 4px 12px;">Entendido • Volver al Dossier</button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- TOAST NOTIFICATION -->
   <div class="toast-pill" id="toastPill">
@@ -2113,6 +3109,107 @@
     }
 
     renderCurrentSlide();
+
+    /* ========================================================
+       MODAL CONTROLLER: ESTADO DE IMPLEMENTACIÓN COMPARATIVO
+       ======================================================== */
+    function openComparativeModal() {
+      const modal = document.getElementById('comparativeModal');
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeComparativeModal() {
+      const modal = document.getElementById('comparativeModal');
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function handleCompOverlayClick(e) {
+      if (e.target && e.target.id === 'comparativeModal') {
+        closeComparativeModal();
+      }
+    }
+
+    function filterCompCategory(cat, btn) {
+      // Update active chip
+      const chips = document.querySelectorAll('#compFilterGroup .comp-filter-chip');
+      chips.forEach(c => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const cards = document.querySelectorAll('#compCardsContainer .comp-card');
+      const searchVal = (document.getElementById('compSearchInput')?.value || '').toLowerCase().trim();
+
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category');
+        const keywords = card.getAttribute('data-keywords') || '';
+        const textContent = card.innerText.toLowerCase();
+
+        const matchCat = (cat === 'all' || cardCat === cat);
+        const matchSearch = (!searchVal || keywords.includes(searchVal) || textContent.includes(searchVal));
+
+        if (matchCat && matchSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function handleCompSearch(val) {
+      const query = (val || '').toLowerCase().trim();
+      const activeChip = document.querySelector('#compFilterGroup .comp-filter-chip.active');
+      const activeCat = activeChip ? activeChip.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+
+      const cards = document.querySelectorAll('#compCardsContainer .comp-card');
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category');
+        const keywords = card.getAttribute('data-keywords') || '';
+        const textContent = card.innerText.toLowerCase();
+
+        const matchCat = (activeCat === 'all' || cardCat === activeCat);
+        const matchSearch = (!query || keywords.includes(query) || textContent.includes(query));
+
+        if (matchCat && matchSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function jumpToSlideFromComp(slideIdx) {
+      closeComparativeModal();
+      goToSlide(slideIdx);
+    }
+
+    // Escape key listener to close comparative modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('comparativeModal');
+        if (modal && modal.classList.contains('active')) {
+          e.preventDefault();
+          closeComparativeModal();
+        }
+      }
+    });
+
+    // Listen for cross-frame messages from Hub (index.html)
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.action === 'openComparativeModal') {
+        openComparativeModal();
+      }
+    });
+
+    // Support direct hash #comparativa or #comparativo
+    if (window.location.hash === '#comparativa' || window.location.hash === '#comparativo') {
+      setTimeout(openComparativeModal, 300);
+    }
+
   </script>
 </body>
 </html>
