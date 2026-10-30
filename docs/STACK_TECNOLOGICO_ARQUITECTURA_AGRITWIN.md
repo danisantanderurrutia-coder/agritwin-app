@@ -1,32 +1,39 @@
 ---
 title: Stack Tecnológico, Lenguajes y Arquitectura de Software de AgriTwin
-aliases: [Stack Tecnológico AgriTwin, Arquitectura de Software AgriTwin, Tecnologías AgriTwin, Programas y Lenguajes AgriTwin, Arquitectura Modular AgriTwin]
-tags: [Arquitectura, Stack, ThreeJS, WebGL, NodeJs, Electron, ESP32, CPlusPlus, GLSL, IoT, GemeloDigital, Obsidian, Modular, SRP]
+aliases: [Stack Tecnológico AgriTwin, Arquitectura de Software AgriTwin, Tecnologías AgriTwin, Programas y Lenguajes AgriTwin, Arquitectura Modular AgriTwin, Arquitectura DestinE AgriTwin]
+tags: [Arquitectura, Stack, ThreeJS, WebGL, NodeJs, DestinationEarth, FAO56, STAC, Polytope, 4DCube, ESP32, CPlusPlus, GLSL, IoT, GemeloDigital, Obsidian, Modular, SRP]
 created: 2026-10-08
-updated: 2026-10-12
-status: refactorizado & optimizado
-version: 3.9.9
-puerto: 7773
+updated: 2026-10-30
+status: refactorizado & optimizado (Doctrina Destination Earth)
+version: 4.2.0
+puerto: 7777
 ---
 
 # 🛠️ [[STACK_TECNOLOGICO_ARQUITECTURA_AGRITWIN|Stack Tecnológico, Lenguajes y Arquitectura Modular de AgriTwin]]
 
-> **Definición de Sistema**: [[Agritwin]] (Rama 1: *Predio Twin* de la suite [[AGROTECH]]) es una plataforma de gemelo digital agrícola biofísico de alta resolución. Su arquitectura es **full-stack, modular, desacoplada y orientada a eventos**, estructurada bajo el principio de responsabilidad única (SRP). Integra desde el silicio de microcontroladores de campo en C++ hasta renderizado fotorealista acelerado por GPU en el navegador mediante WebGL/GLSL, factorías procedurales de Three.js y vistas modulares de UI.
+> **Definición de Sistema**: [[Agritwin]] (Suite [[AGROTECH]]) es una plataforma de **Gemelo Digital Agrícola Biofísico Multiescala** de alta resolución. Su arquitectura es **full-stack, modular, desacoplada y orientada a eventos**, estructurada bajo el principio de responsabilidad única (SRP) e inspirada en los estándares de **Destination Earth (DestinE)**. Integra desde el silicio de microcontroladores de campo en C++ hasta renderizado fotorealista acelerado por GPU en Three.js/WebGL/GLSL, catálogos abiertos de teledetección STAC (Sentinel-2), tensores espaciotemporales 4D (Polytope/Zarr) y motores biofísicos deterministas de balance hídrico (FAO-56) y cuenca fluvial.
 
 ---
 
-## 🧭 1. Diagrama de Arquitectura Global del Sistema
+## 🧭 1. Diagrama de Arquitectura Global del Sistema (Estándar DestinE v4.2.0)
 
-Flujo integral de datos entre el hardware de terreno, la capa de sincronización en servidor y la nueva arquitectura modular desacoplada del cliente:
+Flujo integral de datos entre el hardware de terreno, los forzamientos foráneos de macro-cuenca/satélite, los motores biofísicos desacoplados y la interfaz reactiva:
 
 ```mermaid
 graph TD
     classDef iot fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#ECFDF5;
     classDef srv fill:#1E1B4B,stroke:#818CF8,stroke-width:2px,color:#E0E7FF;
+    classDef engine fill:#312E81,stroke:#A78BFA,stroke-width:2px,color:#EDE9FE;
     classDef client fill:#0B253A,stroke:#38BDF8,stroke-width:2px,color:#F0F9FF;
-    classDef engine fill:#312E81,stroke:#A78BFA,stroke-width:1.5px,color:#EDE9FE;
     classDef factory fill:#78350F,stroke:#F59E0B,stroke-width:2px,color:#FEF3C7;
     classDef ui fill:#1E293B,stroke:#38BDF8,stroke-width:1.5px,color:#F0F9FF;
+    classDef ext fill:#14532D,stroke:#22C55E,stroke-width:1.5px,color:#F0FDF4;
+
+    subgraph FUENTES_EXT["🌐 Forzamientos Foráneos Macro / Meso"]
+        METEO["Open-Meteo / ECMWF<br/>(Pronóstico 7D ET0, Lluvia, T°)"]:::ext
+        STAC_REMOTE["Copernicus / AWS CDSE<br/>(Sentinel-2 L2A BOA STAC)"]:::ext
+        DGA_REF["Red Hidrométrica DGA<br/>(Río Longaví y Embalse Bullileo)"]:::ext
+    end
 
     subgraph TERRENO["🌱 Capa de Terreno e IoT (C y C++)"]
         ESP["ESP32 Microcontroller<br/>(firmware/esp32_field_enclosure.ino)"]:::iot
@@ -41,137 +48,120 @@ graph TD
         ESP -->|Render UI SPI| TFT
     end
 
-    subgraph SERVIDOR["⚡ Backend y Sincronización (Node.js)"]
-        SRV["Servidor HTTP Nativo<br/>(server.cjs - Puerto 7773)"]:::srv
-        API_TEL["API REST Telemetría<br/>(/api/enclosure/telemetry)"]:::srv
-        SYNC_CUENCA["Acople de Cuenca<br/>(/api/basin-sync a :7774)"]:::srv
+    subgraph SERVIDOR["⚡ Backend Unificado y APIs (server.cjs - Puerto 7777)"]
+        SRV["Servidor HTTP Nativo Zero-NPM<br/>(server.cjs)"]:::srv
+        API_TEL["Telemetría Viva Sombra Digital<br/>(/api/telemetry/summary)"]:::srv
+        API_SIM["Motor Proyecciones What-If<br/>(/api/simulation/run)"]:::srv
+        API_CUENCA["Acople Hidrológico Cuenca<br/>(/api/basin-sync)"]:::srv
+        API_SAT["Índices Espectrales STAC<br/>(/api/sat/indices/summary)"]:::srv
+        API_CUBE["Cubo 4D & Slicer Polytope<br/>(/api/cube/query)"]:::srv
 
         SRV --- API_TEL
-        SRV --- SYNC_CUENCA
+        SRV --- API_SIM
+        SRV --- API_CUENCA
+        SRV --- API_SAT
+        SRV --- API_CUBE
     end
 
-    subgraph CLIENTE["🖥️ Cliente Modular y Gemelo Digital 3D (ESM, Three.js, CSS)"]
-        BRIDGE["SuiteBridge & postMessage<br/>(js/utils/SuiteBridge.js)"]:::client
-        BUS["EventBus Reactivo Pub/Sub<br/>(js/core/EventBus.js)"]:::client
+    subgraph MOTORES["🧠 Capa de Motores Puros Desacoplados (js/engines/)"]
+        ENG_SOIL["soil-water-engine.js<br/>(FAO-56 Dual/Single, TAW, RAW, Ks, Nudging)"]:::engine
+        ENG_BASIN["basin-hydrology-engine.js<br/>(Río Longaví, Bullileo, Recarga y Turnos DGA)"]:::engine
+        ENG_STAC["stac-cog-client.js<br/>(STAC Query, NDVI, NDRE, NDWI, NDMI, SAVI)"]:::engine
+        ENG_CUBE["data-cube-engine.js<br/>(Tensor 4D Espacio × Estrato × Tiempo × Variable)"]:::engine
 
-        subgraph FACTORIES["🏭 Factorías Procedurales 3D"]
-            POF["ProceduralObjectFactory<br/>(Paneles, Pivotes, Galpón, Bombas)"]:::factory
-            AMF["AnimalMeshFactory<br/>(Ganado: Vacas, Ovejas, Caballos)"]:::factory
-            CAT["ObjectPlacementCatalog<br/>(Catálogo con Precios y KPIs)"]:::factory
-        end
-
-        subgraph ENGINES["⚙️ Motores Computacionales"]
-            MAP["MapManager 3D<br/>(Three.js r128 Scene, PBR & Sombras)"]:::engine
-            SOLAR["SolarAstroEngine<br/>(Efemerides, Cartas Solares, Clima)"]:::engine
-            SIM["SimulationEngine<br/>(FAO-56 y Balance Hídrico)"]:::engine
-        end
-
-        subgraph UI_MODULES["🎨 Vistas y Paneles Modulares (SRP)"]
-            DASH["DashboardsView<br/>(Studio, Enterprise, Territorial, ESG)"]:::ui
-            PANELS["EntityDetailPanels<br/>(Cuarteles, Cultivos, Polígonos)"]:::ui
-            FRUIT["Fruit3DViewer<br/>(Sub-escena 3D Frutales)"]:::ui
-            TOKENS["Design Tokens CSS<br/>(variables.css, hud-toolbar, placement)"]:::ui
-        end
+        ENG_SOIL --- ENG_CUBE
+        ENG_BASIN --- ENG_CUBE
+        ENG_STAC --- ENG_CUBE
     end
 
-    ESP -->|WiFi WPA2 - JSON| API_TEL
-    API_TEL --> SRV
-    SRV -->|HTTP Local y Eventos| BRIDGE
-    BRIDGE --> BUS
+    subgraph CLIENTE["🖥️ Cliente Hub y Gemelo Digital 3D (Three.js, Leaflet, Vault)"]
+        SCRUB["Scrubber Temporal 7D Continuo<br/>(cuencaWindyTimelineScrubber)"]:::ui
+        STUDIO["Telemetry Deep-Dive Studio<br/>(Gráfico Proyectado & Badge Riesgo)"]:::ui
+        MAP3D["MapManager & Shaders WebGL<br/>(Terreno Three.js r128, Relief & NDVI)"]:::client
+        VAULT["Bóveda de Documentación / Cockpit<br/>(vault-cockpit.js & dossier.html)"]:::ui
+    end
 
-    BUS --> MAP
-    BUS --> SOLAR
-    BUS --> SIM
+    METEO -->|Forzamiento 7D| SRV
+    STAC_REMOTE -->|Metadatos STAC| SRV
+    DGA_REF -->|Líneas base| SRV
+    ESP -->|POST /api/enclosure/telemetry| API_TEL
 
-    MAP --> POF
-    MAP --> AMF
-    POF --> CAT
+    SRV --> MOTORES
+    MOTORES --> SRV
 
-    BUS --> DASH
-    BUS --> PANELS
-    PANELS --> FRUIT
+    API_SIM --> STUDIO
+    API_CUENCA --> SCRUB
+    API_CUBE --> MAP3D
+    SCRUB -->|Sincronización Estratigráfica| STUDIO
 ```
 
 ---
 
 ## 🏛️ 2. Estructura Modular del Proyecto y Principio de Responsabilidad Única (SRP)
 
-Tras la refactorización arquitectónica de la Versión 3.9.9, se descongestionaron los monolitos históricos, separando estrictamente la **lógica matemática**, la **generación geométrica**, el **catálogo de datos**, la **orquestación de red** y la **representación visual**:
+En la **Versión 4.2.0 (Doctrina Destination Earth)**, la suite separa estrictamente la **lógica matemática determinista**, la **teledetección satelital**, la **hidrología fluvial**, la **generación geométrica 3D**, el **catálogo de datos**, la **orquestación de red** y la **representación visual**:
 
 ```
 agritwin/
-├── css/
-│   ├── variables.css          # ✨ Tokens maestros Obsidian Dark, radios, tipografía y semáforos
-│   ├── hud-toolbar.css        # ✨ Barra inferior desplegable de herramientas 3D (4 grupos ergonómicos)
-│   ├── placement-dock.css     # ✨ Dock AoE III de inserción de infraestructuras y trazados
-│   ├── main.css               # Estilos principales de interfaz y layout
-│   └── glassmorphism.css      # Filtros backdrop-blur y superficies translúcidas
-│
 ├── js/
-│   ├── app.js                 # Punto de entrada de la aplicación y ciclo de vida (AgriTwinApp)
+│   ├── engines/               # 🧠 NUEVO: Capa de Motores Puros Desacoplados (Zero-DOM, Isomórficos)
+│   │   ├── soil-water-engine.js        # Motor FAO-56 continuo: balance hídrico, TAW/RAW, estrés Ks, drenaje y nudging
+│   │   ├── basin-hydrology-engine.js   # Motor de cuenca Extremes DT: Río Longaví, Embalse Bullileo y turnos DGA
+│   │   ├── stac-cog-client.js          # Lector STAC Sentinel-2 con cálculo radiométrico (NDVI, NDRE, NDWI, NDMI, SAVI)
+│   │   └── data-cube-engine.js         # Tensor 4D espaciotemporal y cortador geométrico estilo Polytope (O(1))
+│   │
+│   ├── hub/                   # 🖥️ Módulos de Interfaz y Lógica del Hub Maestro (Puerto 7777)
+│   │   ├── geo-layers.js               # Capas SIG Leaflet, viento Windy y sincronización de Scrubber temporal 7D
+│   │   ├── vault-cockpit.js            # Telemetry Studio, gráficos interactivos studioSoilChart y catálogo Vault
+│   │   ├── cerro-cuenca.js             # Modelación de cuenca, sombras orográficas y visualización territorial
+│   │   ├── ecosystem-advisors.js       # Asesores IA consultivos y escenarios de debate biofísico
+│   │   └── hub-navigation.js           # Navegación entre vistas (Predio, Cuenca, Mesa, Telemetría, Bóveda)
+│   │
 │   ├── core/                  # Bus de eventos y gestores transversales
 │   │   ├── EventBus.js        # Desacoplamiento Pub/Sub reactivo
 │   │   └── ProjectManager.js  # Serialización / exportación de proyectos (.agritwin / GeoJSON)
 │   │
-│   ├── data/                  # ✨ Modelos de datos puros y configuraciones declarativas
-│   │   ├── ObjectPlacementCatalog.js # 567 líneas con catálogo completo de objetos e infraestructuras
-│   │   └── MauleSensorsConfig.js     # Configuración de nodos IoT Maule y estaciones del taller
+│   ├── entities/              # Factorías geométricas Three.js desacopladas
+│   │   ├── factories/ProceduralObjectFactory.js # Paneles solares, galpones, pivotes, tranques, pozos
+│   │   └── ObjectPlacementManager.js            # Controlador de interacción y trazado continuo
 │   │
-│   ├── entities/
-│   │   ├── factories/         # ✨ Factorías geométricas Three.js desacopladas
-│   │   │   ├── ProceduralObjectFactory.js # Paneles solares, galpones, pivotes, tranques, pozos
-│   │   │   └── AnimalMeshFactory.js       # Síntesis procedural de rebaño (vacas, ovejas, caballos)
-│   │   ├── ObjectPlacementManager.js      # Controlador de interacción y trazado continuo (1.068 líneas)
-│   │   └── LivestockManager.js            # Lógica de pastoreo PRV y semáforo forrajero (1.365 líneas)
-│   │
-│   ├── map/                   # Motor 3D Three.js y shaders de terreno
-│   │   ├── MapManager.js      # Escena Three.js, cámaras orbitales, vuelo drone y post-processing
-│   │   └── BiophysicalTerrainShader.js # Shaders GLSL para humedad, relieve y gradientes NDVI
-│   │
-│   ├── ui/                    # Interfaz gráfica y paneles desacoplados
-│   │   ├── UIController.js    # Orquestador visual principal (reducido a 3.136 líneas)
-│   │   ├── drawers/           # ✨ Vistas y tableros completos
-│   │   │   └── DashboardsView.js     # Dashboards Studio, Enterprise, Territorial, ESG y Creator
-│   │   ├── panels/            # ✨ Paneles de inspección flotantes
-│   │   │   └── EntityDetailPanels.js # Inspección de cuarteles, cultivos, polígonos y objetos
-│   │   └── components/        # ✨ Sub-componentes visuales reutilizables
-│   │       └── Fruit3DViewer.js      # Visualizador interactivo 3D de frutas y fenología
-│   │
-│   └── utils/
-│       ├── SuiteBridge.js     # ✨ Puente bidireccional postMessage y telemetría con el Hub
-│       └── solar/             # ✨ Motor de matemática astronómica y bioclimática
-│           └── SolarAstroEngine.js   # Efemérides solares, climogramas y mapas celestes en Canvas
+│   └── map/                   # Motor 3D Three.js y shaders de terreno
+│       ├── MapManager.js      # Escena Three.js, cámaras orbitales, vuelo drone y post-processing
+│       └── BiophysicalTerrainShader.js # Shaders GLSL para humedad, relieve y gradientes NDVI
 │
-└── docs/                      # Bóveda de documentación arquitectónica sincronizada con el Hub
-    └── STACK_TECNOLOGICO_ARQUITECTURA_AGRITWIN.md
+├── server.cjs                 # ⚡ Servidor HTTP Nativo con APIs de Simulación, Satélite STAC y Cubos 4D
+├── dossier.html               # 📄 Whitepaper de Teledetección y Auditoría Comparativa vs. 12 Referentes
+├── cache_tiles/               # 🗺️ Mosaicos de mapas base cacheados offline
+└── docs/                      # 📚 Bóveda Canónica de Documentación (Vault)
+    ├── STACK_TECNOLOGICO_ARQUITECTURA_AGRITWIN.md
+    ├── METODOLOGIA_HIDROLOGICA_INCENDIOS_DEM.md
+    ├── ENFOQUE_TACTICO_C2_RIESGO_CUENCA.md
+    └── ARQUITECTURA_DIGITAL_TWIN_DESTINE.md
 ```
 
-### Métricas Cuantitativas de Refactorización y Reducción de Monolitos
+### Especificación de Responsabilidades de los 4 Motores (`js/engines/`)
 
-| Archivo / Módulo | Líneas Originales | Líneas Actuales | Reducción | Responsabilidad Extraída |
-| :--- | :---: | :---: | :---: | :--- |
-| **`UIController.js`** | 5.160 | 3.136 | **-39.2% (-2.024 lín)** | Extraído a `DashboardsView.js`, `EntityDetailPanels.js`, `Fruit3DViewer.js` y `SolarAstroEngine.js`. |
-| **`ObjectPlacementManager.js`** | 2.488 | 1.068 | **-57.1% (-1.420 lín)** | Extraído a `ObjectPlacementCatalog.js`, `ProceduralObjectFactory.js` y `placement-dock.css`. |
-| **`AgroWorkshopOverlay.js`** | 2.741 | 2.414 | **-11.9% (-327 lín)** | Extraído a `MauleSensorsConfig.js`. |
-| **`LivestockManager.js`** | 1.561 | 1.365 | **-12.6% (-196 lín)** | Extraído a `AnimalMeshFactory.js`. |
-| **`index.html`** | 2.310 | 1.933 | **-16.3% (-377 lín)** | 100% de estilos CSS embebidos extraídos a `hud-toolbar.css` y `placement-dock.css`; scripts inline derivados a `SuiteBridge.js`. |
+| Motor | Archivo | Responsabilidad Única (SRP) | Algoritmos / Estándares |
+| :--- | :--- | :--- | :--- |
+| **Balance Hídrico Suelo** | `soil-water-engine.js` | Simular la dinámica de agua en la zona radicular paso a paso. | FAO-56 Dual/Single Crop Coefficient, Curvas Van Genuchten, $K_s$, percolación profunda y asimilación (*Nudging*). |
+| **Hidrología Fluvial** | `basin-hydrology-engine.js` | Propagación de caudales aguas arriba $\rightarrow$ aguas abajo. | Hidrograma de recesión andina, balance volumétrico Embalse Bullileo ($110\text{ hm}^3$) y regla legal de turnos DGA ($28\text{ L/s}$). |
+| **Teledetección STAC** | `stac-cog-client.js` | Extracción de metadatos satelitales y cálculo radiométrico real. | STAC API 1.0.0, BOA Surface Reflectance Sentinel-2 L2A (B02-B12), NDVI, NDRE, NDWI, NDMI, SAVI, NBR. |
+| **Tensor 4D Espaciotemporal** | `data-cube-engine.js` | Unificar Satélite, Suelo y Cuenca en un tensor de 4 dimensiones. | Cubo multidimensional estilo Zarr/Polytope con corte geométrico (*slicing*) en $O(1)$ para mapas y matrices. |
 
 ---
 
 ## 💻 3. Lenguajes de Programación y Tecnologías por Subsistema
 
-| Subsistema / Módulo | Lenguaje Principal | Archivos de Referencia | Rol en AgriTwin |
+| Subsistema / Módulo | Lenguaje Principal | Archivos de Referencia | Rol en AgriTwin v4.2.0 |
 | :--- | :--- | :--- | :--- |
-| **Lógica de Cliente & UI** | **JavaScript (ES6+ / ESM)** | `js/app.js`, `js/ui/**/*.js`, `index.html` | Orquestación general, gestión del DOM, EventBus reactivo y vistas especializadas. |
+| **Motores Biofísicos Puros** | **JavaScript Isomórfico (CJS / ESM / IIFE)** | `js/engines/*.js` y `*.cjs` | Núcleo matemático sin dependencias. Corre indistintamente en Node.js o navegador. |
+| **Tensor 4D & Slicing** | **JavaScript (Arrays multidimensionales)** | `js/engines/data-cube-engine.js` | Motor de corte geométrico $O(1)$ para consultas espaciotemporales estilo Polytope de ECMWF. |
+| **Catálogo Satelital Abierto** | **STAC API / GeoJSON** | `js/engines/stac-cog-client.js` | Consultas estandarizadas a repositorios abiertos (Earth Search, Copernicus CDSE, Planetary Computer). |
+| **Lógica de Cliente & UI** | **JavaScript (ES6+ / ESM)** | `js/hub/*.js`, `index.html` | Orquestación visual, manipulación reactiva del DOM, Leaflet y Chart.js. |
 | **Factorías Geométricas 3D** | **JavaScript (Three.js r128 API)** | `js/entities/factories/*.js` | Generación procedural de mallas PBR (paneles solares, tranques, ganado, invernaderos). |
-| **Matemática Solar & Clima** | **JavaScript (Canvas 2D API)** | `js/utils/solar/SolarAstroEngine.js` | Algoritmos de posición solar astronómica (latitud -36.14°S), climogramas y mapas estelares. |
 | **Renderizado Gráfico 3D** | **GLSL** (OpenGL Shading Language) | `js/map/BiophysicalTerrainShader.js` | Shaders de cálculo de normales Sobel procedurales, absorción lumínica en suelo y gradientes NDVI. |
-| **Sistemas de Diseño CSS** | **CSS3 Moderno (Custom Properties)** | `css/variables.css`, `css/*.css` | Paleta unificada Obsidian Dark, layout responsivo, docks de campaña y efectos Glassmorphism. |
-| **Servidor & APIs Locales** | **JavaScript (Node.js CommonJS)** | `server.cjs`, `test-ecosystem-sync.cjs` | Despacho ultraligero sin dependencias externas (`zero-npm`), acople de cuenca (:7774) y actuadores. |
+| **Servidor & APIs Locales** | **JavaScript (Node.js CommonJS)** | `server.cjs` | Despacho ultraligero sin dependencias externas (`zero-npm`), forzamiento climático 7D Open-Meteo y APIs de simulación. |
 | **Firmware Embebido IoT** | **C / C++ (Arduino Framework)** | `firmware/esp32_field_enclosure.ino` | Adquisición física analógica/I2C, visualización en display SPI TFT y disparo de relés industriales. |
-| **Shell & Empaque macOS** | **Swift** & **Bash / Shell** | `set_icon.swift`, `launch-desktop.command` | Compilación de scripts nativos para asignación de iconos del Finder y lanzador de escritorio. |
-| **Visor Desktop Integrado** | **TypeScript / TSX** | `desktop/AgroTwinDynamicViewer.tsx` | Contrato de tipado estricto para clientes desacoplados en suites mayores. |
-| **Puente Tronco Suite Hub** | **JavaScript (postMessage API)** | `js/utils/SuiteBridge.js` | Canal bidireccional que conecta el Predio Twin con el Tronco Hub (Suite AgriTwin :7777). |
 
 ---
 

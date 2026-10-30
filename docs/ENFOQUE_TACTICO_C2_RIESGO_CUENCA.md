@@ -25,7 +25,7 @@ Inspirada en la cartografía de maniobra militar y los gráficos de operaciones 
 
 ---
 
-## 2. Formulación Matemática Canónica: Matriz Multiamenaza $R = H \times V$
+## 2. Formulación Matemática Canónica: Matriz Multiamenaza $R = H \times V$ y Tensor 4D de DestinE
 
 Siguiendo las directrices de la **Oficina de las Naciones Unidas para la Reducción del Riesgo de Desastres (UNDRR)** y la norma **ISO 31010**, el riesgo territorial integrado ($R$) se formula como el producto normalizado entre la amenaza física (*Hazard*, $H$) y la vulnerabilidad de los activos expuestos (*Vulnerability*, $V$):
 
@@ -49,14 +49,31 @@ Donde:
        └─────────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Desglose del Factor Amenaza ($H$)
+### 2.1 Espacio de Estados 4D Spatiotemporal (Inspiración ECMWF / Polytope)
+En la versión 4.2.0, el riesgo no es un escalar estático por cuartel, sino un campo tensorial cuadridimensional discreto resuelto por el motor `data-cube-engine.js`:
+
+$$\mathcal{T}(p, z, t, v) \in \mathbb{R}^{N_p \times N_z \times N_t \times N_v}$$
+
+Donde:
+1. **$p \in \{\text{Avellanos, Viña, Cerezo, Pradera, Trigo}\}$ ($N_p = 5$):** Cuarteles discretos del predio ancla Meniel y entorno.
+2. **$z \in [0..150\text{ cm}]$ ($N_z = 5$ estratos):** Estratigrafía vertical (`0-10cm`, `10-30cm`, `30-60cm`, `60-100cm`, `100-150cm`).
+3. **$t \in [t_0, t_0 + 6\text{ días}]$ ($N_t = 7$ pasos diarios):** Horizonte temporal de pronóstico o simulación táctica.
+4. **$v \in \{\text{VWC}, \text{Ks}, \text{Depletion}, H, V, R, \text{Deficit}\}$ ($N_v = 7$ variables):** Estado biofísico y métricas de riesgo.
+
+#### Indexación y Operaciones de Corte Polytope ($O(1)$)
+El motor de cubo de datos permite proyecciones y cortes ortogonales sin duplicación en memoria:
+- **Corte Espacial 2D (`SPATIAL_MAP_2D`):** Fija $(z=z^*, t=t^*, v=R)$ para proyectar la mancha de riesgo territorial sobre Leaflet o Three.js.
+- **Corte Estratigráfico Temporal (`STRATIGRAPHIC_TIME_MATRIX`):** Fija $(p=p^*, v=\text{VWC})$ para obtener la matriz profundidad-tiempo $\mathbf{M} \in \mathbb{R}^{5 \times 7}$, visualizada en el heatmap radicular.
+- **Serie Temporal 1D (`TIME_SERIES_1D`):** Fija $(p=p^*, z=z^*, v=v^*)$ para trazar la curva de secado de 7 días frente a Capacidad de Campo ($CC$) y Punto de Marchitez Permanente ($PMP$).
+
+### 2.2 Desglose del Factor Amenaza ($H$)
 El componente $H$ se alimenta en tiempo real a partir de telemetría de campo e interpolación orográfica:
 $$H = w_q \cdot H_{\text{fluvial}} + w_f \cdot H_{\text{piro}} + w_m \cdot H_{\text{gravitacional}}$$
 - **$H_{\text{fluvial}}$:** Relación entre el caudal medido en estación Quilaimo DGA y el caudal de diseño para período de retorno $T$ ($Q / Q_{T=100}$).
 - **$H_{\text{piro}}$:** Función del Índice Piro-Meteorológico Canadiense (FWI de Van Wagner), velocidad del viento Puelche ($U$) y humedad relativa del combustible fino ($FFMC$).
 - **$H_{\text{gravitacional}}$:** Lluvia antecedente de 24 horas acumulada frente al umbral crítico de saturación coluvial en laderas con pendiente $\beta > 30^\circ$.
 
-### 2.2 Desglose del Factor Vulnerabilidad y Exposición ($V$)
+### 2.3 Desglose del Factor Vulnerabilidad y Exposición ($V$)
 El componente $V$ cuantifica la sensibilidad de los elementos situados dentro de la envolvente de impacto:
 $$V = \frac{\sum_{i=1}^{N} \text{Activo}_i \cdot \omega_i}{\sum_{i=1}^{N} \omega_i}$$
 - **Vidas y Asentamientos Humanos ($\omega = 0.40$):** Comités de Agua Potable Rural (APR Bullileo, Retiro Centro, Copihue, Romeral, Villaseca) y 4.850 habitantes rurales.
@@ -139,8 +156,9 @@ Cada unidad de riesgo proyecta vectores flecha con punta angular y rótulo de ho
 
 ---
 
-## 6. Sincronización Reactiva con Presets Climáticos de Cuenca
+## 6. Sincronización Reactiva con Presets Climáticos y Ramas de Simulación What-If
 
+### 6.1 Presets Macro-Climáticos de Cuenca
 Cuando el usuario selecciona un escenario en el panel de control o en el timeline scrubber, el motor ejecuta `window.updateHvrMatrix(presetKey)` recalculando instantáneamente la triada de riesgo y restilizando las capas cartográficas:
 
 ```javascript
@@ -161,6 +179,35 @@ updateHvrMatrix('storm_t100');
 | **Temporal Fluvial T=10** | **68%** | **62%** | **42.2%** | **Clase 3 (Moderado)** | +32.4% |
 | **Piro-Frente Puelche** | **88%** | **65%** | **57.2%** | **Clase 3 (Mod-Alto)** | +47.4% |
 | **Río Atmosférico T=100** | **92%** | **74%** | **68.1%** | **Clase 4 (Alto/Severo)** | +58.3% (Pico +76.4%) |
+
+### 6.2 Ramas Tácticas de Simulación What-If (Inspiración Digital Twins DestinE)
+A diferencia de los paneles estáticos tradicionales, AgriTwin v4.2.0 permite bifurcar escenarios en tiempo real (`POST /api/simulation/run` y `simulateScenarios` en `soil-water-engine.js`). El operador o regante puede evaluar 4 hipótesis operacionales sin alterar la telemetría viva de los sensores:
+
+1. **`baseline` (Pronóstico Nominal):**
+   - Riego programado ordinario según turno de entrega DGA (28 L/s) y demanda hídrica $ET_c$.
+   - Mantiene la humedad volumétrica del suelo en la zona de agotamiento admisible ($RAW$), con factor de estrés $K_s = 1.0$.
+2. **`pump_failure` (Falla Crítica de Bombeo / Matriz Rota):**
+   - Hipótesis: Riego $= 0\text{ mm/día}$ durante 7 días continuos por falla electromecánica.
+   - Diagnóstico: Agotamiento acelerado hacia el Punto de Marchitez Permanente ($PMP = 0.17$), provocando caída abrupta de $K_s < 0.40$ en el día 4 para cuarteles de frutales someros.
+3. **`heatwave_puelche` (Ola de Calor Extrema con Viento Puelche):**
+   - Hipótesis: Evapotranspiración forzada $ET_0 \times 1.45$ y precipitaciones nulas.
+   - Diagnóstico: Disipación severa del perfil edáfico superior ($0-30\text{ cm}$), con estrés hídrico agudo y elevación de la vulnerabilidad predial $V$ al 78%.
+4. **`deficit_rdi` (Riego Deficitario Controlado / Estrategia de Resiliencia):**
+   - Hipótesis: Riego restringido al $60\%$ de la demanda hídrica óptima.
+   - Diagnóstico: Ahorro de un $40\%$ en volumen de agua de pozo/canal, manteniendo $K_s \ge 0.82$, sin cruzar el umbral de daño radicular irreversible.
+
+```mermaid
+flowchart LR
+    A["Telemetría Viva (Sensor Físico)"] --> B["Estado Inicial t0 (VWC, Ks)"]
+    B --> C1["Branch: baseline (Riego Normal)"]
+    B --> C2["Branch: pump_failure (Riego = 0)"]
+    B --> C3["Branch: heatwave_puelche (ET0 +45%)"]
+    B --> C4["Branch: deficit_rdi (Riego -40%)"]
+    C1 --> D["Matriz de Decisión Operacional C2"]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+```
 
 ---
 

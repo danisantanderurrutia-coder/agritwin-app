@@ -1371,16 +1371,16 @@
             if (simInput) updateConsensusSimulator(simInput.value);
         }
 
-        // Subtabs del Centro de Documentación & Vault
+        // Subtabs del Centro de Documentación & Vault (4 Secciones Maestras)
         function switchDocsTab(tabId) {
-            // Compatibilidad con identificadores antiguos y unificación de Ingesta & Pipeline dentro de Arquitectura
+            // Mapeo hacia las 4 secciones maestras
             if (tabId === 'docs-pipeline') {
-                switchDocsTab('docs-arch');
-                if (typeof switchArchModule === 'function') switchArchModule('pipeline');
-                return;
+                tabId = 'docs-arch';
+            } else if (tabId === 'docs-scripts' || tabId === 'docs-reporter') {
+                tabId = 'docs-dossier';
+            } else if (tabId === 'docs-biomes') {
+                tabId = 'docs-tables';
             }
-            if (tabId === 'docs-geojson') tabId = 'docs-scripts';
-            if (tabId === 'docs-results') tabId = 'docs-tables';
 
             document.querySelectorAll('.docs-subcontent').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.docs-subtab-btn').forEach(b => b.classList.remove('active'));
@@ -1392,32 +1392,15 @@
             const btn = document.getElementById(btnId);
             if (btn) btn.classList.add('active');
 
-            if (tabId === 'docs-dossier') {
-                setTimeout(() => {
-                    const el = document.getElementById('docs-dossier');
-                    const viewDocs = document.getElementById('view-docs');
-                    if (viewDocs && el) {
-                        viewDocs.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
-                    } else if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 50);
-            }
-
             try {
-                if (tabId === 'docs-scripts') {
+                if (tabId === 'docs-dossier') {
+                    if (typeof updateReportPreview === 'function') updateReportPreview();
                     const geoJsonView = document.getElementById('geojsonCodeView');
                     if (geoJsonView && typeof geojsonPredios !== 'undefined') {
                         geoJsonView.innerText = JSON.stringify(geojsonPredios, null, 2);
                     }
-                } else if (tabId === 'docs-reporter') {
-                    if (typeof updateReportPreview === 'function') {
-                        updateReportPreview();
-                    }
-                } else if (tabId === 'docs-tables' || tabId === 'docs-biomes') {
-                    if (typeof initDocsCatalog === 'function') {
-                        initDocsCatalog();
-                    }
+                } else if (tabId === 'docs-tables') {
+                    if (typeof initDocsCatalog === 'function') initDocsCatalog();
                 } else if (tabId === 'docs-vecino') {
                     setTimeout(() => {
                         if (typeof window.renderLatexInContainer === 'function') {
@@ -1493,10 +1476,10 @@
                     }
                 }, 50);
             }
-            if (moduleId === 'atmosferica') {
+            if (moduleId === 'atmosferica' || moduleId === 'destine') {
                 setTimeout(() => {
                     if (typeof window.renderLatexInContainer === 'function') {
-                        window.renderLatexInContainer('arch-detail-atmosferica');
+                        window.renderLatexInContainer('arch-detail-' + moduleId);
                     } else if (typeof renderMathInElement === 'function' && targetDetail) {
                         try {
                             renderMathInElement(targetDetail, {

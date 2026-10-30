@@ -6611,6 +6611,12 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                 window.energyFlowEngine.render();
             }
 
+            // Sincronizar motor biofísico de suelo con el día del timeline (DestinE Digital Twin Pattern)
+            const dayIdx = Math.min(6, Math.floor(idx / 24));
+            if (typeof window.syncBioPhysicsWithTimeline === 'function') {
+                window.syncBioPhysicsWithTimeline(dayIdx);
+            }
+
             if (window.updateHubWindyHudDisplay) window.updateHubWindyHudDisplay();
         };
 

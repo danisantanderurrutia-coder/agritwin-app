@@ -45,7 +45,7 @@
     <!-- KaTeX for Scientific & Mathematical Equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');window.renderLatexInContainer('docs-vecino');window.renderLatexInContainer('tab-tiempo');window.renderLatexInContainer('detailsRiskTornado');}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');window.renderLatexInContainer('arch-detail-destine');window.renderLatexInContainer('docs-vecino');window.renderLatexInContainer('tab-tiempo');window.renderLatexInContainer('detailsRiskTornado');}"></script>
 
 
     <!-- Chart.js -->
@@ -6855,7 +6855,7 @@
                         Inspección estratigráfica multinivel en suelo, balance evapotranspirativo FAO-56 y dinámica de napas freáticas APR.
                     </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-2.5">
                     <select id="telemetryNodeSelector" onchange="renderSelectedTelemetryNode(this.value)" class="bg-black/60 border border-white/15 text-slate-200 text-xs rounded-xl px-3 py-2 font-mono focus:border-emerald-500 outline-none">
                         <optgroup label="Fundo Colliguay / Meniel (Sondas FDR)">
                             <option value="FDR-01" selected>Sonda 01 • Cerezos Lapins (0-20 cm)</option>
@@ -6872,7 +6872,24 @@
                             <option value="APR-05">APR Los Cuarteles (Pozo 36m • 290 Familias)</option>
                         </optgroup>
                     </select>
-                    <button onclick="refreshLiveStudioTelemetry()" class="px-3 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 text-xs font-mono flex items-center gap-1.5 transition-colors">
+
+                    <!-- Selector de Escenario What-If Digital Twin DestinE -->
+                    <div class="flex items-center gap-1.5 bg-black/60 border border-sky-500/40 rounded-xl px-2.5 py-1.5">
+                        <span class="text-[10px] font-mono text-sky-400 font-bold uppercase tracking-wider">🔮 What-If:</span>
+                        <select id="studioScenarioSelector" onchange="runStudioWhatIfSimulation(this.value)" class="bg-transparent text-sky-200 text-xs font-mono focus:outline-none cursor-pointer">
+                            <option value="baseline" selected>🌿 Línea Base (Riego Normal 5.5mm)</option>
+                            <option value="pump_failure">⚠️ Falla de Bomba (Corte Día 3)</option>
+                            <option value="heatwave_puelche">🔥 Choque Puelche (+35% ET0)</option>
+                            <option value="deficit_rdi">💧 RDI Ahorro Controlado (50%)</option>
+                        </select>
+                    </div>
+
+                    <!-- Badge de Riesgo y Confort Hídrico -->
+                    <span id="studioRiskBadge" class="px-2.5 py-1.5 rounded-xl text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold uppercase tracking-wider flex items-center gap-1">
+                        <span>🛡️</span> ÓPTIMO
+                    </span>
+
+                    <button onclick="refreshLiveStudioTelemetry()" class="px-3 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer" title="Sincronizar telemetría viva con modelo de suelo">
                         <span>🔄</span> Sincronizar
                     </button>
                 </div>
@@ -7119,29 +7136,20 @@
                 </div>
             </div>
 
-            <!-- Subnavegación de Pestañas del Vault (Galpón Luminoso) -->
+            <!-- Subnavegación de 4 Secciones Maestras del Vault (Galpón Luminoso) -->
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
-                <button onclick="openDossierInHub()" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-emerald-50 text-emerald-950 border border-emerald-300 shadow-sm">
-                    <span>🛰️</span> <span>Dossier Competencia (18 Láminas)</span>
+                <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-sky-50 text-sky-950 border border-sky-300 shadow-sm">
+                    <span>📐</span> <span>1. Marco Teórico & Metodología</span>
+                    <span class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9px] font-mono">MÓDULOS 1-5</span>
                 </button>
-                <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-sky-50 text-sky-950 border border-sky-300 shadow-sm">
-                    <span>🛡️</span> <span>Estándar Vecino Informado & Protegido</span>
-                    <span class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9px] font-mono">MÓDULOS 1-4</span>
-                </button>
-                <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>🏛️</span> <span>Arquitectura del Sistema</span>
-                </button>
-                <button onclick="switchDocsTab('docs-scripts')" id="docsTabBtn-scripts" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
-                    <span>⚙️</span> <span>Scripts Biofísicos & Datasets</span>
-                </button>
-                <button onclick="switchDocsTab('docs-reporter')" id="docsTabBtn-reporter" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
-                    <span>📑</span> <span>Generador de Informes (PDF/MD)</span>
+                <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                    <span>⚡</span> <span>2. Arquitectura de Software & Hardware</span>
                 </button>
                 <button onclick="switchDocsTab('docs-tables')" id="docsTabBtn-tables" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
-                    <span>📋</span> <span>Mosaico Catastral & Benchmarks</span>
+                    <span>🏡</span> <span>3. Expediente Meniel & Gobernanza</span>
                 </button>
-                <button onclick="switchDocsTab('docs-biomes')" id="docsTabBtn-biomes" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
-                    <span>🎨</span> <span>Galería de Biomas</span>
+                <button onclick="switchDocsTab('docs-dossier')" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-amber-50 text-amber-950 border border-amber-300 shadow-sm">
+                    <span>📦</span> <span>4. Recursos, Informes & Dossiers</span>
                 </button>
             </div>
 
@@ -8399,7 +8407,7 @@
                             <span class="flex items-center gap-1.5">
                                 <span>Módulos del Sistema</span>
                             </span>
-                            <span class="text-stone-400">13 Módulos</span>
+                            <span class="text-stone-400">14 Módulos</span>
                         </div>
 
                         <!-- Item 1: Ingesta, Caja de Terreno IP67 & Jerarquía de Visores -->
@@ -8555,6 +8563,18 @@
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-sky-100 text-sky-900 font-bold">Downscaling</span>
                                 </div>
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Modelos globales vs locales (30m), 6 capas, 8 momentos, ecuaciones y sesgos.</p>
+                            </div>
+                        </button>
+
+                        <!-- Item 14: Doctrina Destination Earth & Motores Headless -->
+                        <button onclick="switchArchModule('destine')" id="arch-nav-destine" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
+                            <span class="text-xl p-1.5 rounded-lg bg-teal-100/80 border border-teal-300">🌐</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="font-bold text-xs text-stone-900 truncate">14. Destination Earth Core</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-teal-100 text-teal-900 font-bold">DestinE v4.2</span>
+                                </div>
+                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Motores headless puros, acople Bullileo/Longaví, STAC/COG y Tensor 4D.</p>
                             </div>
                         </button>
 
@@ -10932,6 +10952,145 @@
                                     <button onclick="downloadAtmosphericSciencePdf()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-all shadow-sm">
                                         📥 Descargar Reporte Completo (PDF)
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MODULO 14: DOCTRINA DESTINATION EARTH & MOTORES BIOFÍSICOS HEADLESS -->
+                        <div id="arch-detail-destine" class="arch-detail-panel hidden space-y-7 bg-white p-6 sm:p-7 rounded-2xl border border-[#E7DAC6] shadow-sm font-sans">
+                            <!-- Header del Módulo -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                                <div>
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="text-2xl p-1.5 rounded-xl bg-teal-50 border border-teal-200">🌐</span>
+                                        <div>
+                                            <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
+                                                14. Doctrina Destination Earth: Motores Biofísicos Headless & Tensor 4D
+                                            </h3>
+                                            <p class="text-xs text-stone-500 font-mono mt-0.5">
+                                                AgriTwin v4.2.0 • Gemelo Digital Isomórfico • Cuenca Río Longaví / Fundo Meniel
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-teal-100 text-teal-900 border border-teal-300">
+                                        ESA / ECMWF Doctrine
+                                    </span>
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                        Zero-DOM Engines
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Banner Resumen DestinE -->
+                            <div class="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-teal-50 via-[#FAF7F2] to-sky-50 border border-teal-200 space-y-2 text-xs leading-relaxed text-stone-700">
+                                <p>
+                                    Inspirado en la iniciativa europea <strong>Destination Earth (DestinE)</strong>, AgriTwin evoluciona desde un visor cartográfico agronómico estático hacia un <strong>Gemelo Digital Territorial Isomórfico y Multiescala</strong>. Los modelos matemáticos no dependen del DOM ni de librerías visuales: son funciones puras ejecutables idénticamente en Node.js (headless server) y en el navegador del agricultor (latencia cero offline).
+                                </p>
+                            </div>
+
+                            <!-- Los 4 Motores Biofísicos Headless -->
+                            <div class="space-y-4">
+                                <h4 class="text-xs font-mono font-bold text-stone-700 uppercase tracking-wider flex items-center gap-2">
+                                    <span>⚙️</span> Los 4 Motores Biofísicos en <code>js/engines/</code>
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                    <!-- Motor 1 -->
+                                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-bold text-stone-900 font-mono text-[11px]">1. soil-water-engine.js</span>
+                                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-100 text-emerald-800 font-bold">FAO-56 Dual</span>
+                                        </div>
+                                        <p class="text-stone-600 text-[11px] leading-relaxed">
+                                            Balance hídrico diario en zona radicular ($Z_r$), $TAW$, $RAW$, factor de estrés $K_s$, percolación profunda y asimilación de observaciones Kalman/nudging.
+                                        </p>
+                                        <div class="p-2 rounded bg-white border border-[#E7DAC6] text-[10px] font-mono text-emerald-900 text-center">
+                                            $$TAW = 1000 \cdot (\theta_{FC} - \theta_{WP}) \cdot Z_r, \quad RAW = p \cdot TAW$$
+                                        </div>
+                                    </div>
+
+                                    <!-- Motor 2 -->
+                                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-bold text-stone-900 font-mono text-[11px]">2. basin-hydrology-engine.js</span>
+                                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-sky-100 text-sky-800 font-bold">Extremes DT</span>
+                                        </div>
+                                        <p class="text-stone-600 text-[11px] leading-relaxed">
+                                            Modelo acoplado de cuenca: balance de masa del Embalse Bullileo ($110\text{ hm}^3$), hidrograma de recesión del Río Longaví y prorrateo de turnos DGA ($28\text{ L/s}$).
+                                        </p>
+                                        <div class="p-2 rounded bg-white border border-[#E7DAC6] text-[10px] font-mono text-sky-900 text-center">
+                                            $$\frac{dV_{\text{res}}}{dt} = Q_{\text{in}} - Q_{\text{out}} - E_{\text{evap}}, \quad Q_t = Q_0 e^{-\alpha t} + Q_{\text{base}}$$
+                                        </div>
+                                    </div>
+
+                                    <!-- Motor 3 -->
+                                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-bold text-stone-900 font-mono text-[11px]">3. stac-cog-client.js</span>
+                                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-800 font-bold">STAC 1.0.0</span>
+                                        </div>
+                                        <p class="text-stone-600 text-[11px] leading-relaxed">
+                                            Indexación de escenas Sentinel-2 L2A sobre el BBOX de Fundo Meniel, HTTP Range requests en Cloud Optimized GeoTIFFs y cálculo espectral BOA real (NDVI, NDRE, NDWI, SAVI).
+                                        </p>
+                                        <div class="p-2 rounded bg-white border border-[#E7DAC6] text-[10px] font-mono text-purple-900 text-center">
+                                            $$\text{NDVI} = \frac{B08 - B04}{B08 + B04}, \quad \text{SAVI} = \frac{(B08 - B04)(1+L)}{B08 + B04 + L}$$
+                                        </div>
+                                    </div>
+
+                                    <!-- Motor 4 -->
+                                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-bold text-stone-900 font-mono text-[11px]">4. data-cube-engine.js</span>
+                                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-teal-100 text-teal-800 font-bold">Tensor 4D Polytope</span>
+                                        </div>
+                                        <p class="text-stone-600 text-[11px] leading-relaxed">
+                                            Estructura tensorial $\mathcal{C} \in \mathbb{R}^{5 \times 5 \times 7 \times 7}$ ($5\text{ cuarteles} \times 5\text{ estratos} \times 7\text{ días} \times 7\text{ variables}$) con proyecciones ortogonales $O(1)$ sin duplicación de memoria.
+                                        </p>
+                                        <div class="p-2 rounded bg-white border border-[#E7DAC6] text-[10px] font-mono text-teal-900 text-center">
+                                            $$\mathcal{T}(p, z, t, v) \implies \text{slice}(\{ z=z^*, t=t^*, v=R \})$$
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ramas de Simulación What-If -->
+                            <div class="space-y-3 pt-4 border-t border-[#E7DAC6]">
+                                <h4 class="text-xs font-mono font-bold text-stone-700 uppercase tracking-wider flex items-center gap-2">
+                                    <span>🌿</span> Arquitectura What-If: Separación Estricta Telemetría vs Simulación
+                                </h4>
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    A diferencia de paneles tradicionales donde alterar un slider sobreescribe las lecturas vivas, AgriTwin mantiene la telemetría in-situ como el estado ancla en $t_0$, mientras bifurca 4 ramas de pronóstico en paralelo:
+                                </p>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-mono">
+                                    <div class="p-3 rounded-xl bg-white border border-stone-200 shadow-sm space-y-1">
+                                        <span class="font-bold text-stone-900 text-[11px]">baseline</span>
+                                        <p class="text-[10px] text-stone-500 font-sans">Pronóstico nominal con riego regularizado (28 L/s) y $K_s = 1.0$.</p>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 shadow-sm space-y-1">
+                                        <span class="font-bold text-rose-900 text-[11px]">pump_failure</span>
+                                        <p class="text-[10px] text-rose-700 font-sans">Falla de bomba: Riego $= 0\text{ mm/día}$, agotamiento hacia PMP en día 4.</p>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 shadow-sm space-y-1">
+                                        <span class="font-bold text-amber-900 text-[11px]">heatwave_puelche</span>
+                                        <p class="text-[10px] text-amber-700 font-sans">Ola de calor: $ET_0 \times 1.45$, desecación acelerada de estratos $0-30\text{ cm}$.</p>
+                                    </div>
+                                    <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 shadow-sm space-y-1">
+                                        <span class="font-bold text-emerald-900 text-[11px]">deficit_rdi</span>
+                                        <p class="text-[10px] text-emerald-700 font-sans">Riego deficitario: $60\%$ de $ET_c$, $40\%$ de ahorro con $K_s \ge 0.82$.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer del Módulo 14 -->
+                            <div class="p-4 rounded-xl bg-[#F5EFEB] border border-[#E7DAC6] flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
+                                <div class="text-stone-600">
+                                    Especificación Técnica Canónica DestinE v4.2.0 • Puerto 7777 • Motores en <code>js/engines/</code>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="docs/ARQUITECTURA_DIGITAL_TWIN_DESTINE.md" target="_blank" class="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold cursor-pointer transition-all shadow-sm flex items-center gap-1.5">
+                                        <span>📜</span> <span>Ver Doctrina Completa (.md)</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -14811,6 +14970,11 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
         </div>
     </div>
     <!-- ─── AGROTWIN SUITE MODULAR JAVASCRIPT SYSTEM (FASE 2) ─── -->
+    <!-- Motores Biofísicos Desacoplados (Patrón Digital Twin DestinE) -->
+    <script src="js/engines/soil-water-engine.js"></script>
+    <script src="js/engines/basin-hydrology-engine.js"></script>
+    <script src="js/engines/stac-cog-client.js"></script>
+    <script src="js/engines/data-cube-engine.js"></script>
     <script src="js/hub/geo-layers.js?v=4.1.0-windy-cuenca"></script>
     <script src="js/hub/hub-navigation.js?v=4.1.0-windy-cuenca"></script>
     <script src="js/hub/mesa-vecinos.js"></script>

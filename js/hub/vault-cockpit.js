@@ -57,6 +57,13 @@
                     }
                 }
             });
+
+            // Inicializar con la simulación What-If desacoplada (Patrón DestinE)
+            setTimeout(() => {
+                if (typeof window.renderSelectedTelemetryNode === 'function') {
+                    window.renderSelectedTelemetryNode('FDR-01');
+                }
+            }, 100);
         }
 
         window.updateStudioChartSeries = function() {
@@ -210,17 +217,168 @@
         };
 
         function refreshLiveStudioTelemetry() {
-            // Animación sutil de micro-actualización
-            const v10 = (37 + Math.random() * 2).toFixed(1);
-            const v30 = (28 + Math.random() * 2).toFixed(1);
-            const v60 = (43 + Math.random() * 2).toFixed(1);
-            document.getElementById('vwc-10cm').innerText = v10 + '% VWC';
-            document.getElementById('vwc-30cm').innerText = v30 + '% VWC';
-            document.getElementById('vwc-60cm').innerText = v60 + '% VWC';
-            if (typeof window.updateStudioChartSeries === 'function') {
-                window.updateStudioChartSeries();
+            const scenario = document.getElementById('studioScenarioSelector')?.value || 'baseline';
+            if (typeof window.runStudioWhatIfSimulation === 'function') {
+                window.runStudioWhatIfSimulation(scenario);
             }
         }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // INTEGRACIÓN DIGITAL TWIN WHAT-IF (PATRÓN DESTINE)
+        // ═══════════════════════════════════════════════════════════════════
+        let currentStudioCropId = 'CROP-CER-01';
+        let currentStudioSimulationData = null;
+
+        window.renderSelectedTelemetryNode = function(nodeId) {
+            const cropMap = {
+                'FDR-01': 'CROP-CER-01', // Cerezos Lapins
+                'FDR-02': 'CROP-AVE-01', // Avellano Tonda
+                'FDR-03': 'PRADERA-PRV', // Pradera PRV
+                'FDR-04': 'CROP-VIN-01', // Viñedo Patrimonial
+                'FDR-05': 'CROP-AVE-01'
+            };
+            currentStudioCropId = cropMap[nodeId] || 'CROP-AVE-01';
+            const scenario = document.getElementById('studioScenarioSelector')?.value || 'baseline';
+            window.runStudioWhatIfSimulation(scenario);
+        };
+
+        window.runStudioWhatIfSimulation = async function(scenarioKey = 'baseline') {
+            const badge = document.getElementById('studioRiskBadge');
+            if (badge) {
+                badge.className = 'px-2.5 py-1.5 rounded-xl text-[10px] font-mono bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold uppercase tracking-wider flex items-center gap-1 animate-pulse';
+                badge.innerHTML = '<span>⏳</span> SIMULANDO...';
+            }
+
+            try {
+                const res = await fetch(`/api/simulation/run?crop_id=${currentStudioCropId}`);
+                if (res.ok) {
+                    currentStudioSimulationData = await res.json();
+                } else {
+                    throw new Error('API offline, usando motor local');
+                }
+            } catch(e) {
+                if (typeof AgriSoilWaterEngine !== 'undefined') {
+                    const capacity = AgriSoilWaterEngine.calculateHydraulicCapacity('franco_arcilloso', currentStudioCropId);
+                    const s0 = AgriSoilWaterEngine.createInitialState(34.0, capacity);
+                    const fallbackClimate = [
+                        { timestamp: 'Hoy', et0_mm: 5.5, precip_mm: 0, irrigation_mm: 5.5 },
+                        { timestamp: '+1D', et0_mm: 5.8, precip_mm: 0, irrigation_mm: 5.5 },
+                        { timestamp: '+2D', et0_mm: 6.2, precip_mm: 0, irrigation_mm: 5.5 },
+                        { timestamp: '+3D', et0_mm: 6.8, precip_mm: 0, irrigation_mm: 5.5 },
+                        { timestamp: '+4D', et0_mm: 7.0, precip_mm: 0, irrigation_mm: 5.5 },
+                        { timestamp: '+5D', et0_mm: 6.2, precip_mm: 0, irrigation_mm: 5.5 },
+                        { timestamp: '+6D', et0_mm: 5.5, precip_mm: 0, irrigation_mm: 5.5 }
+                    ];
+                    currentStudioSimulationData = {
+                        meta: { hydraulic_capacity: capacity, crop_name: capacity.crop.name },
+                        scenarios: AgriSoilWaterEngine.simulateScenarios(s0, fallbackClimate, {
+                            baseline: { name: 'Línea Base', modifier: s => s },
+                            pump_failure: { name: 'Falla Bomba', modifier: (s, i) => i >= 2 ? { ...s, irrigation_mm: 0 } : s },
+                            heatwave_puelche: { name: 'Choque Puelche', modifier: s => ({ ...s, et0_mm: s.et0_mm * 1.35 }) },
+                            deficit_rdi: { name: 'RDI Ahorro', modifier: s => ({ ...s, irrigation_mm: s.irrigation_mm * 0.5 }) }
+                        }, capacity)
+                    };
+                }
+            }
+
+            renderSimulationOnChart(scenarioKey);
+        };
+
+        function renderSimulationOnChart(scenarioKey) {
+            if (!studioChartInstance || !currentStudioSimulationData) return;
+            const sc = currentStudioSimulationData.scenarios?.[scenarioKey] || currentStudioSimulationData.scenarios?.baseline;
+            if (!sc || !sc.trajectory) return;
+
+            const traj = sc.trajectory;
+            const labels = traj.map((st, i) => i === 0 ? 'Hoy (T0)' : `+${i}D`);
+            const vwcData = traj.map(st => st.vwc_percent);
+            const ksData = traj.map(st => Number((st.ks_stress_factor * 100).toFixed(1)));
+
+            const capacity = currentStudioSimulationData.meta?.hydraulic_capacity || {};
+            const fcVal = capacity.soil?.theta_fc ? Number((capacity.soil.theta_fc * 100).toFixed(1)) : 34.0;
+            const wpVal = capacity.soil?.theta_wp ? Number((capacity.soil.theta_wp * 100).toFixed(1)) : 18.0;
+            const fcLine = new Array(traj.length).fill(fcVal);
+            const wpLine = new Array(traj.length).fill(wpVal);
+
+            const minVwc = Math.min(...vwcData);
+            let riskColor = '#10b981';
+            let badgeHtml = '<span>🛡️</span> ÓPTIMO';
+            let badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+
+            if (minVwc <= wpVal + 1.5) {
+                riskColor = '#ef4444';
+                badgeHtml = '<span>🚨</span> ALERTA MARCHITEZ';
+                badgeClass = 'bg-red-500/20 text-red-300 border-red-500/40 animate-pulse';
+            } else if (minVwc < fcVal * 0.85) {
+                riskColor = '#f59e0b';
+                badgeHtml = '<span>⚠️</span> ESTRÉS HÍDRICO';
+                badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+            }
+
+            const badge = document.getElementById('studioRiskBadge');
+            if (badge) {
+                badge.className = `px-2.5 py-1.5 rounded-xl text-[10px] font-mono border font-bold uppercase tracking-wider flex items-center gap-1 ${badgeClass}`;
+                badge.innerHTML = badgeHtml;
+            }
+
+            studioChartInstance.data.labels = labels;
+            studioChartInstance.data.datasets = [
+                {
+                    label: `VWC Proyectado (${sc.name || scenarioKey})`,
+                    data: vwcData,
+                    borderColor: riskColor,
+                    backgroundColor: riskColor === '#ef4444' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: true
+                },
+                {
+                    label: `Capacidad de Campo CC (${fcVal}%)`,
+                    data: fcLine,
+                    borderColor: '#38bdf8',
+                    borderDash: [6, 4],
+                    borderWidth: 1.5,
+                    pointRadius: 0
+                },
+                {
+                    label: `Punto Marchitez PMP (${wpVal}%)`,
+                    data: wpLine,
+                    borderColor: '#ef4444',
+                    borderDash: [4, 4],
+                    borderWidth: 1.5,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Confort de Cultivo Ks (%)',
+                    data: ksData,
+                    borderColor: '#a855f7',
+                    borderDash: [2, 2],
+                    borderWidth: 1.5,
+                    pointRadius: 2
+                }
+            ];
+            studioChartInstance.update();
+
+            window.syncBioPhysicsWithTimeline(0);
+        }
+
+        window.syncBioPhysicsWithTimeline = function(dayIdx = 0) {
+            if (!currentStudioSimulationData) return;
+            const scenario = document.getElementById('studioScenarioSelector')?.value || 'baseline';
+            const sc = currentStudioSimulationData.scenarios?.[scenario] || currentStudioSimulationData.scenarios?.baseline;
+            if (!sc || !sc.trajectory) return;
+
+            const st = sc.trajectory[Math.min(dayIdx, sc.trajectory.length - 1)];
+            if (!st) return;
+
+            const v10El = document.getElementById('vwc-10cm');
+            const v30El = document.getElementById('vwc-30cm');
+            const v60El = document.getElementById('vwc-60cm');
+
+            if (v10El) v10El.innerText = `${st.vwc_percent}% VWC`;
+            if (v30El) v30El.innerText = `${(st.vwc_percent * 0.88).toFixed(1)}% VWC`;
+            if (v60El) v60El.innerText = `${(st.vwc_percent * 1.15).toFixed(1)}% VWC`;
+        };
 
         // ═══════════════════════════════════════════════════════════════════
         // DOCUMENTATION VAULT INITIALIZER
@@ -538,6 +696,9 @@ FIN DEL INFORME TÉCNICO • AGROTWIN DIGITAL TWIN PLATFORM (HTTP://LOCALHOST:77
                 if (hash === 'docs-tactico') {
                     switchDocsTab('docs-arch');
                     if (typeof switchArchModule === 'function') switchArchModule('tactico');
+                } else if (hash === 'docs-destine') {
+                    switchDocsTab('docs-arch');
+                    if (typeof switchArchModule === 'function') switchArchModule('destine');
                 } else if (hash.startsWith('docs-')) switchDocsTab(hash);
             }
             else if (hash === 'territory') switchMasterView('territory');

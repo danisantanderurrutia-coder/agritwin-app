@@ -52,6 +52,28 @@ Donde:
 - $n$: Coeficiente de rugosidad de Manning ($n \approx 0.035$ para suelo aluvial limpio, $n \approx 0.075$ para corredores de bosque ribereño con Quillay/Sauce).
 - $R - I$: Precipitación líquida neta menos tasa de infiltración de Green-Ampt.
 
+### 1.5 Acople Dinámico de Macro-Cuenca: Río Longaví y Embalse Bullileo (Doctrina Extremes DT)
+En la versión 4.2.0, AgriTwin supera el enfoque de caudales fluviales estáticos mediante el motor `basin-hydrology-engine.js`, implementando un modelo acoplado de propagación aguas arriba $\rightarrow$ aguas abajo:
+
+1. **Hidrograma Fluvial Dinámico del Río Longaví ($Q_{\text{Longaví}}$)**:
+   El caudal en la estación de aforo DGA El Castillo / Retiro se modela como la superposición de caudal base, deshielo térmico andino y escorrentía rápida superficial:
+
+   $$Q_{\text{Longaví}}(t) = Q_{\text{base}} + \max(0, (T_{\text{aire}} - 18.0) \cdot 0.45) + (P_{24\text{h}} \cdot 0.42 + P_{72\text{h}} \cdot 0.15)$$
+
+   Donde $Q_{\text{base}} = 8.5\text{ m}^3/\text{s}$ es el caudal base estival de recesión de acuíferos fracturados cordilleranos. El nivel de agua de la sección ($h$) se calibra mediante curva gasto-altura $h = 0.45 + 0.22 \cdot Q^{0.42}$.
+
+2. **Balance Volumétrico del Embalse Bullileo ($110\text{ hm}^3$)**:
+   La reserva estratégica de cabecera se actualiza diariamente según el balance neto entre afluentes cordilleranos y la extracción de los canales matrices de Parral y Retiro:
+
+   $$V_{\text{Bullileo}}(t) = V(t-1) + (Q_{\text{afluente}} - Q_{\text{demanda\_riego}}) \cdot 0.0864 \quad [\text{hm}^3/\text{día}]$$
+
+   Donde $Q_{\text{demanda\_riego}} \approx 12.0\text{ m}^3/\text{s}$.
+
+3. **Condición de Borde y Regla de Turnos de Riego para Fundo Meniel ($28\text{ L/s}$)**:
+   El caudal disponible en el río condiciona la entrega efectiva de la Junta de Vigilancia hacia el Tranque Keyline ($18.500\text{ m}^3$):
+
+   $$\text{Entrega}(Q) = \begin{cases} 100\% \quad (28.0\text{ L/s}) & \text{si } Q_{\text{Longaví}} \ge 12.0\text{ m}^3/\text{s} \quad \text{[Régimen Abundante]} \\ 75\% \quad (21.0\text{ L/s}) & \text{si } 8.0 \le Q_{\text{Longaví}} < 12.0\text{ m}^3/\text{s} \quad \text{[Turno Moderado]} \\ 45\% \quad (12.6\text{ L/s}) & \text{si } Q_{\text{Longaví}} < 8.0\text{ m}^3/\text{s} \quad \text{[Estiaje Severo - Activar Pozo]} \end{cases}$$
+
 ---
 
 ## 2. Modelación de Dinámica de Vientos: Macroescala (Windy) vs. Microescala Orográfica de Cuenca
@@ -93,19 +115,27 @@ Donde:
 
 ---
 
-## 3. Estimación de Biomasa Satelital e Índices Multiespectrales (Sentinel-2)
+## 3. Estimación de Biomasa Satelital e Índices Multiespectrales (Sentinel-2 L2A STAC + COG)
 
-Para alimentar la carga de combustible y caracterizar la cuenca, se implementa una librería de índices espectrales a partir de las bandas MSI de Sentinel-2 (resolución de 10 m y 20 m):
+En la versión 4.2.0, AgriTwin supera el uso de filtros cosméticos CSS de color y adopta la arquitectura canónica de **Destination Earth Data Lake (DEDL)** mediante el protocolo **STAC (SpatioTemporal Asset Catalog 1.0.0)** y **COGs (Cloud-Optimized GeoTIFFs)** implementados en `stac-cog-client.js`.
 
-| Índice | Fórmula | Bandas Sentinel-2 | Aplicación Hidrológica / Forestal |
+### 3.1 Protocolo de Acceso Bajo Demanda (HTTP Range Requests)
+En lugar de descargar escenas completas de Sentinel-2 L2A (~1 GB por órbita), el cliente formula consultas espaciales delimitadas al Bounding Box de Fundo Meniel (`[-71.6150, -36.2160, -71.5980, -36.2070]`, Tile `18HYD`):
+* Mediante *HTTP Range Requests (RFC 7233)*, el servidor lee únicamente los offsets de bytes correspondientes a los píxeles de los cuarteles (~160 KB por banda).
+* El cálculo radiométrico se ejecuta directamente en memoria RAM sobre reflectancias de superficie corregidas atmosféricamente (Bottom-Of-Atmosphere, BOA).
+
+### 3.2 Librería Canónica de Índices Biofísicos Calculados
+
+| Índice | Ecuación Canónica | Bandas Sentinel-2 | Aplicación Agronómica & Hidrológica en Fundo Meniel |
 | :--- | :--- | :--- | :--- |
-| **NDVI** | $\frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}$ | $\frac{B8 - B4}{B8 + B4}$ | Vigor vegetativo, biomasa activa fotosintéticamente, estado de cultivos. |
-| **DEM Hypsometric** | $z = h(x, y)$ | Malla 3D + Contornos | Gradiente altitudinal, identificación de talwegs, divisorias y curvas de nivel. |
-| **NDWI (McFeeters)**| $\frac{\text{Green} - \text{NIR}}{\text{Green} + \text{NIR}}$ | $\frac{B3 - B8}{B3 + B8}$ | Cuerpos de agua superficial, estero, láminas de desborde y humedales. |
-| **NDII / NDRE** | $\frac{\text{NIR} - \text{SWIR1}}{\text{NIR} + \text{SWIR1}}$ | $\frac{B8 - B11}{B8 + B11}$ | Contenido hídrico del dosel vivo (*Fuel Moisture Content*). |
-| **NBR (Burn Ratio)**| $\frac{\text{NIR} - \text{SWIR2}}{\text{NIR} + \text{SWIR2}}$ | $\frac{B8A - B12}{B8A + B12}$ | Severidad de incendios, materia vegetal seca y combustible disponible. |
+| **NDVI** | $\frac{B08 - B04}{B08 + B04}$ | NIR (842nm) vs Red (665nm) | Vigor fotosintético general y densidad de biomasa activa. |
+| **NDRE** | $\frac{B08 - B05}{B08 + B05}$ | NIR (842nm) vs RedEdge (705nm) | Contenido de clorofila en frutales densos (Avellano/Cerezo) donde el NDVI se satura. |
+| **NDWI (McFeeters)** | $\frac{B03 - B08}{B03 + B08}$ | Green (560nm) vs NIR (842nm) | Detección de lámina libre de agua en Tranque Keyline ($18.500\text{ m}^3$) y Estero Colliguay. |
+| **NDMI (Gao)** | $\frac{B08 - B11}{B08 + B11}$ | NIR (842nm) vs SWIR1 (1610nm) | Contenido de agua en tejido foliar vivo (*Fuel Moisture*). Detecta estrés 10-14 días antes de marchitez visible. |
+| **SAVI (Huete)** | $\frac{B08 - B04}{B08 + B04 + 0.5} \cdot 1.5$ | NIR vs Red con factor $L=0.5$ | Vigor ajustado eliminando el ruido de reflectancia del suelo desnudo entre hileras. |
+| **NBR** | $\frac{B08 - B12}{B08 + B12}$ | NIR vs SWIR2 (2190nm) | Diagnóstico de necromasa vegetal seca y susceptibilidad a ignición de incendios. |
 
-### Relación entre NDVI y Biomasa Forestal
+### 3.3 Relación entre NDVI y Biomasa Forestal
 La biomasa aérea leñosa y de pastizal (*Above Ground Biomass*, $AGB$, en $t/\text{ha}$) se modela empíricamente con saturación logística:
 
 $$AGB = AGB_{\max} \cdot \left( \frac{1}{1 + e^{-k \cdot (NDVI - NDVI_0)}} \right)$$

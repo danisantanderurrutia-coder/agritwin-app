@@ -1592,6 +1592,49 @@
           </div>
         </div>
 
+        <!-- CARD 12: DESTINATION EARTH (DESTINE) -->
+        <div class="comp-card" data-category="clima" data-keywords="destination earth destine esa ecmwf eumetsat digital twin gemelo digital polytope stac data cube headless fmo extremes adaptation">
+          <div class="comp-card-header">
+            <div class="comp-card-title-box">
+              <span class="comp-card-icon">🌐</span>
+              <div>
+                <span class="comp-card-name">12. Destination Earth (DestinE)</span>
+                <span class="comp-card-origin">🇪🇺 Comisión Europea • ESA / ECMWF / EUMETSAT</span>
+              </div>
+            </div>
+            <span class="comp-card-status-badge comp-status-adapted">⚡ Adaptado Biofísico (Digital Twin)</span>
+          </div>
+          <div class="comp-card-grid">
+            <div class="comp-col comp-col-have">
+              <div class="comp-col-heading heading-have">✔ Qué adaptamos en AgriTwin</div>
+              <ul class="comp-list have">
+                <li><strong>Motores biofísicos desacoplados (Zero-DOM):</strong> Modelos puros en <code>js/engines/</code> para suelo (FAO-56), cuenca (Longaví/Bullileo) y radiometría STAC/COG testeables en Node.js y navegador.</li>
+                <li><strong>Separación estricta Telemetría vs Simulación What-If:</strong> La telemetría in-situ fija la línea base mientras 4 ramas proyectan escenarios sin alterar datos crudos.</li>
+                <li><strong>Tensor 4D & Cortes Polytope ($O(1)$):** Indexación espaciotemporal multi-estrato para análisis de riesgo y humedad en tiempo real.</li>
+                <li><strong>Acople Macro-Meso-Micro:</strong> Interdependencia continua entre embalses cordilleranos, derechos DGA (28 L/s) y raíces del cultivo.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-nothave">
+              <div class="comp-col-heading heading-nothave">✕ Qué dejamos fuera</div>
+              <ul class="comp-list nothave">
+                <li><strong>Supercómputo HPC Exascala (LUMI / Leonardo):</strong> Complejidad de clústeres masivos inaccesibles e innecesarios para operaciones prediales.</li>
+                <li><strong>Modelos Climáticos Globales Continuos (IFS-NEMO):</strong> Simulación planetaria global que excede el alcance táctico y satura la conectividad rural.</li>
+              </ul>
+            </div>
+            <div class="comp-col comp-col-reasons">
+              <div class="comp-col-heading heading-reasons">💡 Razón Técnica & Eficiencia Edge (Por Qué)</div>
+              <div class="comp-reason-box">
+                <div><strong>Tesis de Simplicidad Radical & Edge Computing:</strong> Adoptamos el rigor conceptual de DestinE (Data Cubes, STAC, ramas What-If) pero empaquetado en motores matemáticos de cero dependencias que corren en un único puerto (7777) o localmente en el navegador.</div>
+                <div><strong>Enfoque en Decisiones Agronómicas Concretas:</strong> El agricultor y las Juntas de Vigilancia requieren anticipar estrés hídrico a 7 días y gestionar su turno de canal, garantizando física determinista y auditable a costo marginal cero.</div>
+              </div>
+            </div>
+          </div>
+          <div class="comp-card-footer">
+            <span class="comp-tag-pill">Lámina 19 • Doctrina Destination Earth & Digital Twins</span>
+            <button class="comp-jump-btn" onclick="jumpToSlideFromComp(18)">📖 Ver Lámina en Dossier ›</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- Modal Footer Summary -->
@@ -2938,6 +2981,95 @@
             </div>
           </div>
         `
+      },
+      // LÁMINA 19: DOCTRINA DESTINATION EARTH EN AGRITWIN
+      {
+        slug: "destination-earth",
+        category: "Capítulo 5 • Arquitectura Digital Twin Avanzada",
+        title: "La Doctrina Destination Earth en AgriTwin: Gemelos Digitales Biofísicos",
+        meta: "LÁMINA 19 / 19 • DOCTRINA DESTINE",
+        footerLeft: "AgriTwin Intelligence • Capítulo 5: Gemelos Digitales de Alta Resolución",
+        html: `
+          <div style="font-size: 7.8pt; color: #44403C; margin-bottom: 10px; line-height: 1.35;">
+            Inspirado en la iniciativa insignia de la Unión Europea (ESA / ECMWF / EUMETSAT), AgriTwin adopta la arquitectura de <strong>Gemelo Digital Biofísico Multiescala</strong> adaptada al contexto hidrológico y agronómico chileno:
+          </div>
+
+          <div class="pipeline-grid" style="margin-bottom: 10px;">
+            <div class="pipeline-step active">
+              <div style="font-size: 14pt;">⚙️</div>
+              <div style="font-size: 7.5pt; font-weight: 800; color: #059669; margin-top: 1px;">1. Motores Puros Headless</div>
+              <div style="font-size: 6.5pt; color: #64748B; line-height: 1.2;">Zero-DOM, Node.js + Navegador<br/>FAO-56 dual & balance hídrico<br/><strong style="color: #059669;">soil-water-engine.js</strong></div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step hero">
+              <div style="font-size: 14pt;">🌊</div>
+              <div style="font-size: 7.5pt; font-weight: 800; color: #0284C7; margin-top: 1px;">2. Acople de Cuenca Dinámico</div>
+              <div style="font-size: 6.5pt; color: #64748B; line-height: 1.2;">Embalse Bullileo (110 hm³)<br/>Río Longaví & 28 L/s DGA<br/><strong style="color: #0284C7;">basin-hydrology-engine.js</strong></div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step">
+              <div style="font-size: 14pt;">🛰️</div>
+              <div style="font-size: 7.5pt; font-weight: 800; color: #7C3AED; margin-top: 1px;">3. STAC + COG Satelital</div>
+              <div style="font-size: 6.5pt; color: #64748B; line-height: 1.2;">Sentinel-2 L2A BOA real<br/>NDVI / NDRE / NDWI / SAVI<br/><strong style="color: #7C3AED;">stac-cog-client.js</strong></div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step" style="border-color: #0EA5E9; background: #F0F9FF;">
+              <div style="font-size: 14pt;">🧊</div>
+              <div style="font-size: 7.5pt; font-weight: 800; color: #0284C7; margin-top: 1px;">4. Tensor 4D & Polytope</div>
+              <div style="font-size: 6.5pt; color: #0369A1; line-height: 1.2;">5 cuarteles × 5 estratos × 7 días<br/>Cortes ortogonales O(1)<br/><strong style="color: #0284C7;">data-cube-engine.js</strong></div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom: 10px;">
+            <div class="card highlight-green">
+              <div class="card-head">
+                <div>
+                  <div class="card-name" style="color: #047857;">✔ Lo que adoptamos de Destination Earth</div>
+                  <div class="card-sub">Principios metodológicos de clase mundial adaptados al Maule</div>
+                </div>
+              </div>
+              <div class="feature-box">
+                <div class="feature-title">🌿 Ramas de Simulación What-If Desacopladas:</div>
+                <div class="feature-desc">La telemetría in-situ alimenta el estado vivo en t0. La simulación bifurca 4 escenarios (nominal, falla de bomba, ola de calor puelche, riego deficitario RDI) sin mutar los sensores físicos.</div>
+              </div>
+              <div class="feature-box">
+                <div class="feature-title">📡 Asimilación Nudging/Kalman:</div>
+                <div class="feature-desc">Ajuste de la curva del modelo FAO-56 ante observaciones de humedad reales, reduciendo la incertidumbre predictiva.</div>
+              </div>
+              <div class="feature-box">
+                <div class="feature-title">🗺️ Interoperabilidad STAC 1.0.0:</div>
+                <div class="feature-desc">Sustitución de filtros CSS cosméticos por metadatos canónicos de reflectancia BOA (Bottom-Of-Atmosphere) de Copernicus.</div>
+              </div>
+            </div>
+
+            <div class="card highlight-blue">
+              <div class="card-head">
+                <div>
+                  <div class="card-name" style="color: #0284C7;">🛡️ Lo que filtramos por eficiencia operativa</div>
+                  <div class="card-sub">Pragmatismo de ingeniería: Cero bloat y ejecución edge</div>
+                </div>
+              </div>
+              <div class="feature-box">
+                <div class="feature-title">🚫 Cero Supercomputadores HPC Exascala:</div>
+                <div class="feature-desc">DestinE requiere clústeres de petavatios (LUMI / Leonardo). AgriTwin empaqueta toda su física en motores matemáticos puros que corren en un servidor ligero en el puerto 7777 o en el navegador.</div>
+              </div>
+              <div class="feature-box">
+                <div class="feature-title">🚫 Cero Modelos Atmosféricos Globales Pesados:</div>
+                <div class="feature-desc">En lugar de simular la atmósfera planetaria en 1 km (IFS), consumimos forzamiento meteorológico dinámico vía Open-Meteo API (temperatura, radiación, viento).</div>
+              </div>
+              <div class="feature-box">
+                <div class="feature-title">⚡ Latencia Cero en Terreno:</div>
+                <div class="feature-desc">Al ser código isomórfico, las simulaciones de riego y estrés radicular corren offline en el dispositivo del agrónomo sin esperar a la nube.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 8px; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 7.4pt; color: #166534;">
+              <strong>🌐 Síntesis Doctrinal:</strong> Destination Earth demostró que el futuro del modelado ambiental no son dashboards de imágenes estáticas, sino gemelos biofísicos interactivos capaces de proyectar el impacto de decisiones antes de ejecutarlas en el mundo real. AgriTwin trae esa doctrina a la agricultura chilena.
+            </div>
+          </div>
+        `
       }
     ];
 
@@ -2975,6 +3107,7 @@
         else if (idx === 15) icon = "🧠";
         else if (idx === 16) icon = "🏛️";
         else if (idx === 17) icon = "💼";
+        else if (idx === 18) icon = "🌐";
 
         chip.innerHTML = `<span>${icon}</span> <span>${idx + 1}. ${slide.title.split(':')[0].substring(0, 22)}</span>`;
         chip.onclick = () => goToSlide(idx);

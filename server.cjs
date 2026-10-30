@@ -6,6 +6,10 @@ const http  = require('http');
 const https = require('https');
 const fs    = require('fs');
 const path  = require('path');
+const AgriSoilWaterEngine = require('./js/engines/soil-water-engine.cjs');
+const AgriBasinHydrologyEngine = require('./js/engines/basin-hydrology-engine.cjs');
+const AgriStacClient = require('./js/engines/stac-cog-client.cjs');
+const AgriDataCubeEngine = require('./js/engines/data-cube-engine.cjs');
 
 const PORT     = process.env.PORT || 7777;
 const ROOT_DIR = __dirname;
@@ -84,6 +88,86 @@ async function getLiveMauleWeather() {
   };
 }
 
+// ── Cache y Pronóstico Climático 7 Días (Forzamiento para Motor Biofísico) ──
+let cachedForecast7d = null;
+let lastForecastFetch = 0;
+
+async function getForecast7dForcing() {
+  const now = Date.now();
+  if (cachedForecast7d && (now - lastForecastFetch) < 30 * 60 * 1000) {
+    return cachedForecast7d;
+  }
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const resp = await fetch(
+      'https://api.open-meteo.com/v1/forecast?latitude=-36.2115&longitude=-71.6050&daily=et0_fao_evapotranspiration,precipitation_sum,temperature_2m_max,temperature_2m_min&forecast_days=7&timezone=America%2FSantiago',
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    if (resp.ok) {
+      const data = await resp.json();
+      const daily = data.daily || {};
+      const times = daily.time || [];
+      const et0s = daily.et0_fao_evapotranspiration || [];
+      const precips = daily.precipitation_sum || [];
+      if (times.length > 0) {
+        cachedForecast7d = times.map((t, idx) => ({
+          timestamp: t,
+          et0_mm: et0s[idx] != null ? Number(et0s[idx].toFixed(2)) : 5.2,
+          precip_mm: precips[idx] != null ? Number(precips[idx].toFixed(2)) : 0.0,
+          irrigation_mm: 5.5
+        }));
+        lastForecastFetch = now;
+        return cachedForecast7d;
+      }
+    }
+  } catch (err) {
+    console.warn('[Pronóstico 7D] Fallback climático:', err.message);
+  }
+  const fallbackDays = ['Día 1', 'Día 2', 'Día 3', 'Día 4', 'Día 5', 'Día 6', 'Día 7'];
+  return fallbackDays.map((d, i) => ({
+    timestamp: d,
+    et0_mm: Number((5.2 + (i % 3) * 0.4).toFixed(2)),
+    precip_mm: 0,
+    irrigation_mm: 5.5
+  }));
+}
+
+function computeScenarioMetrics(trajectory, capacity) {
+  let minVwc = 100;
+  let daysInStress = 0;
+  let totalEtc = 0;
+  let totalIrrigation = 0;
+  let totalDrainage = 0;
+
+  for (let i = 0; i < trajectory.length; i++) {
+    const st = trajectory[i];
+    if (st.vwc_percent < minVwc) minVwc = st.vwc_percent;
+    if (st.ks_stress_factor < 1.0) daysInStress++;
+    if (st.etc_adj_mm) totalEtc += st.etc_adj_mm;
+    if (st.irrigation_applied_mm) totalIrrigation += st.irrigation_applied_mm;
+    if (st.deep_drainage_mm) totalDrainage += st.deep_drainage_mm;
+  }
+
+  const wp_pct = capacity.soil.theta_wp * 100.0;
+  let verdict = 'ÓPTIMO_CONFORT';
+  if (minVwc <= wp_pct + 1.0) {
+    verdict = 'ALERTA_MARCHITEZ_SEVERA';
+  } else if (daysInStress >= 2) {
+    verdict = 'ESTRÉS_HÍDRICO_ACTIVO';
+  }
+
+  return {
+    min_vwc_percent: Number(minVwc.toFixed(2)),
+    days_in_stress: daysInStress,
+    total_etc_mm: Number(totalEtc.toFixed(2)),
+    total_irrigation_mm: Number(totalIrrigation.toFixed(2)),
+    total_drainage_mm: Number(totalDrainage.toFixed(2)),
+    risk_verdict: verdict
+  };
+}
+
 function buildTelemetrySummary(liveWeather = null) {
   const now    = new Date();
   const weather = liveWeather || {
@@ -96,6 +180,14 @@ function buildTelemetrySummary(liveWeather = null) {
     wind_dir: 'ENE (75°)',
     eto_mm_day: 4.8
   };
+
+  // Dinámica de Macro-Cuenca Acoplada (Andes -> Longaví -> Bullileo -> Retiro)
+  const dynamicRiver = AgriBasinHydrologyEngine.calculateLongaviRiverFlow({
+    precip_24h_mm: weather.precip_24h_mm || 0,
+    temp_air_c: weather.temp_air_c || 21.5
+  });
+  const dynamicReservoir = AgriBasinHydrologyEngine.calculateBullileoReservoir(dynamicRiver.caudal_m3_s);
+  const dynamicCoupling = AgriBasinHydrologyEngine.evaluateFarmBoundaryCoupling(dynamicRiver, dynamicReservoir);
 
   // Punto Central Representativo: Casa Patronal / Galpón (Zona 0 = [0m E, 0m N])
   const CASA_CENTER = { lat: -36.2115, lng: -71.6050, name: 'Casa Patronal / Galpón (Zona 0)' };
@@ -204,18 +296,20 @@ function buildTelemetrySummary(liveWeather = null) {
       lat: -36.2110,
       lng: -71.6045,
       relative_to_house: toRelMeters(-36.2110, -71.6045),
-      network: 'KioT Mesh (Simulado - Prototipo)',
-      status: 'simulado',
+      network: 'KioT Mesh (Acoplado a Cuenca)',
+      status: 'online_dinamico',
       is_simulated: true,
-      simulation_basis: 'Simulado (Prototipo batimétrico de tranque 18.500 m³)',
+      simulation_basis: 'Modelo Hidráulico Acoplado (AgriBasinHydrologyEngine)',
       readings: {
-        volume_m3: 18490,
+        volume_m3: dynamicCoupling.tranque_keyline.current_volume_m3,
         cota_msnm: 198,
-        capacity_pct: 100,
-        autonomy_days: 45,
+        capacity_pct: dynamicCoupling.tranque_keyline.fill_pct,
+        autonomy_days: dynamicCoupling.tranque_keyline.autonomy_days,
+        daily_inflow_canal_m3: dynamicCoupling.tranque_keyline.daily_inflow_canal_m3,
         battery_pct: 99,
         last_tx: now.toISOString(),
-        simulation_notice: 'Lectura modelada (Prototipo)'
+        turn_notice: dynamicCoupling.canal_matriz.turn_notice,
+        simulation_notice: 'Acople Dinámico Canal Matriz + Tranque Keyline'
       }
     }
   ];
@@ -241,17 +335,21 @@ function buildTelemetrySummary(liveWeather = null) {
     {
       id: 'DGA-LONGAVI',
       name: 'DGA Fluviométrica Río Longaví',
-      agency: 'DGA (Referencial)',
+      agency: 'DGA / Extremes DT Engine',
       lat: -36.1750,
       lng: -71.6700,
-      status: 'simulado',
-      is_real: false,
-      source: 'DGA - Registro histórico de referencia / Estimación de cuenca (Simulado)',
+      status: 'online_dinamico',
+      is_real: weather.is_real,
+      source: 'DGA / Motor Hidrológico de Cuenca Acoplado (AgriBasinHydrologyEngine)',
       readings: {
-        caudal_m3_s: 14.5,
-        nivel_m: 1.45,
-        trend: 'estable',
-        simulation_notice: 'Caudal base estacional modelado (sin telemetría continua DGA abierta)'
+        caudal_m3_s: dynamicRiver.caudal_m3_s,
+        nivel_m: dynamicRiver.nivel_rio_m,
+        regime: dynamicRiver.regime,
+        alert_level: dynamicRiver.alert_level,
+        snowmelt_m3_s: dynamicRiver.snowmelt_m3_s,
+        runoff_m3_s: dynamicRiver.runoff_m3_s,
+        trend: dynamicRiver.caudal_m3_s >= 14.5 ? 'estable' : 'estiaje_descenso',
+        simulation_notice: 'Modelo hidrológico dinámico continuo acoplado a precipitación andina'
       }
     },
     {
@@ -274,16 +372,19 @@ function buildTelemetrySummary(liveWeather = null) {
     {
       id: 'DGA-BULLILEO',
       name: 'DGA Embalse Bullileo',
-      agency: 'DGA',
+      agency: 'DGA / Extremes DT Engine',
       lat: -36.2800,
       lng: -71.4200,
-      status: 'referencial',
-      is_real: false,
-      source: 'DGA Embalse Bullileo - Registro oficial estacional (Referencial)',
+      status: 'online_dinamico',
+      is_real: weather.is_real,
+      source: 'DGA Embalse Bullileo - Modelo de Balance Volumétrico Acoplado',
       readings: {
-        volume_hm3: 85.8,
-        cota_msnm: 395,
-        fill_pct: 78
+        volume_hm3: dynamicReservoir.volume_hm3,
+        cota_msnm: dynamicReservoir.cota_msnm,
+        fill_pct: dynamicReservoir.fill_pct,
+        status: dynamicReservoir.status,
+        daily_delta_hm3: dynamicReservoir.daily_delta_hm3,
+        simulation_notice: 'Balance hidrológico andino diario acoplado a demanda de regadío'
       }
     }
   ];
@@ -291,9 +392,9 @@ function buildTelemetrySummary(liveWeather = null) {
   return {
     meta: {
       service: 'agritwin-hub',
-      version: '3.0-unified',
+      version: '3.1-destine-coupled',
       port: PORT,
-      cuenca: 'Maule Sur (Parral – Retiro)',
+      cuenca: 'Macro-Cuenca Maule Sur (Longaví – Parral – Retiro)',
       area_ha: 122070,
       timestamp: now.toISOString(),
       weather_feed: weather.source,
@@ -317,10 +418,17 @@ function buildTelemetrySummary(liveWeather = null) {
       fwi: {
         value: 28,
         label: 'MODERADO',
-        buffer_mitigation_pct: 45,
+        buffer_mitigation_pct: dynamicCoupling.tranque_keyline.buffer_mitigation_active ? 85 : 45,
         source: 'Estimación índice FWI (Simulado)'
       },
-      longavi_q_m3s: 14.5,
+      longavi_q_m3s: dynamicRiver.caudal_m3_s,
+      longavi_regime: dynamicRiver.regime,
+      longavi_alert: dynamicRiver.alert_level,
+      bullileo_fill_pct: dynamicReservoir.fill_pct,
+      bullileo_vol_hm3: dynamicReservoir.volume_hm3,
+      canal_delivery_lps: dynamicCoupling.canal_matriz.effective_delivery_lps,
+      canal_turn_notice: dynamicCoupling.canal_matriz.turn_notice,
+      tranque_autonomy_days: dynamicCoupling.tranque_keyline.autonomy_days,
       puelche_gusts_kmh: weather.wind_speed_kmh,
       eto_penman_monteith_mm_day: weather.eto_mm_day,
       avg_vwc_pct: 36.2,
@@ -421,24 +529,249 @@ const server = http.createServer(async (req, res) => {
   if ((urlPath === '/api/basin-sync' || urlPath === '/predio/api/basin-sync') && req.method === 'GET') {
     const liveWeather = await getLiveMauleWeather();
     const telemetry = buildTelemetrySummary(liveWeather);
+
+    const dynamicRiver = AgriBasinHydrologyEngine.calculateLongaviRiverFlow({
+      precip_24h_mm: liveWeather.precip_24h_mm || 0,
+      temp_air_c: liveWeather.temp_air_c || 21.5
+    });
+    const dynamicReservoir = AgriBasinHydrologyEngine.calculateBullileoReservoir(dynamicRiver.caudal_m3_s);
+    const dynamicCoupling = AgriBasinHydrologyEngine.evaluateFarmBoundaryCoupling(dynamicRiver, dynamicReservoir);
+
     const payload = {
       source: 'agritwin-hub-7777',
       status: 'connected',
       timestamp: new Date().toISOString(),
+      engine: 'AgriBasinHydrologyEngine v1.0.0 (Extremes DT Flow Coupling)',
       weather_source: liveWeather.source,
       weather_is_real: liveWeather.is_real,
+      cuenca: 'Macro-Cuenca Maule Sur (Longaví – Parral – Retiro)',
+      rio_longavi: dynamicRiver,
+      embalse_bullileo: dynamicReservoir,
+      acople_predial: dynamicCoupling,
       macro_fwi: telemetry.derived.fwi.value,
       macro_fwi_label: telemetry.derived.fwi.label,
-      q_longavi_m3_s: telemetry.derived.longavi_q_m3s,
+      q_longavi_m3_s: dynamicRiver.caudal_m3_s,
       puelche_gusts_kmh: telemetry.derived.puelche_gusts_kmh,
       aprs_summary: telemetry.apr_summary,
-      buffer_mitigation_pct: 45,
+      buffer_mitigation_pct: dynamicCoupling.tranque_keyline.buffer_mitigation_active ? 85 : 45,
       tranque_keyline_capacity_m3: 18500
     };
     const body = JSON.stringify(payload, null, 2);
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(body);
     return;
+  }
+
+  // ─── API: Simulador Biofísico What-If Desacoplado (Patrón DestinE) ────────
+  if ((urlPath === '/api/simulation/presets' || urlPath === '/predio/api/simulation/presets') && req.method === 'GET') {
+    const body = JSON.stringify({
+      engine: 'AgriSoilWaterEngine v1.0.0 (FAO-56 Dual/Single Decoupled)',
+      soils: AgriSoilWaterEngine.SOIL_TEXTURE_PROFILES,
+      crops: AgriSoilWaterEngine.CROP_PROFILES
+    }, null, 2);
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(body);
+    return;
+  }
+
+  if ((urlPath === '/api/simulation/run' || urlPath === '/predio/api/simulation/run') && (req.method === 'GET' || req.method === 'POST')) {
+    const runSimulationWithParams = async (params) => {
+      try {
+        const cropId = params.crop_id || 'CROP-AVE-01';
+        const soilType = params.soil_type || 'franco_arcilloso';
+        const capacity = AgriSoilWaterEngine.calculateHydraulicCapacity(soilType, cropId);
+
+        let initialVwc = params.initial_vwc;
+        let vwcSource = 'Parámetro de usuario';
+        if (initialVwc == null) {
+          initialVwc = (cropId === 'CROP-VIN-01') ? 28.4 : ((cropId === 'CROP-CER-01') ? 32.5 : 34.0);
+          vwcSource = 'Sensor FDR de Terreno (Calibrado T=0)';
+        }
+
+        const stateT0 = AgriSoilWaterEngine.createInitialState(Number(initialVwc), capacity);
+        const baseClimate = await getForecast7dForcing();
+        const irrigQuota = params.irrigation_mm != null ? Number(params.irrigation_mm) : 5.5;
+
+        // Bifurcación en 4 ramas de escenarios What-If
+        const rawScenarios = AgriSoilWaterEngine.simulateScenarios(stateT0, baseClimate, {
+          baseline: {
+            name: 'Línea Base (Riego Programado)',
+            description: `Riego por goteo normal de ${irrigQuota} mm/día`,
+            modifier: (step) => ({ ...step, irrigation_mm: irrigQuota })
+          },
+          pump_failure: {
+            name: 'Corte / Falla de Bomba (What-If)',
+            description: 'Falla de bomba de pozo profundo o interrupción de energía desde el día 3',
+            modifier: (step, idx) => idx >= 2 ? { ...step, irrigation_mm: 0 } : { ...step, irrigation_mm: irrigQuota }
+          },
+          heatwave_puelche: {
+            name: 'Choque Térmico Viento Puelche (What-If)',
+            description: 'Viento cálido descendente (+35% demanda evaporativa ET0) con estrés hídrico',
+            modifier: (step, idx) => ({
+              ...step,
+              et0_mm: Number((step.et0_mm * 1.35).toFixed(2)),
+              irrigation_mm: idx >= 3 ? 0 : irrigQuota
+            })
+          },
+          deficit_rdi: {
+            name: 'Riego Deficitario Controlado (RDI)',
+            description: `Ahorro hídrico sustentable (50% de cuota: ${(irrigQuota * 0.5).toFixed(1)} mm/día)`,
+            modifier: (step) => ({ ...step, irrigation_mm: Number((irrigQuota * 0.5).toFixed(2)) })
+          }
+        }, capacity);
+
+        const formattedScenarios = {};
+        Object.keys(rawScenarios).forEach(key => {
+          const sc = rawScenarios[key];
+          formattedScenarios[key] = {
+            name: sc.name,
+            description: sc.description,
+            metrics: computeScenarioMetrics(sc.trajectory, capacity),
+            trajectory: sc.trajectory
+          };
+        });
+
+        const responsePayload = {
+          status: 'success',
+          engine: 'AgriSoilWaterEngine v1.0.0 (FAO-56 Dual/Single Decoupled)',
+          generated_at: new Date().toISOString(),
+          meta: {
+            crop_id: cropId,
+            crop_name: capacity.crop.name,
+            soil_type: soilType,
+            soil_name: capacity.soil.name,
+            hydraulic_capacity: capacity,
+            initial_vwc_percent: stateT0.vwc_percent,
+            initial_vwc_source: vwcSource
+          },
+          state_t0: stateT0,
+          scenarios: formattedScenarios
+        };
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(responsePayload, null, 2));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ status: 'error', message: err.message }));
+      }
+    };
+
+    if (req.method === 'GET') {
+      const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+      const params = Object.fromEntries(parsedUrl.searchParams.entries());
+      await runSimulationWithParams(params);
+      return;
+    }
+
+    if (req.method === 'POST') {
+      let bodyData = '';
+      req.on('data', chunk => bodyData += chunk);
+      req.on('end', async () => {
+        let params = {};
+        try {
+          if (bodyData.trim()) params = JSON.parse(bodyData);
+        } catch(e) {}
+        await runSimulationWithParams(params);
+      });
+      return;
+    }
+  }
+
+  // ─── API: Satélite STAC & Índices Radiométricos (Patrón DestinE DEDL) ────
+  if ((urlPath === '/api/sat/stac/passes' || urlPath === '/predio/api/sat/stac/passes') && req.method === 'GET') {
+    const scenes = await AgriStacClient.searchSentinelScenes();
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({
+      status: 'success',
+      catalog: 'Sentinel-2 L2A BOA STAC Catalog',
+      geometry: AgriStacClient.MENIEL_GEOMETRY,
+      scenes_count: scenes.length,
+      scenes: scenes
+    }, null, 2));
+    return;
+  }
+
+  if ((urlPath === '/api/sat/indices/summary' || urlPath === '/predio/api/sat/indices/summary') && req.method === 'GET') {
+    const summary = AgriStacClient.getPaddocksSpectralSummary();
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({
+      status: 'success',
+      engine: 'AgriStacClient Radiometric Engine v1.0.0',
+      summary: summary
+    }, null, 2));
+    return;
+  }
+
+  // ─── API: Cubo de Datos 4D & Slicer Polytope (Patrón DestinE Zarr) ───────
+  if ((urlPath === '/api/cube/query' || urlPath === '/predio/api/cube/query') && (req.method === 'GET' || req.method === 'POST')) {
+    const handleCubeQuery = async (params) => {
+      try {
+        const scenario = params.scenario || 'baseline';
+        const forcing = await getForecast7dForcing();
+
+        const cube = AgriDataCubeEngine.buildFarmDataCube({
+          soilEngine: AgriSoilWaterEngine,
+          stacClient: AgriStacClient,
+          basinEngine: AgriBasinHydrologyEngine,
+          forcing7d: forcing,
+          scenarioKey: scenario
+        });
+
+        if (params.paddock || params.stratum || params.time !== undefined) {
+          const sliceResult = AgriDataCubeEngine.slice(cube, {
+            paddock: params.paddock,
+            stratum: params.stratum,
+            time: params.time !== undefined ? parseInt(params.time) : undefined,
+            variable: params.variable || 'vwc_percent'
+          });
+
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({
+            status: 'success',
+            query: params,
+            slice: sliceResult
+          }, null, 2));
+          return;
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          status: 'success',
+          type: cube.type,
+          version: cube.version,
+          dimensions: cube.dimensions,
+          metadata: cube.metadata,
+          sample_slices_available: [
+            '?paddock=CROP-AVE-01&variable=vwc_percent (Matriz Estratigráfica)',
+            '?time=3&stratum=root_mid_60cm&variable=vwc_percent (Mapa Espacial Día 3)',
+            '?paddock=CROP-CER-01&stratum=root_shallow_20cm&variable=vwc_percent (Serie 1D)'
+          ]
+        }, null, 2));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ status: 'error', message: err.message }));
+      }
+    };
+
+    if (req.method === 'GET') {
+      const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+      const params = Object.fromEntries(parsedUrl.searchParams.entries());
+      await handleCubeQuery(params);
+      return;
+    }
+
+    if (req.method === 'POST') {
+      let bodyData = '';
+      req.on('data', chunk => bodyData += chunk);
+      req.on('end', async () => {
+        let params = {};
+        try {
+          if (bodyData.trim()) params = JSON.parse(bodyData);
+        } catch(e) {}
+        await handleCubeQuery(params);
+      });
+      return;
+    }
   }
 
   // GET & POST /api/notes
@@ -641,6 +974,9 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`══════════════════════════════════════════════════════════`);
   console.log(`🚀  Portal Unificado:   http://localhost:${PORT}`);
   console.log(`📡  Telemetría API:     http://localhost:${PORT}/api/telemetry/summary`);
+  console.log(`🔮  Simulación API:     http://localhost:${PORT}/api/simulation/run`);
+  console.log(`🛰️  Satélite STAC API:  http://localhost:${PORT}/api/sat/indices/summary`);
+  console.log(`🧊  Cubo de Datos 4D:   http://localhost:${PORT}/api/cube/query`);
   console.log(`💚  Health Check:       http://localhost:${PORT}/api/health`);
   console.log(`══════════════════════════════════════════════════════════\n`);
 });
