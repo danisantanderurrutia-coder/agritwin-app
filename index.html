@@ -62,7 +62,7 @@
                 }, 60);
                 return;
             }
-            const el = typeof target === 'string' ? document.getElementById(target) : (target || document.body);
+            const el = typeof target === 'string' ? document.getElementById(target) : target;
             if (!el) return;
             try {
                 renderMathInElement(el, {
@@ -73,7 +73,8 @@
                         {left: '\\(', right: '\\)', display: false}
                     ],
                     throwOnError: false,
-                    ignoredTags: ['script', 'noscript', 'style', 'textarea']
+                    ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'svg', 'canvas'],
+                    ignoredClasses: ['leaflet-container', 'leaflet-pane', 'leaflet-control', 'no-katex', 'leaflet-map-pane']
                 });
             } catch (err) {
                 console.warn('[KaTeX] render error in container:', err);
@@ -81,15 +82,20 @@
         };
 
         window.renderLatexEverywhere = function() {
-            window.renderLatexInContainer(document.body);
+            // Renderizado seguro en contenedores documentales y fichas técnicas
+            const targets = ['view-docs', 'view-cuaderno', 'docs-vecino', 'docs-arch', 'docs-tables', 'docs-dossier'];
+            targets.forEach(tId => {
+                const el = document.getElementById(tId);
+                if (el) window.renderLatexInContainer(el);
+            });
         };
 
         // Renderizado automático en carga de ventana y eventos DOM
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(window.renderLatexEverywhere, 150);
+            setTimeout(window.renderLatexEverywhere, 200);
         });
         window.addEventListener('load', () => {
-            setTimeout(window.renderLatexEverywhere, 300);
+            setTimeout(window.renderLatexEverywhere, 400);
         });
     </script>
 
@@ -1258,7 +1264,7 @@
               <span class="font-extrabold text-sm text-stone-900 tracking-tight font-serif group-hover:text-emerald-800 transition-colors">AGRITWIN</span>
               <span class="font-bold text-[10px] text-emerald-800 px-1.5 py-0.5 rounded bg-emerald-100/80 border border-emerald-300 font-mono">SUITE</span>
             </div>
-            <div class="text-[9px] text-stone-500 font-mono mt-0.5 hidden sm:block">CUENCA MAULE SUR • 122K HA</div>
+            <div onclick="event.stopPropagation(); openCerroMap();" class="text-[9px] text-stone-500 hover:text-sky-700 font-mono mt-0.5 hidden sm:block cursor-pointer" title="Abrir Gemelo Digital de Cuenca">CUENCA MAULE SUR • 122K HA ↗</div>
           </div>
         </div>
 
@@ -1277,6 +1283,11 @@
 
       <!-- Derecha: Navegación Permanente Unificada del Hub (Limpia y Minimalista) -->
       <nav class="flex items-center gap-1 sm:gap-2 font-sans relative">
+        <!-- 0. Gemelo de Cuenca GIS (122k ha) -->
+        <button id="navBtn-territory" onclick="openCerroMap()" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold text-sky-900 bg-sky-500/15 border border-sky-500/30 hover:bg-sky-500/25 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm" title="Gemelo GIS de Cuenca (122.070 ha): Satélite Sentinel-2, DEM, Hidrología Río Longaví y Bullileo">
+          <span>🏔️</span> <span class="hidden md:inline">Cuenca GIS</span>
+        </button>
+
         <!-- 1. Juego Tutorial (Fuera del Cockpit) -->
         <button id="navBtn-tutorial" onclick="openTutorialNav()" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-stone-200/60 transition-all flex items-center gap-1.5 cursor-pointer" title="Juego Tutorial: Dinámica y Aprendizaje Interactivo de AgroTwin">
           <span>🎮</span> <span>Juego Tutorial</span>
@@ -1527,11 +1538,14 @@
                             </p>
                         </div>
                         <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-                            <button onclick="openCerroMode()" class="flex-1 py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
-                                <span>🔭</span> Subir a la Cumbre
+                            <button onclick="openCerroMap()" class="flex-1 py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Abrir Gemelo GIS de Cuenca (122.070 ha): Satélite Sentinel-2, DEM, Hidrología Río Longaví">
+                                <span>🗺️</span> Gemelo GIS
                             </button>
-                            <button onclick="openCuencaAdvisorsModal()" class="py-2.5 px-3 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 border border-sky-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA de Cuenca">
-                                <span>🧠</span> 3 Asesores
+                            <button onclick="switchMasterView('cerro'); setCerroSubView('sim');" class="py-2.5 px-3 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 border border-sky-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Simulador de Crecidas y Piro-Riesgo">
+                                <span>⚡</span> Simulador
+                            </button>
+                            <button onclick="openCuencaAdvisorsModal()" class="py-2.5 px-2.5 rounded-xl bg-white hover:bg-sky-50 text-stone-800 border border-stone-300 font-bold text-xs font-mono flex items-center justify-center gap-1 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA de Cuenca">
+                                <span>🧠</span>
                             </button>
                         </div>
                     </div>

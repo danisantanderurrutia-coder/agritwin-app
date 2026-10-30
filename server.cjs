@@ -914,7 +914,12 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── Servir Gemelo Predial (agritwin-predio) Integrado en Puerto Único 7777 ───
+  // ── Servir Gemelo Predial & Gemelo de Cuenca en Puerto Único 7777 ───
+  if (urlPath === '/cuenca' || urlPath === '/cerro' || urlPath === '/territorio') {
+    res.writeHead(302, { 'Location': '/#cuenca' });
+    res.end();
+    return;
+  }
   if (urlPath === '/predio' || urlPath === '/galpon') {
     res.writeHead(302, { 'Location': '/predio/' });
     res.end();

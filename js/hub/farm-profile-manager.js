@@ -301,8 +301,8 @@
             </p>
           </div>
 
-          <!-- Matriz de Acceso: Tarjeta Meniel + Botón Nuevo Predio -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+          <!-- Matriz de Acceso: Tarjeta Meniel + Botón Nuevo Predio + Botón Cuenca -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
             
             <!-- Opción 1: Fundo Meniel (Predio Maestro de Referencia) -->
             <div onclick="window.farmProfileManager.selectAndEnterProfile('meniel')" class="p-4 rounded-2xl bg-amber-950/40 hover:bg-amber-900/40 border border-amber-500/50 hover:border-amber-400 transition-all cursor-pointer flex flex-col justify-between group shadow-lg">
@@ -313,37 +313,57 @@
                 </div>
                 <h3 class="text-sm font-bold text-amber-200 font-serif mt-2 group-hover:text-amber-100">Fundo Meniel</h3>
                 <p class="text-[10px] text-stone-300 mt-1 line-clamp-2">
-                  Parral–Retiro, Maule • 24.8 ha (Rol 142-88) centradas en Casa Patronal (Zona 0), 8 cuarteles, tranque 18.5k m³, PRV y 18 asesores.
+                  Parral–Retiro • 24.8 ha (Rol 142-88), Casa Patronal (Zona 0), 8 cuarteles, tranque 18.5k m³ y PRV.
                 </p>
                 <div class="mt-2.5 flex items-center gap-1.5 flex-wrap text-[9px] font-mono text-amber-400/80">
                   <span class="bg-black/40 px-1.5 py-0.5 rounded">6 Ramas</span>
-                  <span class="bg-black/40 px-1.5 py-0.5 rounded">15 Sondas</span>
                   <span class="bg-black/40 px-1.5 py-0.5 rounded">Keyline</span>
                 </div>
               </div>
-              <button class="mt-3 w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-mono text-xs font-bold transition-all shadow flex items-center justify-center gap-1">
+              <button class="mt-3 w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-mono text-xs font-bold transition-all shadow flex items-center justify-center gap-1 cursor-pointer">
                 <span>Cargar Meniel</span> <span>➔</span>
               </button>
             </div>
 
-            <!-- Opción 2: Registrar / Crear Nuevo Predio -->
+            <!-- Opción 2: Macro-Cuenca Río Longaví (Digital Twin 122.070 ha) -->
+            <div onclick="window.openCuencaDirectFromSplash()" class="p-4 rounded-2xl bg-sky-950/40 hover:bg-sky-900/50 border border-sky-500/60 hover:border-sky-400 transition-all cursor-pointer flex flex-col justify-between group shadow-lg">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-2xl">🏔️</span>
+                  <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/30 text-sky-200 border border-sky-400/50">Macro-Cuenca</span>
+                </div>
+                <h3 class="text-sm font-bold text-sky-200 font-serif mt-2 group-hover:text-sky-100">Gemelo de Cuenca</h3>
+                <p class="text-[10px] text-stone-300 mt-1 line-clamp-2">
+                  122.070 ha • Embalse Bullileo 110 hm³, Río Longaví, radar Sentinel-2, FWI Puelche y balance hidrológico.
+                </p>
+                <div class="mt-2.5 flex items-center gap-1.5 flex-wrap text-[9px] font-mono text-sky-300/80">
+                  <span class="bg-black/40 px-1.5 py-0.5 rounded">Sentinel-2</span>
+                  <span class="bg-black/40 px-1.5 py-0.5 rounded">Bullileo</span>
+                </div>
+              </div>
+              <button class="mt-3 w-full py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-mono text-xs font-bold transition-all shadow flex items-center justify-center gap-1 cursor-pointer">
+                <span>Explorar Cuenca</span> <span>➔</span>
+              </button>
+            </div>
+
+            <!-- Opción 3: Registrar / Crear Nuevo Predio -->
             <div onclick="window.farmProfileManager.openCreateForm()" class="p-4 rounded-2xl bg-stone-900/60 hover:bg-stone-900/80 border border-stone-700 hover:border-teal-400/60 transition-all cursor-pointer flex flex-col justify-between group shadow-lg">
               <div>
                 <div class="flex items-center justify-between">
                   <span class="text-2xl">🌱</span>
                   <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/40">Semilla / Virgen</span>
                 </div>
-                <h3 class="text-sm font-bold text-teal-200 font-serif mt-2 group-hover:text-teal-100">+ Crear Nuevo Predio</h3>
+                <h3 class="text-sm font-bold text-teal-200 font-serif mt-2 group-hover:text-teal-100">+ Nuevo Predio</h3>
                 <p class="text-[10px] text-stone-300 mt-1 line-clamp-2">
-                  Inicializa un gemelo nuevo. Lienzo en blanco listo para dibujar con el dock 3D, subir Shapefile o vincular Rol SII.
+                  Inicializa un gemelo en blanco listo para dibujar con el dock 3D, subir Shapefile o vincular Rol SII.
                 </p>
                 <div class="mt-2.5 flex items-center gap-1.5 flex-wrap text-[9px] font-mono text-teal-400/80">
                   <span class="bg-black/40 px-1.5 py-0.5 rounded">Lienzo Semilla</span>
-                  <span class="bg-black/40 px-1.5 py-0.5 rounded">GIS Shapefile</span>
+                  <span class="bg-black/40 px-1.5 py-0.5 rounded">Shapefile</span>
                 </div>
               </div>
-              <button class="mt-3 w-full py-2 rounded-xl bg-teal-700 hover:bg-teal-600 text-white font-mono text-xs font-bold transition-all shadow flex items-center justify-center gap-1">
-                <span>+ Registrar Predio</span>
+              <button class="mt-3 w-full py-2 rounded-xl bg-teal-700 hover:bg-teal-600 text-white font-mono text-xs font-bold transition-all shadow flex items-center justify-center gap-1 cursor-pointer">
+                <span>+ Registrar</span>
               </button>
             </div>
 
@@ -471,21 +491,42 @@
 
     window.dismissAlchemicalSplash = dismissSplash;
 
+    window.openCuencaDirectFromSplash = function() {
+      dismissSplash();
+      setTimeout(() => {
+        if (typeof openCerroMap === 'function') {
+          openCerroMap();
+        } else if (typeof switchMasterView === 'function') {
+          switchMasterView('territory', 'cerro');
+        }
+      }, 100);
+    };
+
     const urlParams = new URLSearchParams(window.location.search);
-    const targetMode = urlParams.get('mode') || urlParams.get('view');
+    const hash = window.location.hash.replace('#', '').toLowerCase();
+    const targetMode = urlParams.get('mode') || urlParams.get('view') || (hash ? hash : null);
+
     if (targetMode) {
       dismissSplash();
       setTimeout(() => {
-        if (targetMode === 'map' || targetMode === 'cuenca_map' || targetMode === 'territory') {
+        if (targetMode === 'map' || targetMode === 'cuenca' || targetMode === 'cuenca_map' || targetMode === 'cuenca-gis' || targetMode === 'territory') {
           if (typeof openCerroMap === 'function') openCerroMap();
-        } else if (targetMode === 'cerro' || targetMode === 'cuenca') {
-          if (typeof openCerroModeDirect === 'function') openCerroModeDirect();
-          else if (typeof switchMasterView === 'function') switchMasterView('cerro');
+          else if (typeof switchMasterView === 'function') switchMasterView('territory', 'cerro');
+        } else if (targetMode === 'sim' || targetMode === 'cuenca-sim' || targetMode === 'cerro-sim') {
+          if (typeof switchMasterView === 'function') switchMasterView('cerro');
+          if (typeof setCerroSubView === 'function') setCerroSubView('sim');
+        } else if (targetMode === 'cerro') {
+          if (typeof openCerroMap === 'function') openCerroMap();
         } else if (typeof switchMasterView === 'function') {
           switchMasterView(targetMode);
         }
-      }, 350);
+      }, 200);
     }
+
+    window.addEventListener('hashchange', function() {
+      const h = window.location.hash.replace('#', '');
+      if (h) dismissSplash();
+    });
 
     window.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' || e.key === ' ' || e.code === 'Space') {

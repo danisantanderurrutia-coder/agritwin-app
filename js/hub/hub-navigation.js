@@ -206,6 +206,9 @@
 
         window.switchMasterView = switchMasterView;
         function switchMasterView(viewId, mode) {
+            if (typeof window.dismissAlchemicalSplash === 'function') {
+                window.dismissAlchemicalSplash();
+            }
             if (viewId === 'cuenca') {
                 viewId = 'territory';
                 if (!mode) mode = 'cerro';
@@ -463,6 +466,9 @@
         };
 
         function openCerroMapWithTab(tabId) {
+            if (typeof window.dismissAlchemicalSplash === 'function') {
+                window.dismissAlchemicalSplash();
+            }
             switchMasterView('territory', 'cerro');
             const cerroSatNav = document.getElementById('cerroSatelliteSubdeckNav');
             if (cerroSatNav) cerroSatNav.style.display = 'flex';
@@ -476,16 +482,19 @@
             const mapDock = document.getElementById('cuencaMapControlDock');
             if (mapDock) mapDock.style.display = 'flex';
             if (typeof selectSidebarTab === 'function') {
-                selectSidebarTab(tabId || 'tab-tiempo');
+                selectSidebarTab(tabId || 'tab-sig');
             }
             const statusModeLabel = document.getElementById('statusModeLabel');
             if (statusModeLabel) {
                 statusModeLabel.innerHTML = '🏔️ Modo: Cumbre del Cerro (Macro-Cuenca 122k ha)';
                 statusModeLabel.className = 'text-sky-400 font-bold bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/30 whitespace-nowrap';
             }
+            if (map) {
+                map.invalidateSize(true);
+            }
             setTimeout(() => {
                 if (map) {
-                    map.invalidateSize();
+                    map.invalidateSize(true);
                     map.flyTo([-36.2115, -71.6050], 12, { duration: 1.0 });
                 }
                 if (window.energyFlowEngine) {
@@ -498,6 +507,9 @@
                 const scrubber = document.getElementById('cuencaWindyTimelineScrubber');
                 if (scrubber) scrubber.style.display = 'block';
             }, 100);
+            setTimeout(() => {
+                if (map) map.invalidateSize(true);
+            }, 350);
         }
 
         // Navegación con Botones a las Vistas Predefinidas de la Cuenca
