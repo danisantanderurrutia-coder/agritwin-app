@@ -348,9 +348,16 @@
                 }
             } else if (viewId === 'panal') {
                 initPanalSuite(mode);
+            } else if (viewId === 'docs') {
+                if (typeof window.renderLatexInContainer === 'function') {
+                    setTimeout(() => window.renderLatexInContainer('view-docs'), 80);
+                }
             } else if (viewId === 'cuaderno') {
                 if (typeof initHubCuadernoView === 'function') {
                     initHubCuadernoView();
+                }
+                if (typeof window.renderLatexInContainer === 'function') {
+                    setTimeout(() => window.renderLatexInContainer('view-cuaderno'), 80);
                 }
             }
 
@@ -1401,13 +1408,14 @@
                     }
                 } else if (tabId === 'docs-tables') {
                     if (typeof initDocsCatalog === 'function') initDocsCatalog();
-                } else if (tabId === 'docs-vecino') {
-                    setTimeout(() => {
-                        if (typeof window.renderLatexInContainer === 'function') {
-                            window.renderLatexInContainer('docs-vecino');
-                        }
-                    }, 80);
                 }
+
+                // Renderizado reactivo universal de LaTeX en la subpestaña activa
+                setTimeout(() => {
+                    if (typeof window.renderLatexInContainer === 'function') {
+                        window.renderLatexInContainer(tabId);
+                    }
+                }, 80);
             } catch (err) {
                 console.warn('[Docs Vault] Error actualizando subtab:', tabId, err);
             }
@@ -1450,8 +1458,39 @@
             }
         });
 
-        // Navegación Master-Detail de Arquitectura (6 Módulos con Mermaid & Tablas)
+        // Navegación Master-Detail de Arquitectura (7 Módulos de Ingeniería + Enrutamiento Teórico/Gobernanza)
         window.switchArchModule = function(moduleId) {
+            // Módulos migrados a Marco Teórico & Metodología
+            if (['hydro', 'fire', 'keyline', 'tactico', 'doctrina', 'atmosferica'].includes(moduleId)) {
+                if (typeof switchDocsTab === 'function') switchDocsTab('docs-vecino');
+                setTimeout(() => {
+                    const target = document.getElementById('mod-teorico-' + moduleId) || document.getElementById('arch-detail-' + moduleId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    if (typeof window.renderLatexInContainer === 'function') {
+                        window.renderLatexInContainer('docs-vecino');
+                    }
+                }, 100);
+                return;
+            }
+
+            // Módulo migrado a Expediente Meniel & Gobernanza
+            if (moduleId === 'dao') {
+                if (typeof switchDocsTab === 'function') switchDocsTab('docs-tables');
+                setTimeout(() => {
+                    const target = document.getElementById('mod-expediente-dao') || document.getElementById('arch-detail-dao');
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    if (typeof window.renderLatexInContainer === 'function') {
+                        window.renderLatexInContainer('docs-tables');
+                    }
+                }, 100);
+                return;
+            }
+
+            // 7 Módulos de Arquitectura de Software & Hardware
             document.querySelectorAll('.arch-detail-panel').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.arch-nav-item').forEach(el => {
                 el.classList.remove('arch-item-active');
@@ -1476,25 +1515,12 @@
                     }
                 }, 50);
             }
-            if (moduleId === 'atmosferica' || moduleId === 'destine') {
-                setTimeout(() => {
-                    if (typeof window.renderLatexInContainer === 'function') {
-                        window.renderLatexInContainer('arch-detail-' + moduleId);
-                    } else if (typeof renderMathInElement === 'function' && targetDetail) {
-                        try {
-                            renderMathInElement(targetDetail, {
-                                delimiters: [
-                                    {left: '$$', right: '$$', display: true},
-                                    {left: '\\[', right: '\\]', display: true},
-                                    {left: '$', right: '$', display: false},
-                                    {left: '\\(', right: '\\)', display: false}
-                                ],
-                                throwOnError: false
-                            });
-                        } catch(e) {}
-                    }
-                }, 50);
-            }
+
+            setTimeout(() => {
+                if (typeof window.renderLatexInContainer === 'function') {
+                    window.renderLatexInContainer('arch-detail-' + moduleId);
+                }
+            }, 60);
         };
 
         // Renderizador de Diagramas Mermaid para el Vault de Arquitectura

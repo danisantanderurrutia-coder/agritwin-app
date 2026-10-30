@@ -45,7 +45,53 @@
     <!-- KaTeX for Scientific & Mathematical Equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="if(typeof window.renderLatexInContainer==='function'){window.renderLatexInContainer('modalAtmosphericScience');window.renderLatexInContainer('arch-detail-atmosferica');window.renderLatexInContainer('arch-detail-destine');window.renderLatexInContainer('docs-vecino');window.renderLatexInContainer('tab-tiempo');window.renderLatexInContainer('detailsRiskTornado');}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <script>
+        // Motor de Renderizado LaTeX / KaTeX Global y Reactivo
+        window.renderLatexInContainer = function(target) {
+            if (typeof renderMathInElement !== 'function') {
+                let attempts = 0;
+                const timer = setInterval(() => {
+                    attempts++;
+                    if (typeof renderMathInElement === 'function') {
+                        clearInterval(timer);
+                        window.renderLatexInContainer(target);
+                    } else if (attempts > 60) {
+                        clearInterval(timer);
+                    }
+                }, 60);
+                return;
+            }
+            const el = typeof target === 'string' ? document.getElementById(target) : (target || document.body);
+            if (!el) return;
+            try {
+                renderMathInElement(el, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false}
+                    ],
+                    throwOnError: false,
+                    ignoredTags: ['script', 'noscript', 'style', 'textarea']
+                });
+            } catch (err) {
+                console.warn('[KaTeX] render error in container:', err);
+            }
+        };
+
+        window.renderLatexEverywhere = function() {
+            window.renderLatexInContainer(document.body);
+        };
+
+        // Renderizado automático en carga de ventana y eventos DOM
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(window.renderLatexEverywhere, 150);
+        });
+        window.addEventListener('load', () => {
+            setTimeout(window.renderLatexEverywhere, 300);
+        });
+    </script>
 
 
     <!-- Chart.js -->
@@ -7139,17 +7185,20 @@
             <!-- Subnavegación de 4 Secciones Maestras del Vault (Galpón Luminoso) -->
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
                 <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-sky-50 text-sky-950 border border-sky-300 shadow-sm">
-                    <span>📐</span> <span>1. Marco Teórico & Metodología</span>
-                    <span class="px-1.5 py-0.2 rounded bg-sky-600 text-white text-[9px] font-mono">MÓDULOS 1-5</span>
+                    <span>📐</span> <span>1. Marco Teórico &amp; Metodología</span>
+                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 1-7</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>⚡</span> <span>2. Arquitectura de Software & Hardware</span>
+                    <span>⚡</span> <span>2. Arquitectura de Software &amp; Hardware</span>
+                    <span class="px-1.5 py-0.5 rounded bg-amber-600 text-white text-[9px] font-mono font-bold">7 MÓDULOS CORE</span>
                 </button>
                 <button onclick="switchDocsTab('docs-tables')" id="docsTabBtn-tables" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
-                    <span>🏡</span> <span>3. Expediente Meniel & Gobernanza</span>
+                    <span>🏡</span> <span>3. Expediente Meniel &amp; Gobernanza</span>
+                    <span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 text-[9px] font-mono font-bold">CATASTRO + DAO</span>
                 </button>
                 <button onclick="switchDocsTab('docs-dossier')" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer bg-amber-50 text-amber-950 border border-amber-300 shadow-sm">
-                    <span>📦</span> <span>4. Recursos, Informes & Dossiers</span>
+                    <span>📦</span> <span>4. Recursos, Informes &amp; Dossiers</span>
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300 text-[9px] font-mono font-bold">BENCHMARKING + PDF</span>
                 </button>
             </div>
 
@@ -7188,6 +7237,75 @@
                 <!-- Visor Interactivo Embebido Directo en el Hub -->
                 <div class="rounded-2xl border border-[#E7DAC6] overflow-hidden shadow-sm bg-white" style="height: 860px;">
                     <iframe id="iframeDossier" src="dossier.html?v=3.5" class="w-full h-full border-0" allow="clipboard-write"></iframe>
+                </div>
+
+                <!-- Tabla Comparativa de Resultados & Benchmarks Globales -->
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">BENCHMARKING DE IMPACTO</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-stone-500">508 ha Catastradas &bull; Microcuenca Longaví (122k ha)</span>
+                            </div>
+                            <h3 class="text-sm sm:text-base font-bold text-stone-900 font-serif uppercase tracking-wider">Evaluación Empírica: Predio Testigo vs Manejo AgroTwin Unificado</h3>
+                            <p class="text-xs text-stone-500">Validación cuantitativa de servicios ecosistémicos y eficiencia en terreno frente a la agricultura convencional.</p>
+                        </div>
+                        <span class="text-[10px] font-mono text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded border border-emerald-300">
+                            Validación Maule Sur
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
+                        <table class="w-full text-left text-xs font-mono border-collapse">
+                            <thead>
+                                <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
+                                    <th class="py-2.5 px-3">Dimensión Biofísica &amp; Económica</th>
+                                    <th class="py-2.5 px-3">Predio Convencional (Testigo)</th>
+                                    <th class="py-2.5 px-3 text-emerald-800 font-bold">Manejo AgroTwin (Meniel &amp; Red)</th>
+                                    <th class="py-2.5 px-3 text-sky-800">Impacto en Cuenca / Comunidad</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700">
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold text-stone-900">Riesgo de Incendio (Puelche)</td>
+                                    <td class="py-2.5 px-3 text-rose-700 font-semibold">FWI 68 (Crítico, Pastizal seco continuo)</td>
+                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">FWI 24 (Bajo, Faja verde 45m pastoreada)</td>
+                                    <td class="py-2.5 px-3 text-sky-800">$-64.7\%$ de velocidad de propagación</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold text-stone-900">Retención Hídrica en Suelo (0-30cm)</td>
+                                    <td class="py-2.5 px-3 text-stone-500">18.4% VWC (Escorrentía superficial)</td>
+                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">36.2% VWC (Infiltración Keyline 320 L/s)</td>
+                                    <td class="py-2.5 px-3 text-sky-800">$18.500\text{ m}^3$ almacenados en tranque</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold text-stone-900">Rendimiento Forrajero PRV</td>
+                                    <td class="py-2.5 px-3 text-stone-500">1.950 kg MS/ha (Sobrepastoreo selectivo)</td>
+                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">4.820 kg MS/ha (Rotación Voisin 8 pot.)</td>
+                                    <td class="py-2.5 px-3 text-sky-800">$+147\%$ carga animal regenerativa</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold text-stone-900">Autonomía Hídrica Poblacional</td>
+                                    <td class="py-2.5 px-3 text-rose-700 font-semibold">12 Días (Pozos deprimidos en estiaje)</td>
+                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">42 Días (Conexión telemétrica tranque)</td>
+                                    <td class="py-2.5 px-3 text-sky-800">Seguridad hídrica 30 familias APR</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold text-stone-900">Secuestro Carbono &amp; MO Suelo</td>
+                                    <td class="py-2.5 px-3 text-stone-500">0.8 t CO₂e/ha/año (1.4% MO)</td>
+                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">4.6 t CO₂e/ha/año (3.8% MO)</td>
+                                    <td class="py-2.5 px-3 text-sky-800">$2.336\text{ t CO}_2\text{e/año}$ en 508 ha vecinales</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold text-stone-900">Ahorro Energía de Bombeo</td>
+                                    <td class="py-2.5 px-3 text-stone-500">$12.4M CLP/año (Riego por calendario)</td>
+                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">$4.2M CLP/año (Riego FDR bajo demanda)</td>
+                                    <td class="py-2.5 px-3 text-sky-800">$-8.2\text{M CLP/año}$ en costos OPEX</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -8374,6 +8492,132 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     SECCIÓN 10: MÓDULO 6 - MANDO TÁCTICO C2, CINEMÁTICA 0-12H & MATRIZ INMUTABLE VS PARTICULAR
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div id="mod-teorico-tactico" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-sm">10</span>
+                            <div>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 6: Doctrina Operacional C2, Matriz Multiamenaza &amp; Cinemática Táctica ($0\text{--}12\text{ h}$)</h4>
+                                <p class="text-xs text-stone-500 font-sans">Matriz Canónica $R(\mathbf{x}, t) = H(\mathbf{x}, t) \times V(\mathbf{x}) \times C(\mathbf{x})$ • Desacople Epistemológico entre Leyes Físicas Inmutables y Datos Particulares de Terreno</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-50 text-rose-800 border border-rose-300">
+                            C2 &bull; MANIOBRA DEFENSIVA
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-stone-700 leading-relaxed font-sans">
+                        La doctrina de mando y control (C2) de AgriTwin rechaza los diagnósticos estáticos que entregan mapas decorativos sin capacidad de respuesta. Todo cálculo biofísico debe alimentar una <strong>ventana de maniobra cinemática ($0\text{ a } 12\text{ horas}$)</strong> donde el operador y la comunidad vecinal pueden tomar decisiones antes de que el evento cruce el umbral destructivo:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Tarjeta KaTeX 1: Ecuación Canónica de Riesgo Espacio-Temporal -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🎯</span> Matriz de Riesgo $R(\mathbf{x}, t)$
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$R(\mathbf{x}, t) = H(\mathbf{x}, t) \times V(\mathbf{x}) \times C(\mathbf{x})$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                <strong>$H$ (Amenaza):</strong> Magnitud biofísica externa (FWI, helada catabática o crecida).<br>
+                                <strong>$V$ (Vulnerabilidad):</strong> Resistencia del cultivo o bioma colindante.<br>
+                                <strong>$C$ (Costo/Activo):</strong> Exposición de viviendas, tranques y sistemas APR.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Ventana de Maniobra Cinemática -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>⏱️</span> Ventana Cinemática Táctica
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\Delta t_{\text{alerta}} \le 15\text{ min}, \quad \Delta t_{\text{maniobra}} \le 120\text{ min}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Frente a una ráfaga de viento Puelche ($42\text{ km/h}$) o vaciado de helada catabática, el gemelo digital emite la recomendación de presurización o cortina en menos de $15\text{ min}$, otorgando hasta $2\text{ horas}$ de maniobra anticipada.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Axioma Inmutable vs Particular -->
+                        <div id="mod-teorico-doctrina" class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>📜</span> Inmutable ($\mathcal{L}$) vs. Particular ($\mathcal{S}_i$)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\mathcal{Y}_i(t) = \mathcal{L}(\mathcal{S}_i(t), \mathbf{F}_{\text{clima}}(t))$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                <strong>$\mathcal{L}$ (Inmutable):</strong> La física universal (Darcy, Rothermel, KaTeX, FWI, Navier-Stokes).<br>
+                                <strong>$\mathcal{S}_i(t)$ (Particular):</strong> Las parcelas, el suelo y las sondas de cada predio rural.<br>
+                                Se garantiza portabilidad total del software sin alterar la doctrina.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     SECCIÓN 11: MÓDULO 7 - LABORATORIO BIOFÍSICO INTERACTIVO & SIMULADORES
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div id="mod-teorico-hydro" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm">11</span>
+                            <div>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 7: Modelos Biofísicos de Cuenca: Manning, Darcy &amp; Balance Pluviométrico Keyline</h4>
+                                <p class="text-xs text-stone-500 font-sans">Ecuaciones deterministas de escorrentía superficial D8, recarga de acuíferos y retención en tranques colectivos</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-teal-50 text-teal-800 border border-teal-300">
+                            HIDROLOGÍA DETERMINISTA
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Tarjeta KaTeX 1: Manning & Curvas D8 -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>💧</span> Escorrentía Fluvial Manning
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$v = \frac{1}{n} R_h^{2/3} S^{1/2}, \qquad Q = A \cdot v$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Modela la velocidad de flujo $v$ y el caudal $Q$ en los lechos del Río Longaví y esteros colindantes en función de la rugosidad de lecho $n = 0.045$, radio hidráulico $R_h$ y gradiente topográfico $S$ derivado del DEM de $30\text{ m}$.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Ley de Darcy (Acuífero APR) -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🚰</span> Infiltración Aluvial de Darcy
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$Q_{\text{Darcy}} = -K \cdot A \cdot \frac{\Delta h}{L}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Cuantifica la recarga inducida hacia los 5 comités APR ($42.000\text{ m}^3\text{/año}$) inducida por la carga piezométrica $\Delta h$ del Tranque Meniel a través de las gravas aluviales con conductividad $K = 4.5\times 10^{-4}\text{ m/s}$.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Retención Keyline Yeomans -->
+                        <div id="mod-teorico-keyline" class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🌊</span> Amortiguación Keyline Yeomans
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$V_{\text{ret}} = A_{\text{cuenca}} \cdot P_{\text{neta}} \cdot C_{\text{infil}}, \quad \frac{dS}{dt} = Q_{\text{in}} - Q_{\text{out}}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Los surcos en línea clave y el tranque de $18.500\text{ m}^3$ desvían las puntas de crecida pluvial ($180\text{ m}^3\text{/s}$ amortiguados a $175.8\text{ m}^3\text{/s}$), incrementando la humedad volumétrica del suelo ($+17.8\%\text{ VWC}$).
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
@@ -8401,13 +8645,13 @@
                 <!-- Master-Detail Layout de Arquitectura -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     
-                    <!-- PANEL IZQUIERDO: Selector de Módulos Arquitectónicos -->
+                    <!-- PANEL IZQUIERDO: Selector de 7 Módulos de Ingeniería de Software & Hardware -->
                     <div class="lg:col-span-4 space-y-2 bg-white p-3.5 rounded-2xl border border-[#E7DAC6] shadow-sm">
                         <div class="text-[11px] font-mono font-bold text-stone-500 uppercase px-2 py-1 tracking-wider border-b border-[#E7DAC6] pb-2 mb-2 flex items-center justify-between">
                             <span class="flex items-center gap-1.5">
-                                <span>Módulos del Sistema</span>
+                                <span>Ingeniería del Sistema</span>
                             </span>
-                            <span class="text-stone-400">14 Módulos</span>
+                            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold">7 Módulos Core</span>
                         </div>
 
                         <!-- Item 1: Ingesta, Caja de Terreno IP67 & Jerarquía de Visores -->
@@ -8434,151 +8678,86 @@
                             </div>
                         </button>
 
-                        <!-- Item 3: Motor Hidrológico & Evapotranspiración -->
-                        <button onclick="switchArchModule('hydro')" id="arch-nav-hydro" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-sky-100/70 border border-sky-200">💧</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">3. Hidrología & Evapotranspiración</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-sky-100 text-sky-800 font-bold">Biofísica</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Penman-Monteith FAO-56, sondas FDR (10/30/60cm) y Darcy.</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 4: Sistema Piro-Climático & Viento Puelche -->
-                        <button onclick="switchArchModule('fire')" id="arch-nav-fire" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-rose-100/70 border border-rose-200">🔥</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">4. Piro-Clima & Viento Puelche</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-amber-100 text-amber-800 font-bold">Riesgo</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Canadian FWI, alertas catabáticas y fajas cortafuego silvopastoriles.</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 5: Infiltración & Amortiguación Keyline -->
-                        <button onclick="switchArchModule('keyline')" id="arch-nav-keyline" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-teal-100/70 border border-teal-200">🌊</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">5. Retención Aluvial & Keyline</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-teal-100 text-teal-800 font-bold">Infraestructura</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Líneas clave, tranque 20k m³, atenuación de crecidas y APR.</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 6: Gobernanza Vecinal & DAO Cuadrática -->
-                        <button onclick="switchArchModule('dao')" id="arch-nav-dao" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-purple-100/70 border border-purple-200">🤝</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">6. Gobernanza Vecinal DAO</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-800 font-bold">Gobernanza</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Votación cuadrática Costo = V², acuerdos de servidumbre y hash SHA-256.</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 7: Stack Tecnológico & Integración Cross-System -->
+                        <!-- Item 3: Stack Tecnológico & Integración Cross-System -->
                         <button onclick="switchArchModule('stack')" id="arch-nav-stack" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
                             <span class="text-xl p-1.5 rounded-lg bg-indigo-100/70 border border-indigo-200">⚡</span>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">7. Stack Tecnológico & APIs</span>
+                                    <span class="font-bold text-xs text-stone-900 truncate">3. Stack Tecnológico & APIs</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-indigo-100 text-indigo-800 font-bold">Full-Stack</span>
                                 </div>
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Three.js WebGL, Leaflet GIS, Node.js Gateway y WebSockets.</p>
                             </div>
                         </button>
 
-                        <!-- Item 8: El Principio Árbol (Tronco Suite Hub & Ramas Soberanas) -->
+                        <!-- Item 4: El Principio Árbol (Tronco Suite Hub & Ramas Soberanas) -->
                         <button onclick="switchArchModule('arbol')" id="arch-nav-arbol" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
                             <span class="text-xl p-1.5 rounded-lg bg-emerald-100/70 border border-emerald-300">🌳</span>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">8. Principio Árbol</span>
+                                    <span class="font-bold text-xs text-stone-900 truncate">4. Principio Árbol</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-amber-100 text-amber-900 font-bold">Axioma</span>
                                 </div>
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Tronco Suite Hub central y 6 ramas desacopladas sin saltos cruzados.</p>
                             </div>
                         </button>
 
-                        <!-- Item 9: Regla Visual AoE II (6 Ramas Ecosistémicas) -->
+                        <!-- Item 5: Regla Visual AoE II (6 Ramas Ecosistémicas) -->
                         <button onclick="switchArchModule('aoe')" id="arch-nav-aoe" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
                             <span class="text-xl p-1.5 rounded-lg bg-amber-100/70 border border-amber-300">🎨</span>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">9. Regla Visual AoE</span>
+                                    <span class="font-bold text-xs text-stone-900 truncate">5. Regla Visual AoE</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-amber-100 text-amber-900 font-bold">UI/UX</span>
                                 </div>
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Diseño diegético de menús de campaña y matriz cromática de las 6 ramas.</p>
                             </div>
                         </button>
 
-                        <!-- Item 10: Motores Biofísicos 3D & Herramientas CLI -->
+                        <!-- Item 6: Motores Biofísicos 3D & Herramientas CLI -->
                         <button onclick="switchArchModule('engines')" id="arch-nav-engines" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
                             <span class="text-xl p-1.5 rounded-lg bg-purple-100/70 border border-purple-300">⚙️</span>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">10. Motores & Herramientas CLI</span>
+                                    <span class="font-bold text-xs text-stone-900 truncate">6. Motores & Herramientas CLI</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-900 font-bold">Runtime</span>
                                 </div>
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">WebGL PBR 60FPS, FAO-56 Penman, Vientos DEM y comandos de terminal.</p>
                             </div>
                         </button>
 
-                        <!-- Item 11: Doctrina Táctica C2 & Matriz Multiamenaza H-V-R -->
-                        <button onclick="switchArchModule('tactico')" id="arch-nav-tactico" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-rose-100/80 border border-rose-300">🎯</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">11. Mando Táctico C2 & H-V-R</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-rose-100 text-rose-900 font-bold">Doctrina C2</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Matriz canónica H×V=R, capas SIG, vectores por fases 0-12h y líneas de contención.</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 12: Matriz de Datos: Lo Inmutable (Doctrina) vs Lo Particular (Predio) -->
-                        <button onclick="switchArchModule('doctrina')" id="arch-nav-doctrina" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-teal-100/80 border border-teal-300">📜</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">12. Doctrina vs. Particular</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-teal-100 text-teal-900 font-bold">Matriz</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Inmutable (Cómo opera la app) vs Particular (Datos de cada predio).</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 13: Física Atmosférica, Downscaling & Escenarios de Estrés (30m) -->
-                        <button onclick="switchArchModule('atmosferica')" id="arch-nav-atmosferica" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
-                            <span class="text-xl p-1.5 rounded-lg bg-sky-100/80 border border-sky-300">🌪️</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">13. Física Atmosférica &amp; 30m</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-sky-100 text-sky-900 font-bold">Downscaling</span>
-                                </div>
-                                <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Modelos globales vs locales (30m), 6 capas, 8 momentos, ecuaciones y sesgos.</p>
-                            </div>
-                        </button>
-
-                        <!-- Item 14: Doctrina Destination Earth & Motores Headless -->
+                        <!-- Item 7: Doctrina Destination Earth & Motores Headless -->
                         <button onclick="switchArchModule('destine')" id="arch-nav-destine" class="arch-nav-item w-full text-left p-3 rounded-xl border border-transparent hover:bg-stone-50 transition-all cursor-pointer flex items-start gap-3">
                             <span class="text-xl p-1.5 rounded-lg bg-teal-100/80 border border-teal-300">🌐</span>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="font-bold text-xs text-stone-900 truncate">14. Destination Earth Core</span>
+                                    <span class="font-bold text-xs text-stone-900 truncate">7. Destination Earth Core</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-teal-100 text-teal-900 font-bold">DestinE v4.2</span>
                                 </div>
                                 <p class="text-[11px] text-stone-500 mt-0.5 line-clamp-1">Motores headless puros, acople Bullileo/Longaví, STAC/COG y Tensor 4D.</p>
                             </div>
                         </button>
 
-                    </div>
+                        <!-- Tarjeta Informativa de Reorganización Biofísica & Gobernanza -->
+                        <div class="p-3.5 rounded-xl bg-gradient-to-br from-stone-50 to-amber-50/40 border border-[#E7DAC6] text-[11px] space-y-2.5 mt-3">
+                            <div class="font-bold text-stone-800 flex items-center gap-1.5 font-serif">
+                                <span>📐</span> <span>Física & Metodología en Marco Teórico</span>
+                            </div>
+                            <p class="text-stone-600 leading-relaxed">
+                                Los modelos matemáticos de física del terreno y clima fueron consolidados en la subpestaña <strong>1. Marco Teórico & Metodología</strong>:
+                            </p>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="switchDocsTab('docs-vecino');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-amber-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">💧 Hidrología & Manning</button>
+                                <button onclick="switchDocsTab('docs-vecino');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-amber-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🔥 FWI & Puelche</button>
+                                <button onclick="switchDocsTab('docs-vecino');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-amber-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🌊 Keyline Yeomans</button>
+                                <button onclick="switchDocsTab('docs-vecino');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-amber-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🌪️ Física Atmosférica 30m</button>
+                                <button onclick="switchDocsTab('docs-vecino');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-amber-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🎯 Mando Táctico C2</button>
+                            </div>
+                            <div class="border-t border-[#E7DAC6] pt-2 flex items-center justify-between">
+                                <span class="text-stone-500 font-serif">Gobernanza Ostrom ($C = V^2$):</span>
+                                <button onclick="switchDocsTab('docs-tables');" class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-300 font-mono font-bold text-[10px] cursor-pointer">🏡 Ver en Expediente</button>
+                            </div>
+                        </div>
 
                     <!-- PANEL DERECHO: Detalle Expandido con Diagrama Mermaid & Tablas -->
                     <div class="lg:col-span-8 space-y-6">
@@ -11937,87 +12116,104 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                     </div>
                 </div>
 
-                <!-- Tabla Comparativa de Resultados & Benchmarks -->
-                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
+                <!-- Gobernanza Vecinal & DAO Cuadrática Ostrom -->
+                <div id="mod-expediente-dao" class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
                         <div>
-                            <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider">Evaluación de Impacto: Predio Testigo vs Manejo AgroTwin Unificado</h3>
-                            <p class="text-xs text-stone-500">Validación empírica en terreno: 508 ha catastradas y microcuenca del Río Longaví (122k ha).</p>
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl">🤝</span>
+                                <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">Gobernanza Vecinal &amp; DAO Cuadrática (Voice Credits &bull; Elinor Ostrom)</h3>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-0.5">Mecanismo matemático y criptográfico que equilibra la intensidad de preferencia comunitaria sobre los predios colindantes de Fundo Meniel.</p>
                         </div>
-                        <span class="text-[10px] font-mono text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded border border-emerald-300">
-                            Validación Maule Sur
+                        <span class="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 border border-purple-300 font-mono text-[10px] font-bold self-start">
+                            $$\text{Costo} = V^2 \text{ Créditos}$$
                         </span>
                     </div>
 
-                    <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
-                        <table class="w-full text-left text-xs font-mono border-collapse">
-                            <thead>
-                                <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
-                                    <th class="py-2.5 px-3">Dimensión Biofísica & Económica</th>
-                                    <th class="py-2.5 px-3">Predio Convencional (Testigo)</th>
-                                    <th class="py-2.5 px-3 text-emerald-800 font-bold">Manejo AgroTwin (Meniel & Red)</th>
-                                    <th class="py-2.5 px-3 text-sky-800">Impacto en Cuenca / Comunidad</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700">
-                                <tr>
-                                    <td class="py-2.5 px-3 font-bold text-stone-900">Riesgo de Incendio (Puelche)</td>
-                                    <td class="py-2.5 px-3 text-rose-700 font-semibold">FWI 68 (Crítico, Pastizal seco continuo)</td>
-                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">FWI 24 (Bajo, Faja verde 45m pastoreada)</td>
-                                    <td class="py-2.5 px-3 text-sky-800">-64.7% de velocidad de propagación</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 px-3 font-bold text-stone-900">Retención Hídrica en Suelo (0-30cm)</td>
-                                    <td class="py-2.5 px-3 text-stone-500">18.4% VWC (Escorrentía superficial)</td>
-                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">36.2% VWC (Infiltración Keyline 320 L/s)</td>
-                                    <td class="py-2.5 px-3 text-sky-800">18.500 m³ almacenados en tranque</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 px-3 font-bold text-stone-900">Rendimiento Forrajero PRV</td>
-                                    <td class="py-2.5 px-3 text-stone-500">1.950 kg MS/ha (Sobrepastoreo selectivo)</td>
-                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">4.820 kg MS/ha (Rotación Voisin 8 pot.)</td>
-                                    <td class="py-2.5 px-3 text-sky-800">+147% carga animal regenerativa</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 px-3 font-bold text-stone-900">Autonomía Hídrica Poblacional</td>
-                                    <td class="py-2.5 px-3 text-rose-700 font-semibold">12 Días (Pozos deprimidos en estiaje)</td>
-                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">42 Días (Conexión telemétrica tranque)</td>
-                                    <td class="py-2.5 px-3 text-sky-800">Seguridad hídrica 30 familias APR</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 px-3 font-bold text-stone-900">Secuestro Carbono & MO Suelo</td>
-                                    <td class="py-2.5 px-3 text-stone-500">0.8 t CO₂e/ha/año (1.4% MO)</td>
-                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">4.6 t CO₂e/ha/año (3.8% MO)</td>
-                                    <td class="py-2.5 px-3 text-sky-800">2.336 t CO₂e/año en 508 ha vecinales</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2.5 px-3 font-bold text-stone-900">Ahorro Energía de Bombeo</td>
-                                    <td class="py-2.5 px-3 text-stone-500">$12.4M CLP/año (Riego por calendario)</td>
-                                    <td class="py-2.5 px-3 text-emerald-800 font-bold">$4.2M CLP/año (Riego FDR bajo demanda)</td>
-                                    <td class="py-2.5 px-3 text-sky-800">-$8.2M CLP/año en costos OPEX</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- Tarjetas Teóricas KaTeX de Gobernanza Ostrom -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="p-3.5 rounded-xl bg-purple-50/50 border border-purple-200 space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-purple-950 block">🗳️ Votación Cuadrática ($V^2$)</span>
+                            <div class="text-xs font-serif text-purple-900 py-1">
+                                $$\text{Costo}(V) = V^2, \quad \frac{d(\text{Costo})}{dV} = 2V$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 leading-relaxed font-sans">
+                                1 voto cuesta 1 crédito, pero 5 votos cuestan 25. Previene la tiranía del latifundio o del predio mayoritario y protege a los pequeños agricultores vecinos.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-purple-50/50 border border-purple-200 space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-purple-950 block">🔐 Pacto Inmutable SHA-256</span>
+                            <div class="text-xs font-serif text-purple-900 py-1">
+                                $$\mathcal{H} = \text{SHA-256}(\text{Rol} \,\|\, \Delta_{\text{faja}} \,\|\, V \,\|\, t)$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 leading-relaxed font-sans">
+                                Las resoluciones de fajas cortafuegos compartidas y servidumbres de agua se firman digitalmente con validez jurídica según la Ley N° 19.799 de Chile.
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-purple-50/50 border border-purple-200 space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-purple-950 block">🌿 8 Principios de Bienes Comunes</span>
+                            <div class="text-[10px] text-stone-700 space-y-0.5 font-sans pt-1">
+                                <p>• Límites prediales y derechos DGA claramente definidos.</p>
+                                <p>• Reglas adaptadas a la escasez local del Río Longaví.</p>
+                                <p>• Monitoreo biofísico mutuo mediante telemetría satelital.</p>
+                                <p>• Sanciones graduadas consensuadas en Mesa Vecinal.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diagrama de Flujo SVG de la Gobernanza -->
+                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                        <div class="overflow-x-auto py-2">
+                            <svg viewBox="0 0 820 160" class="w-full min-w-[720px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="20" y="30" width="200" height="95" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+                                <text x="32" y="55" fill="#5B21B6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Predio Proponente</text>
+                                <text x="32" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Moción: Faja cortafuego compartida</text>
+                                <text x="32" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Billetera: 100 Voice Credits</text>
+                                <text x="32" y="105" fill="#7C3AED" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Emite V votos deseados</text>
+
+                                <path d="M 220 78 L 280 78" stroke="#7C3AED" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+                                <rect x="280" y="30" width="230" height="95" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+                                <text x="292" y="55" fill="#B45309" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Fórmula Cuadrática</text>
+                                <text x="292" y="75" fill="#1C1917" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold">Costo = V² (Voice Credits)</text>
+                                <text x="292" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• 1 voto = 1 crédito | 5 votos = 25</text>
+                                <text x="292" y="105" fill="#B45309" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Previene tiranía del latifundio</text>
+
+                                <path d="M 510 78 L 570 78" stroke="#D97706" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+                                <rect x="570" y="30" width="220" height="95" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
+                                <text x="582" y="55" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Pacto Inmutable SHA-256</text>
+                                <text x="582" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Digest criptográfico inalterable</text>
+                                <text x="582" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Validez Ley N° 19.799 Chile</text>
+                                <text x="582" y="105" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Resolución de borde vinculante</text>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ═══════════════════════════════════════════════════════════════════
-                 SUBTAB 4: GALERÍA DE BIOMAS GEMINI
-                 ═══════════════════════════════════════════════════════════════════ -->
-            <div id="docs-biomes" class="docs-subcontent hidden space-y-6">
-                <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm flex items-center justify-between">
-                    <div>
-                        <h3 class="text-sm font-bold text-stone-900 font-serif">Galería de Biomas & Arquetipos Ecosistémicos</h3>
-                        <p class="text-xs text-stone-500 mt-0.5">Clasificación biofísica y representaciones fotorrealistas de los biomas de Maule Sur.</p>
+                <!-- Galería de Biomas & Arquetipos Ecosistémicos de Fundo Meniel -->
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-800 border border-amber-300">ARQUETIPOS ECOSISTÉMICOS</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-stone-500">Expediente Territorial Fundo Meniel</span>
+                            </div>
+                            <h3 class="text-sm sm:text-base font-bold text-stone-900 font-serif uppercase tracking-wider">Galería de Biomas &amp; Coberturas de Maule Sur</h3>
+                            <p class="text-xs text-stone-500">Clasificación biofísica y representaciones calibradas de los 10 biomas presentes en el territorio.</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-300 font-mono text-[10px] font-bold">
+                            10 BIOMAS CALIBRADOS
+                        </span>
                     </div>
-                    <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-300 font-mono text-[10px] font-bold">
-                        10 BIOMAS CALIBRADOS
-                    </span>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="biomesGalleryGrid">
-                    <!-- Populated dynamically by JS -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="biomesGalleryGrid">
+                        <!-- Populated dynamically by JS (initDocsCatalog) -->
+                    </div>
                 </div>
             </div>
 
