@@ -5662,6 +5662,66 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             window.URL.revokeObjectURL(url);
         }
 
+        // Export Active Farm Seed JSON (Ficha Técnica Semilla)
+        function exportActiveSeedJSON() {
+            const seedData = {
+                version: "2.0-semilla-procedural",
+                generado_por: "AgriTwin Platform - Motor Semilla",
+                timestamp: new Date().toISOString(),
+                predio: {
+                    id: "meniel-parral",
+                    nombre: "Fundo Meniel (Estero Colliguay)",
+                    propietario: "Familia Santander Urrutia / Agrícola Meniels SpA",
+                    rut: "76.842.119-K",
+                    rol_sii: "123-45",
+                    comuna: "Parral",
+                    region: "Región del Maule, Chile",
+                    coordenadas_centroide: { lat: -36.21156, lng: -71.60530 },
+                    superficie_total_ha: 24.8
+                },
+                hidrologia_y_recursos: {
+                    derechos_agua_dga_ls: 45.0,
+                    fuente: "Canal Matriz + Pozo Profundo",
+                    capacidad_tranque_m3: 18500,
+                    infiltracion_diseno_ls: 320,
+                    dias_autonomia_estimados: 42
+                },
+                edafologia_y_clima: {
+                    textura_suelo: "Franco Arcilloso / Trumao",
+                    retencion_humedad: "Media-Alta",
+                    estacion_climatica_referencia: "INIA Retiro / Parral",
+                    fwi_base_predio: 24
+                },
+                cuarteles_y_zonas: [
+                    { id: "P1", nombre: "Potrero 1 - Trébol Blanco & Festuca", cultivo: "Pradera Polifítica", ha: 3.8, riego: "Aspersión / Gravedad" },
+                    { id: "P2", nombre: "Potrero 2 - Alfalfa & Raygrass", cultivo: "Alfalfa", ha: 3.5, riego: "Goteo" },
+                    { id: "P3", nombre: "Potrero 3 - Pastura Sur-Oeste", cultivo: "Pastura Voisin", ha: 4.1, riego: "Secano suplementario" },
+                    { id: "P4", nombre: "Potrero 4 - Silvopastoreo Borde Cerezos", cultivo: "Cerezo Lapins & Pasto", ha: 2.8, riego: "Microaspersión" },
+                    { id: "P5", nombre: "Potrero 5 - Trébol Subterráneo", cultivo: "Leguminosas", ha: 3.2, riego: "Secano" },
+                    { id: "P6", nombre: "Viñedo Patrimonial de Secano", cultivo: "Uva País (80 años)", ha: 3.4, riego: "Secano Estricto" },
+                    { id: "P7", nombre: "Corredor Biológico Nativo", cultivo: "Peumo, Quillay, Boldo", ha: 2.5, riego: "Infiltración Keyline" },
+                    { id: "P8", nombre: "Huerto Frutales & Berries", cultivo: "Avellano Europeo & Frambuesa", ha: 1.5, riego: "Goteo Automatizado" }
+                ],
+                infraestructura_iot_fisiovigilancia: [
+                    { id: "IOT-FDR-01", tipo: "Sonda FDR Multinivel Suelo", estrato: "10-30-60 cm", protocolo: "LoRaWAN 915 MHz" },
+                    { id: "MET-01", tipo: "Estación Agroclimática Central", sensores: ["Radiación Solar", "Anemómetro", "Temp/HR"], protocolo: "Celular LTE-M" },
+                    { id: "CAM-01", tipo: "Cámara Visión Espectral & Térmica", objetivo: "Monitoreo Vigor y Piro-Alerta" }
+                ]
+            };
+
+            const str = JSON.stringify(seedData, null, 2);
+            const blob = new Blob([str], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Ficha_Tecnica_Semilla_Fundo_Meniel_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        window.exportActiveSeedJSON = exportActiveSeedJSON;
+
         // --- 4. CHARTS (Chart.js) ---
         Chart.defaults.color = '#94a3b8';
         Chart.defaults.font.family = 'JetBrains Mono';
@@ -8760,4 +8820,22 @@ window.renderLatexInContainer = function(target) {
             printWindow.document.write(htmlContent);
             printWindow.document.close();
         };
+
+        // --- SUB-NAVEGACIÓN DEL EXPEDIENTE DEL CLIENTE Y SU PREDIO ---
+        function switchExpedienteTab(tabId) {
+            if (!tabId) tabId = 'exp-catastro';
+            document.querySelectorAll('.exp-subcontent').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.exp-subtab-btn').forEach(b => {
+                b.classList.remove('active', 'bg-amber-600', 'text-white', 'shadow-xs');
+                b.classList.add('bg-white', 'text-stone-700', 'border-[#E7DAC6]');
+            });
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+            const btn = document.getElementById('expTabBtn-' + tabId.replace('exp-', ''));
+            if (btn) {
+                btn.classList.add('active', 'bg-amber-600', 'text-white', 'shadow-xs');
+                btn.classList.remove('bg-white', 'text-stone-700', 'border-[#E7DAC6]');
+            }
+        }
+        window.switchExpedienteTab = switchExpedienteTab;
 

@@ -7268,6 +7268,29 @@
                  SUBTAB 0: DOSSIER ESTRATÉGICO DE TELEDETECCIÓN & BENCHMARKING INTERACTIVO
                  ═══════════════════════════════════════════════════════════════════ -->
             <div id="docs-dossier" class="docs-subcontent hidden space-y-4">
+                
+                <!-- Banner Destacado: Dossier SpA & Pitch Deck de Inversión -->
+                <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-white to-amber-50 border border-amber-300 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                            💼
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">DOSSIER SpA &bull; TESIS DE NEGOCIO</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-stone-600 font-semibold">28 Diapositivas &bull; Rutas para VCs, Agricultores &amp; CNR</span>
+                            </div>
+                            <h3 class="text-base font-bold text-stone-900 font-serif">Pitch Deck Maestro &bull; Visión, Unit Economics &amp; El Ask</h3>
+                            <p class="text-xs text-stone-600 mt-0.5">Presentación interactiva completa: equipo fundador, dolor del agro, modelo de datos, pricing SaaS y ronda de $250k USD.</p>
+                        </div>
+                    </div>
+                    <button onclick="openPitchDeckModal()" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm flex items-center gap-2 transition-all cursor-pointer shrink-0">
+                        <span>🚀 Abrir Pitch Deck Interactivo</span>
+                        <span>→</span>
+                    </button>
+                </div>
+
                 <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
                         <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-xl shrink-0">
@@ -11760,282 +11783,487 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
     <div id="view-expediente" class="master-view p-4 sm:p-8" style="background: #FAF7F2; color: #1C1917;">
         <div class="max-w-7xl mx-auto space-y-6">
             
-            <!-- Encabezado Principal de la Vista Expediente -->
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#E7DAC6] pb-5">
-                <div class="flex items-start sm:items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-900 border border-amber-400/60 flex items-center justify-center text-2xl shadow-sm shrink-0">
-                        📁
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                                SECCIÓN MODULAR DEL CLIENTE
-                            </span>
-                            <span class="text-xs text-stone-400">•</span>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
-                                Semilla Predial Activa
-                            </span>
-                        </div>
-                        <h2 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight flex items-center gap-2 font-serif mt-1">
-                            <span>Expediente</span>
-                            <span class="text-base sm:text-lg font-medium text-amber-800 font-sans">del cliente y su predio</span>
-                        </h2>
-                        <p class="text-xs text-stone-600 mt-0.5 max-w-2xl">
-                            Parámetros biológicos, hídricos, infraestructura y expediente exclusivo del predio activo: <strong class="text-stone-900">Fundo Meniel</strong> (Parral, Maule Sur).
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Botones de Acción de la Semilla -->
-                <div class="flex items-center gap-2 flex-wrap shrink-0">
-                    <button onclick="exportActiveSeedJSON()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer" title="Exportar Ficha Técnica Semilla del Predio en JSON">
-                        <span>🌱</span> <span>Exportar Semilla (.json)</span>
-                    </button>
-                    <button onclick="switchMasterView('galpon')" class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-800 border border-[#E7DAC6] text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer" title="Ir al Gemelo 3D de este predio">
-                        <span>🚜</span> <span>Ver Galpón 3D</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Ficha Técnica Resumen: La Partida de Nacimiento del Predio -->
-            <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
-                    <div class="flex items-center gap-2.5">
-                        <span class="text-xl">🌾</span>
-                        <div>
-                            <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider">Ficha Técnica Digital (La Semilla)</h3>
-                            <p class="text-xs text-stone-500">Parámetros que configuran proceduralmente el modelo 3D y el motor biofísico FAO-56.</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-stone-100 text-stone-700 border border-stone-300 font-bold">
-                        ONBOARDING 4 PREGUNTAS
-                    </span>
-                </div>
-
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-mono">
-                    <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                        <div class="text-[10px] text-stone-500 uppercase">Rol SII / Propietario</div>
-                        <div class="font-bold text-stone-900 mt-1 truncate">Rol 123-45</div>
-                        <div class="text-[9px] text-stone-600 truncate">Meniels SpA</div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                        <div class="text-[10px] text-stone-500 uppercase">Superficie Total</div>
-                        <div class="font-bold text-amber-800 mt-1 text-sm">24.8 ha</div>
-                        <div class="text-[9px] text-stone-600">8 Cuarteles / Potreros</div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                        <div class="text-[10px] text-stone-500 uppercase">Coordenadas Base</div>
-                        <div class="font-bold text-sky-800 mt-1">-36.2115°S</div>
-                        <div class="text-[9px] text-stone-600">-71.6053°O</div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                        <div class="text-[10px] text-stone-500 uppercase">Derechos DGA (L/s)</div>
-                        <div class="font-bold text-cyan-800 mt-1 text-sm">45.0 L/s</div>
-                        <div class="text-[9px] text-stone-600">Canal + Pozo Profundo</div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                        <div class="text-[10px] text-stone-500 uppercase">Tranque Keyline</div>
-                        <div class="font-bold text-emerald-800 mt-1 text-sm">18.500 m³</div>
-                        <div class="text-[9px] text-stone-600">42 Días Autonomía</div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                        <div class="text-[10px] text-stone-500 uppercase">Textura del Suelo</div>
-                        <div class="font-bold text-emerald-700 mt-1">Franco Arcilloso</div>
-                        <div class="text-[9px] text-stone-600">Kc FAO-56 Calibrado</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Cuadrícula Modular de los 4 Dominios Particulares del Predio -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <!-- Dominio 1: Cuarteles & Plantas (Topping Agrícola) -->
-                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">🌱</span>
-                            <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Cuarteles, Suelos &amp; Especies</h3>
-                                <p class="text-xs text-stone-500">Vegetación y cultivos particulares de este fundo</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">8 CUARTELES</span>
-                    </div>
-
-                    <div class="space-y-2 text-xs font-mono">
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center justify-between">
-                            <div>
-                                <strong class="text-stone-900">Cuartel 1 • Trébol Blanco &amp; Festuca</strong>
-                                <div class="text-[10px] text-stone-500 font-sans">Pradera polifítica perenne • 3.8 ha • Riego por aspersión</div>
-                            </div>
-                            <span class="text-emerald-700 font-bold">Óptimo</span>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center justify-between">
-                            <div>
-                                <strong class="text-stone-900">Cuartel 4 • Silvopastoreo Borde Cerezos</strong>
-                                <div class="text-[10px] text-stone-500 font-sans">Cerezo Lapins &amp; forraje sombrío • 2.8 ha • Microaspersión</div>
-                            </div>
-                            <span class="text-emerald-700 font-bold">Óptimo</span>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center justify-between">
-                            <div>
-                                <strong class="text-stone-900">Cuartel 6 • Viñedo Patrimonial de Secano</strong>
-                                <div class="text-[10px] text-stone-500 font-sans">Uva País (80 años) • 3.4 ha • Secano de rulo estricto</div>
-                            </div>
-                            <span class="text-amber-700 font-bold">Vigilancia</span>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center justify-between">
-                            <div>
-                                <strong class="text-stone-900">Cuartel 7 • Corredor Biológico Nativo</strong>
-                                <div class="text-[10px] text-stone-500 font-sans">Peumo, Quillay, Boldo &amp; Litre • 2.5 ha • Infiltración natural</div>
-                            </div>
-                            <span class="text-sky-700 font-bold">Protegido</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dominio 2: Ganadería PRV & Establo Particular (Topping Pecuario) -->
-                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">🐂</span>
-                            <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Establo Particular &amp; Manejo PRV</h3>
-                                <p class="text-xs text-stone-500">Dotación animal y rotación Voisin del predio</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold">CARGA 1.8 UGM/HA</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 text-xs font-mono">
-                        <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                            <span class="text-[10px] text-stone-500 block uppercase">Lote Bovino Activo</span>
-                            <span class="text-base font-bold text-stone-900">18 Cabezas</span>
-                            <span class="text-[9px] text-stone-600 block">Clavel Alemán / Angus</span>
-                        </div>
-                        <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                            <span class="text-[10px] text-stone-500 block uppercase">Lote Ovino Silvopastoril</span>
-                            <span class="text-base font-bold text-stone-900">24 Ovejas</span>
-                            <span class="text-[9px] text-stone-600 block">Suffolk Down (Desbroce)</span>
-                        </div>
-                        <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                            <span class="text-[10px] text-stone-500 block uppercase">Potreros en Reposo</span>
-                            <span class="text-base font-bold text-emerald-800">5 de 8</span>
-                            <span class="text-[9px] text-stone-600 block">Promedio: 41 días</span>
-                        </div>
-                        <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                            <span class="text-[10px] text-stone-500 block uppercase">Potrero Ocupado Hoy</span>
-                            <span class="text-base font-bold text-amber-800">Potrero 3</span>
-                            <span class="text-[9px] text-stone-600 block">Cambio mañana 08:00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dominio 3: Invernadero & Camas Biointensivas -->
-                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">🏡</span>
-                            <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Invernadero &amp; Infraestructura</h3>
-                                <p class="text-xs text-stone-500">Instalaciones físicas declaradas en este fundo</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 font-bold">OFF-GRID SOLAR</span>
-                    </div>
-
-                    <div class="space-y-2 text-xs font-mono">
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex justify-between items-center">
-                            <span>Túnel Invernadero 1 (Tomates &amp; Albahaca)</span>
-                            <span class="font-bold text-stone-900">Temp: 24.5°C • HR: 68%</span>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex justify-between items-center">
-                            <span>Parque Solar Fotovoltaico (Casa Meniel)</span>
-                            <span class="font-bold text-stone-900">12 paneles • 6.6 kWp</span>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex justify-between items-center">
-                            <span>Sondas de Suelo FDR Multinivel</span>
-                            <span class="font-bold text-emerald-800">3 Nodos LoRaWAN en vivo</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dominio 4: Incursión a Campo, Vecinos & Red Territorial -->
-                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">🥾</span>
-                            <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Incursión a Campo &amp; Red Vecinal</h3>
-                                <p class="text-xs text-stone-500">Bitácora de terreno y colindantes de la micro-cuenca</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-bold">ESTERO COLLIGUAY</span>
-                    </div>
-
-                    <div class="space-y-2 text-xs font-mono">
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                            <div class="flex justify-between items-center font-bold text-stone-900">
-                                <span>Cámara Trampa Quebrada Sur</span>
-                                <span class="text-emerald-700">Avistamiento Zorro Chilla</span>
-                            </div>
-                            <div class="text-[10px] text-stone-500 font-sans mt-0.5">Registro fotográfico nocturno • Indicio de rewilding exitoso</div>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
-                            <div class="flex justify-between items-center font-bold text-stone-900">
-                                <span>Colindante Este: Viña Santa Elena</span>
-                                <span class="text-stone-700">Faja Cortafuego 25m Consensuada</span>
-                            </div>
-                            <div class="text-[10px] text-stone-500 font-sans mt-0.5">Acuerdo de servidumbre de agua firmado digitalmente</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Dominio 5: Carpeta Técnica Financiera & Subsidios Estatales (CNR Ley 18.450 / Bancos) -->
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-white via-[#FAF7F2] to-amber-50/40 border border-[#E7DAC6] shadow-sm space-y-4">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center text-xl shadow-md shrink-0">
-                            💼
+            <!-- Encabezado de Alto Calibre: Pasaporte Territorial del Predio -->
+            <div class="p-6 sm:p-7 rounded-3xl bg-white border border-[#E7DAC6] shadow-sm space-y-5">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-[#E7DAC6] pb-5">
+                    <div class="flex items-start sm:items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center text-3xl shadow-md shrink-0">
+                            📁
                         </div>
                         <div>
-                            <div class="flex items-center gap-2">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">RETORNO &amp; FINANCIAMIENTO PREDIAL</span>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                    EXPEDIENTE DE PROPIEDAD RURAL
+                                </span>
                                 <span class="text-xs text-stone-400">•</span>
-                                <span class="text-xs font-mono text-stone-500 font-semibold">Subsidios CNR Ley 18.450 &bull; Bancos</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span> Semilla Activa en Memoria
+                                </span>
                             </div>
-                            <h3 class="text-base font-bold text-stone-900 font-serif">Carpeta de Subsidios Estatales &amp; Eficiencia OPEX del Fundo</h3>
+                            <h2 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight font-serif mt-1">
+                                Fundo Estero Colliguay <span class="text-amber-800 font-sans text-xl font-normal">(Predio Meniels)</span>
+                            </h2>
+                            <p class="text-xs text-stone-600 mt-0.5 max-w-2xl font-mono">
+                                Parral, Provincia de Linares, Región del Maule (VII) &bull; 36.14°S, 71.82°O &bull; 24.8 Hectáreas
+                            </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="downloadFormalReport()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                            <span>📄</span> <span>Descargar Carpeta Técnica CNR (.txt)</span>
+
+                    <!-- Botones de Acción Rápida -->
+                    <div class="flex items-center gap-2 flex-wrap shrink-0 font-mono text-xs">
+                        <button onclick="exportActiveSeedJSON()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                            <span>🌱</span> <span>Exportar Semilla (.json)</span>
+                        </button>
+                        <button onclick="switchMasterView('galpon')" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                            <span>🚜</span> <span>Ver Galpón 3D</span>
                         </button>
                     </div>
                 </div>
 
+                <!-- Medallas de Acreditación Regulatoria en Chile -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-[11px] font-mono select-none">
+                    <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center gap-2">
+                        <span class="text-lg">🏛️</span>
+                        <div>
+                            <span class="text-[9px] text-stone-600 block uppercase">CBR Parral</span>
+                            <strong class="text-stone-900 font-bold truncate block">Fs. 124v N° 189</strong>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center gap-2">
+                        <span class="text-lg">📜</span>
+                        <div>
+                            <span class="text-[9px] text-stone-600 block uppercase">Rol SII</span>
+                            <strong class="text-amber-900 font-bold block">418-24 Agrícola</strong>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center gap-2">
+                        <span class="text-lg">💧</span>
+                        <div>
+                            <span class="text-[9px] text-stone-600 block uppercase">DGA Código CPA</span>
+                            <strong class="text-sky-900 font-bold truncate block">VII-2016-8941</strong>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center gap-2">
+                        <span class="text-lg">🌲</span>
+                        <div>
+                            <span class="text-[9px] text-stone-600 block uppercase">Norma Rústica</span>
+                            <strong class="text-emerald-900 font-bold block">DL 3516 SAG OK</strong>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center gap-2">
+                        <span class="text-lg">🛡️</span>
+                        <div>
+                            <span class="text-[9px] text-stone-600 block uppercase">Conservación</span>
+                            <strong class="text-purple-900 font-bold block">Ley 20.930 DRC</strong>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex items-center gap-2">
+                        <span class="text-lg">🇪🇺</span>
+                        <div>
+                            <span class="text-[9px] text-stone-600 block uppercase">Pasaporte EUDR</span>
+                            <strong class="text-emerald-800 font-bold block">Deforestation-Free</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subnavegación de las 6 Pestañas del Expediente -->
+            <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none font-mono text-xs">
+                <button onclick="switchExpedienteTab('exp-catastro')" id="expTabBtn-catastro" class="exp-subtab-btn active px-4 py-2.5 rounded-xl font-bold bg-amber-600 text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>🏛️</span> <span>1. Catastro &amp; Título Legal CBR</span>
+                </button>
+                <button onclick="switchExpedienteTab('exp-agua')" id="expTabBtn-agua" class="exp-subtab-btn px-4 py-2.5 rounded-xl font-bold bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>💧</span> <span>2. Matriz Hídrica DGA &amp; Pozo</span>
+                </button>
+                <button onclick="switchExpedienteTab('exp-cuarteles')" id="expTabBtn-cuarteles" class="exp-subtab-btn px-4 py-2.5 rounded-xl font-bold bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>🌾</span> <span>3. Cuarteles, Algoritmo FAO-56 &amp; Riego</span>
+                </button>
+                <button onclick="switchExpedienteTab('exp-prv')" id="expTabBtn-prv" class="exp-subtab-btn px-4 py-2.5 rounded-xl font-bold bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>🐂</span> <span>4. Ganadería PRV &amp; Balance Forrajero</span>
+                </button>
+                <button onclick="switchExpedienteTab('exp-kiot')" id="expTabBtn-kiot" class="exp-subtab-btn px-4 py-2.5 rounded-xl font-bold bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>📡</span> <span>5. Red KioT IoT, Solar &amp; Rewilding</span>
+                </button>
+                <button onclick="switchExpedienteTab('exp-cnr')" id="expTabBtn-cnr" class="exp-subtab-btn px-4 py-2.5 rounded-xl font-bold bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <span>💼</span> <span>6. Subsidios CNR Ley 18.450 &amp; Retorno</span>
+                </button>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 1: CATASTRO & TÍTULO LEGAL CBR
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="exp-catastro" class="exp-subcontent space-y-5">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Tarjeta: Título Inmobiliario y Datos Registrales -->
+                    <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                            <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                                <span>📜</span> Inscripción de Dominio &amp; Conservador
+                            </h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">DOMINIO VIGENTE</span>
+                        </div>
+                        <div class="space-y-2.5 text-xs font-mono">
+                            <div class="flex justify-between py-1.5 border-b border-stone-100">
+                                <span class="text-stone-500">Conservador Competente:</span>
+                                <strong class="text-stone-900">Conservador de Bienes Raíces de Parral</strong>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-stone-100">
+                                <span class="text-stone-500">Fojas / Número / Año:</span>
+                                <strong class="text-stone-900">Fojas 124 vuelta &bull; N° 189 &bull; Año 2014</strong>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-stone-100">
+                                <span class="text-stone-500">Registro:</span>
+                                <strong class="text-stone-900">Registro de Propiedad de Parral</strong>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-stone-100">
+                                <span class="text-stone-500">Titular del Inmueble:</span>
+                                <strong class="text-stone-900">Familia Santander Urrutia / Agrícola Meniels SpA</strong>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-stone-100">
+                                <span class="text-stone-500">RUT Titular:</span>
+                                <strong class="text-stone-900">76.842.119-K (100% Participación)</strong>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-stone-100">
+                                <span class="text-stone-500">Avalúo Fiscal SII:</span>
+                                <strong class="text-emerald-800 font-bold">$184.500.000 CLP</strong>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-stone-500">Régimen Tributario:</span>
+                                <strong class="text-stone-900">Exención Parcial de Impuesto Territorial DFL-2</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta: Deslindes Cardinales Oficiales -->
+                    <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                            <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                                <span>📐</span> Deslindes Catastrales Perimetrales
+                            </h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900">CATASTRO VECINAL</span>
+                        </div>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="font-bold text-amber-900 font-mono text-[11px] block">Norte (420 metros lineales):</span>
+                                <p class="text-stone-700 mt-0.5 leading-relaxed">Con Estero Colliguay en 420 metros y Fundo San Luis. Servidumbre natural de ribera protegida por DGA.</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="font-bold text-amber-900 font-mono text-[11px] block">Sur (385 metros lineales):</span>
+                                <p class="text-stone-700 mt-0.5 leading-relaxed">Con camino vecinal de servidumbre pública en 385 metros. Acceso principal de maquinaria y faja cortafuegos.</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="font-bold text-amber-900 font-mono text-[11px] block">Este (310 metros lineales):</span>
+                                <p class="text-stone-700 mt-0.5 leading-relaxed">Con predio Forestal Los Pinos (Monocultivo de Pino Radiata). Zona de alto riesgo FWI con protocolo cortafuego verde.</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="font-bold text-amber-900 font-mono text-[11px] block">Oeste (295 metros lineales):</span>
+                                <p class="text-stone-700 mt-0.5 leading-relaxed">Con Fundo Los Maquis y canal de regadío matriz en 295 metros lineales.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 2: MATRIZ HÍDRICA DGA & POZO
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="exp-agua" class="exp-subcontent hidden space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm font-mono space-y-2">
+                        <span class="text-[10px] text-stone-500 uppercase block">Caudal Consuntivo Total</span>
+                        <span class="text-2xl font-black text-cyan-800">34.5 L/s</span>
+                        <p class="text-[11px] text-stone-600 font-sans leading-relaxed">Canal Matriz Estero Colliguay (Superficial) &bull; Pozo Profundo P-1 (Subterráneo).</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm font-mono space-y-2">
+                        <span class="text-[10px] text-stone-500 uppercase block">Tranque de Regulación Keyline</span>
+                        <span class="text-2xl font-black text-emerald-800">18.500 m³</span>
+                        <p class="text-[11px] text-stone-600 font-sans leading-relaxed">42 días de autonomía hídrica estival sin depender del turno de canal.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm font-mono space-y-2">
+                        <span class="text-[10px] text-stone-500 uppercase block">Telemetría MEE DGA Res. 1238</span>
+                        <span class="text-2xl font-black text-emerald-600">Transmitiendo OK</span>
+                        <p class="text-[11px] text-stone-600 font-sans leading-relaxed">Caudalímetro electromagnético DN100 con datalogger satelital DGA.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                        <span>🌊</span> Infraestructura Hidráulica en Terreno
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                        <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                            <span class="text-stone-500 block text-[10px] uppercase">Bomba Pozo Profundo</span>
+                            <strong class="text-stone-900 text-sm mt-1 block">15 HP Sumergible</strong>
+                            <span class="text-[10px] text-stone-500 mt-1 block">Variador VFD solar &bull; 12.5 L/s</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                            <span class="text-stone-500 block text-[10px] uppercase">Nivel Freático Dinámico</span>
+                            <strong class="text-sky-800 text-sm mt-1 block">-36.2 Metros</strong>
+                            <span class="text-[10px] text-stone-500 mt-1 block">Recarga Keyline: +1.8m en 2 años</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                            <span class="text-stone-500 block text-[10px] uppercase">Red Matriz Tuberías</span>
+                            <strong class="text-stone-900 text-sm mt-1 block">1.850 m HDPE PN10</strong>
+                            <span class="text-[10px] text-stone-500 mt-1 block">Presión regulada a 2.8 bar</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                            <span class="text-stone-500 block text-[10px] uppercase">Compuertas Automatizadas</span>
+                            <strong class="text-emerald-800 text-sm mt-1 block">4 Actuadores KioT</strong>
+                            <span class="text-[10px] text-stone-500 mt-1 block">Control por LoRaWAN / App</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 3: CUARTELES, ALGORITMO FAO-56 & RIEGO
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="exp-cuarteles" class="exp-subcontent hidden space-y-5">
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider">Censo de Cuarteles &bull; Balance Hídrico FAO-56</h3>
+                            <p class="text-xs text-stone-500">Cálculo de Evapotranspiración ($ET_c = K_c \times ET_0$) y lámina neta de riego en tiempo real.</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono text-[10px] font-bold">
+                            ET0 HOY: 5.1 mm/día
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
+                        <table class="w-full text-left text-xs font-mono border-collapse">
+                            <thead>
+                                <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
+                                    <th class="py-2.5 px-3">Cuartel</th>
+                                    <th class="py-2.5 px-3">Cultivo / Especie</th>
+                                    <th class="py-2.5 px-3">Superficie</th>
+                                    <th class="py-2.5 px-3">Coef. Kc</th>
+                                    <th class="py-2.5 px-3">Humedad Suelo</th>
+                                    <th class="py-2.5 px-3">Receta Riego Hoy</th>
+                                    <th class="py-2.5 px-3">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700">
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold">C-1</td>
+                                    <td class="py-2.5 px-3">Trébol Blanco &amp; Festuca</td>
+                                    <td class="py-2.5 px-3">3.8 ha</td>
+                                    <td class="py-2.5 px-3">0.95</td>
+                                    <td class="py-2.5 px-3 text-emerald-700 font-bold">36.2% VWC</td>
+                                    <td class="py-2.5 px-3 font-bold text-sky-800">2.8 hrs nocturno</td>
+                                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Óptimo</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold">C-2</td>
+                                    <td class="py-2.5 px-3">Alfalfa &amp; Raygrass Perenne</td>
+                                    <td class="py-2.5 px-3">3.5 ha</td>
+                                    <td class="py-2.5 px-3">1.10</td>
+                                    <td class="py-2.5 px-3 text-emerald-700 font-bold">34.8% VWC</td>
+                                    <td class="py-2.5 px-3 font-bold text-sky-800">3.2 hrs nocturno</td>
+                                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Óptimo</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold">C-3</td>
+                                    <td class="py-2.5 px-3">Pastura Sur-Oeste (Voisin)</td>
+                                    <td class="py-2.5 px-3">4.1 ha</td>
+                                    <td class="py-2.5 px-3">0.85</td>
+                                    <td class="py-2.5 px-3 text-amber-700 font-bold">29.1% VWC</td>
+                                    <td class="py-2.5 px-3 font-bold text-stone-500">Reposo (Pastoreo)</td>
+                                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px]">Pastoreo Activo</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold">C-4</td>
+                                    <td class="py-2.5 px-3">Silvopastoreo Cerezos Lapins</td>
+                                    <td class="py-2.5 px-3">2.8 ha</td>
+                                    <td class="py-2.5 px-3">0.85</td>
+                                    <td class="py-2.5 px-3 text-emerald-700 font-bold">38.4% VWC</td>
+                                    <td class="py-2.5 px-3 font-bold text-sky-800">1.9 hrs goteo</td>
+                                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Óptimo</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold">C-6</td>
+                                    <td class="py-2.5 px-3">Viñedo Patrimonial Uva País (80a)</td>
+                                    <td class="py-2.5 px-3">3.4 ha</td>
+                                    <td class="py-2.5 px-3">0.45</td>
+                                    <td class="py-2.5 px-3 text-amber-700 font-bold">22.4% VWC</td>
+                                    <td class="py-2.5 px-3 font-bold text-amber-800">Secano estricto</td>
+                                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px]">Patrimonial</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-bold">C-7</td>
+                                    <td class="py-2.5 px-3">Corredor Biológico Nativo</td>
+                                    <td class="py-2.5 px-3">2.5 ha</td>
+                                    <td class="py-2.5 px-3">0.60</td>
+                                    <td class="py-2.5 px-3 text-sky-700 font-bold">41.0% VWC</td>
+                                    <td class="py-2.5 px-3 font-bold text-emerald-800">Infiltración Keyline</td>
+                                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">Protegido</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 4: GANADERÍA PRV & BALANCE FORRAJERO
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="exp-prv" class="exp-subcontent hidden space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
-                    <div class="p-4 rounded-xl bg-white border border-[#E7DAC6] shadow-xs">
-                        <span class="text-[10px] text-stone-500 block uppercase">Bonificación Postulable CNR</span>
-                        <span class="text-lg font-black text-emerald-700">50% a 80%</span>
-                        <p class="text-[10px] text-stone-500 font-sans mt-1">Fondo estatal no reembolsable ($30M - $80M CLP) para tecnificación de riego y telemetría.</p>
+                    <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm">
+                        <span class="text-stone-500 uppercase text-[10px] block">Carga Animal Promedio</span>
+                        <span class="text-2xl font-black text-stone-900 mt-1 block">1.8 UGM / ha</span>
+                        <span class="text-[10px] text-emerald-800 font-bold">Alta densidad &bull; Corto tiempo</span>
                     </div>
-                    <div class="p-4 rounded-xl bg-white border border-[#E7DAC6] shadow-xs">
-                        <span class="text-[10px] text-stone-500 block uppercase">Ahorro OPEX Eléctrico</span>
-                        <span class="text-lg font-black text-sky-700">-35% Tarifa</span>
-                        <p class="text-[10px] text-stone-500 font-sans mt-1">~$8.2M CLP/año mediante programación automática de bombeo nocturno con tarifa valle.</p>
+                    <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm">
+                        <span class="text-stone-500 uppercase text-[10px] block">Plantel Bovino</span>
+                        <span class="text-2xl font-black text-amber-800 mt-1 block">18 Cabezas</span>
+                        <span class="text-[10px] text-stone-600">Clavel Alemán &bull; Angus Rústico</span>
                     </div>
-                    <div class="p-4 rounded-xl bg-white border border-[#E7DAC6] shadow-xs">
-                        <span class="text-[10px] text-stone-500 block uppercase">Payback Proyectado</span>
-                        <span class="text-lg font-black text-stone-900">3.8 Años</span>
-                        <p class="text-[10px] text-stone-500 font-sans mt-1">Retorno de inversión considerando bono estatal de riego y generación solar off-grid.</p>
+                    <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm">
+                        <span class="text-stone-500 uppercase text-[10px] block">Plantel Ovino</span>
+                        <span class="text-2xl font-black text-amber-800 mt-1 block">24 Ovejas</span>
+                        <span class="text-[10px] text-stone-600">Suffolk Down (Desbroce cortafuego)</span>
                     </div>
-                    <div class="p-4 rounded-xl bg-white border border-[#E7DAC6] shadow-xs">
-                        <span class="text-[10px] text-stone-500 block uppercase">Activo Forestal Protegido</span>
-                        <span class="text-lg font-black text-amber-800">$140M CLP</span>
-                        <p class="text-[10px] text-stone-500 font-sans mt-1">Pérdida evitada mediante fajas cortafuegos vivas y monitoreo temprano FWI.</p>
+                    <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm">
+                        <span class="text-stone-500 uppercase text-[10px] block">Tiempo Reposo Forrajero</span>
+                        <span class="text-2xl font-black text-emerald-800 mt-1 block">41 Días</span>
+                        <span class="text-[10px] text-emerald-800 font-bold">Llegada al punto óptimo de rebrote</span>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                        <span>📋</span> Semáforo de Pastoreo de los 8 Potreros
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+                        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-300">
+                            <strong class="text-emerald-900 block">Potrero 1 (Trébol/Festuca)</strong>
+                            <span class="text-emerald-800 font-bold block mt-1">2.850 kg MS/ha</span>
+                            <span class="text-[10px] text-emerald-700">Listo para pastoreo (24 cm)</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-300">
+                            <strong class="text-emerald-900 block">Potrero 2 (Alfalfa/Raygrass)</strong>
+                            <span class="text-emerald-800 font-bold block mt-1">2.600 kg MS/ha</span>
+                            <span class="text-[10px] text-emerald-700">Listo para pastoreo (22 cm)</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-amber-50 border border-amber-300">
+                            <strong class="text-amber-900 block">Potrero 3 (Pastura Sur-Oeste)</strong>
+                            <span class="text-amber-800 font-bold block mt-1">3.100 kg MS/ha</span>
+                            <span class="text-[10px] text-amber-700">Ocupado hoy &bull; Salida mañana</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-stone-50 border border-stone-200">
+                            <strong class="text-stone-700 block">Potrero 4 (Borde Cerezos)</strong>
+                            <span class="text-stone-900 font-bold block mt-1">1.950 kg MS/ha</span>
+                            <span class="text-[10px] text-stone-500">En reposo (32 días)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 5: RED KIOT IOT, SOLAR & REWILDING
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="exp-kiot" class="exp-subcontent hidden space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                        <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                            <span>📡</span> Nodos KioT Transmitiendo en Vivo
+                        </h3>
+                        <div class="space-y-2.5 text-xs font-mono">
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex justify-between items-center">
+                                <div>
+                                    <strong class="text-stone-900">IOT-SN-01 &bull; Sonda FDR Suelo</strong>
+                                    <div class="text-[10px] text-stone-500 font-sans">Cuartel 1 &bull; LoRaWAN 915MHz &bull; Batería 96%</div>
+                                </div>
+                                <span class="text-emerald-700 font-bold">VWC: 38.5%</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex justify-between items-center">
+                                <div>
+                                    <strong class="text-stone-900">MET-01 &bull; Estación Agroclimática Casa</strong>
+                                    <div class="text-[10px] text-stone-500 font-sans">Anemómetro + Piranómetro &bull; 4G LTE-M</div>
+                                </div>
+                                <span class="text-sky-700 font-bold">23.8°C &bull; 56% HR</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex justify-between items-center">
+                                <div>
+                                    <strong class="text-stone-900">CAM-01 &bull; Cámara Trampa Quebrada Sur</strong>
+                                    <div class="text-[10px] text-stone-500 font-sans">Visión Espectral &bull; Avistamiento Zorro Chilla</div>
+                                </div>
+                                <span class="text-purple-700 font-bold">Activa 100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                        <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                            <span>☀️</span> Sistema Fotovoltaico Off-Grid
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="text-[10px] text-stone-500 block uppercase">Potencia Instalada</span>
+                                <span class="text-base font-bold text-amber-900">6.6 kWp</span>
+                                <span class="text-[9px] text-stone-500">12 paneles x 550W Tier 1</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="text-[10px] text-stone-500 block uppercase">Almacenamiento</span>
+                                <span class="text-base font-bold text-emerald-800">15 kWh LiFePO4</span>
+                                <span class="text-[9px] text-emerald-700">Estado de Carga: 84%</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="text-[10px] text-stone-500 block uppercase">Generación Mensual</span>
+                                <span class="text-base font-bold text-stone-900">1.380 kWh</span>
+                                <span class="text-[9px] text-stone-500">Autonomía Bomba Pozo</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6]">
+                                <span class="text-[10px] text-stone-500 block uppercase">Inversor Híbrido</span>
+                                <span class="text-base font-bold text-sky-900">8 kW Off-Grid</span>
+                                <span class="text-[9px] text-stone-500">Monitoreo vía KioT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 6: SUBSIDIOS CNR LEY 18.450 & RETORNO
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="exp-cnr" class="exp-subcontent hidden space-y-5">
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-white via-[#FAF7F2] to-amber-50/50 border border-[#E7DAC6] shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-stone-900 font-serif uppercase tracking-wider flex items-center gap-2">
+                                <span>💼</span> Carpeta de Postulación a Fondos del Estado (CNR Ley 18.450)
+                            </h3>
+                            <p class="text-xs text-stone-500">La Ficha Técnica permite exportar automáticamente la carpeta oficial sin consultores externos.</p>
+                        </div>
+                        <button onclick="downloadFormalReport()" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                            <span>📄</span> <span>Descargar Carpeta Oficial CNR (.txt)</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
+                        <div class="p-4 rounded-xl bg-white border border-[#E7DAC6]">
+                            <span class="text-[10px] text-stone-500 block uppercase">Subsidio Postulable CNR</span>
+                            <span class="text-xl font-black text-emerald-800">$52.000.000 CLP</span>
+                            <p class="text-[10px] text-stone-500 font-sans mt-1">Fondo estatal no reembolsable (hasta 80%) para tecnificación y sondas FDR.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white border border-[#E7DAC6]">
+                            <span class="text-[10px] text-stone-500 block uppercase">Ahorro OPEX Eléctrico</span>
+                            <span class="text-xl font-black text-sky-800">-$8.200.000 CLP</span>
+                            <p class="text-[10px] text-stone-500 font-sans mt-1">Ahorro anual por riego nocturno automatizado en horario de tarifa valle.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white border border-[#E7DAC6]">
+                            <span class="text-[10px] text-stone-500 block uppercase">Payback de la Inversión</span>
+                            <span class="text-xl font-black text-stone-900">3.8 Años</span>
+                            <p class="text-[10px] text-stone-500 font-sans mt-1">Retorno de inversión amortizado con el subsidio de la Ley 18.450.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white border border-[#E7DAC6]">
+                            <span class="text-[10px] text-stone-500 block uppercase">Pérdida por Helada Evitada</span>
+                            <span class="text-xl font-black text-amber-800">$35.000.000 CLP</span>
+                            <p class="text-[10px] text-stone-500 font-sans mt-1">Valor de cosecha protegida mediante microaspersión antiheladas automatizada.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -16016,7 +16244,130 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         MODAL INTERACTIVO: PITCH DECK MAESTRO & DOSSIER SpA (28 DIAPOSITIVAS)
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="pitch-deck-modal" class="fixed inset-0 z-[150] hidden items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md">
+        <div class="relative w-full max-w-5xl max-h-[94vh] bg-[#FAF7F2] border border-[#E7DAC6] rounded-3xl shadow-2xl flex flex-col overflow-hidden text-stone-900 animate-fadeIn">
+            
+            <!-- Header Modal con Selector de Audiencia -->
+            <div class="px-5 py-4 border-b border-[#E7DAC6] bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-900 border border-amber-400/60 flex items-center justify-center text-xl shadow-xs shrink-0">
+                        💼
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                DOSSIER SpA &bull; PITCH DECK 2026
+                            </span>
+                            <span class="text-xs text-stone-400">•</span>
+                            <span class="text-xs font-mono text-stone-600 font-semibold">Tesis de Negocio e Inversión</span>
+                        </div>
+                        <h3 class="text-base font-bold text-stone-900 font-serif">AgroTech Chile SpA &bull; Presentación Ejecutiva</h3>
+                    </div>
+                </div>
 
+                <!-- Filtros por Audiencia (Rutas adaptativas) -->
+                <div class="flex items-center gap-1.5 flex-wrap font-mono text-[10px]">
+                    <span class="text-stone-400 mr-1 hidden md:inline">Ruta:</span>
+                    <button id="pitchFilter-all" onclick="setPitchFilter('all')" class="pitch-filter-btn active px-2.5 py-1.5 rounded-lg bg-amber-600 text-white font-bold cursor-pointer transition-all shadow-xs">
+                        🚀 Completo
+                    </button>
+                    <button id="pitchFilter-investor" onclick="setPitchFilter('investor')" class="pitch-filter-btn px-2.5 py-1.5 rounded-lg bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 font-bold cursor-pointer transition-all">
+                        💼 Inversionistas
+                    </button>
+                    <button id="pitchFilter-farmer" onclick="setPitchFilter('farmer')" class="pitch-filter-btn px-2.5 py-1.5 rounded-lg bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 font-bold cursor-pointer transition-all">
+                        🌾 Agricultores
+                    </button>
+                    <button id="pitchFilter-cnr" onclick="setPitchFilter('cnr')" class="pitch-filter-btn px-2.5 py-1.5 rounded-lg bg-white text-stone-700 border border-[#E7DAC6] hover:bg-stone-50 font-bold cursor-pointer transition-all">
+                        🏛️ CNR / Gobierno
+                    </button>
+                    <button onclick="closePitchDeckModal()" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-base transition-colors ml-2 cursor-pointer" title="Cerrar (Esc)">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Diapositiva Activa (Body con Scroll) -->
+            <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-4">
+                
+                <!-- Barra superior de diapositiva -->
+                <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                    <div class="flex items-center gap-2">
+                        <span id="pitchChapterBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-100 text-sky-900 border border-sky-300">
+                            CAP. 1 • VISIÓN &amp; DIAGNÓSTICO
+                        </span>
+                        <span id="pitchTypeBadge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            PORTADA
+                        </span>
+                    </div>
+                    <span id="pitchSlideCounter" class="text-xs font-mono font-bold text-stone-600 bg-white px-2.5 py-1 rounded-lg border border-[#E7DAC6]">
+                        Slide 1 / 12
+                    </span>
+                </div>
+
+                <!-- Título y Bajada de la Slide -->
+                <div>
+                    <h2 id="pitchSlideTitle" class="text-2xl sm:text-3xl font-black text-stone-900 font-serif tracking-tight">
+                        Cargando diapositiva...
+                    </h2>
+                    <h3 id="pitchSlideSubtitle" class="text-sm sm:text-base font-medium text-amber-800 mt-1">
+                        Subtítulo...
+                    </h3>
+                </div>
+
+                <!-- Tesis Central Destacada -->
+                <div id="pitchSlideThesis" class="p-4 rounded-2xl bg-amber-500/10 border-l-4 border-amber-600 text-xs sm:text-sm font-serif italic text-stone-800 leading-relaxed shadow-xs">
+                    "Tesis central del slide..."
+                </div>
+
+                <!-- Puntos Clave de Argumentación -->
+                <div class="space-y-1 pt-1">
+                    <span class="text-[10px] font-mono font-bold uppercase text-stone-600 tracking-wider">Argumentos Clave &amp; Evidencia:</span>
+                    <ul id="pitchSlidePoints" class="space-y-2.5 text-xs sm:text-sm text-stone-700 font-sans pt-1">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <!-- Métricas & KPIs de la Diapositiva -->
+                <div class="pt-2">
+                    <span class="text-[10px] font-mono font-bold uppercase text-stone-600 tracking-wider">Métricas &amp; Parámetros:</span>
+                    <div id="pitchSlideMetrics" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1.5">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Notas del Orador -->
+                <div class="p-3.5 rounded-xl bg-stone-100/80 border border-stone-200 text-xs text-stone-600 font-sans space-y-1">
+                    <span class="font-bold text-stone-800 font-mono text-[10px] uppercase flex items-center gap-1.5">
+                        <span>🎙️</span> <span>Notas del Orador &bull; Guion de Presentación:</span>
+                    </span>
+                    <p id="pitchSlideNotes" class="leading-relaxed text-stone-700 italic">
+                        Notas del orador...
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Footer con Controles de Navegación -->
+            <div class="px-6 py-4 bg-white border-t border-[#E7DAC6] flex items-center justify-between gap-4">
+                <button onclick="prevPitchSlide()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer">
+                    <span>←</span> <span>Anterior</span>
+                </button>
+                <div class="text-xs font-mono text-stone-600 hidden sm:block">
+                    Usa las flechas del teclado <span class="bg-stone-100 px-1.5 py-0.5 rounded border border-stone-300">←</span> <span class="bg-stone-100 px-1.5 py-0.5 rounded border border-stone-300">→</span>
+                </div>
+                <button onclick="nextPitchSlide()" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
+                    <span>Siguiente</span> <span>→</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+<script src="js/hub/pitch-deck-viewer.js"></script>
 <script src="js/hub/hub-diegetic-modals.js"></script>
 <script src="js/hub/hub-report-generator.js"></script>
 <script src="js/hub/farm-profile-manager.js"></script>
