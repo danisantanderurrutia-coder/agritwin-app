@@ -341,6 +341,12 @@
                 initStudioCharts();
             } else if (viewId === 'docs') {
                 initDocsCatalog();
+                const activeBtn = document.querySelector('.docs-subtab-btn.active');
+                const targetSub = activeBtn ? activeBtn.id.replace('docsTabBtn-', 'docs-') : 'docs-vecino';
+                switchDocsTab(targetSub);
+                if (typeof window.renderLatexInContainer === 'function') {
+                    setTimeout(() => window.renderLatexInContainer('view-docs'), 80);
+                }
             } else if (viewId === 'mesa') {
                 initMesaSuite();
             } else if (viewId === 'dashboard') {
@@ -351,10 +357,6 @@
                 }
             } else if (viewId === 'panal') {
                 initPanalSuite(mode);
-            } else if (viewId === 'docs') {
-                if (typeof window.renderLatexInContainer === 'function') {
-                    setTimeout(() => window.renderLatexInContainer('view-docs'), 80);
-                }
             } else if (viewId === 'cuaderno') {
                 if (typeof initHubCuadernoView === 'function') {
                     initHubCuadernoView();
@@ -1392,6 +1394,7 @@
 
         // Subtabs del Centro de Documentación & Vault (4 Secciones Maestras)
         function switchDocsTab(tabId) {
+            if (!tabId) tabId = 'docs-vecino';
             // Mapeo hacia las 4 secciones maestras
             if (tabId === 'docs-pipeline') {
                 tabId = 'docs-arch';

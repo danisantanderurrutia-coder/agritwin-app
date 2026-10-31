@@ -721,6 +721,7 @@ FIN DEL INFORME TÉCNICO • AGROTWIN DIGITAL TWIN PLATFORM (HTTP://LOCALHOST:77
                     switchDocsTab('docs-arch');
                     if (typeof switchArchModule === 'function') switchArchModule('destine');
                 } else if (hash.startsWith('docs-')) switchDocsTab(hash);
+                else switchDocsTab('docs-vecino');
             }
             else if (hash === 'territory') openCerroMap();
             else if (hash === 'tactico') {
