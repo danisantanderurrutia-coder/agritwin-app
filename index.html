@@ -7200,7 +7200,7 @@
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
                 <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
                     <span>📐</span> <span>1. Marco Teórico &amp; Metodología</span>
-                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 1-7</span>
+                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 0-8</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
                     <span>⚡</span> <span>2. Arquitectura de Software &amp; Hardware</span>
@@ -8632,6 +8632,91 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     SECCIÓN 12: MÓDULO 8 - DOCTRINA DESTINATION EARTH: EPISTEMOLOGÍA DEL GEMELO DIGITAL MULTIESCALA & ASIMILACIÓN CONTINUA
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div id="mod-teorico-destine" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm">12</span>
+                            <div>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 8: Doctrina Destination Earth: Epistemología del Gemelo Digital Multiescala &amp; Asimilación Continua</h4>
+                                <p class="text-xs text-stone-500 font-sans">Del Dashboard Cartográfico al Gemelo Digital Dinámico • Downscaling Micro-Orográfico 30m • Asimilación Kalman / Nudging de Nodos KioT</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-teal-50 text-teal-800 border border-teal-300">
+                            DESTINE &bull; GEMELO BIOFÍSICO
+                        </span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-teal-50 via-white to-sky-50 border border-teal-200 space-y-2 text-xs text-stone-700 leading-relaxed font-sans">
+                        <strong class="text-teal-950 font-serif text-sm block">1. Principio Epistemológico: ¿Por qué un Gemelo Digital no es un Dashboard?</strong>
+                        <p>
+                            En la doctrina europea <strong>Destination Earth (DestinE)</strong> formulada por el ECMWF y la ESA, un Gemelo Digital no es una acumulación de gráficos ni un mapa con puntos de colores. La diferencia epistemológica radica en la <strong>capacidad de simulación acoplada y predicción determinista</strong>:
+                        </p>
+                        <ul class="list-disc list-inside space-y-1 text-stone-600 pl-1 text-[11px]">
+                            <li><strong>Un Dashboard / SIG estático</strong> reporta el pasado o el presente desconectado (<i>"ayer llovieron 12 mm; hoy la humedad es 22%"</i>).</li>
+                            <li><strong>Un Gemelo Digital Isomórfico</strong> acopla las ecuaciones físicas (Darcy, Penman-Monteith, Rothermel, Navier-Stokes) para proyectar el estado futuro ($t_0 \to t_0 + \Delta t$) y evaluar bifurcaciones de estrés <i>What-If</i> (rotura de bomba, viento Puelche, olas de calor).</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Tarjeta KaTeX 1: Asimilación Continua de Datos -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🔄</span> Asimilación de Datos (Nudging)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$x_{t+1} = x_{t+1}^{\text{model}} + \mathbf{K} \cdot \left(y_{t+1}^{\text{obs}} - \mathbf{H} x_{t+1}^{\text{model}}\right)$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Las observaciones in-situ de los 9 nodos KioT (humedad FDR, viento y aforo) corrigen la trayectoria numérica del modelo, eliminando la deriva predictiva sin invalidar la conservación de masa.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Downscaling Micro-Orográfico 30m -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🏔️</span> Downscaling Micro-Orográfico
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\mathbf{u}_{\text{local}}(\mathbf{x}) = \mathbf{u}_{\text{sinóptico}} + \nabla \Phi(\mathbf{x}), \quad \nabla \cdot \mathbf{u} = 0$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                El forzamiento global ECMWF (9 km) se proyecta sobre la malla Copernicus DEM (30 m), modelando aceleraciones en collados, efecto Venturi en quebradas andinas y sombra orográfica de viento.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 3: Cubo Tensorial 4D -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🧊</span> Cubo de Datos Polytope 4D
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\mathcal{C} \in \mathbb{R}^{P \times Z \times T \times V}, \quad \text{slice}(\{z^*, t^*, v^*\})$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Espacio discreto unificado: $P$ cuarteles $\times$ $Z$ profundidades de suelo $\times$ $T$ ventanas temporales $\times$ $V$ variables biofísicas, consultable en tiempo $O(1)$ sin duplicación de memoria.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Enlace directo a la Arquitectura de Software -->
+                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-2xl">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-stone-900 font-serif">Implementación en Software &amp; Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa cómo esta doctrina biofísica se materializa en los motores headless de <code>js/engines/</code>, el cliente STAC COG y las 4 ramas What-If en el servidor.</p>
+                            </div>
+                        </div>
+                        <button onclick="switchDocsTab('docs-arch'); switchArchModule('destine');" class="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 7 en Arquitectura ➔
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
@@ -9208,241 +9293,13 @@
                             </div>
                         </div>
 
-                        <!-- MODULO 2: MOTOR HIDROLÓGICO & EVAPOTRANSPIRACIÓN -->
-                        <div id="arch-detail-hydro" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-2xl">💧</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">2. Motor Hidrológico & Evapotranspiración (FAO-56 + Darcy)</h3>
-                                    </div>
-                                    <p class="text-xs text-stone-500 mt-0.5">Modelación termo-dinámica de demanda hídrica vegetal acoplada a la infiltración aluvial profunda.</p>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 border border-sky-300 font-mono text-[10px] font-bold self-start">
-                                    CALIBRACIÓN PARRAIL-LONGAVÍ
-                                </span>
-                            </div>
-
-                            <!-- Diagrama Mermaid Graph: Motor Hidrológico -->
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[11px] font-mono font-bold text-stone-700 uppercase flex items-center gap-1.5">
-                                        <span>📊</span> Tubería Algorítmica Penman-Monteith & Darcy
-                                    </span>
-                                </div>
-                                <div class="overflow-x-auto py-2">
-                                    <svg viewBox="0 0 820 180" class="w-full min-w-[720px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-                                        <!-- Flow nodes -->
-                                        <rect x="20" y="40" width="160" height="90" rx="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
-                                        <text x="32" y="65" fill="#0369A1" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Estaciones Meteo</text>
-                                        <text x="32" y="85" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Temp (°C) & HR (%)</text>
-                                        <text x="32" y="100" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Radiación Neta Rn</text>
-                                        <text x="32" y="115" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Viento u₂ a 2m</text>
-
-                                        <path d="M 180 85 L 240 85" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowSky)"/>
-
-                                        <rect x="240" y="30" width="220" height="110" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-                                        <text x="252" y="55" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Motor FAO-56 Penman-Monteith</text>
-                                        <text x="252" y="75" fill="#1C1917" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold">ET₀ = f(Rn, G, u₂, es-ea)</text>
-                                        <text x="252" y="95" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Demanda real: ETc = ET₀ · Kc</text>
-                                        <text x="252" y="110" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Dosis reposición: mm/día</text>
-                                        <text x="252" y="125" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Calibración Kc = 0.85 Pasturas</text>
-
-                                        <path d="M 460 85 L 520 85" stroke="#059669" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
-
-                                        <rect x="520" y="40" width="160" height="90" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-                                        <text x="532" y="65" fill="#B45309" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Sondas FDR & Suelo</text>
-                                        <text x="532" y="85" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• 10 cm: Evaporación</text>
-                                        <text x="532" y="100" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• 30 cm: Raíces activas</text>
-                                        <text x="532" y="115" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• 60 cm: Infiltración</text>
-
-                                        <path d="M 680 85 L 730 85" stroke="#D97706" stroke-width="2.5" marker-end="url(#arrow)"/>
-
-                                        <rect x="730" y="40" width="80" height="90" rx="12" fill="#ECFDF5" stroke="#059669" stroke-width="1.5"/>
-                                        <text x="740" y="75" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="10">Riego</text>
-                                        <text x="740" y="95" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="10">Óptimo</text>
-                                        <text x="740" y="115" fill="#065F46" font-family="'JetBrains Mono', monospace" font-size="8">-48% Agua</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Tabla Técnica FAO-56 -->
-                            <div class="space-y-2">
-                                <h4 class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider">Especificación de Variables & Ecuaciones Biofísicas</h4>
-                                <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
-                                    <table class="w-full text-left text-xs font-mono border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
-                                                <th class="py-2.5 px-3">Ecuación</th>
-                                                <th class="py-2.5 px-3">Formulación Matemática</th>
-                                                <th class="py-2.5 px-3">Inputs</th>
-                                                <th class="py-2.5 px-3">Impacto Práctico</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700">
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-sky-800">Penman-Monteith FAO-56</td>
-                                                <td class="py-2.5 px-3">$$ET_0 = \frac{0.408\Delta(R_n - G) + \gamma\frac{900}{T+273}u_2(e_s - e_a)}{\Delta + \gamma(1 + 0.34u_2)}$$</td>
-                                                <td class="py-2.5 px-3">$T, u_2, R_n, G, HR$</td>
-                                                <td class="py-2.5 px-3 text-emerald-700 font-bold">Cálculo diario en Fundo Meniel (4.82 mm/día)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-teal-800">Ley de Darcy (Acuífero)</td>
-                                                <td class="py-2.5 px-3">$$Q = -K \cdot A \cdot \frac{\Delta h}{L}$$</td>
-                                                <td class="py-2.5 px-3">$K = 4.5\times 10^{-4}\text{ m/s}, \Delta h$</td>
-                                                <td class="py-2.5 px-3 text-teal-700 font-bold">Recarga inducida de $42.000\text{ m}^3/\text{año}$ a pozos APR</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULO 3: SISTEMA PIRO-CLIMÁTICO & VIENTO PUELCHE -->
-                        <div id="arch-detail-fire" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-2xl">🔥</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">3. Dinámica Piro-Climática & Viento Puelche (Canadian FWI)</h3>
-                                    </div>
-                                    <p class="text-xs text-stone-500 mt-0.5">Sistema de alerta temprana y modelación de mitigación pasiva mediante fajas silvopastoriles de 45 metros.</p>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-300 font-mono text-[10px] font-bold self-start">
-                                    ALERTA METEOROLÓGICA SENAPRED
-                                </span>
-                            </div>
-
-                            <!-- Diagrama Mermaid Graph: Piro-Clima -->
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[11px] font-mono font-bold text-stone-700 uppercase flex items-center gap-1.5">
-                                        <span>📊</span> Cadena de Alerta y Faja de Mitigación Silvopastoril
-                                    </span>
-                                </div>
-                                <div class="overflow-x-auto py-2">
-                                    <svg viewBox="0 0 820 160" class="w-full min-w-[720px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="20" y="30" width="180" height="95" rx="12" fill="#FFFFFF" stroke="#DC2626" stroke-width="2"/>
-                                        <text x="32" y="55" fill="#B91C1C" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Viento Puelche</text>
-                                        <text x="32" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Viento > 30 km/h (E-SE)</text>
-                                        <text x="32" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• HR < 30% (Desecación)</text>
-                                        <text x="32" y="105" fill="#DC2626" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Efecto Föhn Cordillerano</text>
-
-                                        <path d="M 200 78 L 260 78" stroke="#DC2626" stroke-width="2.5" marker-end="url(#arrow)"/>
-
-                                        <rect x="260" y="30" width="230" height="95" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-                                        <text x="272" y="55" fill="#B45309" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Motor Canadian FWI</text>
-                                        <text x="272" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• FFMC: Humedad combustible fino</text>
-                                        <text x="272" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• ISI: Propagación inicial</text>
-                                        <text x="272" y="105" fill="#B45309" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">FWI = ISI · 1.62 (Índice de Fuego)</text>
-
-                                        <path d="M 490 78 L 550 78" stroke="#059669" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
-
-                                        <rect x="550" y="30" width="240" height="95" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-                                        <text x="562" y="55" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Faja Silvopastoril PRV (45m)</text>
-                                        <text x="562" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Pastoreo intensivo en borde</text>
-                                        <text x="562" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Eliminación de carga fina seca</text>
-                                        <text x="562" y="105" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">-64.7% Velocidad de Avance</text>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULO 4: RETENCIÓN ALUVIAL & KEYLINE -->
-                        <div id="arch-detail-keyline" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-2xl">🌊</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">4. Infiltración & Amortiguación Keyline de Crecidas</h3>
-                                    </div>
-                                    <p class="text-xs text-stone-500 mt-0.5">Desvío telemétrico de puntas de crecida en el Río Longaví e infiltración en terrazas de nivel.</p>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 border border-teal-300 font-mono text-[10px] font-bold self-start">
-                                    INFILTRACIÓN 320 L/S
-                                </span>
-                            </div>
-
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="overflow-x-auto py-2">
-                                    <svg viewBox="0 0 820 160" class="w-full min-w-[720px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="20" y="30" width="200" height="95" rx="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
-                                        <text x="32" y="55" fill="#0369A1" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Río Longaví en Crecida</text>
-                                        <text x="32" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Caudal Inflow: 180 m³/s</text>
-                                        <text x="32" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Riesgo desborde en poblados</text>
-                                        <text x="32" y="105" fill="#0284C7" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Sensor DGA Puente Quiriquina</text>
-
-                                        <path d="M 220 78 L 280 78" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowSky)"/>
-
-                                        <rect x="280" y="30" width="230" height="95" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-                                        <text x="292" y="55" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Tranque Keyline (20.000 m³)</text>
-                                        <text x="292" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Compuerta telemétrica: 4.2 m³/s</text>
-                                        <text x="292" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Desvío pasivo de crecida</text>
-                                        <text x="292" y="105" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Peak amortiguado a 175.8 m³/s</text>
-
-                                        <path d="M 510 78 L 570 78" stroke="#059669" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
-
-                                        <rect x="570" y="30" width="220" height="95" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-                                        <text x="582" y="55" fill="#5B21B6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Pozos APR Meniel & Rosas</text>
-                                        <text x="582" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Infiltración gravas aluviales</text>
-                                        <text x="582" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• +42 días autonomía hídrica</text>
-                                        <text x="582" y="105" fill="#7C3AED" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Seguridad hídrica 30 familias</text>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULO 5: GOBERNANZA VECINAL & DAO CUADRÁTICA -->
-                        <div id="arch-detail-dao" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-2xl">🤝</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">5. Gobernanza Vecinal & DAO Cuadrática (Voice Credits)</h3>
-                                    </div>
-                                    <p class="text-xs text-stone-500 mt-0.5">Mecanismo matemático que equilibra la intensidad de preferencia comunitaria sobre los predios colindantes.</p>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 border border-purple-300 font-mono text-[10px] font-bold self-start">
-                                    COSTO = V² CRÉDITOS
-                                </span>
-                            </div>
-
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="overflow-x-auto py-2">
-                                    <svg viewBox="0 0 820 160" class="w-full min-w-[720px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="20" y="30" width="200" height="95" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-                                        <text x="32" y="55" fill="#5B21B6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Predio Proponente</text>
-                                        <text x="32" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Moción: Faja cortafuego compartida</text>
-                                        <text x="32" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Billetera: 100 Voice Credits</text>
-                                        <text x="32" y="105" fill="#7C3AED" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Emite V votos deseados</text>
-
-                                        <path d="M 220 78 L 280 78" stroke="#7C3AED" stroke-width="2.5" marker-end="url(#arrow)"/>
-
-                                        <rect x="280" y="30" width="230" height="95" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-                                        <text x="292" y="55" fill="#B45309" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Fórmula Cuadrática</text>
-                                        <text x="292" y="75" fill="#1C1917" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold">Costo = V² (Voice Credits)</text>
-                                        <text x="292" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• 1 voto = 1 crédito | 5 votos = 25</text>
-                                        <text x="292" y="105" fill="#B45309" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Previene tiranía del latifundio</text>
-
-                                        <path d="M 510 78 L 570 78" stroke="#D97706" stroke-width="2.5" marker-end="url(#arrow)"/>
-
-                                        <rect x="570" y="30" width="220" height="95" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-                                        <text x="582" y="55" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-weight="bold" font-size="11">Pacto Inmutable SHA-256</text>
-                                        <text x="582" y="75" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Digest criptográfico inalterable</text>
-                                        <text x="582" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Validez Ley N° 19.799 Chile</text>
-                                        <text x="582" y="105" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Resolución de borde vinculante</text>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULO 6: STACK TECNOLÓGICO & INTEGRACIÓN CROSS-SYSTEM -->
+                        <!-- MODULO 3: STACK TECNOLÓGICO & INTEGRACIÓN CROSS-SYSTEM -->
                         <div id="arch-detail-stack" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-2xl">⚡</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">6. Stack Tecnológico & Integración Cross-System</h3>
+                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">3. Stack Tecnológico & Integración Cross-System</h3>
                                     </div>
                                     <p class="text-xs text-stone-500 mt-0.5">Infraestructura reactiva de microservicios locales, render WebGL acelerado y telemetría JSON viva.</p>
                                 </div>
@@ -9593,7 +9450,7 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-2xl">🌳</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">7. El Principio Árbol: Arquitectura de Tronco (Suite Hub) y Ramas</h3>
+                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">4. El Principio Árbol: Arquitectura de Tronco (Suite Hub) y Ramas Soberanas</h3>
                                     </div>
                                     <p class="text-xs text-stone-500 mt-0.5">Axioma de Desacoplamiento: El visor predial, la mesa vecinal y la cuenca son ramas independientes comunicadas únicamente a través del tronco central.</p>
                                 </div>
@@ -9799,7 +9656,7 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-2xl">🎨</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">9. Regla Visual Unificada de Menús de Campaña (AoE II)</h3>
+                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">5. Regla Visual Unificada de Menús de Campaña (AoE II)</h3>
                                     </div>
                                     <p class="text-xs text-stone-500 mt-0.5">Estandarización diegética inspirada en Age of Empires II para las 6 ramas territoriales del gemelo digital.</p>
                                 </div>
@@ -9892,7 +9749,7 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="text-2xl">⚙️</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">10. Motores Algorítmicos & Automatización CLI</h3>
+                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">6. Motores Algorítmicos Biofísicos Headless & Herramientas CLI</h3>
                                     </div>
                                     <p class="text-xs text-stone-500 mt-0.5">Motores de simulación biofísica, renderizado 3D WebGL PBR y lanzadores rápidos de terminal.</p>
                                 </div>
@@ -9954,1203 +9811,7 @@
                             </div>
                         </div>
 
-                        <!-- MODULO 11: DOCTRINA DE MANDO TÁCTICO C2 & MATRIZ MULTIAMENAZA H-V-R -->
-                        <div id="arch-detail-tactico" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-2xl">🎯</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">11. Doctrina de Mando Táctico C2 & Matriz Multiamenaza H-V-R</h3>
-                                    </div>
-                                    <p class="text-xs text-stone-500 mt-0.5">Gestión anticipatoria de cuencas basada en gráficos de maniobra militar operativa y cartografía SIG de exposición.</p>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-100 text-rose-900 border border-rose-300">C2 OPERACIONAL • CANÓNICO</span>
-                            </div>
-
-                            <!-- 1. Manifiesto Doctrinal: Superación de la Visión Lineal -->
-                            <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 text-xs text-stone-700">
-                                <div class="font-bold text-stone-900 font-mono flex items-center gap-2 text-xs">
-                                    <span>🧭</span> Superación del Enfoque Lineal: Áreas de Influencia y Dinámica de Maniobra
-                                </div>
-                                <p class="leading-relaxed">
-                                    La visión hidrológica tradicional suele reducir las amenazas a líneas continuas de drenaje o vectores abstractos de viento. La <b>Doctrina C2 (Command & Control) de AgriTwin</b> traslada la lógica de <b>frentes operativos de maniobra militar</b> (inspirada en la cartografía táctica de campaña) al manejo territorial de desastres:
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-[11px] font-mono">
-                                    <div class="p-2.5 rounded-lg bg-white border border-stone-200 shadow-xs">
-                                        <b class="text-sky-900 block mb-0.5">🌊 Áreas de Inundación Fluvial</b>
-                                        Polígonos de afección directa con cotas de anegamiento (0.4m a 2.1m) y avance por frentes 0-2h, 2-6h y 6-12h.
-                                    </div>
-                                    <div class="p-2.5 rounded-lg bg-white border border-stone-200 shadow-xs">
-                                        <b class="text-rose-900 block mb-0.5">🔥 Frentes Pirogénicos Activos</b>
-                                        Envolventes elípticas de Rothermel combinadas con la lluvia de pavesas a sotavento (Austin WUI 500m-1.5km).
-                                    </div>
-                                    <div class="p-2.5 rounded-lg bg-white border border-stone-200 shadow-xs">
-                                        <b class="text-amber-900 block mb-0.5">⛰️ Remoción en Masa A110</b>
-                                        Escarpes descalzados por gradiente topográfico (>34&deg;) acoplados a conos aluviales de runout (420m).
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2. Ecuación Canónica de Riesgo H-V-R -->
-                            <div class="p-4 rounded-xl bg-stone-900 text-white space-y-3 font-mono text-xs">
-                                <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                                    <span class="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                                        <span>📐</span> Formulación Matemática del Riesgo Integrado
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/30 text-[9px]">UNDRR & ISO 31010</span>
-                                </div>
-                                <div class="p-3 rounded-lg bg-black/60 border border-white/5 text-center space-y-1">
-                                    <div class="text-lg font-black text-amber-300 tracking-wider">
-                                        Riesgo (R) = [ Amenaza (Hazard, H) &times; Vulnerabilidad (V) ] / 100
-                                    </div>
-                                    <p class="text-[10px] text-stone-400 font-sans">
-                                        Donde <b>H &isin; [0, 100]%</b> cuantifica la magnitud de la energía física biometeorológica, y <b>V &isin; [0, 100]%</b> cuantifica la exposición y fragilidad de los activos territoriales (viviendas APR, vías, cultivos).
-                                    </p>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
-                                    <div class="p-2.5 rounded bg-stone-950 border border-stone-800 space-y-1">
-                                        <b class="text-sky-300 flex items-center gap-1"><span>⚡</span> Componente Hazard (H):</b>
-                                        <p class="text-stone-300 font-sans text-[10.5px]">
-                                            Cálculo reactivo alimentado por caudal del Río Longaví (DGA Quilaimo), precipitación 24h, cota de isoterma 0&deg;C, velocidad del Puelche y FWI Van Wagner.
-                                        </p>
-                                    </div>
-                                    <div class="p-2.5 rounded bg-stone-950 border border-stone-800 space-y-1">
-                                        <b class="text-amber-300 flex items-center gap-1"><span>🏘️</span> Componente Vulnerabilidad (V):</b>
-                                        <p class="text-stone-300 font-sans text-[10.5px]">
-                                            Superposición vectorial de 5 comités APR (3.220 familias), 12.8k ha agrícolas, puentes viales Ruta 5 / L-110 y 10 predios catastrados.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 3. Escala Cromática Oficial de 5 Clases -->
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-xs font-bold text-stone-900 font-mono uppercase tracking-wider flex items-center gap-1.5">
-                                        <span>🎨</span> Escala Cromática Normalizada de 5 Clases de Riesgo (0.0 a 1.0)
-                                    </h4>
-                                    <span class="text-[10px] font-mono text-stone-500">Estándar Cartográfico</span>
-                                </div>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left text-[11px] font-mono border border-stone-200 rounded-xl overflow-hidden">
-                                        <thead class="bg-stone-100 text-stone-700 font-bold border-b border-stone-200">
-                                            <tr>
-                                                <th class="p-2.5">Clase</th>
-                                                <th class="p-2.5">Rango R</th>
-                                                <th class="p-2.5">Color Hex</th>
-                                                <th class="p-2.5">Nivel Operacional</th>
-                                                <th class="p-2.5">Acción Táctica Requerida</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-stone-100 bg-white">
-                                            <tr>
-                                                <td class="p-2.5 font-bold"><span class="px-2 py-0.5 rounded text-emerald-900 bg-emerald-100 border border-emerald-300">Clase 1</span></td>
-                                                <td class="p-2.5 text-stone-600">0.0 - 0.2 (0-20%)</td>
-                                                <td class="p-2.5 flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#10b981]"></span><code>#10b981</code></td>
-                                                <td class="p-2.5 text-emerald-800 font-bold">Muy Bajo (Normal)</td>
-                                                <td class="p-2.5 text-stone-600 font-sans text-[10px]">Monitoreo satelital regular y mantenimiento preventivo de compuertas.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="p-2.5 font-bold"><span class="px-2 py-0.5 rounded text-lime-900 bg-lime-100 border border-lime-300">Clase 2</span></td>
-                                                <td class="p-2.5 text-stone-600">0.2 - 0.4 (20-40%)</td>
-                                                <td class="p-2.5 flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#84cc16]"></span><code>#84cc16</code></td>
-                                                <td class="p-2.5 text-lime-800 font-bold">Bajo (Alerta Preventiva)</td>
-                                                <td class="p-2.5 text-stone-600 font-sans text-[10px]">Revisión de acequias de cola y vigilancia de turnos de riego.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="p-2.5 font-bold"><span class="px-2 py-0.5 rounded text-amber-900 bg-amber-100 border border-amber-300">Clase 3</span></td>
-                                                <td class="p-2.5 text-stone-600">0.4 - 0.6 (40-60%)</td>
-                                                <td class="p-2.5 flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#f59e0b]"></span><code>#f59e0b</code></td>
-                                                <td class="p-2.5 text-amber-800 font-bold">Moderado (Alerta Amarilla)</td>
-                                                <td class="p-2.5 text-stone-600 font-sans text-[10px]">Apertura de vertederos hacia el Tranque Keyline (18.5k m³) y patrullaje con dron.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="p-2.5 font-bold"><span class="px-2 py-0.5 rounded text-orange-900 bg-orange-100 border border-orange-300">Clase 4</span></td>
-                                                <td class="p-2.5 text-stone-600">0.6 - 0.8 (60-80%)</td>
-                                                <td class="p-2.5 flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#f97316]"></span><code>#f97316</code></td>
-                                                <td class="p-2.5 text-orange-800 font-bold">Alto / Severo (Alerta Naranja)</td>
-                                                <td class="p-2.5 text-stone-600 font-sans text-[10px]">Despacho de brigadas forestales a fajas cortafuegos 45m y aviso radial VHF a comités APR.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="p-2.5 font-bold"><span class="px-2 py-0.5 rounded text-rose-900 bg-rose-100 border border-rose-300">Clase 5</span></td>
-                                                <td class="p-2.5 text-stone-600">0.8 - 1.0 (80-100%)</td>
-                                                <td class="p-2.5 flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#ef4444]"></span><code>#ef4444</code></td>
-                                                <td class="p-2.5 text-rose-800 font-bold">Muy Alto / Crítico (Alerta Roja)</td>
-                                                <td class="p-2.5 text-stone-600 font-sans text-[10px]">Evacuación de zonas bajas ribereñas, cierre preventivo de ruta L-110 y activación COE.</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- 4. Capas SIG Acopladas & Vectores Tácticos -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-                                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
-                                    <b class="text-stone-900 flex items-center gap-1.5 text-xs">
-                                        <span>🗺️</span> Modelos SIG Acoplados:
-                                    </b>
-                                    <ul class="space-y-1.5 text-[10.5px] text-stone-600">
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="w-2.5 h-2.5 rounded-sm bg-[#f43f5e] shrink-0 mt-0.5"></span>
-                                            <span><b>Exposición Colonia:</b> Residencial (#f43f5e), Vialidad (#ea580c), Agrícola (#eab308), Vega (#10b981).</span>
-                                        </li>
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="w-2.5 h-2.5 rounded-sm bg-[#b91c1c] shrink-0 mt-0.5"></span>
-                                            <span><b>CAL FIRE FHSZ:</b> Very High (#b91c1c), High (#ea580c), Moderate (#f59e0b) y Pavesas WUI (#f43f5e dashed).</span>
-                                        </li>
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="w-2.5 h-2.5 rounded-sm bg-[#ef4444] shrink-0 mt-0.5"></span>
-                                            <span><b>Remoción A110:</b> Escarpe activo 34&deg; (#ef4444) y cono runout aluvial (#f59e0b dashed).</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
-                                    <b class="text-stone-900 flex items-center gap-1.5 text-xs">
-                                        <span>🏹</span> Maniobra por Fases & Defensa Activa:
-                                    </b>
-                                    <ul class="space-y-1.5 text-[10.5px] text-stone-600">
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="w-2.5 h-2.5 rounded-sm border-2 border-dashed border-sky-400 bg-sky-950 shrink-0 mt-0.5"></span>
-                                            <span><b>Unidades Tácticas:</b> UD-01 Fluvial, UD-02 Incendio, UD-03 Deslizamiento con patrones punteados stippled.</span>
-                                        </li>
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="w-3 h-0.5 bg-[#06b6d4] shrink-0 mt-1.5"></span>
-                                            <span><b>Defensa Keyline:</b> Línea cian de zanjas e infiltración con 18.500 m³ de absorción hidráulica.</span>
-                                        </li>
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="w-3 h-0.5 border-t-2 border-dashed border-[#10b981] shrink-0 mt-1.5"></span>
-                                            <span><b>Cortafuegos WUI 45m:</b> 28 km de faja continua respaldada por el 90% de quórum de predios vecinos.</span>
-                                        </li>
-                                        <li class="flex items-start gap-1.5">
-                                            <span class="text-amber-600 font-bold shrink-0">➔</span>
-                                            <span><b>Vectores Phased:</b> Fase 1 (0-2h cabecera), Fase 2 (2-6h propagación), Fase 3 (6-12h envolvente crítica).</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- 5. Visual Limpia Predial & Celdas Tácticas Orientadas en Transectos -->
-                            <div class="p-4 rounded-xl bg-stone-900 text-stone-200 text-xs font-mono space-y-3 border border-stone-800">
-                                <div class="flex items-center justify-between border-b border-stone-800 pb-2">
-                                    <span class="text-emerald-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                                        <span>🌿</span> Visual Limpia Predial (Clean Slate) & Celdas Tácticas por Transectos
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[9px]">Fundo Meniel Anchor</span>
-                                </div>
-                                <p class="text-stone-300 font-sans text-xs leading-relaxed">
-                                    Para evitar la fatiga visual y la superposición de macro-polígonos amorfos sobre el predio, el visor inicia en <b>Visual Limpia</b> (únicamente Fundo Meniel activo sobre satélite nítido, sin partículas ni capas invasivas). Las amenazas se modelan mediante <b>rectángulos tácticos pequeños segmentados</b> (<code class="text-amber-300">dashArray: '6, 4'</code>) orientados a lo largo de transectos biofísicos de pendiente y talweg ("alertadores, no definitivos").
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1 text-[10.5px]">
-                                    <div class="p-2.5 rounded bg-stone-950 border border-sky-500/30 space-y-1">
-                                        <b class="text-sky-400 flex items-center gap-1"><span>🌊</span> Transecto Fluvial:</b>
-                                        <p class="text-stone-400 text-[10px] leading-tight">
-                                            [F-01] 0-2h Cabecera Quilaimo<br>
-                                            [F-02] 2-6h Valle Meniel Keyline<br>
-                                            [F-03] 6-12h Cruce Ruta 5 Sur<br>
-                                            <span class="text-cyan-400">+ Tranque Keyline 18.5k m³</span>
-                                        </p>
-                                    </div>
-                                    <div class="p-2.5 rounded bg-stone-950 border border-rose-500/30 space-y-1">
-                                        <b class="text-rose-400 flex items-center gap-1"><span>🔥</span> Transecto Pirogénico:</b>
-                                        <p class="text-stone-400 text-[10px] leading-tight">
-                                            [P-01] 0-2h Ladera Alta Cordillera<br>
-                                            [P-02] 2-6h Transición WUI Pavesas<br>
-                                            [P-03] 6-12h Interfaz Predial Meniel<br>
-                                            <span class="text-emerald-400">+ Faja Cortafuegos 45m</span>
-                                        </p>
-                                    </div>
-                                    <div class="p-2.5 rounded bg-stone-950 border border-amber-500/30 space-y-1">
-                                        <b class="text-amber-400 flex items-center gap-1"><span>⛰️</span> Transecto Remoción:</b>
-                                        <p class="text-stone-400 text-[10px] leading-tight">
-                                            [M-01] Escarpe Activo 34° A110<br>
-                                            [M-02] Cono Runout Aluvial L-110<br>
-                                            <span class="text-amber-300">Encuadre contextual flyToBounds</span><br>
-                                            <span class="text-stone-500">Retorno automático a Meniel</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="p-2 rounded bg-stone-950/80 border border-stone-800 text-[10.5px] text-stone-300 flex items-center justify-between">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="text-amber-400">🌪️</span>
-                                        <b>Régimen de Viento:</b> Partículas apagadas por defecto; activas sólo bajo emergencia Puelche o toggle explícito.
-                                    </span>
-                                    <span class="text-emerald-400 font-bold">Opción 1A (Zoom Predio + Frente)</span>
-                                </div>
-                            </div>
-
-                            <!-- 6. Arquitectura del Nuevo Sistema de 3 Pestañas Limpias (#territorialSidebar) -->
-                            <div class="p-4 rounded-xl bg-slate-900 text-slate-200 text-xs font-mono space-y-3 border border-sky-500/30 shadow-md">
-                                <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                                    <span class="text-sky-300 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                                        <span>🗂️</span> Reorganización Ergonómica: Nuevo Sistema de 3 Pestañas Limpias
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-400/30 text-[9px]">v2.6 CANÓNICO</span>
-                                </div>
-                                <p class="text-slate-300 font-sans text-xs leading-relaxed">
-                                    Para erradicar la saturación visual y la mezcla desordenada de controles, el panel lateral derecho (<code>#territorialSidebar</code>) fue reestructurado en un sistema estricto de <b>3 pestañas temáticas</b> con <b>leyendas internas en acordeones colapsables</b> y retiro absoluto de widgets flotantes sobre el mapa:
-                                </p>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-[11px]">
-                                    <!-- Tab 1 -->
-                                    <div class="p-3 rounded-xl bg-[#070e1a] border border-emerald-500/30 space-y-1.5">
-                                        <div class="font-bold text-emerald-300 flex items-center gap-1.5 border-b border-emerald-500/20 pb-1">
-                                            <span>🌦️</span> Pestaña 1: Tiempo & Hídrico
-                                        </div>
-                                        <ul class="text-[10px] text-slate-300 space-y-1 font-sans">
-                                            <li>• <b>Variables Windy:</b> Viento, Ráfagas, Lluvia, Temperatura, Presión, Humedad.</li>
-                                            <li>• <b>Scrubber 7D:</b> Telemetría real Open-Meteo vs simulación predictiva.</li>
-                                            <li>• <b>8 Momentos Climáticos:</b> Conmutador 1-click (Puelche, Helada, etc.).</li>
-                                            <li>• <b>Dinámicas Catabáticas:</b> Drenaje de aire frío, inversión térmica y heladas tardías.</li>
-                                            <li>• <b>Seguridad Hídrica:</b> Balance ETo Penman, infiltración Keyline 320 L/s y red APR.</li>
-                                        </ul>
-                                    </div>
-                                    <!-- Tab 2 -->
-                                    <div class="p-3 rounded-xl bg-[#070e1a] border border-sky-500/30 space-y-1.5">
-                                        <div class="font-bold text-sky-300 flex items-center gap-1.5 border-b border-sky-500/20 pb-1">
-                                            <span>🗺️</span> Pestaña 2: Capas SIG & Terreno
-                                        </div>
-                                        <ul class="text-[10px] text-slate-300 space-y-1 font-sans">
-                                            <li>• <b>Cobertura LULC:</b> Clasificación satelital + canvas interactivo.</li>
-                                            <li>• <b>Cartografía Base:</b> Satélite HD, Topo-Administrativo, Táctico C2.</li>
-                                            <li>• <b>Topografía DEM:</b> Hillshade Copernicus 30m, Curvas Keyline 2m e Ingesta DEM WebODM.</li>
-                                            <li>• <b>Teledetección Espectral (8 Bandas):</b> NDVI, NDWI, EVI/SAVI, NDMI, NBR, LST Térmico, SAR, SWIR.</li>
-                                            <li>• <b>Leyenda Contextual Integrada:</b> Desplegable automático dentro del sidebar.</li>
-                                            <li>• <b>Herramientas Geomorfología:</b> Lanzan el Modal HD <code>#biophysicalModal</code>.</li>
-                                        </ul>
-                                    </div>
-                                    <!-- Tab 3 -->
-                                    <div class="p-3 rounded-xl bg-[#070e1a] border border-amber-500/30 space-y-1.5">
-                                        <div class="font-bold text-amber-300 flex items-center gap-1.5 border-b border-amber-500/20 pb-1">
-                                            <span>⚡</span> Pestaña 3: Riesgos Climáticos
-                                        </div>
-                                        <ul class="text-[10px] text-slate-300 space-y-1 font-sans">
-                                            <li>• <b>Matriz General H-V-R:</b> Cálculo R = H × V + delta de incremento vs base.</li>
-                                            <li>• <b>Módulo Incendios:</b> Transectos P-01..P-03, faja WUI 45m y vector vivo Puelche.</li>
-                                            <li>• <b>Módulo Inundaciones:</b> Transectos F-01..F-03, defensas Keyline y onda de crecida.</li>
-                                            <li>• <b>Módulo Aludes:</b> Transectos M-01..M-02, escarpe 34° y runout aluvial L-110.</li>
-                                            <li>• <b>Leyenda Oficial C2:</b> 5 Clases SIG y Unidades Tácticas en acordeón interno.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 7. Doctrina Visual Hue-Preserving & Cinemática de Flechas RTS / War Room C2 -->
-                            <div class="p-4 rounded-xl bg-stone-900 text-stone-200 text-xs font-mono space-y-3.5 border border-amber-500/30">
-                                <div class="flex items-center justify-between border-b border-stone-800 pb-2">
-                                    <span class="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                                        <span>🎮</span> Cinemática Táctica RTS & Escalamiento por Intensidad y Opacidad (Hue-Preserving)
-                                    </span>
-                                    <span class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/30 text-[9px]">DOCTRINA C2 WAR ROOM</span>
-                                </div>
-                                <p class="text-stone-300 font-sans text-xs leading-relaxed">
-                                    Para resolver el conflicto de visualización donde mezclar colores de riesgo con colores de severidad generaba confusión cognitiva (ej. inundación grave pintada de rojo o fuego leve pintado de verde), se implementaron dos innovaciones de diseño militar:
-                                </p>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
-                                    <!-- Innovación 1: Hue-Preserving Scaling -->
-                                    <div class="p-3 rounded-lg bg-black/60 border border-stone-800 space-y-2">
-                                        <b class="text-amber-300 flex items-center gap-1 text-xs">
-                                            <span>🎨</span> 1. Hue-Preserving Intensity & Opacity:
-                                        </b>
-                                        <p class="text-stone-400 font-sans text-[10.5px] leading-relaxed">
-                                            Cada amenaza conserva estrictamente su <b>matiz cromático canónico</b> (Fuego: <code class="text-rose-400">#ef4444</code>, Inundación: <code class="text-sky-400">#0284c7</code>, Alud: <code class="text-amber-400">#f59e0b</code>). La severidad porcentual (0 a 100%) se codifica exclusivamente mediante:
-                                        </p>
-                                        <ul class="text-[10px] text-stone-300 space-y-1 font-mono">
-                                            <li>• <b>Opacidad de Relleno (&alpha;):</b> Escalada de 0.14 (bajo) a 0.52 (crítico).</li>
-                                            <li>• <b>Grosor Perimetral:</b> Trazo de 1.6px discontinuo a 3.4px sólido con glow neón.</li>
-                                            <li>• <b>Badges Numéricos Explícitos:</b> Impresión de severidad calculada en cada celda (ej. <code>[P-01] 92% EXTREMO</code>).</li>
-                                        </ul>
-                                    </div>
-
-                                    <!-- Innovación 2: Flechas de Avance Macro RTS & Balance Físico -->
-                                    <div class="p-3 rounded-lg bg-black/60 border border-stone-800 space-y-2">
-                                        <b class="text-sky-300 flex items-center gap-1 text-xs">
-                                            <span>🏹</span> 2. Macro Chevrons RTS & Balanceo Físico:
-                                        </b>
-                                        <p class="text-stone-400 font-sans text-[10.5px] leading-relaxed">
-                                            Inspirado en los centros de operaciones tácticas militares (C2) y juegos de estrategia (RTS), los frentes exhiben <b>grandes chevrons de empuje pulsantes a 60 FPS</b> gobernados por leyes físicas:
-                                        </p>
-                                        <ul class="text-[10px] text-stone-300 space-y-1 font-mono">
-                                            <li>• <b>Inundación:</b> Sigue el talweg del río (&theta; = atan2) y gradiente de pendiente (v=2.4 m/s, Q=142 m³/s).</li>
-                                            <li>• <b>Incendios:</b> Vector balanceado (65% biomasa + 35% viento Puelche 295° ONO con ráfagas) + spotting 1.2 km.</li>
-                                            <li>• <b>Aludes:</b> Vector gravitacional descendente 34° (a = g·sin 34°) con apertura en abanico en cono L-110.</li>
-                                            <li>• <b>Spawn Radars:</b> Retículos concéntricos pulsantes marcando el punto de origen de la energía.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 8. Enlace Directo al Mapa Táctico -->
-                            <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-xs">
-                                <div class="flex items-center gap-2 text-amber-900">
-                                    <span class="text-lg">🕹️</span>
-                                    <span>Acceso Operativo: El nuevo sistema de 3 pestañas, chevrons RTS y celdas Hue-Preserving está activo en el visor territorial.</span>
-                                </div>
-                                <button onclick="switchMasterView('territory'); if(typeof selectSidebarTab==='function') selectSidebarTab('tab-riesgos');" class="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition-all cursor-pointer shadow-sm shrink-0">
-                                    <span>🎯 Abrir Consola C2 en Vivo</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- MODULO 12: MATRIZ DE DATOS: LO INMUTABLE (DOCTRINA & MÉTODOS) VS LO PARTICULAR (EXPEDIENTE PREDIAL) -->
-                        <div id="arch-detail-doctrina" class="arch-detail-panel hidden space-y-5 bg-white p-6 rounded-2xl border border-[#E7DAC6] shadow-sm">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-2xl">📜</span>
-                                        <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">12. Matriz de Datos: Lo Inmutable (Doctrina & Métodos) vs. Lo Particular (Expediente Predial)</h3>
-                                    </div>
-                                    <p class="text-xs text-stone-500 mt-0.5">Axioma de Permanencia: Cómo opera la plataforma a través de las 6 vertientes, flujos transversales y verticales, y la soberanía de datos del usuario.</p>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-lg bg-teal-50 text-teal-900 border border-teal-300 font-mono text-[10px] font-bold self-start">
-                                    ESTÁNDAR MULTI-TENANT
-                                </span>
-                            </div>
-
-                            <!-- Diagrama SVG: Topología de Datos Transversales, Verticales e Inmutables -->
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[11px] font-mono font-bold text-stone-700 uppercase flex items-center gap-1.5">
-                                        <span>🌲</span> Topología de Flujos: 6 Vertientes, Permacultura Transversal y Jerarquía Vertical
-                                    </span>
-                                    <span class="text-[10px] font-mono text-teal-800 font-bold bg-teal-100/80 px-2 py-0.5 rounded border border-teal-300">
-                                        Matriz de Integración
-                                    </span>
-                                </div>
-
-                                <div class="overflow-x-auto py-2">
-                                    <svg viewBox="0 0 860 300" class="w-full min-w-[780px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-                                        <defs>
-                                            <marker id="arrowTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                                <path d="M 0 1 L 10 5 L 0 9 z" fill="#0D9488" />
-                                            </marker>
-                                            <marker id="arrowEmeraldDoc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                                <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669" />
-                                            </marker>
-                                        </defs>
-
-                                        <!-- Capa Base: Bóveda Universal Inmutable -->
-                                        <rect x="20" y="20" width="820" height="65" rx="12" fill="#F0FDF4" stroke="#059669" stroke-width="2"/>
-                                        <text x="40" y="45" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="bold">🏛️ CAPA INMUTABLE (DOCTRINA &amp; MÉTODOS): CÓMO OPERA LA APP (SIEMPRE DISPONIBLE 100%)</text>
-                                        <text x="40" y="65" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="10">• Estratégico vs Táctico • Algoritmo Raycast Polígonos GeoJSON • FAO-56 / FWI / Darcy • Ontología 18 Asesores • Principio Árbol</text>
-
-                                        <!-- Capa Transversal: Permacultura Zonas 0-5 y Keyline -->
-                                        <rect x="20" y="105" width="820" height="50" rx="12" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/>
-                                        <text x="40" y="128" fill="#92400E" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="bold">🌀 FLUJO TRANSVERSAL: PERMACULTURA HOLÍSTICA (CRUZA LAS 6 RAMAS)</text>
-                                        <text x="40" y="145" fill="#78350F" font-family="'JetBrains Mono', monospace" font-size="9.5">Zonas 0 a 5 de Mollison &middot; Escala Keyline Yeomans &middot; Balances de Carbono (t C/ha) &middot; Red Hidrológica y Cosecha Pluvial</text>
-
-                                        <!-- Conexión Vertical: Predio ➔ Establo & Invernadero -->
-                                        <!-- Rama 1: Predio (Pilar) -->
-                                        <rect x="40" y="175" width="240" height="105" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-                                        <text x="52" y="198" fill="#065F46" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="bold">🏡 Rama 1: Predio (Cimiento)</text>
-                                        <text x="52" y="218" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">• Terreno 3D &middot; Cuarteles &middot; Tranque</text>
-                                        <text x="52" y="235" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9">Genera Forraje MS/ha ➔ Establo</text>
-                                        <text x="52" y="252" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9">Otorga Espacio Solar ➔ Invernadero</text>
-                                        <text x="52" y="270" fill="#B45309" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">[Datos Específicos del Usuario]</text>
-
-                                        <!-- Flecha Vertical: Predio ➔ Establo -->
-                                        <path d="M 280 215 L 320 215" stroke="#059669" stroke-width="2" marker-end="url(#arrowEmeraldDoc)"/>
-
-                                        <!-- Rama 4: Establo -->
-                                        <rect x="330" y="175" width="230" height="105" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-                                        <text x="342" y="198" fill="#92400E" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="bold">🐄 Rama 4: Establo (Hijo Vertical)</text>
-                                        <text x="342" y="218" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">• Rebaño PRV &middot; 8 Potreros &middot; UGM</text>
-                                        <text x="342" y="235" fill="#D97706" font-family="'JetBrains Mono', monospace" font-size="9">Consume Forraje del Predio</text>
-                                        <text x="342" y="252" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9">Genera Guano ➔ Invernadero/Suelo</text>
-                                        <text x="342" y="270" fill="#B45309" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">[Carga y Días Particulares]</text>
-
-                                        <!-- Flecha Vertical: Establo ➔ Invernadero -->
-                                        <path d="M 560 215 L 600 215" stroke="#0D9488" stroke-width="2" marker-end="url(#arrowTeal)"/>
-
-                                        <!-- Rama 5: Invernadero -->
-                                        <rect x="610" y="175" width="230" height="105" rx="12" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
-                                        <text x="622" y="198" fill="#0F766E" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="bold">🌱 Rama 5: Invernadero (Biofábrica)</text>
-                                        <text x="622" y="218" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">• Semillas criollas &middot; Bokashi</text>
-                                        <text x="622" y="235" fill="#0D9488" font-family="'JetBrains Mono', monospace" font-size="9">Procesa Abonos y Bioinsumos</text>
-                                        <text x="622" y="252" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9">Nutre Suelo Vivo de Cuarteles</text>
-                                        <text x="622" y="270" fill="#B45309" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">[Variedades y Camas Reales]</text>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Tabla Técnica: Matriz Comparativa Inmutable vs. Particular -->
-                            <div class="space-y-2">
-                                <h4 class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider flex items-center gap-1.5">
-                                    <span>📋</span> Matriz Comparativa: Estándar Inmutable vs. Datos Particulares del Predio
-                                </h4>
-                                <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
-                                    <table class="w-full text-left text-xs font-mono border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
-                                                <th class="py-2.5 px-3">Dimensión / Mecanismo</th>
-                                                <th class="py-2.5 px-3">🏛️ Lo Inmutable (Cómo opera la App)</th>
-                                                <th class="py-2.5 px-3">📁 Lo Particular (Datos del Predio Activo)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700">
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-emerald-800">1. Estratégico vs. Táctico</td>
-                                                <td class="py-2.5 px-3 text-stone-600">
-                                                    <b>Marco Decisional:</b> Estratégico = balances estacionales, fijación de carbono y Keyline a largo plazo. Táctico = maniobra reactiva 0-12h ante Puelche, heladas o crecidas aluviales.
-                                                </td>
-                                                <td class="py-2.5 px-3 text-amber-900 font-bold">
-                                                    Los valores numéricos específicos: En Meniel meta de 4.800 kg MS/ha y 28 L/s DGA vs. las metas y aforos del predio recién registrado.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-blue-800">2. Generación de Polígonos</td>
-                                                <td class="py-2.5 px-3 text-stone-600">
-                                                    <b>Estándar Algorítmico:</b> Raycast 3D sobre malla DEM, proyección geodésica WGS84, cálculo de superficie ha y formato GeoJSON DGA/SAG.
-                                                </td>
-                                                <td class="py-2.5 px-3 text-amber-900 font-bold">
-                                                    Los vértices exactos [lat, lon], nombre del cuartel (ej. Cuartel Norte A101 de 3.8 ha), especie sembrada y estado hídrico real.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-amber-800">3. Permacultura (Transversal)</td>
-                                                <td class="py-2.5 px-3 text-stone-600">
-                                                    <b>Marco Teórico:</b> Zonificación 0-5 de Mollison y Escala de Permanencia de Yeomans (Clima > Relieve > Agua > Vías > Árboles > Estructuras > Suelo).
-                                                </td>
-                                                <td class="py-2.5 px-3 text-amber-900 font-bold">
-                                                    Trazado real de canales Keyline, ubicación de la casa en la cota térmica local y especies nativas plantadas en fajas cortavientos.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-purple-800">4. Predio ➔ Establo ➔ Invernadero (Vertical)</td>
-                                                <td class="py-2.5 px-3 text-stone-600">
-                                                    <b>Ley de Cadena Trófica:</b> Forraje del predio alimenta al rebaño PRV; el rebaño aporta estiércol a la biofábrica; la biofábrica enmienda el suelo de los cuarteles.
-                                                </td>
-                                                <td class="py-2.5 px-3 text-amber-900 font-bold">
-                                                    Carga animal UGM del agricultor (ej. 24 vacas en Meniel vs. 0 o rebaño ovino nuevo), rotación de potreros y recetas de Bokashi.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-rose-800">5. Los 18 Asesores Consultivos</td>
-                                                <td class="py-2.5 px-3 text-stone-600">
-                                                    <b>Ontología Especializada:</b> 3 asesores por rama (18 roles), sus ramas de conocimiento (Edafólogo, Fisióloga, Veterinario, Hidrólogo) y sus algoritmos.
-                                                </td>
-                                                <td class="py-2.5 px-3 text-amber-900 font-bold">
-                                                    El dictamen específico emitido para el agricultor, sus calicatas registradas y las tareas de campo acordadas en su bitácora.
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Ciclo de Progresión para Nuevos Predios -->
-                            <div class="p-4 rounded-xl bg-teal-950 text-teal-100 text-xs font-mono space-y-2 border border-teal-800">
-                                <div class="flex items-center justify-between">
-                                    <b class="text-teal-300 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                                        <span>🌱</span> Progresión de un Predio Nuevo: De Modo Semilla (Bootstrap) a Madurez 100%
-                                    </b>
-                                    <span class="px-2 py-0.5 rounded bg-teal-900 text-teal-200 border border-teal-500/40 text-[9px]">Flujo Onboarding</span>
-                                </div>
-                                <p class="text-stone-300 font-sans text-xs leading-relaxed">
-                                    Cuando un agricultor crea su cuenta o adquiere el twin, <b>la Bóveda Universal le entrega toda la doctrina y los asesores desde el segundo cero</b>, mientras que su Expediente Predial inicia como un lienzo limpio:
-                                </p>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[10.5px]">
-                                    <div class="p-2.5 rounded bg-black/50 border border-teal-800 space-y-1">
-                                        <b class="text-teal-300">Fase 1: Geometría &amp; DEM</b>
-                                        <p class="text-stone-400 text-[10px]">Dibuja el perímetro con el pincel 3D o sube su Shapefile. El DEM local se proyecta automáticamente.</p>
-                                    </div>
-                                    <div class="p-2.5 rounded bg-black/50 border border-teal-800 space-y-1">
-                                        <b class="text-teal-300">Fase 2: Infraestructura Keyline</b>
-                                        <p class="text-stone-400 text-[10px]">Ubica su casa, dimensiona su tranque sugerido en la cota óptima y traza los 8 potreros PRV.</p>
-                                    </div>
-                                    <div class="p-2.5 rounded bg-black/50 border border-teal-800 space-y-1">
-                                        <b class="text-teal-300">Fase 3: Telemetría &amp; Dictámenes</b>
-                                        <p class="text-stone-400 text-[10px]">Conecta sus primeras sondas KioT (o satélite gratuito) y los 18 asesores generan su primer dictamen.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- MODULO 13: FÍSICA ATMOSFÉRICA, DOWNSCALING MICRO-OROGRÁFICO & ESCENARIOS DE ESTRÉS DE CUENCA -->
-                                                <!-- MODULO 13: FÍSICA ATMOSFÉRICA, DOWNSCALING MICRO-OROGRÁFICO & ESCENARIOS DE ESTRÉS DE CUENCA -->
-                        <div id="arch-detail-atmosferica" class="arch-detail-panel hidden space-y-7 bg-white p-6 sm:p-7 rounded-2xl border border-[#E7DAC6] shadow-sm font-sans">
-                            <!-- Header del Módulo -->
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
-                                <div>
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="text-2xl p-1.5 rounded-xl bg-sky-50 border border-sky-200">🌪️</span>
-                                        <div>
-                                            <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">13. Dinámica Atmosférica, Downscaling Micro-Orográfico &amp; Escenarios de Estrés (30m DEM)</h3>
-                                            <p class="text-xs text-stone-500 font-mono mt-0.5">Doctrina Científico-Técnica del Motor Hidroclimático • ECMWF/GFS vs Downscaling Territorial • Cuenca Maule Sur (122.000 ha)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="downloadAtmosphericSciencePdf()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                                        <span>📥</span> <span>Descargar Reporte PDF</span>
-                                    </button>
-                                    <button onclick="switchMasterView('cuenca')" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                                        <span>🗺️</span> <span>Ver en Mapa Cuenca</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- ════ SECCIÓN 1: FUENTES DE DATOS, INGESTA FISIOGRÁFICA & TELEMETRÍA ════ -->
-                            <div class="space-y-3">
-                                <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
-                                    <span>📡</span> 1. Procedencia de Datos, Sensores en Tierra &amp; Pipeline de Ingesta
-                                </h4>
-                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
-                                    El motor biofísico de cuenca no utiliza datos simulados en el vacío ni valores aleatorios. Se alimenta de una <b>arquitectura híbrida de 4 niveles</b> que combina modelos numéricos globales en tiempo real con topografía de satélite de 30 metros y sensores físicos terrestres oficiales:
-                                </p>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs font-mono">
-                                    <!-- Nivel 1: Modelos Globales -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2">
-                                        <div class="flex items-center justify-between">
-                                            <b class="text-sky-900 flex items-center gap-1.5"><span>🌐</span> Nivel A: Forzamiento Sinóptico Global</b>
-                                            <span class="text-[9px] px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">API REST</span>
-                                        </div>
-                                        <p class="text-stone-600 font-sans text-[11px] leading-relaxed">
-                                            <b>Proveedor:</b> Open-Meteo API integrando <b>ECMWF IFS (Centro Europeo, 9 km)</b> y <b>NOAA GFS (EE.UU., 22 km)</b>.<br>
-                                            <b>Cadencia:</b> 4 corridas sinópticas diarias (00Z, 06Z, 12Z, 18Z), entrega horaria continua a 7 días.<br>
-                                            <b>Variables Ingeridas:</b> <code>temperature_2m</code>, <code>relative_humidity_2m</code>, <code>precipitation</code>, <code>surface_pressure</code>, <code>cloud_cover</code>, <code>wind_speed_10m</code>, <code>wind_direction_10m</code>, <code>wind_gusts_10m</code>, <code>direct_radiation</code>.
-                                        </p>
-                                    </div>
-
-                                    <!-- Nivel 2: DEM Copernicus 30m -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2">
-                                        <div class="flex items-center justify-between">
-                                            <b class="text-emerald-900 flex items-center gap-1.5"><span>🏔️</span> Nivel B: Malla Topográfica Copernicus DEM</b>
-                                            <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">Raster 30m</span>
-                                        </div>
-                                        <p class="text-stone-600 font-sans text-[11px] leading-relaxed">
-                                            <b>Proveedor:</b> Copernicus DEM GLO-30 y AWS Terrarium Elevation Tiles.<br>
-                                            <b>Resolución:</b> Malla ráster de 30m con exactitud vertical relativa &lt;2m.<br>
-                                            <b>Parámetros Derivados:</b> Pendiente local ($\nabla z$), orientación/azimut ($\phi_{\text{aspect}}$), máscara de sombras 3D y delimitación de quebradas andinas (120 msnm a 2.400 msnm).
-                                        </p>
-                                    </div>
-
-                                    <!-- Nivel 3: LULC Sentinel-2 -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2">
-                                        <div class="flex items-center justify-between">
-                                            <b class="text-amber-900 flex items-center gap-1.5"><span>🛰️</span> Nivel C: Cobertura Biofísica Sentinel-2 L2A</b>
-                                            <span class="text-[9px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">Óptico 10m</span>
-                                        </div>
-                                        <p class="text-stone-600 font-sans text-[11px] leading-relaxed">
-                                            <b>Proveedor:</b> Agencia Espacial Europea (ESA) Copernicus Sentinel-2 L2A BOA.<br>
-                                            <b>Clasificación Biofísica:</b> Bosque nativo esclerófilo, plantación forestal, agrícola bajo riego, secano y cuerpos de agua.<br>
-                                            <b>Parámetros Físicos:</b> Longitud de rugosidad aerodinámica de Prandtl ($z_0$), albedo ($\alpha$) y Número de Curva SCS (CN) para infiltración.
-                                        </p>
-                                    </div>
-
-                                    <!-- Nivel 4: Red Ground-Truth -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2">
-                                        <div class="flex items-center justify-between">
-                                            <b class="text-rose-900 flex items-center gap-1.5"><span>📍</span> Nivel D: Red Telemétrica Ground-Truth</b>
-                                            <span class="text-[9px] px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">Tiempo Real</span>
-                                        </div>
-                                        <p class="text-stone-600 font-sans text-[11px] leading-relaxed">
-                                            <b>DGA:</b> Fluviometría horaria Río Longaví en El Castillo (BNA 07352002-6) y limnígrafo telemétrico Embalse Bullileo (BNA 07352001-8).<br>
-                                            <b>DMC:</b> Estación Meteorológica Linares (cód. 350020) para presión y vientos sinópticos.<br>
-                                            <b>INIA:</b> Red RAN Quilamapu y Cauquenes para radiación solar ($R_s$) y horas de frío.<br>
-                                            <b>Nodos KioT Meniel:</b> Sensores Sensirion SHT35 en huerto a 1.5m y 4.5m, anemometría ultrasónica y tensiómetros edáficos a -20, -40 y -60 cm.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <!-- Tabla Matriz de Procedencia -->
-                                <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
-                                    <table class="w-full text-left text-xs font-mono border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
-                                                <th class="py-2.5 px-3">Fuente / Instrumento</th>
-                                                <th class="py-2.5 px-3">Institución / Red</th>
-                                                <th class="py-2.5 px-3">Resolución Espacio-Temporal</th>
-                                                <th class="py-2.5 px-3">Variables Extraídas</th>
-                                                <th class="py-2.5 px-3">Rol en el Gemelo AgriTwin</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
-                                            <tr>
-                                                <td class="py-2 px-3 font-bold text-sky-800">ECMWF IFS &amp; GFS</td>
-                                                <td class="py-2 px-3 text-stone-600">Open-Meteo REST API</td>
-                                                <td class="py-2 px-3 text-stone-600">9 km – 22 km / Horario (7 días)</td>
-                                                <td class="py-2 px-3">Viento, T°, HR, lluvia, presión, radiación</td>
-                                                <td class="py-2 px-3 text-emerald-800 font-sans">Condición de contorno sinóptica macro.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2 px-3 font-bold text-emerald-800">Copernicus GLO-30</td>
-                                                <td class="py-2 px-3 text-stone-600">ESA / AWS Terrarium</td>
-                                                <td class="py-2 px-3 text-stone-600">30 metros / Estático</td>
-                                                <td class="py-2 px-3">Elevación msnm, pendiente, azimut</td>
-                                                <td class="py-2 px-3 text-emerald-800 font-sans">Malla de cálculo micro-topográfico 3D.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2 px-3 font-bold text-amber-800">Sentinel-2 L2A BOA</td>
-                                                <td class="py-2 px-3 text-stone-600">ESA Copernicus Hub</td>
-                                                <td class="py-2 px-3 text-stone-600">10 metros / Cada 5 días</td>
-                                                <td class="py-2 px-3">Bandas B2-B8, NDVI, biomasa LULC</td>
-                                                <td class="py-2 px-3 text-emerald-800 font-sans">Rugosidad aerodinámica de Prandtl ($z_0$).</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2 px-3 font-bold text-blue-800">Aforos Telemétricos DGA</td>
-                                                <td class="py-2 px-3 text-stone-600">Dirección General de Aguas</td>
-                                                <td class="py-2 px-3 text-stone-600">Puntual / Horario en vivo</td>
-                                                <td class="py-2 px-3">Caudal $Q$ (m³/s), cota embalse, lluvia</td>
-                                                <td class="py-2 px-3 text-emerald-800 font-sans">Calibración y cierre de balance hídrico.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2 px-3 font-bold text-red-800">Red RAN &amp; DMC</td>
-                                                <td class="py-2 px-3 text-stone-600">INIA / Dir. Meteorológica</td>
-                                                <td class="py-2 px-3 text-stone-600">Estaciones Linares / Quilamapu</td>
-                                                <td class="py-2 px-3">Punto de rocío, $R_s$, T° mínima</td>
-                                                <td class="py-2 px-3 text-emerald-800 font-sans">Ajuste de sesgo térmico y radiativo.</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2 px-3 font-bold text-purple-800">Nodos KioT Huerto</td>
-                                                <td class="py-2 px-3 text-stone-600">AgriTwin Predio Meniel</td>
-                                                <td class="py-2 px-3 text-stone-600">Sensores en árbol / Cada 5 min</td>
-                                                <td class="py-2 px-3">Racha ultrasónica, HR en copa, VWC</td>
-                                                <td class="py-2 px-3 text-emerald-800 font-sans">Validación local y calibración de microclima.</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- ════ SECCIÓN 2: LAS 6 CAPAS ATMOSFÉRICAS CON ACCIÓN DIRECTA ════ -->
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
-                                        <span>🌪️</span> 2. Suite de 6 Capas Atmosféricas Estilo Windy (Global vs 30m)
-                                    </h4>
-                                    <span class="text-[10px] font-mono text-slate-500">Haz clic en cualquier capa para verla en vivo en el mapa</span>
-                                </div>
-                                <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
-                                    <table class="w-full text-left text-xs font-mono border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
-                                                <th class="py-2.5 px-3">Capa / Fenómeno</th>
-                                                <th class="py-2.5 px-3">Variable API</th>
-                                                <th class="py-2.5 px-3">Modelo Global (9-22 km)</th>
-                                                <th class="py-2.5 px-3">Downscaling AgriTwin (30 m DEM)</th>
-                                                <th class="py-2.5 px-3">Sesgo &amp; Mitigación en Tierra</th>
-                                                <th class="py-2.5 px-3 text-right">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-sky-800">1. Viento a 10m</td>
-                                                <td class="py-2.5 px-3 text-stone-600"><code>wind_speed_10m</code><br><code>wind_direction_10m</code></td>
-                                                <td class="py-2.5 px-3 text-stone-600">Campo de presión barotrópico en malla 9 km.</td>
-                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Aceleración Venturi en cajones andinos + rugosidad LULC + 850 partículas lagrangianas.</td>
-                                                <td class="py-2.5 px-3 text-stone-600">Subestima catabáticos. Mitigado con anemómetros DMC Linares y Meniel.</td>
-                                                <td class="py-2.5 px-3 text-right">
-                                                    <button onclick="launchAtmosphericLayerFromVault('wind')" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-300 font-bold transition-all cursor-pointer text-[10px]">Ver en Mapa</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-amber-800">2. Ráfagas (Gusts)</td>
-                                                <td class="py-2.5 px-3 text-stone-600"><code>wind_gusts_10m</code></td>
-                                                <td class="py-2.5 px-3 text-stone-600">Parametrización PBL por energía cinética turbulenta ($u_{10m} + 3.0\sigma_u$).</td>
-                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Inestabilidad de Richardson ($Ri < 0.25$) en laderas a sotavento (&gt;25° pendiente).</td>
-                                                <td class="py-2.5 px-3 text-stone-600">Promedia picos breves. Mitigado con sensores ultrasónicos en copa.</td>
-                                                <td class="py-2.5 px-3 text-right">
-                                                    <button onclick="launchAtmosphericLayerFromVault('gusts')" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-300 font-bold transition-all cursor-pointer text-[10px]">Ver en Mapa</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-blue-800">3. Lluvia &amp; Escorrentía</td>
-                                                <td class="py-2.5 px-3 text-stone-600"><code>precipitation</code><br><code>rain</code>, <code>showers</code></td>
-                                                <td class="py-2.5 px-3 text-stone-600">Microfísica de condensación en columna vertical sin resolver cañones.</td>
-                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Ascenso orográfico adiabático en cordillera + enrutamiento Manning-Strickler con radar Doppler.</td>
-                                                <td class="py-2.5 px-3 text-stone-600">Desplaza centroides 15 km. Mitigado con pluviógrafos DGA Bullileo/Digua.</td>
-                                                <td class="py-2.5 px-3 text-right">
-                                                    <button onclick="launchAtmosphericLayerFromVault('precip')" class="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-bold transition-all cursor-pointer text-[10px]">Ver en Mapa</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-red-800">4. Temperatura a 2m</td>
-                                                <td class="py-2.5 px-3 text-stone-600"><code>temperature_2m</code></td>
-                                                <td class="py-2.5 px-3 text-stone-600">Flujo de calor sensible de superficie en cota media de celda.</td>
-                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Gradiente adiabático local ($0.0065^\circ\text{C/m}$) + estancamiento catabático radiativo en hondonadas (heladas).</td>
-                                                <td class="py-2.5 px-3 text-stone-600">Oculta heladas severas (+3°C). Mitigado con red INIA Quilamapu y KioT.</td>
-                                                <td class="py-2.5 px-3 text-right">
-                                                    <button onclick="launchAtmosphericLayerFromVault('temp')" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-300 font-bold transition-all cursor-pointer text-[10px]">Ver en Mapa</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-purple-800">5. Nubes &amp; Radiación</td>
-                                                <td class="py-2.5 px-3 text-stone-600"><code>cloud_cover</code><br><code>direct_radiation</code></td>
-                                                <td class="py-2.5 px-3 text-stone-600">Humedad relativa crítica por capa de presión.</td>
-                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Sombreado topográfico 3D (Klein-Theilacker) con ángulo cenital + cálculo Penman-Monteith FAO-56.</td>
-                                                <td class="py-2.5 px-3 text-stone-600">Pierde nieblas bajas de río. Mitigado con piranómetros INIA Cauquenes y GOES-16.</td>
-                                                <td class="py-2.5 px-3 text-right">
-                                                    <button onclick="launchAtmosphericLayerFromVault('clouds')" class="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-300 font-bold transition-all cursor-pointer text-[10px]">Ver en Mapa</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-2.5 px-3 font-bold text-cyan-800">6. Presión &amp; Isóbaras</td>
-                                                <td class="py-2.5 px-3 text-stone-600"><code>surface_pressure</code><br><code>pressure_msl</code></td>
-                                                <td class="py-2.5 px-3 text-stone-600">Integración de la hidrostática a nivel medio del mar.</td>
-                                                <td class="py-2.5 px-3 text-emerald-800 font-sans">Reducción barométrica barotrópica exacta por cota DEM con curvas isobáricas y balance geostrófico.</td>
-                                                <td class="py-2.5 px-3 text-stone-600">Distorsión en relieve andino. Mitigado con barómetros digitales DGA Longaví.</td>
-                                                <td class="py-2.5 px-3 text-right">
-                                                    <button onclick="launchAtmosphericLayerFromVault('pressure')" class="px-2.5 py-1 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border border-cyan-300 font-bold transition-all cursor-pointer text-[10px]">Ver en Mapa</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- ════ SECCIÓN 3: ECUACIONES FÍSICAS DESGLOSADAS POR EFECTO ════ -->
-                            <div class="space-y-4">
-                                <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
-                                    <span>📐</span> 3. Cadena de Ecuaciones Físico-Matemáticas por Efecto
-                                </h4>
-                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
-                                    Cada fenómeno meteorológico y biofísico no se modela con una ecuación aislada, sino mediante un <b>sistema de ecuaciones diferenciales acopladas</b> que garantizan la conservación de masa, cantidad de movimiento y energía sobre la malla de 30 metros:
-                                </p>
-
-                                <div class="space-y-4">
-                                    <!-- Efecto A: Viento & Venturi -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2.5">
-                                        <b class="text-xs font-bold text-sky-950 flex items-center gap-1.5 uppercase tracking-wider">
-                                            <span>💨</span> Efecto A: Campo de Viento 2D, Encañonamiento Venturi &amp; Fricción de Prandtl
-                                        </b>
-                                        <p class="text-xs text-stone-600 font-sans leading-relaxed">
-                                            El flujo de aire a escala de cuenca resuelve la conservación de masa incompresible y la aceleración en cañones andinos estrechos (como las gargantas de Bullileo y Río Longaví):
-                                        </p>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Conservación de Masa &amp; Continuidad 2D:</span>
-                                                $$\nabla \cdot \mathbf{u} = \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} = 0$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Aceleración Venturi en Cañón Andino:</span>
-                                                $$v_2 = v_1 \cdot \frac{A_1}{A_2} \approx v_1 \left[1 + \eta_v \frac{\bar{z}_{\text{laderas}} - z_{\text{thw}}}{W_{\text{valle}}}\right]$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Perfil Logarítmico de Rugosidad de Prandtl:</span>
-                                                $$u(z) = \frac{u_*}{\kappa} \ln\left(\frac{z - d}{z_0}\right) + \Psi_m\left(\frac{z}{L}\right)$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Navier-Stokes 2D con Forzamiento Orográfico:</span>
-                                                $$\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2\mathbf{u} - \frac{C_d}{h}|\mathbf{u}|\mathbf{u} + \mathbf{F}_{\text{topo}}$$
-                                            </div>
-                                        </div>
-                                        <div class="p-2.5 rounded-lg bg-sky-50 border border-sky-200 text-sky-900 text-[11px] font-sans">
-                                            <b>Advección Lagrangiana (Motor de Partículas):</b> Las 850 partículas en el canvas se transportan integrando la ecuación estocástica de Langevin: $\mathbf{x}_{t+\Delta t} = \mathbf{x}_t + \mathbf{u}(\mathbf{x}_t, t)\Delta t + \sqrt{2 D_T \Delta t}\,\boldsymbol{\xi}_t$, donde $D_T$ es la dispersión turbulenta y $\boldsymbol{\xi}_t$ ruido browniano blanco.
-                                        </div>
-                                    </div>
-
-                                    <!-- Efecto B: Ráfagas & Inestabilidad de Richardson -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2.5">
-                                        <b class="text-xs font-bold text-amber-950 flex items-center gap-1.5 uppercase tracking-wider">
-                                            <span>🌪️</span> Efecto B: Turbulencia Mecánica de Ladera &amp; Desprendimiento de Ráfagas (Gusts)
-                                        </b>
-                                        <p class="text-xs text-stone-600 font-sans leading-relaxed">
-                                            Las ráfagas no son un promedio temporal simple, sino el resultado del balance entre cizalladura del viento y estabilidad térmica en la capa límite:
-                                        </p>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Energía Cinética Turbulenta (TKE):</span>
-                                                $$u_{\text{gust}} = \bar{u}_{10m} + 3.0 \cdot \sqrt{\frac{2}{3} e_{\text{TKE}}}$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Número de Richardson Gradiente (Inestabilidad):</span>
-                                                $$Ri = \frac{\frac{g}{\theta_v} \frac{\partial \theta_v}{\partial z}}{\left(\frac{\partial u}{\partial z}\right)^2 + \left(\frac{\partial v}{\partial z}\right)^2} < 0.25$$
-                                            </div>
-                                        </div>
-                                        <p class="text-[11px] text-stone-500 font-sans">
-                                            Cuando $Ri < 0.25$ en laderas a sotavento (&gt;25° de inclinación), la cizalladura mecánica supera a la flotabilidad estable y se generan vórtices turbulentos con un factor de amplificación de racha $u_{\text{gust\_30m}} = u_{\text{gust}} \cdot [1 + 0.45 \sin \alpha_{\text{slope}} \cos(\theta_{\text{wind}} - \theta_{\text{aspect}})]$.
-                                        </p>
-                                    </div>
-
-                                    <!-- Efecto C: Inversión Térmica & Flujo Catabático -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2.5">
-                                        <b class="text-xs font-bold text-red-950 flex items-center gap-1.5 uppercase tracking-wider">
-                                            <span>🌡️❄️</span> Efecto C: Termodinámica Hipsométrica, Inversión Térmica &amp; Flujo Catabático
-                                        </b>
-                                        <p class="text-xs text-stone-600 font-sans leading-relaxed">
-                                            Durante el día rige el enfriamiento adiabático por cota. En noches despejadas de viento calmo, el enfriamiento radiativo decanta aire frío denso hacia los fondos de cuenca:
-                                        </p>
-                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Gradientes Adiabáticos:</span>
-                                                $$\Gamma_d \approx -9.8^\circ\text{C/km}, \quad \Gamma_s \approx -5.5^\circ\text{C/km}$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Flujo Catabático Gravitacional:</span>
-                                                $$u_{\text{cat}} = \left(\frac{g}{\theta_0} \Delta \theta \frac{K_H}{C_D} \sin \alpha_{\text{slope}}\right)^{1/2}$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Lago de Aire Frío (Heladas):</span>
-                                                $$T(z, t) = T_0(z) - \frac{|R_n|}{\rho c_p h_{\text{inv}}} t \left[1 - \left(\frac{z}{h_{\text{inv}}}\right)^2\right]$$
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Efecto D: Hidrología & Manning -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2.5">
-                                        <b class="text-xs font-bold text-blue-950 flex items-center gap-1.5 uppercase tracking-wider">
-                                            <span>🌧️🌊</span> Efecto D: Condensación Orográfica, Infiltración SCS-CN &amp; Hidráulica Fluvial
-                                        </b>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Infiltración SCS Curve Number:</span>
-                                                $$S_{\text{soil}} = \frac{25400}{CN} - 254, \quad P_{\text{eff}} = \frac{(P - 0.2 S)^2}{P + 0.8 S}$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Hidráulica Fluvial de Manning:</span>
-                                                $$Q = \frac{1}{n} A R_h^{2/3} S_0^{1/2}$$
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Efecto E: Radiación, Penman-Monteith & Fuego Rothermel -->
-                                    <div class="p-4 rounded-xl bg-[#FBF9F5] border border-[#E7DAC6] space-y-2.5">
-                                        <b class="text-xs font-bold text-amber-950 flex items-center gap-1.5 uppercase tracking-wider">
-                                            <span>☀️🔥</span> Efecto E: Radiación 3D, Evapotranspiración FAO-56 &amp; Propagación de Fuego
-                                        </b>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Evapotranspiración Penman-Monteith:</span>
-                                                $$ET_0 = \frac{0.408\Delta(R_n - G) + \gamma\frac{900}{T+273}u_2 VPD}{\Delta + \gamma(1 + 0.34u_2)}$$
-                                            </div>
-                                            <div class="p-3 rounded-lg bg-white border border-[#E7DAC6] text-center shadow-inner">
-                                                <span class="text-[10px] text-stone-400 block mb-1">Propagación de Incendios de Rothermel (FWI):</span>
-                                                $$R_{\text{fire}} = \frac{I_R \xi (1 + \phi_w + \phi_s)}{\rho_b \epsilon Q_{ig}}$$
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ════ SECCIÓN 4: SIMULADOR INTERACTIVO DE LOS 8 ESCENARIOS CLIMÁTICOS ════ -->
-                            <div class="space-y-3.5">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-bold text-stone-900 font-serif flex items-center gap-2">
-                                        <span>🎯</span> 4. Simulador Interactivo de los 8 Escenarios Climáticos de Estrés
-                                    </h4>
-                                    <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300 font-bold">1-Click Ejecución en el Gemelo 3D</span>
-                                </div>
-                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
-                                    Cada escenario representa un estado ambiental extremo documentado en el registro histórico de la cuenca del Río Longaví (1985–2026). Al presionar el botón <b>"▶️ Activar en Gemelo"</b>, el sistema configura automáticamente los forzantes en el motor y conmuta la vista al mapa de cuenca interactivo:
-                                </p>
-
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                                    <!-- Escenario 1 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-emerald-800 flex items-center gap-1.5 text-xs"><span>🌱</span> 1. Actual Base (Calibrado)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">Régimen Base</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> $u = 12\text{ kt WSW}, T = 22.4^\circ\text{C}, HR = 54\%, Q = 18.2\text{ m}^3\text{/s}$, Bullileo al 68%.<br>
-                                                <b>Respuesta Territorial:</b> Régimen hidrológico calibrado con aforos DGA. Riego y canales matrices operando en cuota nominal.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('normal')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Simulación Base</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 2 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-yellow-800 flex items-center gap-1.5 text-xs"><span>☀️</span> 2. Verano Normal (Brisa SW)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-yellow-100 text-yellow-800 font-bold">Alta Demanda</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> $u = 15\text{ kt SW}, T = 28.5^\circ\text{C}, HR = 38\%, ET_0 = 6.2\text{ mm/d}, VPD = 2.4\text{ kPa}$.<br>
-                                                <b>Respuesta Territorial:</b> Brisa marina de valle activa. Riego presurizado al 100% en huertos frutales para evitar estrés hídrico.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('summer_normal')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-yellow-600 hover:bg-yellow-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Verano Normal</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 3 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-orange-800 flex items-center gap-1.5 text-xs"><span>🔥</span> 3. Ola de Calor Extrema (&gt;37°C)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-orange-100 text-orange-800 font-bold">Estrés Térmico</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> $T = 37.8^\circ\text{C}, HR = 19\%, VPD = 4.8\text{ kPa}$, subsidencia adiabática de dorsal cálida.<br>
-                                                <b>Respuesta Territorial:</b> Cierre estomático total en cerezos Lapins, detención fotosintética y pulso de microaspersión de enfriamiento.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('heatwave')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Ola de Calor</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 4 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-amber-800 flex items-center gap-1.5 text-xs"><span>🏜️</span> 4. Megasequía Crónica (La Niña)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">Acuífero -11m</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> Precipitación anual acumulada &lt;240 mm (-65%), caudal río $2.4\text{ m}^3\text{/s}$, freático a -19m.<br>
-                                                <b>Respuesta Territorial:</b> Estiaje severo, tranques de acumulación secos al 70%, restricción de turnos de agua DGA en canales.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('drought')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Megasequía</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 5 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-rose-800 flex items-center gap-1.5 text-xs"><span>💨</span> 5. Viento Puelche Catabático (Foehn)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">Rachas &gt;55 kt</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> $u = 28\text{ kt ESE}$, rachas &gt;55 kt, HR colapsa a &lt;16%, subida térmica de $+8^\circ\text{C}$ en 2 horas.<br>
-                                                <b>Respuesta Territorial:</b> Regla 30-30-30 activa. Caída de humedad de combustible fino a EMC &lt;6%. Alerta roja de incendios.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('puelche')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Viento Puelche</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 6 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-red-800 flex items-center gap-1.5 text-xs"><span>🌲🔥</span> 6. Incendio Forestal (Rothermel)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold">FWI &gt;65 Extremo</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> Propagación a 1.8 km/h en pino insigne/eucalipto andino, pavesas incandescentes a 1.2 km.<br>
-                                                <b>Respuesta Territorial:</b> Simulación de frentes de fuego activos, activación de cortafuegos Keyline y reserva forzada en tranques.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('fire')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Piro-Simulación</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 7 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-blue-800 flex items-center gap-1.5 text-xs"><span>🌊</span> 7. Temporal de Invierno (Crecida)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">380 m³/s Caudal</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> Río atmosférico Cat 4 con isoterma 0°C a 2.900 msnm (lluvia cálida sobre manto nival andino previo).<br>
-                                                <b>Respuesta Territorial:</b> Caudal instantáneo pico de 380 m³/s. Inundación de vegas fluviales, socavación y Shields $\theta > 0.08$.
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('storm')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Temporal Aluvial</span>
-                                        </button>
-                                    </div>
-
-                                    <!-- Escenario 8 -->
-                                    <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2 flex flex-col justify-between">
-                                        <div>
-                                            <div class="flex items-center justify-between mb-1">
-                                                <b class="text-cyan-800 flex items-center gap-1.5 text-xs"><span>❄️</span> 8. Helada Polar / Negra (-4°C)</b>
-                                                <span class="text-[9px] px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-bold">Inversión en Hondo</span>
-                                            </div>
-                                            <p class="text-stone-600 text-[11px] leading-relaxed">
-                                                <b>Forzantes:</b> $T = -4.0^\circ\text{C}, T_{\text{dew}} = -5.2^\circ\text{C}$, calma $v < 0.5\text{ m/s}$, enfriamiento radiativo puro.<br>
-                                                <b>Respuesta Territorial:</b> Inversión catabática severa en Retiro. Necrosis de yemas sin escarcha protectora (helada negra).
-                                            </p>
-                                        </div>
-                                        <button onclick="launchClimateScenarioFromVault('frost')" class="mt-2 w-full py-1.5 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                                            <span>▶️</span> <span>Activar Helada Polar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            
-                            <!-- SECCIÓN 5: MODELO DEL «VECINO INFORMADO Y PROTEGIDO» MULTIESCALA -->
-                            <div class="space-y-4 pt-4 border-t border-[#E7DAC6]">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="text-sm font-mono font-bold text-stone-800 uppercase tracking-wider flex items-center gap-2">
-                                        <span>🏔️</span> 5. Arquitectura del «Vecino Informado &amp; Protegido» (LOD Anidado 122k ha ⇄ 25 ha)
-                                    </h4>
-                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-100 text-sky-800 border border-sky-300 font-bold">LOD 0 a LOD 3</span>
-                                </div>
-                                <p class="text-xs text-stone-600 leading-relaxed">
-                                    El agua de riego y las crecidas torrenciales que impactan al Fundo Meniel se originan en las altas cumbres andinas a más de 40 km de distancia. Este modelo articula una <b>jerarquía multiescala</b> donde el Twin de Cuenca gobierna la física continua macro-regional, mientras que la gobernanza comunitaria y la tenencia se canalizan a la <b>Rama Vecinal (Mesa / Panal)</b> y la micro-operación 3D al <b>Twin de Predio</b>.
-                                </p>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-                                    <!-- A: Gradiente Térmico & Isoterma 0°C -->
-                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
-                                        <b class="text-sky-800">A. Gradiente Térmico Real &amp; Cota Isoterma 0°C Dinámica:</b>
-                                        <div class="p-2.5 rounded bg-white border border-sky-200 text-sky-900 text-center shadow-inner">
-                                            $$\Gamma_{\text{real}}(t) = -\frac{T_{\text{valle}}(t) - T_{\text{cumbre}}(t)}{z_{\text{cumbre}} - z_{\text{valle}}}, \quad Z_{\text{iso0}}(t) = z_{\text{valle}} + \frac{T_{\text{valle}}(t)}{\Gamma_{\text{real}}(t)}$$
-                                        </div>
-                                        <p class="text-[10.5px] text-stone-600">
-                                            Calculado en tiempo real con el doble nodo Open-Meteo ($z_{\text{valle}} = 198\text{ msnm}$, $z_{\text{cumbre}} = 1.850\text{ msnm}$). Monitorea ascensos peligrosos de la línea de congelamiento.
-                                        </p>
-                                    </div>
-
-                                    <!-- B: Rain-on-Snow & Crecida Aluvial -->
-                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
-                                        <b class="text-blue-800">B. Escorrentía Aluvial Rain-on-Snow (Lluvia sobre Nieve):</b>
-                                        <div class="p-2.5 rounded bg-white border border-blue-200 text-blue-900 text-center shadow-inner">
-                                            $$C_{\text{ros}}(t) = C_0 + \alpha_{\text{nieve}} \cdot \max\left(0, \frac{Z_{\text{iso0}}(t) - Z_{\text{nieve}}}{z_{\text{max}} - Z_{\text{nieve}}}\right), \quad Q_{\text{peak}} = \frac{C_{\text{ros}} P_{\text{cord}} A}{3.6} + Q_0$$
-                                        </div>
-                                        <p class="text-[10.5px] text-stone-600">
-                                            Amplifica la escorrentía cuando ríos atmosféricos cálidos impactan nieve previa ($Z_{\text{nieve}} \approx 1.600\text{ msnm}$), prediciendo pulsos de hasta $380\text{ m}^3\text{/s}$ en el Río Longaví.
-                                        </p>
-                                    </div>
-
-                                    <!-- C: Descenso Adiabático Puelche -->
-                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
-                                        <b class="text-rose-800">C. Compresión Foehn del Viento Puelche Cordillerano:</b>
-                                        <div class="p-2.5 rounded bg-white border border-rose-200 text-rose-900 text-center shadow-inner">
-                                            $$T_{\text{valle}}^{\text{puelche}} = T_{\text{cumbre}} + \Gamma_d \cdot (z_{\text{cumbre}} - z_{\text{valle}}), \quad \text{RH}_{\text{valle}} = \text{RH}_{\text{cumbre}} \cdot \frac{e_s(T_{\text{cumbre}})}{e_s(T_{\text{valle}}^{\text{puelche}})}$$
-                                        </div>
-                                        <p class="text-[10.5px] text-stone-600">
-                                            Con $\Gamma_d = 9.8\times 10^{-3}\text{ }^\circ\text{C/m}$, simula el colapso de humedad relativa ($<16\%$) y alza térmica ($+8^\circ\text{C}$) en el descenso desde la frontera andina ($-71.05^\circ$).
-                                        </p>
-                                    </div>
-
-                                    <!-- D: Tolerancia Douglas-Peucker LOD -->
-                                    <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
-                                        <b class="text-emerald-800">D. Criterio de Tolerancia Geométrica de Zoom (LOD Cliente 60 FPS):</b>
-                                        <div class="p-2.5 rounded bg-white border border-emerald-200 text-emerald-900 text-center shadow-inner">
-                                            $$\epsilon(z) = \epsilon_0 \cdot 2^{(16 - z)} \quad \text{con } \epsilon_0 = 0.0001^\circ$$
-                                        </div>
-                                        <p class="text-[10.5px] text-stone-600">
-                                            Reduce los vértices evaluados por la GPU de $45.000$ en escala macro a $1.800$ en escala predial, permitiendo navegación instantánea a 60 FPS en cualquier navegador.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <!-- ═══════════════════════════════════════════════════════════════════
-                                     SECCIÓN E: TERMODINÁMICA CONVECTIVA (CAPE), CIZALLADURA & DOCTRINA 3 NIVELES ANTE TORNADOS
-                                     ═══════════════════════════════════════════════════════════════════ -->
-                                <div class="mt-4 p-4 sm:p-5 rounded-xl bg-amber-50/70 border border-amber-300 space-y-4">
-                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200 pb-2.5">
-                                        <div>
-                                            <span class="px-2 py-0.5 rounded bg-amber-900 text-amber-100 font-mono text-[10px] font-bold uppercase">Física Mesoescalar &bull; Convección Severa</span>
-                                            <h5 class="text-sm font-bold text-stone-900 mt-1">
-                                                🌪️ E. Termodinámica Convectiva ($\text{CAPE}$), Cizalladura Vertical y Doctrina de 3 Niveles ante Tornados
-                                            </h5>
-                                        </div>
-                                        <span class="text-[10.5px] font-mono text-amber-900 bg-white px-2.5 py-1 rounded-lg border border-amber-300 font-bold">
-                                            Centro-Sur de Chile (36°S &ndash; 38°S)
-                                        </span>
-                                    </div>
-
-                                    <p class="text-xs text-stone-700 leading-relaxed">
-                                        A diferencia de las inundaciones fluviales o heladas radiativas &mdash;cuya trayectoria está gobernada por la topografía fija del DEM&mdash;, <b>la coordenada exacta de toque a tierra de un tornado no es predecible con días ni horas de anticipación</b>, pues depende de inestabilidades turbulentas de sub-kilómetro ($&lt;200\text{ m}$). Sin embargo, la atmósfera sí revela cuándo posee la <b>energía potencial termodinámica ($\text{CAPE}$)</b> y el <b>cizalle cinemático ($\Delta \vec{V}$)</b> necesarios para engendrar superceldas rotantes o trombas terrestres (<i>landspouts</i>) post-frontales en el Valle Central.
-                                    </p>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-                                        <!-- E.1: Integral Física del CAPE -->
-                                        <div class="p-3.5 rounded-xl bg-white border border-amber-200 space-y-2 shadow-sm">
-                                            <b class="text-amber-900">E.1 Energía Potencial Convectiva Disponible ($\text{CAPE}$):</b>
-                                            <div class="p-2.5 rounded bg-amber-50/60 border border-amber-200 text-stone-900 text-center shadow-inner overflow-x-auto">
-                                                $$\text{CAPE} = \int_{z_{\text{LFC}}}^{z_{\text{EL}}} g \left( \frac{T_{v,\text{parcela}}(z) - T_{v,\text{ambiente}}(z)}{T_{v,\text{ambiente}}(z)} \right) dz \;\left[\frac{\text{J}}{\text{kg}}\right]$$
-                                            </div>
-                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                                Mide el trabajo mecánico total por unidad de masa realizado por la fuerza de flotabilidad (<i>buoyancy</i>) sobre una parcela de aire húmedo que asciende entre el <b>Nivel de Convección Libre ($z_{\text{LFC}}$)</b> y el <b>Nivel de Equilibrio ($z_{\text{EL}}$)</b>, donde $g = 9.81\text{ m/s}^2$ y $T_v = T(1 + 0.61\,r_v)$ es la temperatura virtual. Cuando aire frío en altura ($500\text{ hPa}$, $-22^\circ\text{C}$) irrumpe sobre aire húmedo superficial post-frontal ($14^\circ\text{C}$), el integrando se vuelve fuertemente positivo.
-                                            </p>
-                                        </div>
-
-                                        <!-- E.2: Velocidad Vertical Máxima del Updraft -->
-                                        <div class="p-3.5 rounded-xl bg-white border border-amber-200 space-y-2 shadow-sm">
-                                            <b class="text-amber-900">E.2 Límite Termodinámico de Corriente Ascendente ($w_{\max}$):</b>
-                                            <div class="p-2.5 rounded bg-amber-50/60 border border-amber-200 text-stone-900 text-center shadow-inner overflow-x-auto">
-                                                $$\frac{1}{2} w_{\max}^2 = \text{CAPE} \implies w_{\max} = \sqrt{2 \cdot \text{CAPE}} \quad \left[\frac{\text{m}}{\text{s}}\right]$$
-                                            </div>
-                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                                Convirtiendo toda la energía potencial convectiva en energía cinética vertical: un entorno invernal del Maule/Ñuble con $\text{CAPE} = 450\text{ J/kg}$ produce una corriente ascendente teórica de $w_{\max} = \sqrt{900} = 30\text{ m/s}$ ($108\text{ km/h}$ hacia arriba). Este <i>updraft</i> actúa como una aspiradora vertical capaz de estirar vórtices horizontales por conservación de momento angular (<i>vortex stretching</i>).
-                                            </p>
-                                        </div>
-
-                                        <!-- E.3: Por qué el CAPE solo no basta: Cizalladura, SRH y STP -->
-                                        <div class="p-3.5 rounded-xl bg-white border border-purple-200 space-y-2 shadow-sm">
-                                            <b class="text-purple-900">E.3 Cizalladura $0\text{--}6\text{ km}$, Helicidad ($\text{SRH}$) y Entorno HSLC:</b>
-                                            <div class="p-2.5 rounded bg-purple-50/60 border border-purple-200 text-stone-900 text-center shadow-inner overflow-x-auto">
-                                                $$S_{0-6} = \left\| \vec{V}_{6\text{km}} - \vec{V}_{10\text{m}} \right\|, \quad \text{SRH}_{0-1} = -\int_{0}^{1\text{km}} \hat{k} \cdot \left(\vec{V} - \vec{C}\right) \times \frac{\partial \vec{V}}{\partial z}\,dz$$
-                                            </div>
-                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                                Un $\text{CAPE}$ alto sin viento en altura sólo genera chaparrones verticales que se ahogan con su propia lluvia. Para que nazca un mesociclón o tornado se requiere <b>cizalladura vertical intensa</b> ($S_{0-6} \ge 20\text{ m/s}$) que genere vorticidad horizontal ($\vec{\omega}_h = \nabla \times \vec{V}$) para ser inclinada por el <i>updraft</i> ($w_{\max}$). En el Centro-Sur de Chile predominan los entornos <b>HSLC (High-Shear, Low-CAPE)</b>: basta un $\text{CAPE}$ modesto ($300\text{--}800\text{ J/kg}$) combinado con un chorro en niveles bajos ($S_{0-6} &gt; 22\text{ m/s}$) y base de nube baja ($z_{\text{LCL}} &lt; 900\text{ m}$) para elevar el <b>Parámetro de Tornado Significativo ($\text{STP}$)</b>.
-                                            </p>
-                                        </div>
-
-                                        <!-- E.4: Presión Dinámica de Impacto & Cortinas Cortaviento -->
-                                        <div class="p-3.5 rounded-xl bg-white border border-emerald-200 space-y-2 shadow-sm">
-                                            <b class="text-emerald-900">E.4 Presión Dinámica Estructural ($q$) y Rugosidad ($z_0$):</b>
-                                            <div class="p-2.5 rounded bg-emerald-50/60 border border-emerald-200 text-stone-900 text-center shadow-inner overflow-x-auto">
-                                                $$q = \frac{1}{2}\rho_{\text{aire}} v^2 \quad [\text{Pa}], \qquad v(z) = \frac{u_*}{\kappa}\ln\left(\frac{z - d}{z_0}\right)$$
-                                            </div>
-                                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                                La carga destructiva sobre invernaderos LDPE, mallas antigranizo y techumbres crece con el <b>cuadrado de la velocidad ($v^2$)</b>: duplicar la ráfaga de $80$ a $160\text{ km/h}$ (EF1) cuadruplica la presión dinámica ($q \approx 1.210\text{ Pa}$). Una cortina cortaviento multi-estrato nativa (Peumo/Quillay/Maqui, porosidad óptica $\beta \approx 35\%$) incrementa la longitud de rugosidad aerodinámica superficial $z_0$ de $0.05\text{ m}$ a $0.85\text{ m}$, reduciendo la velocidad a nivel de cultivo en un $32\text{--}45\%$ y abatiendo la carga estructural $q$ hasta en un <b>$55\text{--}68\%$</b> en eventos EF0/EF1.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tabla de los 3 Niveles de Gestión de Riesgo Tornádico -->
-                                    <div class="overflow-x-auto rounded-xl border border-amber-300 bg-white">
-                                        <table class="w-full text-left text-[11px] font-sans">
-                                            <thead class="bg-amber-900/90 text-amber-50 font-mono text-[10px] uppercase">
-                                                <tr>
-                                                    <th class="p-2.5">Nivel y Horizonte</th>
-                                                    <th class="p-2.5">Pestaña en el Gemelo</th>
-                                                    <th class="p-2.5">Variables &amp; Sensores</th>
-                                                    <th class="p-2.5">Alcance Científico Honesto (Qué SÍ y Qué NO hace)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="divide-y divide-amber-100 text-stone-700">
-                                                <tr>
-                                                    <td class="p-2.5 font-mono font-bold text-amber-900">Nivel 1: Entorno Propicio (Watch)<br><span class="text-[9.5px] font-normal text-stone-500">Horizonte: 6h a 48h</span></td>
-                                                    <td class="p-2.5 font-mono text-sky-800 font-bold">Pestaña 1 (🌦️ Tiempo &amp; Hídrico)</td>
-                                                    <td class="p-2.5 font-mono text-[10px]">Open-Meteo API: $\text{CAPE}$, $S_{0-6\text{km}}$ ($500\text{ hPa}$ vs $10\text{ m}$) y $z_{\text{LCL}}$ ($T - T_d$).</td>
-                                                    <td class="p-2.5">Advierte que la atmósfera del valle tiene ingredientes termodinámicos y de cizalle para tormentas rotantes. <b>NO predice</b> si un tornado tocará tierra ni en qué coordenada.</td>
-                                                </tr>
-                                                <tr class="bg-amber-50/40">
-                                                    <td class="p-2.5 font-mono font-bold text-emerald-900">Nivel 2: Detección In-Situ (Nowcasting)<br><span class="text-[9.5px] font-normal text-stone-500">Horizonte: 1 a 10 min</span></td>
-                                                    <td class="p-2.5 font-mono text-emerald-800 font-bold">Pestaña 2 (🗺️ Capas SIG &bull; Demo)</td>
-                                                    <td class="p-2.5 font-mono text-[10px]">Micro-barómetros LoRaWAN (Bosch BMP390, $\pm 3\text{ Pa}$ a $1\text{ Hz}$, $\sim\$45\text{--}\$85\text{ USD/nodo}$) + ultrasónico ($\sim\$250\text{ USD}$).</td>
-                                                    <td class="p-2.5">Detecta desplomes barométricos bruscos ($\Delta P/\Delta t \le -4\text{ hPa/min}$) de un vórtice que ya está pasando por un nodo vecino, dando segundos/minutos para refugio humano.</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="p-2.5 font-mono font-bold text-purple-900">Nivel 3: Escenario Hipotético (What-If)<br><span class="p-0.5 text-[9.5px] font-normal text-stone-500">Planificación Estructural</span></td>
-                                                    <td class="p-2.5 font-mono text-purple-800 font-bold">Pestaña 3 (🛡️ Riesgos Climáticos)</td>
-                                                    <td class="p-2.5 font-mono text-[10px]">Escala Fujita Mejorada ($\text{EF0}$, $\text{EF1}$, $\text{EF2}$), corredor hipotético y cortinas $z_0$.</td>
-                                                    <td class="p-2.5">Evalúa qué activos colapsarían ($q = \frac{1}{2}\rho v^2$) <b>SI</b> una traza cruzara el predio y cuánto mitigan las cortinas cortaviento. Reporta el <i>Riesgo de Cola por Escenario</i> por separado.</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Footer del Módulo 13 -->
-                            <div class="p-4 rounded-xl bg-[#F5EFEB] border border-[#E7DAC6] flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
-                                <div class="text-stone-600">
-                                    Documento científico auditado • Motor de Dinámica Hidroclimática Territorial SDSS Maule Sur.
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="downloadAtmosphericSciencePdf()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-all shadow-sm">
-                                        📥 Descargar Reporte Completo (PDF)
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULO 14: DOCTRINA DESTINATION EARTH & MOTORES BIOFÍSICOS HEADLESS -->
+                        <!-- MODULO 7: ARQUITECTURA DESTINATION EARTH & MOTORES BIOFÍSICOS HEADLESS -->
                         <div id="arch-detail-destine" class="arch-detail-panel hidden space-y-7 bg-white p-6 sm:p-7 rounded-2xl border border-[#E7DAC6] shadow-sm font-sans">
                             <!-- Header del Módulo -->
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
@@ -11159,7 +9820,7 @@
                                         <span class="text-2xl p-1.5 rounded-xl bg-teal-50 border border-teal-200">🌐</span>
                                         <div>
                                             <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
-                                                14. Doctrina Destination Earth: Motores Biofísicos Headless & Tensor 4D
+                                                7. Arquitectura Destination Earth: Motores Biofísicos Headless & Tensor 4D
                                             </h3>
                                             <p class="text-xs text-stone-500 font-mono mt-0.5">
                                                 AgriTwin v4.2.0 • Gemelo Digital Isomórfico • Cuenca Río Longaví / Fundo Meniel
@@ -11175,6 +9836,20 @@
                                         Zero-DOM Engines
                                     </span>
                                 </div>
+                            </div>
+
+                            <!-- Vínculo al Fundamento Científico en Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-teal-50 to-white border border-teal-200 text-xs text-teal-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl">📐</span>
+                                    <div>
+                                        <strong class="font-serif">Fundamentación Científica &amp; Epistemológica:</strong>
+                                        <p class="text-[11px] text-stone-600 mt-0.5">La formulación del gemelo continuo, downscaling micro-orográfico (30m) y asimilación de datos (nudging) se detalla en el Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <button onclick="switchDocsTab('docs-vecino'); setTimeout(() => document.getElementById('mod-teorico-destine')?.scrollIntoView({behavior: 'smooth', block: 'start'}), 100);" class="px-3.5 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                                    Ver Módulo 8 en Marco Teórico ➔
+                                </button>
                             </div>
 
                             <!-- Banner Resumen DestinE -->
