@@ -97,6 +97,20 @@
         window.addEventListener('load', () => {
             setTimeout(window.renderLatexEverywhere, 400);
         });
+
+        // Navegación Espejo Bidireccional Cruzada: Ciencia ⇌ Implementación
+        window.jumpToDocModule = function(tabId, elementId, archModuleId) {
+            if (typeof switchDocsTab === 'function') switchDocsTab(tabId);
+            if (archModuleId && typeof switchArchModule === 'function') switchArchModule(archModuleId);
+            setTimeout(() => {
+                const el = document.getElementById(elementId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    el.classList.add('ring-2', 'ring-teal-500', 'transition-all');
+                    setTimeout(() => el.classList.remove('ring-2', 'ring-teal-500'), 2200);
+                }
+            }, 120);
+        };
     </script>
 
 
@@ -7360,9 +7374,9 @@
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════════
-                     SECCIÓN 0: MANIFIESTO CONCEPTUAL — INFORMADO VS. PROTEGIDO
+                     MÓDULO 0: MANIFIESTO CONCEPTUAL — INFORMADO VS. PROTEGIDO
                      ═══════════════════════════════════════════════════════════════════ -->
-                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5 font-sans">
+                <div id="mod-teorico-0-manifiesto" class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5 font-sans">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-stone-200 pb-3">
                         <div>
                             <div class="flex items-center gap-2">
@@ -7732,13 +7746,101 @@
                             <span class="text-stone-600">Índice MNDWI de alta fidelidad para aislar espejos de agua sin distorsión por sombra de laderas.</span>
                         </div>
                     </div>
+
+                    <!-- Enlace Espejo: Módulo 0 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-amber-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa cómo esta doctrina de línea base se materializa en la Caja Industrial IP67 y la jerarquía de visores anidados.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-pipeline', 'pipeline')" class="px-3.5 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 1 en Arquitectura ➔
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     MÓDULO 1: BALANCE HÍDRICO DINÁMICO, ESCORRENTÍA SCS-CN & EVAPOTRANSPIRACIÓN FAO-56
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div id="mod-teorico-1-hidrologia" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl p-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-600">💧⚖️</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
+                                    Módulo 1: Balance Hídrico Dinámico, Escorrentía SCS-CN & Evapotranspiración FAO-56 Penman-Monteith
+                                </h3>
+                                <p class="text-xs text-stone-500 font-mono mt-0.5">
+                                    Conservación de Masa en Cuenca • Método SCS-CN de Infiltración • Ecuación Canónica FAO-56 de Evapotranspiración de Referencia ($ET_0$)
+                                </p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-blue-50 text-blue-800 border border-blue-300">
+                            HIDROLOGÍA &bull; BALANCE DINÁMICO
+                        </span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-blue-50 via-white to-sky-50 border border-blue-200 space-y-2 text-xs text-stone-700 leading-relaxed font-sans">
+                        <strong class="text-blue-950 font-serif text-sm block">1. Principio Físico: Conservación de Masa en Cuenca Agrícola</strong>
+                        <p>
+                            El suelo agrícola actúa como un reactor poroso dinámico donde cada milímetro de precipitación ($P$) o riego se redistribuye entre la evapotranspiración real ($ET$), la escorrentía superficial directa ($Q_{\text{escorr}}$), la recarga freática profunda ($I_{\text{profundo}}$) y la variación de almacenamiento edáfico en la zona radicular ($\frac{dS}{dt}$):
+                        </p>
+                        <div class="text-xs sm:text-sm font-serif text-stone-900 py-1.5 overflow-x-auto text-center">
+                            $$\frac{dS}{dt} = P + \text{Riego} - ET_c - Q_{\text{escorr}} - I_{\text{profundo}}$$
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Tarjeta KaTeX 1: Evapotranspiración FAO-56 Penman-Monteith -->
+                        <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2.5">
+                            <span class="text-xs font-mono font-bold text-stone-900 block flex items-center gap-1.5">
+                                <span>☀️</span> Evapotranspiración de Referencia FAO-56 ($ET_0$):
+                            </span>
+                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1.5 overflow-x-auto">
+                                $$ET_0 = \frac{0.408 \Delta (R_n - G) + \gamma \frac{900}{T + 273} u_2 (e_s - e_a)}{\Delta + \gamma (1 + 0.34 u_2)}$$
+                            </div>
+                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
+                                Donde $R_n$ es la radiación neta foliar ($\text{MJ/m}^2\text{/día}$); $G$ es el flujo térmico del suelo; $T$ es la temperatura del aire a $2\text{ m}$ ($^\circ\text{C}$); $u_2$ es la velocidad del viento a $2\text{ m}$ ($\text{m/s}$); $(e_s - e_a)$ es el déficit de presión de vapor ($\text{kPa}$); $\Delta$ es la pendiente de saturación psicrométrica; y $\gamma \approx 0.067\text{ kPa/}^\circ\text{C}$ es la constante psicrométrica ajustada a la cota barométrica de Longaví ($140\text{ m.s.n.m.}$).
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 2: Escorrentía Superficial SCS-CN -->
+                        <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2.5">
+                            <span class="text-xs font-mono font-bold text-stone-900 block flex items-center gap-1.5">
+                                <span>🌊</span> Escorrentía Superficial SCS Curva de Número ($Q$):
+                            </span>
+                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1.5 overflow-x-auto">
+                                $$Q = \frac{(P - I_a)^2}{(P - I_a) + S} \quad \text{para } P > I_a, \quad S = \frac{25400}{CN} - 254$$
+                            </div>
+                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
+                                Donde $S$ es la retención potencial máxima del suelo ($\text{mm}$); $I_a = 0.2 S$ es la abstracción inicial por follaje y micro-relieve; y $CN$ es la curva numérica calibrada ($CN=72$ en praderas PRV y $CN=84$ en suelos francos desnudos pre-siembra). Todo el volumen es capturado por las zanjas de infiltración en línea clave Yeomans.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Enlace Espejo: Módulo 1 ➔ Arquitectura -->
+                    <div class="p-3.5 rounded-xl bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-blue-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa cómo se procesa esta formulación en el motor headless <code>js/engines/hydrology-engine.js</code> y el script biofísico <code>fao56_penman_monteith.py</code>.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-engines', 'engines')" class="px-3.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 6 en Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
                      MÓDULO 2: DOCTRINA FÍSICA & BALÍSTICA DE FUEGO TRANSFRONTERIZO
                      Haces vectoriales tácticos, ecuaciones acopladas y teledetección de humedad
                      ═══════════════════════════════════════════════════════════════ -->
-                <div class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                <div id="mod-teorico-2-fuego" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
                     <!-- Header Módulo 2 -->
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
                         <div class="flex items-center gap-3">
@@ -8147,12 +8249,26 @@
                             </p>
                         </div>
                     </div>
+
+                    <!-- Enlace Espejo: Módulo 2 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-red-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa cómo se simula este frente en <code>js/engines/fire-spread-engine.js</code> y el script <code>canadian_puelche_fwi.py</code>.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-engines', 'engines')" class="px-3.5 py-1.5 rounded-lg bg-red-700 hover:bg-red-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 6 en Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
-                     SECCIÓN 5: FICHA DE PROCEDENCIA DGA-MOP, CNR LEY 18.450 & COPERNICUS
+                     MÓDULO 3: TELEDETECCIÓN SATELITAL, PROCEDENCIA DGA-MOP & MNDWI
                      ═══════════════════════════════════════════════════════════════ -->
-                <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                <div id="mod-teorico-3-teledeteccion" class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
                     <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
                         <div class="flex items-center gap-3">
                             <span class="w-8 h-8 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-sm">5</span>
@@ -8294,12 +8410,26 @@
                             Un ataque aéreo de Conaf o brigada forestal con helicóptero Bell 412 / AS350 consume entre <strong>$0.8\text{ m}^3$ y $1.2\text{ m}^3$ por descarga de Bambi Bucket</strong>, con ciclos de rotación de 4 a 6 minutos si el tranque está dentro del radio de 3 km. La reserva colectiva disponible ($261.916\text{ m}^3$) garantiza una autonomía teórica de más de <strong>$200.000$ rotaciones aéreas</strong> y más de <strong>$26.000$ cargas de camión aljibe de $10.000\text{ L}$</strong>, demostrando que la cuenca cuenta con suficiente agua si está georreferenciada y coordinada tácticamente.
                         </p>
                     </div>
+
+                    <!-- Enlace Espejo: Módulo 3 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-sky-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa la descarga bajo demanda mediante Cloud Optimized GeoTIFF (COG) HTTP Range en el Módulo 7 de Arquitectura.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-destine', 'destine')" class="px-3.5 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 7 en Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
-                     SECCIÓN 7: TOPOCLIMATOLOGÍA CATABÁTICA & MATRIZ DE INCERTIDUMBRE
+                     MÓDULO 4: TOPOCLIMATOLOGÍA CATABÁTICA & MICROCLIMA
                      ═══════════════════════════════════════════════════════════════ -->
-                <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                <div id="mod-teorico-4-catabatico" class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
                     <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
                         <div class="flex items-center gap-3">
                             <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-sm">7</span>
@@ -8441,12 +8571,26 @@
                             La solución más costo-efectiva ante una represa térmica no es gastar combustible en hélices, sino coordinar con el vecino la <strong>poda basal de los primeros 1.5 a 2 metros</strong> de la cortina cortaviento en el lecho de la vaguada (faja de desahogo catabático). Esto permite que el aire frío continúe drenando ladera abajo hacia el estero sin estancarse sobre los cuarteles productivos de ambos predios.
                         </p>
                     </div>
+
+                    <!-- Enlace Espejo: Módulo 4 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-indigo-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa el motor anemométrico <code>js/engines/wind-field-engine.js</code> y la telemetría centinela LoRaWAN en el Módulo 6 de Arquitectura.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-engines', 'engines')" class="px-3.5 py-1.5 rounded-lg bg-indigo-700 hover:bg-indigo-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 6 en Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
-                     SECCIÓN 9: MÓDULO 5 - TERMODINÁMICA CONVECTIVA (CAPE), CIZALLADURA Y DOCTRINA DE 3 NIVELES ANTE TORNADOS
+                     MÓDULO 5: TERMODINÁMICA CONVECTIVA (CAPE) & TORNADOS
                      ═══════════════════════════════════════════════════════════════ -->
-                <div id="doctrina-m5-tornados-cape" class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
+                <div id="mod-teorico-5-convectivo" class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
                     <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
                         <div class="flex items-center gap-3">
                             <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-sm">9</span>
@@ -8505,12 +8649,26 @@
                             </p>
                         </div>
                     </div>
+
+                    <!-- Enlace Espejo: Módulo 5 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-purple-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa el stack de alertas tempranas, bus de eventos reactivos y endpoints REST en el Módulo 3 de Arquitectura.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-stack', 'stack')" class="px-3.5 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 3 en Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
-                     SECCIÓN 10: MÓDULO 6 - MANDO TÁCTICO C2, CINEMÁTICA 0-12H & MATRIZ INMUTABLE VS PARTICULAR
+                     MÓDULO 6: MANDO TÁCTICO C2, CINEMÁTICA 0-12H & MATRIZ MULTIAMENAZA
                      ═══════════════════════════════════════════════════════════════ -->
-                <div id="mod-teorico-tactico" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                <div id="mod-teorico-6-tactico" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
                         <div class="flex items-center gap-3">
                             <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-sm">10</span>
@@ -8572,22 +8730,36 @@
                             </p>
                         </div>
                     </div>
+
+                    <!-- Enlace Espejo: Módulo 6 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-rose-50 to-amber-50 border border-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-rose-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa el diseño diegético AoE II, la jerarquía visual de campaña y el Centro de Mando C2 en el Módulo 5 de Arquitectura.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-aoe', 'aoe')" class="px-3.5 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 5 en Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
-                     SECCIÓN 11: MÓDULO 7 - LABORATORIO BIOFÍSICO INTERACTIVO & SIMULADORES
+                     MÓDULO 7: MODELOS BIOFÍSICOS DE CUENCA, KEYLINE, CARBONO & GOBERNANZA
                      ═══════════════════════════════════════════════════════════════ -->
-                <div id="mod-teorico-hydro" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                <div id="mod-teorico-7-keyline" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm">11</span>
+                            <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm">7</span>
                             <div>
-                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 7: Modelos Biofísicos de Cuenca: Manning, Darcy &amp; Balance Pluviométrico Keyline</h4>
-                                <p class="text-xs text-stone-500 font-sans">Ecuaciones deterministas de escorrentía superficial D8, recarga de acuíferos y retención en tranques colectivos</p>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 7: Modelos Biofísicos de Cuenca: Manning, Darcy, Keyline Yeomans, MRV Carbono & Gobernanza Ostrom</h4>
+                                <p class="text-xs text-stone-500 font-sans">Ecuaciones deterministas de escorrentía superficial D8, recarga freática, absorción alométrica de CO2 y votación cuadrática de bienes comunes</p>
                             </div>
                         </div>
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-teal-50 text-teal-800 border border-teal-300">
-                            HIDROLOGÍA DETERMINISTA
+                            BIOFÍSICA DETERMINISTA & MRV
                         </span>
                     </div>
 
@@ -8619,7 +8791,7 @@
                         </div>
 
                         <!-- Tarjeta KaTeX 3: Retención Keyline Yeomans -->
-                        <div id="mod-teorico-keyline" class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
                             <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
                                 <span>🌊</span> Amortiguación Keyline Yeomans
                             </span>
@@ -8630,6 +8802,49 @@
                                 Los surcos en línea clave y el tranque de $18.500\text{ m}^3$ desvían las puntas de crecida pluvial ($180\text{ m}^3\text{/s}$ amortiguados a $175.8\text{ m}^3\text{/s}$), incrementando la humedad volumétrica del suelo ($+17.8\%\text{ VWC}$).
                             </p>
                         </div>
+                    </div>
+
+                    <!-- Fila Adicional: MRV Carbono Alométrico y Gobernanza Cuadrática Ostrom -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        <!-- Tarjeta KaTeX 4: MRV Carbono & Alometría -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🌲</span> Alometría Forestal & MRV de Carbono (IPCC Tier 2)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$AGB = a \cdot \text{DBH}^b \cdot H^c, \quad C_{\text{stock}} = AGB \cdot CF \cdot \frac{44}{12} \quad [\text{tCO}_2\text{e}]$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Modela la biomasa aérea seca ($AGB$) a partir del diámetro a la altura del pecho ($DBH$) y altura ($H$). Con factor de carbono $CF = 0.47$ y ratio molecular $44/12$, audita el secuestro anual de $384\text{ tCO}_2\text{e}$ en los rodales de Quillay y Maitén contiguos a las zanjas.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta KaTeX 5: Gobernanza Cuadrática Ostrom -->
+                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>🏛️</span> Votación Cuadrática & Gobernanza de Comunes (Elinor Ostrom)
+                            </span>
+                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
+                                $$\text{Costo en Voice Credits} = V^2 \quad \Longleftrightarrow \quad V = \sqrt{\text{Créditos}}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Previene la tiranía del latifundio en la gestión del agua comunitaria. Para emitir $V$ votos sobre la apertura de compuertas o financiamiento de cortafuegos, el predio debe erogar $V^2$ créditos de voz, protegiendo el interés simétrico de los pequeños propietarios.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Enlace Espejo: Módulo 7 ➔ Arquitectura -->
+                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-teal-950 block">Implementación en Software & Hardware:</span>
+                                <p class="text-[11px] text-stone-600">Revisa los scripts biofísicos <code>keyline_hydrology_buffer.py</code>, <code>carbon_mrv_biomass.py</code> y <code>dao_quadratic_governance.py</code> en el Módulo 6 de Arquitectura.</p>
+                            </div>
+                        </div>
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-engines', 'engines')" class="px-3.5 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Módulo 6 en Arquitectura ➔
+                        </button>
                     </div>
                 </div>
 
@@ -8711,7 +8926,7 @@
                                 <p class="text-[11px] text-stone-600">Revisa cómo esta doctrina biofísica se materializa en los motores headless de <code>js/engines/</code>, el cliente STAC COG y las 4 ramas What-If en el servidor.</p>
                             </div>
                         </div>
-                        <button onclick="switchDocsTab('docs-arch'); switchArchModule('destine');" class="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-destine', 'destine')" class="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
                             Ver Módulo 7 en Arquitectura ➔
                         </button>
                     </div>
@@ -8873,6 +9088,25 @@
                                     <p class="text-xs text-stone-500 mt-0.5">Nexo maestro físico-digital que orquesta la ingesta de las 6 ramas, une Cuenca con Predio y deriva a sus visores especializados (Invernadero y Establo).</p>
                                 </div>
                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">ESP32 + LoRaWAN + Relés</span>
+                            </div>
+
+                            <!-- Enlace Espejo: Arquitectura ➔ Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-sky-50 to-teal-50 border border-sky-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-lg">📐</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-sky-950 block">Fundamento Científico & Geodesia:</span>
+                                        <p class="text-[11px] text-stone-600">Revisa la calibración de línea base, el catastro DGA-MOP y la teledetección de polígonos biofísicos en el Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-0-manifiesto')" class="px-3 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-mono text-[11px] font-bold cursor-pointer transition-all shadow-sm">
+                                        Módulo 0: Manifiesto ➔
+                                    </button>
+                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-3-teledeteccion')" class="px-3 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-mono text-[11px] font-bold cursor-pointer transition-all shadow-sm">
+                                        Módulo 3: Teledetección ➔
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Banner de Arquitectura de Hardware & Ingesta -->
@@ -9181,6 +9415,20 @@
                                 </span>
                             </div>
 
+                            <!-- Enlace Espejo: Arquitectura ➔ Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-lg">📐</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-emerald-950 block">Fundamento Epistemológico Multiescala:</span>
+                                        <p class="text-[11px] text-stone-600">Revisa la doctrina Destination Earth de downscaling micro-orográfico 30m y asimilación de Kalman en Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-destine')" class="px-3.5 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                                    Módulo 8: Destination Earth ➔
+                                </button>
+                            </div>
+
                             <!-- Diagrama Mermaid Graph: Topología Multiescala -->
                             <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
                                 <div class="flex items-center justify-between">
@@ -9306,6 +9554,20 @@
                                 <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-300 font-mono text-[10px] font-bold self-start">
                                     PUERTO 7777 • HTTP/REST
                                 </span>
+                            </div>
+
+                            <!-- Enlace Espejo: Arquitectura ➔ Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-lg">📐</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-purple-950 block">Fundamento Científico & Alertas Convectivas:</span>
+                                        <p class="text-[11px] text-stone-600">Revisa la termodinámica de inestabilidad CAPE, cizalladura vertical y doctrina de tornados en Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-5-convectivo')" class="px-3.5 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                                    Módulo 5: CAPE & Tornados ➔
+                                </button>
                             </div>
 
                             <div class="space-y-3">
@@ -9457,6 +9719,20 @@
                                 <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 font-mono text-[10px] font-bold self-start">
                                     AXIOMA ESTRUCTURAL VINCULANTE
                                 </span>
+                            </div>
+
+                            <!-- Enlace Espejo: Arquitectura ➔ Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-lg">📐</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-amber-950 block">Fundamento Operacional & Desacople:</span>
+                                        <p class="text-[11px] text-stone-600">Revisa la doctrina de Mando Táctico C2 y el desacople entre leyes universales inmutables y estados particulares en Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-6-tactico')" class="px-3.5 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                                    Módulo 6: Mando C2 ➔
+                                </button>
                             </div>
 
                             <!-- Diagrama Vectorial SVG Mermaid del Principio Árbol -->
@@ -9663,6 +9939,20 @@
                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">UI/UX CANÓNICO</span>
                             </div>
 
+                            <!-- Enlace Espejo: Arquitectura ➔ Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-lg">📐</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-amber-950 block">Fundamento Diegético & Cinemática Táctica:</span>
+                                        <p class="text-[11px] text-stone-600">Revisa la ventana cinemática de maniobra (0 a 12 horas) y la matriz multiamenaza R(x,t) en Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-6-tactico')" class="px-3.5 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                                    Módulo 6: Cinemática Táctica ➔
+                                </button>
+                            </div>
+
                             <!-- Los 3 Pilares UI/UX -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                 <div class="p-3.5 rounded-xl bg-stone-900 text-white border border-amber-500/30 space-y-1.5">
@@ -9756,6 +10046,31 @@
                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-300">RUNTIME SUITE</span>
                             </div>
 
+                            <!-- Enlace Espejo: Arquitectura ➔ Marco Teórico -->
+                            <div class="p-3.5 rounded-xl bg-gradient-to-r from-purple-50 via-teal-50 to-blue-50 border border-purple-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-lg">📐</span>
+                                    <div>
+                                        <span class="text-xs font-bold text-purple-950 block">Fundamentos Teóricos & Ecuaciones Biofísicas:</span>
+                                        <p class="text-[11px] text-stone-600">Revisa las leyes físicas canónicas implementadas por cada motor en el Marco Teórico.</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-1-hidrologia')" class="px-2.5 py-1 rounded bg-blue-700 hover:bg-blue-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
+                                        M1: FAO-56 ➔
+                                    </button>
+                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-2-fuego')" class="px-2.5 py-1 rounded bg-red-700 hover:bg-red-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
+                                        M2: Fuego ➔
+                                    </button>
+                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-4-catabatico')" class="px-2.5 py-1 rounded bg-indigo-700 hover:bg-indigo-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
+                                        M4: Viento ➔
+                                    </button>
+                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-7-keyline')" class="px-2.5 py-1 rounded bg-teal-700 hover:bg-teal-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
+                                        M7: Keyline ➔
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- Motores en Cuadrícula -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                                 <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
@@ -9847,7 +10162,7 @@
                                         <p class="text-[11px] text-stone-600 mt-0.5">La formulación del gemelo continuo, downscaling micro-orográfico (30m) y asimilación de datos (nudging) se detalla en el Marco Teórico.</p>
                                     </div>
                                 </div>
-                                <button onclick="switchDocsTab('docs-vecino'); setTimeout(() => document.getElementById('mod-teorico-destine')?.scrollIntoView({behavior: 'smooth', block: 'start'}), 100);" class="px-3.5 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-destine')" class="px-3.5 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
                                     Ver Módulo 8 en Marco Teórico ➔
                                 </button>
                             </div>
