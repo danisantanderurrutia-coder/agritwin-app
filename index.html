@@ -1347,15 +1347,6 @@
             <span class="block text-[8px] text-amber-700 font-mono hidden md:block">del cliente y su predio</span>
           </div>
         </button>
-
-        <!-- 9. Dossier SpA / Pitch Deck de Inversión & Negocio -->
-        <button id="navBtn-pitch" onclick="openPitchDeckModal()" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer" title="Dossier SpA: Pitch Deck de Negocio, Tesis de Inversión & Ask">
-          <span>💼</span>
-          <div class="text-left leading-tight">
-            <span class="block text-xs font-bold">Dossier SpA</span>
-            <span class="block text-[8px] text-amber-200 font-mono hidden md:block">Pitch &amp; Negocio</span>
-          </div>
-        </button>
       </nav>
     </header>
 
@@ -7195,58 +7186,36 @@
                         <div class="flex items-center gap-2.5">
                             <span class="text-xl p-1.5 rounded-lg bg-sky-50 border border-sky-200">📂</span>
                             <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Centro de Datos, Operación &amp; Paneles de Decisión</h3>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Consolas Operacionales &amp; Telemetría en Vivo</h3>
                                 <p class="text-[11px] text-stone-500">Acceso unificado a los cuadros de mando, deliberación de expertos y telemetría de campo in-situ.</p>
                             </div>
                         </div>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-stone-100 text-stone-700 border border-stone-200 font-bold">
-                            4 Módulos Operativos
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-50 text-sky-800 border border-sky-300 font-bold">
+                            CONSOLAS EN TIEMPO REAL
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <!-- 1. Cockpit Decisor -->
-                        <div onclick="openCockpitNav()" class="p-3.5 rounded-xl bg-sky-50/60 hover:bg-sky-50 border border-sky-200/90 hover:border-sky-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
+                        <div onclick="openCockpitNav()" class="p-4 rounded-xl bg-sky-50/60 hover:bg-sky-50 border border-sky-200/90 hover:border-sky-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
                             <div class="flex items-center justify-between">
-                                <span class="text-base">📈</span>
-                                <span class="text-[9px] font-mono font-bold text-sky-800 bg-sky-100 px-1.5 py-0.5 rounded">10 Predios</span>
+                                <span class="text-lg">📈</span>
+                                <span class="text-[9px] font-mono font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full">10 Predios</span>
                             </div>
-                            <div class="font-bold text-stone-900 group-hover:text-sky-950 font-serif text-[12px]">Cockpit Decisor</div>
+                            <div class="font-bold text-stone-900 group-hover:text-sky-950 font-serif text-[13px]">Cockpit Decisor</div>
                             <p class="text-[11px] text-stone-600 leading-snug">Cuadro de mando directivo, márgenes por hectárea, asignación de agua y prioridades de riego.</p>
-                            <span class="text-[10px] font-mono text-sky-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Abrir Cockpit ➔</span>
+                            <span class="text-[10.5px] font-mono text-sky-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Abrir Cockpit ➔</span>
                         </div>
 
-                        <!-- 2. 18 Asesores & Deliberación -->
-                        <div onclick="openAdvisorsNav()" class="p-3.5 rounded-xl bg-amber-50/60 hover:bg-amber-50 border border-amber-200/90 hover:border-amber-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
+                        <!-- 2. Telemetría Red Centinela -->
+                        <div onclick="switchMasterView('telemetry')" class="p-4 rounded-xl bg-cyan-50/60 hover:bg-cyan-50 border border-cyan-200/90 hover:border-cyan-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
                             <div class="flex items-center justify-between">
-                                <span class="text-base">🧠</span>
-                                <span class="text-[9px] font-mono font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">18 Expertos</span>
+                                <span class="text-lg">📊</span>
+                                <span class="text-[9px] font-mono font-bold text-cyan-800 bg-cyan-100 px-2 py-0.5 rounded-full">9 Nodos IoT</span>
                             </div>
-                            <div class="font-bold text-stone-900 group-hover:text-amber-950 font-serif text-[12px]">Cámara de Asesores</div>
-                            <p class="text-[11px] text-stone-600 leading-snug">Deliberación biofísica colegiada: suelos, agronómica, heladas, patología, legal y finanzas.</p>
-                            <span class="text-[10px] font-mono text-amber-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Consultar Asesores ➔</span>
-                        </div>
-
-                        <!-- 3. Servicios Ecosistémicos CICES -->
-                        <div onclick="openEcosystemServicesNav()" class="p-3.5 rounded-xl bg-emerald-50/60 hover:bg-emerald-50 border border-emerald-200/90 hover:border-emerald-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-base">🌿</span>
-                                <span class="text-[9px] font-mono font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded">CICES v5.1</span>
-                            </div>
-                            <div class="font-bold text-stone-900 group-hover:text-emerald-950 font-serif text-[12px]">Servicios Ecosistémicos</div>
-                            <p class="text-[11px] text-stone-600 leading-snug">Valoración de regulación hídrica, secuestro de carbono, resiliencia y polinización comunitaria.</p>
-                            <span class="text-[10px] font-mono text-emerald-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Ver Matriz CICES ➔</span>
-                        </div>
-
-                        <!-- 4. Telemetría Red Centinela -->
-                        <div onclick="switchMasterView('telemetry')" class="p-3.5 rounded-xl bg-cyan-50/60 hover:bg-cyan-50 border border-cyan-200/90 hover:border-cyan-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-base">📊</span>
-                                <span class="text-[9px] font-mono font-bold text-cyan-800 bg-cyan-100 px-1.5 py-0.5 rounded">9 Nodos IoT</span>
-                            </div>
-                            <div class="font-bold text-stone-900 group-hover:text-cyan-950 font-serif text-[12px]">Telemetría Centinela</div>
+                            <div class="font-bold text-stone-900 group-hover:text-cyan-950 font-serif text-[13px]">Telemetría Centinela</div>
                             <p class="text-[11px] text-stone-600 leading-snug">Monitoreo in-situ continuo: sondas FDR 0-60cm, anemómetros ultrasónicos y cota de tranque.</p>
-                            <span class="text-[10px] font-mono text-cyan-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Ir a Telemetría ➔</span>
+                            <span class="text-[10.5px] font-mono text-cyan-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Ir a Telemetría ➔</span>
                         </div>
                     </div>
                 </div>
@@ -7375,151 +7344,45 @@
                     </div>
                 </div>
 
-                <!-- ═══════════════════════════════════════════════════════════════
-                     MATRIZ GENERAL DE CERTIFICACIÓN BIOFÍSICA MULTI-SITIO & AUDITORÍA GROUND-TRUTH (TRL 7/8)
-                     ═══════════════════════════════════════════════════════════════ -->
-                <div id="docs-benchmark-suite" class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-300">TRL 7/8 OPERATIONAL PROTOCOL</span>
-                                <span class="text-xs text-stone-400">•</span>
-                                <span class="text-xs font-mono text-stone-500">ASCE EWRI / WMO No. 168 Multi-Site Benchmark</span>
+                <!-- Activos Territoriales, Descargas & Enlace a Certificación Científica -->
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xl p-1.5 rounded-lg bg-emerald-50 border border-emerald-200">📦</span>
+                            <div>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Activos Territoriales, Cartografía &amp; Auditoría Ground-Truth</h3>
+                                <p class="text-[11px] text-stone-500">Descarga de capas geográficas, especificaciones técnicas y acceso directo a la suite de certificación científica.</p>
                             </div>
-                            <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
-                                Matriz General de Validación Científica & Calidad de Fuentes Territoriales
-                            </h3>
-                            <p class="text-xs text-stone-500">Evaluación continua de isomorfismo físico y contraste empírico de los motores biofísicos contra fuentes oficiales del Estado de Chile (DGA-MOP, CONAF, AGROMET-INIA y ESA Copernicus).</p>
                         </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span class="px-3 py-1.5 rounded-xl font-mono text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-sm">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span id="benchmarkFidelityLabel">FIDELIDAD GLOBAL: 90.5%</span>
-                            </span>
-                            <button onclick="window.fetchBenchmarkLive()" class="px-3 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm flex items-center gap-1">
-                                <span>🔄</span> Actualizar API
-                            </button>
-                        </div>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold">
+                            ACTIVOS SOBERANOS
+                        </span>
                     </div>
 
-                    <!-- 4 Tarjetas KPI de Desempeño Biofísico Multi-Sitio -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div class="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-white border border-blue-200 space-y-1">
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-blue-900">
-                                <span>💧 Hidrología Fluvial</span>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">DGA-MOP</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                        <button onclick="exportParcelsToCSV()" class="p-3.5 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-left transition-all cursor-pointer space-y-1 shadow-sm">
+                            <div class="flex items-center justify-between text-stone-900 font-bold">
+                                <span>📥 Catastro CSV</span>
+                                <span class="text-[9px] bg-white px-1.5 py-0.5 rounded border border-stone-200">10 Predios</span>
                             </div>
-                            <div class="text-2xl font-bold font-mono text-blue-950">NSE 0.998</div>
-                            <p class="text-[11px] text-stone-600">Eficiencia Nash-Sutcliffe sobre 24h de crecida pluvial ($KGE = 0.982$, $|PBIAS| < 3\%$).</p>
-                        </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans">Exporta el mosaico catastral completo con roles SII, derechos de agua DGA y FWI.</p>
+                        </button>
 
-                        <div class="p-4 rounded-xl bg-gradient-to-br from-red-50 to-white border border-red-200 space-y-1">
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-red-900">
-                                <span>🔥 Fuego & Viento</span>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-800">CONAF / SICOF</span>
+                        <a href="docs/ARQUITECTURA_DIGITAL_TWIN_DESTINE.md" target="_blank" class="p-3.5 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-left transition-all cursor-pointer space-y-1 shadow-sm block">
+                            <div class="flex items-center justify-between text-teal-900 font-bold">
+                                <span>📜 Doctrina DestinE</span>
+                                <span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded">Markdown</span>
                             </div>
-                            <div class="text-2xl font-bold font-mono text-red-950">IoU 73.4%</div>
-                            <p class="text-[11px] text-stone-600">Intersección sobre Unión (Jaccard) con perímetro real bajo Puelche ($\text{Dice} = 84.6\%$).</p>
-                        </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans">Especificación canónica del tensor 4D y desacople de ramas What-If en producción.</p>
+                        </a>
 
-                        <div class="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-white border border-purple-200 space-y-1">
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-purple-900">
-                                <span>🌸 Microclima & Heladas</span>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">INIA / AGROMET</span>
+                        <button onclick="window.jumpToDocModule('docs-vecino', 'docs-benchmark-suite')" class="p-3.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-left transition-all cursor-pointer space-y-1 shadow-sm">
+                            <div class="flex items-center justify-between text-amber-950 font-bold">
+                                <span>🔬 Suite Ground-Truth</span>
+                                <span class="text-[9px] bg-amber-200/80 text-amber-900 px-1.5 py-0.5 rounded font-bold">Módulo 9</span>
                             </div>
-                            <div class="text-2xl font-bold font-mono text-purple-950">RMSE 0.25°C</div>
-                            <p class="text-[11px] text-stone-600">Error térmico medio absoluto en vaguadas con inversión radiativa ($Recall \ge 98\%$).</p>
-                        </div>
-
-                        <div class="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 space-y-1">
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-emerald-900">
-                                <span>🛰️ Cuerpos de Agua</span>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">SENTINEL-2 MNDWI</span>
-                            </div>
-                            <div class="text-2xl font-bold font-mono text-emerald-950">Error &lt; 2.1%</div>
-                            <p class="text-[11px] text-stone-600">Margen de cubicación volumétrica contra catastro nacional de embalses DGA.</p>
-                        </div>
-                    </div>
-
-                    <!-- Tabla Multi-Sitio de Validación Territorial -->
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider">Desglose de Resultados por Cuenca & Fisiografía</span>
-                            <span class="text-[11px] font-mono text-stone-500">Pipeline CLI: scripts/benchmark/benchmark_suite.py</span>
-                        </div>
-                        <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
-                            <table class="w-full text-left text-xs font-mono border-collapse">
-                                <thead>
-                                    <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
-                                        <th class="py-2.5 px-3">Sitio Territorial</th>
-                                        <th class="py-2.5 px-3">Zona & Bioma</th>
-                                        <th class="py-2.5 px-3">Hidrología (NSE / PBIAS)</th>
-                                        <th class="py-2.5 px-3">Fuego (IoU / Dice)</th>
-                                        <th class="py-2.5 px-3">Microclima (RMSE / Recall)</th>
-                                        <th class="py-2.5 px-3">Estado Acreditación</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
-                                    <tr class="hover:bg-stone-50 transition-colors">
-                                        <td class="py-2.5 px-3 font-bold text-stone-900">
-                                            <span>🏔️</span> Cuenca Río Longaví
-                                        </td>
-                                        <td class="py-2.5 px-3 text-stone-600">Maule Sur • Frutales exportación & PRV</td>
-                                        <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.998 • PBIAS +2.2%</td>
-                                        <td class="py-2.5 px-3 font-semibold text-red-700">IoU 74.5% • Dice 85.4%</td>
-                                        <td class="py-2.5 px-3 font-semibold text-purple-700">0.24°C • Recall 100%</td>
-                                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">OPERATIVO TRL 8</span></td>
-                                    </tr>
-                                    <tr class="hover:bg-stone-50 transition-colors">
-                                        <td class="py-2.5 px-3 font-bold text-stone-900">
-                                            <span>🍇</span> Cuenca Río Maipo
-                                        </td>
-                                        <td class="py-2.5 px-3 text-stone-600">Región Metropolitana • Viñedos & Estrés Hídrico</td>
-                                        <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.997 • PBIAS +1.8%</td>
-                                        <td class="py-2.5 px-3 font-semibold text-red-700">IoU 71.8% • Dice 83.6%</td>
-                                        <td class="py-2.5 px-3 font-semibold text-purple-700">0.31°C • Recall 98%</td>
-                                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">OPERATIVO TRL 8</span></td>
-                                    </tr>
-                                    <tr class="hover:bg-stone-50 transition-colors">
-                                        <td class="py-2.5 px-3 font-bold text-stone-900">
-                                            <span>🌲</span> Cuenca Río Biobío
-                                        </td>
-                                        <td class="py-2.5 px-3 text-stone-600">Collipulli / Malleco • Forestal WUI & Vientos Ladera</td>
-                                        <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.999 • PBIAS +1.4%</td>
-                                        <td class="py-2.5 px-3 font-semibold text-red-700">IoU 73.8% • Dice 84.9%</td>
-                                        <td class="py-2.5 px-3 font-semibold text-purple-700">0.21°C • Recall 100%</td>
-                                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">OPERATIVO TRL 8</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Fórmulas Matemáticas de Certificación en KaTeX -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
-                                <span>📐</span> Eficiencia Hidrológica de Nash-Sutcliffe (NSE) &amp; KGE
-                            </span>
-                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1 overflow-x-auto text-center">
-                                $$NSE = 1 - \frac{\sum_{t=1}^N (Q_{\text{obs}, t} - Q_{\text{sim}, t})^2}{\sum_{t=1}^N (Q_{\text{obs}, t} - \overline{Q}_{\text{obs}})^2}, \quad KGE = 1 - \sqrt{(r-1)^2 + (\beta-1)^2 + (\gamma-1)^2}$$
-                            </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                Evalúa la capacidad del modelo de predecir la crecida sin sesgo acumulado ($\beta = \mu_{\text{sim}}/\mu_{\text{obs}}$) ni distorsión de variabilidad ($\gamma = \text{CV}_{\text{sim}}/\text{CV}_{\text{obs}}$).
-                            </p>
-                        </div>
-
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
-                                <span>📐</span> Coincidencia Espacial Jaccard (IoU) &amp; Brier Score
-                            </span>
-                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1 overflow-x-auto text-center">
-                                $$IoU = \frac{|A_{\text{sim}} \cap A_{\text{real}}|}{|A_{\text{sim}} \cup A_{\text{real}}|}, \qquad BS = \frac{1}{N}\sum_{i=1}^N (\hat{p}_i - o_i)^2$$
-                            </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                Cuantifica la superposición espacial exacta de los frentes de llama con CONAF y la calibración probabilística de las alertas de heladas o tornados.
-                            </p>
-                        </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans">Inspecciona los contrastes empíricos en vivo (DGA, CONAF, INIA, Sentinel-2).</p>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -9206,8 +9069,8 @@
                             </div>
                         </div>
                         <div class="flex flex-wrap items-center gap-2 shrink-0">
-                            <button onclick="window.jumpToDocModule('docs-dossier', 'docs-benchmark-suite')" class="px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm">
-                                📊 Ver Visor Benchmark en Dossier ➔
+                            <button onclick="window.jumpToDocModule('docs-vecino', 'docs-benchmark-suite')" class="px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm">
+                                📊 Ir a la Matriz Ground-Truth al pie ↓
                             </button>
                             <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-destine', 'destine')" class="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm">
                                 ⚙️ Ver Motores en Arquitectura ➔
@@ -9412,19 +9275,153 @@
                         </p>
                     </div>
 
-                    <!-- Enlace directo a la Certificación Interactiva -->
-                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-2xl">📋</span>
-                            <div>
-                                <span class="text-xs font-bold text-stone-900 font-serif">Auditoría en Tiempo Real:</span>
-                                <p class="text-[11px] text-stone-600">Ejecuta el benchmark en vivo desde el navegador contra el endpoint <code>/api/benchmark/summary</code> en el Dossier Técnico.</p>
+                <!-- ═══════════════════════════════════════════════════════════════
+                     MATRIZ GENERAL DE CERTIFICACIÓN BIOFÍSICA MULTI-SITIO & AUDITORÍA GROUND-TRUTH (TRL 7/8)
+                     ═══════════════════════════════════════════════════════════════ -->
+                <div id="docs-benchmark-suite" class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-300">TRL 7/8 OPERATIONAL PROTOCOL</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-stone-500">ASCE EWRI / WMO No. 168 Multi-Site Benchmark</span>
                             </div>
+                            <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
+                                Matriz General de Validación Científica & Calidad de Fuentes Territoriales
+                            </h3>
+                            <p class="text-xs text-stone-500">Evaluación continua de isomorfismo físico y contraste empírico de los motores biofísicos contra fuentes oficiales del Estado de Chile (DGA-MOP, CONAF, AGROMET-INIA y ESA Copernicus).</p>
                         </div>
-                        <button onclick="window.jumpToDocModule('docs-dossier', 'docs-benchmark-suite')" class="px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
-                            Ir al Visor de Certificación en Dossier ➔
-                        </button>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="px-3 py-1.5 rounded-xl font-mono text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-sm">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span id="benchmarkFidelityLabel">FIDELIDAD GLOBAL: 90.5%</span>
+                            </span>
+                            <button onclick="window.fetchBenchmarkLive()" class="px-3 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm flex items-center gap-1">
+                                <span>🔄</span> Actualizar API
+                            </button>
+                        </div>
                     </div>
+
+                    <!-- 4 Tarjetas KPI de Desempeño Biofísico Multi-Sitio -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-white border border-blue-200 space-y-1">
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-blue-900">
+                                <span>💧 Hidrología Fluvial</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">DGA-MOP</span>
+                            </div>
+                            <div class="text-2xl font-bold font-mono text-blue-950">NSE 0.998</div>
+                            <p class="text-[11px] text-stone-600">Eficiencia Nash-Sutcliffe sobre 24h de crecida pluvial ($KGE = 0.982$, $|PBIAS| < 3\%$).</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-red-50 to-white border border-red-200 space-y-1">
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-red-900">
+                                <span>🔥 Fuego & Viento</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-800">CONAF / SICOF</span>
+                            </div>
+                            <div class="text-2xl font-bold font-mono text-red-950">IoU 73.4%</div>
+                            <p class="text-[11px] text-stone-600">Intersección sobre Unión (Jaccard) con perímetro real bajo Puelche ($\text{Dice} = 84.6\%$).</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-white border border-purple-200 space-y-1">
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-purple-900">
+                                <span>🌸 Microclima & Heladas</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">INIA / AGROMET</span>
+                            </div>
+                            <div class="text-2xl font-bold font-mono text-purple-950">RMSE 0.25°C</div>
+                            <p class="text-[11px] text-stone-600">Error térmico medio absoluto en vaguadas con inversión radiativa ($Recall \ge 98\%$).</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 space-y-1">
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-emerald-900">
+                                <span>🛰️ Cuerpos de Agua</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">SENTINEL-2 MNDWI</span>
+                            </div>
+                            <div class="text-2xl font-bold font-mono text-emerald-950">Error &lt; 2.1%</div>
+                            <p class="text-[11px] text-stone-600">Margen de cubicación volumétrica contra catastro nacional de embalses DGA.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabla Multi-Sitio de Validación Territorial -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider">Desglose de Resultados por Cuenca & Fisiografía</span>
+                            <span class="text-[11px] font-mono text-stone-500">Pipeline CLI: scripts/benchmark/benchmark_suite.py</span>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
+                            <table class="w-full text-left text-xs font-mono border-collapse">
+                                <thead>
+                                    <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
+                                        <th class="py-2.5 px-3">Sitio Territorial</th>
+                                        <th class="py-2.5 px-3">Zona & Bioma</th>
+                                        <th class="py-2.5 px-3">Hidrología (NSE / PBIAS)</th>
+                                        <th class="py-2.5 px-3">Fuego (IoU / Dice)</th>
+                                        <th class="py-2.5 px-3">Microclima (RMSE / Recall)</th>
+                                        <th class="py-2.5 px-3">Estado Acreditación</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
+                                    <tr class="hover:bg-stone-50 transition-colors">
+                                        <td class="py-2.5 px-3 font-bold text-stone-900">
+                                            <span>🏔️</span> Cuenca Río Longaví
+                                        </td>
+                                        <td class="py-2.5 px-3 text-stone-600">Maule Sur • Frutales exportación & PRV</td>
+                                        <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.998 • PBIAS +2.2%</td>
+                                        <td class="py-2.5 px-3 font-semibold text-red-700">IoU 74.5% • Dice 85.4%</td>
+                                        <td class="py-2.5 px-3 font-semibold text-purple-700">0.24°C • Recall 100%</td>
+                                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">OPERATIVO TRL 8</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50 transition-colors">
+                                        <td class="py-2.5 px-3 font-bold text-stone-900">
+                                            <span>🍇</span> Cuenca Río Maipo
+                                        </td>
+                                        <td class="py-2.5 px-3 text-stone-600">Región Metropolitana • Viñedos & Estrés Hídrico</td>
+                                        <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.997 • PBIAS +1.8%</td>
+                                        <td class="py-2.5 px-3 font-semibold text-red-700">IoU 71.8% • Dice 83.6%</td>
+                                        <td class="py-2.5 px-3 font-semibold text-purple-700">0.31°C • Recall 98%</td>
+                                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">OPERATIVO TRL 8</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50 transition-colors">
+                                        <td class="py-2.5 px-3 font-bold text-stone-900">
+                                            <span>🌲</span> Cuenca Río Biobío
+                                        </td>
+                                        <td class="py-2.5 px-3 text-stone-600">Collipulli / Malleco • Forestal WUI & Vientos Ladera</td>
+                                        <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.999 • PBIAS +1.4%</td>
+                                        <td class="py-2.5 px-3 font-semibold text-red-700">IoU 73.8% • Dice 84.9%</td>
+                                        <td class="py-2.5 px-3 font-semibold text-purple-700">0.21°C • Recall 100%</td>
+                                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">OPERATIVO TRL 8</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Fórmulas Matemáticas de Certificación en KaTeX -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>📐</span> Eficiencia Hidrológica de Nash-Sutcliffe (NSE) &amp; KGE
+                            </span>
+                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1 overflow-x-auto text-center">
+                                $$NSE = 1 - \frac{\sum_{t=1}^N (Q_{\text{obs}, t} - Q_{\text{sim}, t})^2}{\sum_{t=1}^N (Q_{\text{obs}, t} - \overline{Q}_{\text{obs}})^2}, \quad KGE = 1 - \sqrt{(r-1)^2 + (\beta-1)^2 + (\gamma-1)^2}$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Evalúa la capacidad del modelo de predecir la crecida sin sesgo acumulado ($\beta = \mu_{\text{sim}}/\mu_{\text{obs}}$) ni distorsión de variabilidad ($\gamma = \text{CV}_{\text{sim}}/\text{CV}_{\text{obs}}$).
+                            </p>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                                <span>📐</span> Coincidencia Espacial Jaccard (IoU) &amp; Brier Score
+                            </span>
+                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1 overflow-x-auto text-center">
+                                $$IoU = \frac{|A_{\text{sim}} \cap A_{\text{real}}|}{|A_{\text{sim}} \cup A_{\text{real}}|}, \qquad BS = \frac{1}{N}\sum_{i=1}^N (\hat{p}_i - o_i)^2$$
+                            </div>
+                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
+                                Cuantifica la superposición espacial exacta de los frentes de llama con CONAF y la calibración probabilística de las alertas de heladas o tornados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 </div>
 
             </div>
@@ -11729,6 +11726,74 @@ def execute_quadratic_vote(available_credits: int, votes_cast: int, proposal_id:
                                 <text x="582" y="90" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="9">• Validez Ley N° 19.799 Chile</text>
                                 <text x="582" y="105" fill="#059669" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Resolución de borde vinculante</text>
                             </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Bioeconomía, Servicios Ecosistémicos & Deliberación Colegiada de Cuenca -->
+                <div class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xl p-1.5 rounded-lg bg-emerald-50 border border-emerald-200">🌿</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-stone-900 font-serif">
+                                    Bioeconomía de Bienes Comunes &amp; Deliberación Colegiada
+                                </h3>
+                                <p class="text-xs text-stone-500 mt-0.5">
+                                    Valoración biofísica de servicios ecosistémicos compartidos (CICES v5.1) y cámara de arbitraje científico para la toma de decisiones vecinales.
+                                </p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono text-[10px] font-bold">
+                            CICES v5.1 + 18 ASESORES
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Servicios Ecosistémicos CICES v5.1 -->
+                        <div class="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-emerald-50/60 to-white border border-emerald-200 space-y-3 shadow-sm flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-emerald-950 font-serif text-sm flex items-center gap-1.5">
+                                        <span>🌿</span> Servicios Ecosistémicos de Cuenca (CICES v5.1)
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-100 text-emerald-800 font-bold">3 Momentos</span>
+                                </div>
+                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
+                                    Cuantificación biofísica y económica de los bienes comunes: amortiguación de crecidas pluviales, recarga de acuíferos, fajas verdes cortafuegos pastoreadas, secuestro de carbono en suelo y conservación de polinizadores nativos.
+                                </p>
+                                <div class="p-2.5 rounded-lg bg-white border border-emerald-100 text-[11px] font-mono text-emerald-950 space-y-1">
+                                    <div class="flex justify-between"><span>• Regulación Hídrica:</span> <strong class="text-emerald-800">110 hm³ / Embalse Bullileo</strong></div>
+                                    <div class="flex justify-between"><span>• Amortiguación Incendios:</span> <strong class="text-emerald-800">-64.7% FWI en Fajas</strong></div>
+                                    <div class="flex justify-between"><span>• Captura Carbono:</span> <strong class="text-emerald-800">4.2 t C/ha/año en Praderas</strong></div>
+                                </div>
+                            </div>
+                            <button onclick="openEcosystemServicesNav()" class="w-full mt-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                                <span>Ver Matriz CICES v5.1 Completa</span> <span>➔</span>
+                            </button>
+                        </div>
+
+                        <!-- Cámara de 18 Asesores & Deliberación Biofísica -->
+                        <div class="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-amber-50/60 to-white border border-amber-200 space-y-3 shadow-sm flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-amber-950 font-serif text-sm flex items-center gap-1.5">
+                                        <span>🧠</span> Cámara de 18 Asesores &amp; Arbitraje de Cuenca
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-amber-100 text-amber-800 font-bold">Consejo Biofísico</span>
+                                </div>
+                                <p class="text-xs text-stone-600 leading-relaxed font-sans">
+                                    Órgano consultivo colegiado de la DAO vecinal. 18 agentes especializados emiten dictámenes basados en datos para resolver disputas de servidumbres de agua, acuerdos de fajas cortafuegos y rotaciones agrícolas entre vecinos.
+                                </p>
+                                <div class="p-2.5 rounded-lg bg-white border border-amber-100 text-[11px] font-mono text-stone-800 space-y-1">
+                                    <div class="flex justify-between"><span>• Disciplinas:</span> <span class="text-stone-600">Suelo, Agua, Heladas, Fuego, Legal</span></div>
+                                    <div class="flex justify-between"><span>• Gobernanza:</span> <span class="text-stone-600">Soporte técnico a votación $V^2$</span></div>
+                                    <div class="flex justify-between"><span>• Consenso:</span> <strong class="text-amber-800">Protocolo de Asambleas Rurales</strong></div>
+                                </div>
+                            </div>
+                            <button onclick="openAdvisorsNav()" class="w-full mt-2 px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+                                <span>Consultar a la Cámara de Asesores</span> <span>➔</span>
+                            </button>
                         </div>
                     </div>
                 </div>
