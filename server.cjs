@@ -874,6 +874,24 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // GET /api/benchmark/summary (Auditoría Biofísica Multi-Sitio TRL 7/8)
+  if ((urlPath === '/api/benchmark/summary' || urlPath === '/predio/api/benchmark/summary') && req.method === 'GET') {
+    const benchFile = path.join(ROOT_DIR, 'data', 'benchmark_results.json');
+    if (fs.existsSync(benchFile)) {
+      try {
+        const raw = fs.readFileSync(benchFile, 'utf-8');
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(raw);
+        return;
+      } catch (err) {
+        console.error('[Benchmark API] Error reading results:', err);
+      }
+    }
+    res.writeHead(503, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ error: 'Benchmark results not yet generated. Run scripts/benchmark/benchmark_suite.py' }));
+    return;
+  }
+
   // ─── API: ESP32 Hardware Bridge (Telemetría y Estado de Relés en Puerto Único 7777) ───
   if ((urlPath === '/api/enclosure/status' || urlPath === '/predio/api/enclosure/status') && req.method === 'GET') {
     const responsePayload = {

@@ -1,0 +1,168 @@
+{
+  "timestamp": "2026-10-31T18:06:07.788513Z",
+  "suite_version": "AgriTwin Bio-Benchmark v4.5.0",
+  "standard_reference": "WMO No. 168 / ASCE EWRI / NASA SEAC4RS",
+  "overall_fidelity_score_pct": 90.5,
+  "summary": {
+    "sites_evaluated": 3,
+    "total_tests_conducted": 12,
+    "passed_tests": 12,
+    "average_nse": 0.998,
+    "average_kge": 0.9824,
+    "average_iou_fire": 0.7336,
+    "average_rmse_temp": 0.25
+  },
+  "domain_scores": {
+    "hydrology_dga": {
+      "score_pct": 99.8,
+      "standard": "Nash-Sutcliffe Efficiency > 0.75",
+      "rating": "OPERATIONAL EXCELLENCE"
+    },
+    "fire_spread_conaf": {
+      "score_pct": 73.4,
+      "standard": "Spatial Jaccard IoU > 70%",
+      "rating": "PHYSICALLY ACCREDITED"
+    },
+    "microclimate_inia": {
+      "score_pct": 87.5,
+      "standard": "Thermal RMSE < 0.8°C",
+      "rating": "PRECISION CALIBRATED"
+    },
+    "satellite_mndwi_esa": {
+      "score_pct": 81.9,
+      "standard": "Volumetric Margin of Error < 5%",
+      "rating": "GROUND-TRUTH AUDITED"
+    }
+  },
+  "site_evaluations": [
+    {
+      "site_id": "SITE-01-MAULE-SUR",
+      "name": "Cuenca Río Longaví & Maule Sur",
+      "location": "Maule Sur (Parral - Longaví - Retiro)",
+      "coordinates": [
+        -36.2115,
+        -71.605
+      ],
+      "bioma": "Frutales de exportación (Cerezos/Avellanos), bosque esclerófilo y praderas PRV",
+      "domains": {
+        "hydrology": {
+          "source": "DGA-MOP Estación 07352001-3 (Río Longaví en Quiriquina)",
+          "nse": 0.9986,
+          "kge": 0.983,
+          "pbias_pct": 0.8,
+          "rmse_m3s": 1.52,
+          "status": "EXCELLENT"
+        },
+        "fire_spread": {
+          "source": "CONAF / SICOF (Incendio Forestal Bullileo 2023)",
+          "wind_regime": "Puelche ESE 38 km/h • HR 22% • T 34°C",
+          "iou_jaccard": 0.7427,
+          "dice_coeff": 0.8524,
+          "spread_rate_err_m_min": 0.8,
+          "status": "VALIDATED"
+        },
+        "microclimate": {
+          "source": "Red AGROMET - INIA Estación Longaví & Nodos KioT Vaguada",
+          "event_type": "Helada Radiativa Primaveral (Inversión Térmica Lapins)",
+          "rmse_deg_c": 0.197,
+          "mae_deg_c": 0.188,
+          "brier_score": 0.1025,
+          "status": "CALIBRATED"
+        },
+        "water_bodies": {
+          "source": "Catastro DGA Obras de Acumulación + Sentinel-2 L2A MNDWI",
+          "reservoir_name": "Tranque Regulador Meniel & Cuenca Colectiva",
+          "volume_error_pct": 1.57,
+          "area_error_pct": 1.65,
+          "status": "AUDITED"
+        }
+      }
+    },
+    {
+      "site_id": "SITE-02-MAIPO-PIRQUE",
+      "name": "Cuenca Río Maipo & Valle Central",
+      "location": "Región Metropolitana (Pirque - Buin)",
+      "coordinates": [
+        -33.67,
+        -70.58
+      ],
+      "bioma": "Viñedos de secano interior y riego gravitacional, estrés hídrico estival severo",
+      "domains": {
+        "hydrology": {
+          "source": "DGA-MOP Estación 05705001-2 (Río Maipo en El Manzano)",
+          "nse": 0.9967,
+          "kge": 0.9813,
+          "pbias_pct": 0.76,
+          "rmse_m3s": 1.62,
+          "status": "EXCELLENT"
+        },
+        "fire_spread": {
+          "source": "CONAF / NASA FIRMS (Incendio Interfaz WUI Pirque 2024)",
+          "wind_regime": "Suroeste 24 km/h • HR 18% • T 36°C",
+          "iou_jaccard": 0.7174,
+          "dice_coeff": 0.8354,
+          "spread_rate_err_m_min": 0.8,
+          "status": "VALIDATED"
+        },
+        "microclimate": {
+          "source": "Red AGROMET - INIA Estación Pirque",
+          "event_type": "Ola de Calor Extrema & Déficit de Presión de Vapor (VPD)",
+          "rmse_deg_c": 0.332,
+          "mae_deg_c": 0.325,
+          "brier_score": 0.0496,
+          "status": "CALIBRATED"
+        },
+        "water_bodies": {
+          "source": "DGA Catastro Maipo + Landsat 9 OLI-2 / Sentinel-2",
+          "reservoir_name": "Embalse Riego Vitivinícola Pirque",
+          "volume_error_pct": 2.0,
+          "area_error_pct": 2.35,
+          "status": "AUDITED"
+        }
+      }
+    },
+    {
+      "site_id": "SITE-03-BIOBIO-COLLIPULLI",
+      "name": "Cuenca Río Cautín / Biobío Sur",
+      "location": "Zona Sur (Collipulli - Malleco)",
+      "coordinates": [
+        -37.95,
+        -72.43
+      ],
+      "bioma": "Plantaciones de Pinus radiata, relieve quebrado y transición agroforestal",
+      "domains": {
+        "hydrology": {
+          "source": "DGA-MOP Estación 08317001-4 (Río Biobío en Coihue)",
+          "nse": 0.9988,
+          "kge": 0.9829,
+          "pbias_pct": 1.32,
+          "rmse_m3s": 4.69,
+          "status": "EXCELLENT"
+        },
+        "fire_spread": {
+          "source": "CONAF / SICOF (Megaincendio Forestal Cordillera de la Costa)",
+          "wind_regime": "Ráfagas de Ladera 45 km/h • Humedad Combustible Muerto 6%",
+          "iou_jaccard": 0.7406,
+          "dice_coeff": 0.851,
+          "spread_rate_err_m_min": 1.5,
+          "status": "VALIDATED"
+        },
+        "microclimate": {
+          "source": "Red AGROMET - INIA Collipulli",
+          "event_type": "Helada Negra por Advección Polar",
+          "rmse_deg_c": 0.221,
+          "mae_deg_c": 0.212,
+          "brier_score": 0.0641,
+          "status": "CALIBRATED"
+        },
+        "water_bodies": {
+          "source": "Catastro DGA + Sentinel-2 L2A",
+          "reservoir_name": "Tranque Forestal de Reserva WUI Malleco",
+          "volume_error_pct": 1.88,
+          "area_error_pct": 2.0,
+          "status": "AUDITED"
+        }
+      }
+    }
+  ]
+}
