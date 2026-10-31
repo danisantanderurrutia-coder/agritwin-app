@@ -1334,47 +1334,8 @@
           <span id="hubPendingBadge" class="hidden text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-500 text-stone-950 font-black">0</span>
         </button>
 
-        <!-- 4. Menú Desplegable 'Datos' -->
-        <div class="relative group" id="dropdown-datos-container">
-          <button id="navBtn-datos" onclick="toggleDatosDropdown(event)" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-stone-200/60 transition-all flex items-center gap-1 cursor-pointer" title="Centro de Datos y Matrices">
-            <span>📂</span> <span>Datos</span> <span class="text-[9px] text-stone-500">▼</span>
-          </button>
-          
-          <!-- Dropdown Menu de Datos (Galpón Luminoso) -->
-          <div id="dropdown-datos-menu" class="hidden absolute right-0 top-full mt-1.5 w-64 py-2 rounded-2xl bg-[#FFFDF9] border border-[#E7DAC6] shadow-xl text-xs z-50 transition-all">
-            <a href="javascript:void(0)" onclick="openCockpitNav(); closeDatosDropdown();" class="flex items-center gap-2.5 px-3.5 py-2 hover:bg-sky-500/10 text-stone-800 hover:text-sky-900 font-medium transition-colors">
-              <span class="text-base">📈</span>
-              <div>
-                <div class="font-bold">Cockpit Decisor</div>
-                <div class="text-[10px] text-stone-500">Cuadro de Mando & Gestión 10 Predios</div>
-              </div>
-            </a>
-            <a href="javascript:void(0)" onclick="openAdvisorsNav(); closeDatosDropdown();" class="flex items-center gap-2.5 px-3.5 py-2 hover:bg-amber-500/10 text-stone-800 hover:text-amber-900 font-medium transition-colors">
-              <span class="text-base">🧠</span>
-              <div>
-                <div class="font-bold">18 Asesores & Deliberación</div>
-                <div class="text-[10px] text-stone-500">Cámara de Expertos Biofísicos</div>
-              </div>
-            </a>
-            <a href="javascript:void(0)" onclick="openEcosystemServicesNav(); closeDatosDropdown();" class="flex items-center gap-2.5 px-3.5 py-2 hover:bg-emerald-500/10 text-stone-800 hover:text-emerald-900 font-medium transition-colors">
-              <span class="text-base">🌿</span>
-              <div>
-                <div class="font-bold">Servicios Ecosistémicos</div>
-                <div class="text-[10px] text-stone-500">Matriz CICES v5.1 de los 3 Momentos</div>
-              </div>
-            </a>
-            <a href="javascript:void(0)" onclick="switchMasterView('telemetry'); closeDatosDropdown();" class="flex items-center gap-2.5 px-3.5 py-2 hover:bg-cyan-500/10 text-stone-800 hover:text-cyan-900 font-medium transition-colors">
-              <span class="text-base">📊</span>
-              <div>
-                <div class="font-bold">Telemetría</div>
-                <div class="text-[10px] text-stone-500">Red Centinela de 9 Nodos IoT</div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <!-- 7. Vault Docs (General) -->
-        <button id="navBtn-docs" onclick="switchMasterView('docs')" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-stone-200/60 transition-all flex items-center gap-1.5 cursor-pointer" title="Bóveda de Arquitectura, Metodología & Datasets Generales">
+        <!-- 7. Vault Docs (General: Teoría, Arquitectura, Gobernanza & Recursos) -->
+        <button id="navBtn-docs" onclick="switchMasterView('docs')" class="master-nav-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-stone-200/60 transition-all flex items-center gap-1.5 cursor-pointer" title="Bóveda de Conocimiento: Marco Teórico, Arquitectura, Datos y Recursos">
           <span>📚</span> <span class="hidden sm:inline">Vault</span>
         </button>
 
@@ -7193,54 +7154,13 @@
                         Centro formal de documentación técnica: Arquitectura Multiescala con Diagramas Mermaid interactivos, Motores Algorítmicos Biofísicos ejecutables, Datasets Geoespaciales Vectoriales y Mosaico Catastral Comunitario.
                     </p>
                 </div>
-                <div class="flex items-center gap-2.5 shrink-0">
+                <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
                     <button onclick="exportParcelsToCSV()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-xs font-bold text-stone-800 border border-[#E7DAC6] shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
                         <span>📥</span> <span>Exportar Catastro CSV</span>
                     </button>
-                    <button onclick="openDossierInHub()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                        <span>🛰️</span> <span>Dossier en el Hub</span>
+                    <button onclick="switchDocsTab('docs-dossier')" class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-xs font-bold text-amber-900 border border-amber-300 shadow-sm flex items-center gap-1.5 transition-all cursor-pointer" title="Ver Informes Técnicos, Dossier de Competencia y Benchmarking">
+                        <span>📦</span> <span>Recursos &amp; Dossiers</span>
                     </button>
-                    <button onclick="openDossierModal()" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-xs font-bold text-emerald-900 border border-emerald-300 shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                        <span>⛶</span> <span>Modal</span>
-                    </button>
-                    <a href="dossier.html" target="_blank" class="px-3 py-2 rounded-xl bg-white hover:bg-stone-50 text-xs font-bold text-stone-700 border border-[#E7DAC6] shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                        <span>↗️</span> <span>Pestaña Completa</span>
-                    </a>
-                    <button onclick="openModal()" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-xs font-bold text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer">
-                        <span>📜</span> <span>Dossier Completo</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Banner Destacado: Dossier Estratégico de Teledetección & Benchmarking -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-sky-50 border border-emerald-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div class="flex items-start sm:items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
-                        🛰️
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">NUEVO DOSSIER INTERACTIVO</span>
-                            <span class="text-xs text-stone-400">•</span>
-                            <span class="text-xs font-mono text-emerald-700 font-semibold">18 Láminas Luminosas + Slugs Directos</span>
-                        </div>
-                        <h3 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Dossier Competencia: Benchmarking Global, Teledetección Satelital & IA Biofísica</h3>
-                        <p class="text-xs text-stone-600 mt-0.5 max-w-3xl leading-relaxed">
-                            Análisis comparativo de 11+ plataformas líderes (Kilimo, Instacrops, Pachama, Firetrace/OroraTech, Agro-Satélite CIREN/DGA, Regrow, CropX, OpenET, Hydrosat, Kayrros, eLEAF), su arquitectura de datos y la hoja de ruta transferible a AgriTwin.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-                    <button onclick="openDossierInHub()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer">
-                        <span>🚀 Ver Dossier en el Hub</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <button onclick="openDossierModal()" class="px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-                        <span>⛶ Ver en Modal</span>
-                    </button>
-                    <a href="dossier.html" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
-                        <span>↗️ Pestaña Completa</span>
-                    </a>
                 </div>
             </div>
 
@@ -7248,7 +7168,7 @@
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
                 <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
                     <span>📐</span> <span>1. Marco Teórico &amp; Metodología</span>
-                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 0-8</span>
+                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 0-9</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
                     <span>⚡</span> <span>2. Arquitectura de Software &amp; Hardware</span>
@@ -7259,16 +7179,78 @@
                     <span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 text-[9px] font-mono font-bold">DAO CUADRÁTICA OSTROM</span>
                 </button>
                 <button onclick="switchDocsTab('docs-dossier')" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>📦</span> <span>4. Recursos, Informes &amp; Dossiers</span>
-                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300 text-[9px] font-mono font-bold">BENCHMARKING + PDF</span>
+                    <span>📦</span> <span>4. Recursos, Datos &amp; Dossiers</span>
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300 text-[9px] font-mono font-bold">HERRAMIENTAS + DOSSIERS</span>
                 </button>
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
-                 SUBTAB 0: DOSSIER ESTRATÉGICO DE TELEDETECCIÓN & BENCHMARKING INTERACTIVO
+                 SUBTAB 4: RECURSOS, DATOS & DOSSIERS ESTRATÉGICOS
                  ═══════════════════════════════════════════════════════════════════ -->
             <div id="docs-dossier" class="docs-subcontent hidden space-y-4">
                 
+                <!-- Centro de Datos, Telemetría & Paneles Operacionales -->
+                <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xl p-1.5 rounded-lg bg-sky-50 border border-sky-200">📂</span>
+                            <div>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Centro de Datos, Operación &amp; Paneles de Decisión</h3>
+                                <p class="text-[11px] text-stone-500">Acceso unificado a los cuadros de mando, deliberación de expertos y telemetría de campo in-situ.</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-stone-100 text-stone-700 border border-stone-200 font-bold">
+                            4 Módulos Operativos
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                        <!-- 1. Cockpit Decisor -->
+                        <div onclick="openCockpitNav()" class="p-3.5 rounded-xl bg-sky-50/60 hover:bg-sky-50 border border-sky-200/90 hover:border-sky-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-base">📈</span>
+                                <span class="text-[9px] font-mono font-bold text-sky-800 bg-sky-100 px-1.5 py-0.5 rounded">10 Predios</span>
+                            </div>
+                            <div class="font-bold text-stone-900 group-hover:text-sky-950 font-serif text-[12px]">Cockpit Decisor</div>
+                            <p class="text-[11px] text-stone-600 leading-snug">Cuadro de mando directivo, márgenes por hectárea, asignación de agua y prioridades de riego.</p>
+                            <span class="text-[10px] font-mono text-sky-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Abrir Cockpit ➔</span>
+                        </div>
+
+                        <!-- 2. 18 Asesores & Deliberación -->
+                        <div onclick="openAdvisorsNav()" class="p-3.5 rounded-xl bg-amber-50/60 hover:bg-amber-50 border border-amber-200/90 hover:border-amber-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-base">🧠</span>
+                                <span class="text-[9px] font-mono font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">18 Expertos</span>
+                            </div>
+                            <div class="font-bold text-stone-900 group-hover:text-amber-950 font-serif text-[12px]">Cámara de Asesores</div>
+                            <p class="text-[11px] text-stone-600 leading-snug">Deliberación biofísica colegiada: suelos, agronómica, heladas, patología, legal y finanzas.</p>
+                            <span class="text-[10px] font-mono text-amber-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Consultar Asesores ➔</span>
+                        </div>
+
+                        <!-- 3. Servicios Ecosistémicos CICES -->
+                        <div onclick="openEcosystemServicesNav()" class="p-3.5 rounded-xl bg-emerald-50/60 hover:bg-emerald-50 border border-emerald-200/90 hover:border-emerald-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-base">🌿</span>
+                                <span class="text-[9px] font-mono font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded">CICES v5.1</span>
+                            </div>
+                            <div class="font-bold text-stone-900 group-hover:text-emerald-950 font-serif text-[12px]">Servicios Ecosistémicos</div>
+                            <p class="text-[11px] text-stone-600 leading-snug">Valoración de regulación hídrica, secuestro de carbono, resiliencia y polinización comunitaria.</p>
+                            <span class="text-[10px] font-mono text-emerald-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Ver Matriz CICES ➔</span>
+                        </div>
+
+                        <!-- 4. Telemetría Red Centinela -->
+                        <div onclick="switchMasterView('telemetry')" class="p-3.5 rounded-xl bg-cyan-50/60 hover:bg-cyan-50 border border-cyan-200/90 hover:border-cyan-300 transition-all cursor-pointer space-y-1.5 group shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-base">📊</span>
+                                <span class="text-[9px] font-mono font-bold text-cyan-800 bg-cyan-100 px-1.5 py-0.5 rounded">9 Nodos IoT</span>
+                            </div>
+                            <div class="font-bold text-stone-900 group-hover:text-cyan-950 font-serif text-[12px]">Telemetría Centinela</div>
+                            <p class="text-[11px] text-stone-600 leading-snug">Monitoreo in-situ continuo: sondas FDR 0-60cm, anemómetros ultrasónicos y cota de tranque.</p>
+                            <span class="text-[10px] font-mono text-cyan-700 font-bold block pt-1 group-hover:translate-x-0.5 transition-transform">Ir a Telemetría ➔</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Banner Destacado: Dossier SpA & Pitch Deck de Inversión -->
                 <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-white to-amber-50 border border-amber-300 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
