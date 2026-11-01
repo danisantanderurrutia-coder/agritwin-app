@@ -577,7 +577,7 @@
                     <th>Velocidad / Humedad</th>
                     <th>Humedad Foliar ($LFMC$)</th>
                     <th>Velocidad Frente ($R$)</th>
-                    <th>Sector Crítico Vulnerable</th>
+                    <th>Zona de Exposición Crítica</th>
                 </tr>
             </thead>
             <tbody>
@@ -587,7 +587,7 @@
                     <td>$42\text{ km/h} \cdot \text{HR } 14\%$</td>
                     <td>$< 62\%$ (Crítico)</td>
                     <td>$18.4\text{ m/min } (1.1\text{ km/h})$</td>
-                    <td>Deslinde Este (colindancia forestal directa)</td>
+                    <td>Laderas de sotavento y contacto con macizos forestales</td>
                 </tr>
                 <tr>
                     <td><strong>Surazo Estival</strong></td>
@@ -595,7 +595,7 @@
                     <td>$24\text{ km/h} \cdot \text{HR } 44\%$</td>
                     <td>$78\%$ (Alerta Media)</td>
                     <td>$10.2\text{ m/min } (0.6\text{ km/h})$</td>
-                    <td>Deslinde Sur y franjas riparias</td>
+                    <td>Corredores riparios y laderas expuestas al sur</td>
                 </tr>
                 <tr>
                     <td><strong>Norte Pre-Frontal</strong></td>
@@ -603,7 +603,7 @@
                     <td>$30\text{ km/h} \cdot \text{HR } 32\%$</td>
                     <td>$70\%$ (Moderado)</td>
                     <td>$12.5\text{ m/min } (0.75\text{ km/h})$</td>
-                    <td>Acceso vehicular y caminos principales</td>
+                    <td>Valles transversales y ejes viales de evacuación</td>
                 </tr>
                 <tr>
                     <td><strong>Brisa Marina Suroeste</strong></td>
@@ -611,7 +611,7 @@
                     <td>$18\text{ km/h} \cdot \text{HR } 58\%$</td>
                     <td>$> 85\%$ (Bajo riesgo)</td>
                     <td>$5.1\text{ m/min } (0.3\text{ km/h})$</td>
-                    <td>Laderas interiores protegidas</td>
+                    <td>Cuencas interiores y quebradas protegidas</td>
                 </tr>
             </tbody>
         </table>
@@ -694,8 +694,8 @@
             <ul class="variable-list">
                 <li><strong>dV_frío / dt:</strong> Tasa de acumulación de volumen de aire gélido aguas arriba de un obstáculo $[\text{m}^3\cdot\text{s}^{-1}]$.</li>
                 <li><strong>beta_poro:</strong> Porosidad óptica de la cortina vegetal vecina. Si $\beta_{\text{poro}} < 0.25$ (cortina densa sin podar en deslinde), actúa como una <strong>represa hidráulica</strong>, elevando el tirante frío 2 a 4 metros y sumergiendo las copas frutales.</li>
-                <li><strong>Umbrales Letales Críticos:</strong> Cerezos Lapins en floración sufren necrosis del pistilo bajo **$-2.2^\circ\text{C}$**; avellanos toleran hasta **$-4.0^\circ\text{C}$**.</li>
-                <li><strong>V_req:</strong> Volumen de agua demandado por aspersión térmica anti-helada $[\text{m}^3]$. Proteger 12 ha de cerezos a $40\text{ m}^3/\text{ha/h}$ durante 6 horas requiere **$2.880\text{ m}^3$** (un 15.5% de un tranque de $18.500\text{ m}^3$, garantizando amortiguación para 6 noches críticas).</li>
+                <li><strong>Umbrales Letales Fenológicos:</strong> Temperatura crítica ($T_{\text{crítica}}$) bajo la cual se produce necrosis en tejidos reproductivos durante floración o cuaja (p. ej., $-2.0^\circ\text{C}$ a $-2.5^\circ\text{C}$ en especies frutales sensibles).</li>
+                <li><strong>V_req:</strong> Demanda de reserva hídrica acumulada requerida para protección activa por aspersión $[\text{m}^3]$, función de la superficie protegida $A_{\text{cuartel}}$ $[\text{ha}]$, la tasa de aplicación $q_{\text{asp}}$ $[\text{m}^3\cdot\text{ha}^{-1}\cdot\text{h}^{-1}]$ y la duración continua de la temperatura bajo cero $\Delta t_{\text{evento}}$ $[\text{h}]$.</li>
             </ul>
         </div>
 

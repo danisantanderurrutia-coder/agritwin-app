@@ -267,8 +267,8 @@ En noches despejadas de primavera con viento calmo, el suelo pierde energía hac
 +-----------------------------------------------------------------------------------------+
 ```
 * **Efecto Represa Vegetal:** Si la porosidad óptica de una cortina cortaviento vecina en el deslinde es baja ($\beta_{\text{poro}} < 0.25$), el aire gélido se represa hidráulicamente, elevando el tirante frío 2 a 4 metros sobre los huertos.
-* **Umbrales Letales:** Cerezos Lapins en floración sufren daño letal a **$-2.2^\circ\text{C}$**; avellanos resisten hasta **$-4.0^\circ\text{C}$**.
-* **Demanda de Aspersión:** Proteger 12 ha de Lapins durante 6 horas a $40\text{ m}^3/\text{ha/h}$ requiere **$2.880\text{ m}^3$** de agua (15.5% de un tranque de $18.500\text{ m}^3$).
+* **Umbrales Fenológicos Letales:** Temperatura crítica ($T_{\text{crítica}}$) bajo la cual se produce necrosis celular reproductiva en floración o cuaja (p. ej., $-2.0^\circ\text{C}$ a $-2.5^\circ\text{C}$ en frutales caducifolios sensibles).
+* **Demanda de Aspersión:** Reserva hídrica requerida para protección activa $V_{\text{req}} = A_{\text{cuartel}} \cdot q_{\text{asp}} \cdot \Delta t_{\text{evento}} \cdot 10^{-3}$ $[\text{m}^3]$, dimensionando los requerimientos de almacenamiento frente a noches de helada consecutivas.
 * **Solución de Cooperación Vecinal:** Poda basal de los primeros 1.5 a 2 metros de la cortina vecina en la vaguada (faja de desahogo catabático), permitiendo que el aire frío continúe su curso hacia el estero sin estancarse.
 
 ---
