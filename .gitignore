@@ -16,3 +16,4 @@ set_icon
 # Temp & scratch files
 *.tmp
 *.swp
+data/cr2_dga/*.zip

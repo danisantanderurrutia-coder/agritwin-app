@@ -1,6 +1,6 @@
 # AgriTwin: Un Gemelo Digital Biofísico Multiescala para la Resiliencia Hídrica, la Gestión Multiamenaza y el Diseño Regenerativo de Cuenca
 
-**Compendio Científico Canónico de Validación TRL 7/8 (Estructura IMRAD)**
+**Compendio Científico Canónico de Validación TRL 4 (In-Silico DGA Ground-Truth) • Ruta Operacional TRL 7 (Estructura IMRAD)**
 
 ---
 

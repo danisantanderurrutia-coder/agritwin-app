@@ -1,4 +1,4 @@
-"Cuenca","Estacion_DGA","KGE","NSE","PBIAS_AgriTwin_pct","PBIAS_Control_pct","LeadTime_AgriTwin_dias","LeadTime_Control_dias","Nivel_TRL"
-"Maule Sur (Perquilauquén)","07352001-3",0.989,0.988,0.3,28.4,6.4,2.1,"TRL 8"
-"Río Maipo (El Manzano)","05705001-2",0.993,0.993,0.6,24.1,6.1,2.3,"TRL 8"
-"Río Biobío (Collipulli)","08317001-4",0.982,0.988,1.2,26,6.8,2,"TRL 8"
+"Arquetipo_Cuenca","Codigo_Estacion_DGA","Periodo_Auditoria","N_Observaciones","KGE_AgriTwin","KGE_Control","NSE_AgriTwin","NSE_Control","PBIAS_AgriTwin_pct","RMSE_m3s_AgriTwin"
+"Secano Interior (Maule Sur)","07343001 (Río Purapel en Sauzal)","2017-2020 Ciego",1186,0.915,0.606,0.994,0.874,6,0.51
+"Andino Mixto (Maipo)","05710001 (Río Maipo en El Manzano)","2017-2020 Ciego",1186,0.959,0.551,0.979,0.195,-2.2,5.37
+"Templado Húmedo (Biobío / Malleco)","08351001 (Río Malleco en Collipulli)","2017-2020 Ciego",1186,0.948,0.516,0.987,0.657,-1.8,2.41

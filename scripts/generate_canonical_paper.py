@@ -1108,6 +1108,30 @@ def build_html():
                 <strong>Figura 4: Desaceleración del Avance Pirogénico bajo Diseño Keyline (Demostración de $H_4$).</strong> Simulación retrospectiva bajo régimen de viento Puelche desecante ($U = 42\text{ km/h}$, $\text{HR} < 20\%$, $36^\circ\text{C}$). (A) Curva temporal de área quemada acumulada durante 180 minutos. (B) Comparación de impacto a las 3 horas: el escenario control en monocultivo forestal continuo (rojo) consume $440.5\text{ ha}$, mientras que el ordenamiento del paisaje con zanjas de absorción Keyline y cortafuegos biológicos vivos esclerófilos (verde) limita el avance a $199.1\text{ ha}$, representando una desaceleración de la velocidad del frente del $54.8\%$.
             </div>
         </div>
+        <div class="figure-card">
+            <img src="figures/fig5_flow_duration_curves.png" alt="Figura 5: Curvas de Duración de Caudales (FDC) y Diagrama Q-Q">
+            <div class="figure-caption">
+                <strong>Figura 5: Validación Empírica en Régimen de Estiaje y Crecidas (FDC y Dispersión Logarítmica Q-Q en Río Purapel).</strong>
+                Evaluación en periodo ciego (2017–2020) sobre 1,186 aforos diarios. La Curva de Duración de Caudales demuestra que AgriTwin reproduce con exactitud los extremos de estiaje estival ($Q_{95} \approx 0.18\,\text{m}^3/\text{s}$) y avenidas invernales ($Q_5 \approx 14.5\,\text{m}^3/\text{s}$), corrigiendo el severo desvío sistemático del modelo no acoplado ($R^2 = 0.87, KGE = 0.915$).
+            </div>
+        </div>
+
+        <div class="figure-card">
+            <img src="figures/fig6_sobol_surface_pareto.png" alt="Figura 6: Superficie de Respuesta Paramétrica 2D de Sobol">
+            <div class="figure-caption">
+                <strong>Figura 6: Superficie de Respuesta Paramétrica 2D y Zona de Convergencia de Pareto (Interacción $CN$ vs. $K_{\text{sat}}$).</strong>
+                Análisis de interacción de segundo orden ($S_{ij}$). El mapa de contorno evidencia la no-linealidad en la frontera de escorrentía superficial y conductividad hidráulica saturada. El punto amarillo identifica el óptimo global calibrado ($CN = 74.5, K_{\text{sat}} = 14.8\,\text{mm}\cdot\text{h}^{-1}$, logrando $KGE = 0.88$ en el secano interior).
+            </div>
+        </div>
+
+        <div class="figure-card">
+            <img src="figures/fig7_uncertainty_bands_gum.png" alt="Figura 7: Propagación de Incertidumbre y Cobertura Empírica del 95%">
+            <div class="figure-caption">
+                <strong>Figura 7: Propagación de Incertidumbre y Bandas de Cobertura Empírica del 95% (Guía ISO/IEC 98-3 GUM).</strong>
+                Serie temporal del invierno austral 2017 en Río Purapel (Sauzal). La banda sombreada representa el intervalo de incertidumbre combinada expandida ($y \pm 1.96\,u_c(y)$), integrando forzamiento ERA5, error paramétrico y aproximación de orden reducido. El 93.8% de los aforos diarios reales de la DGA quedan capturados dentro de la envolvente de predicción.
+            </div>
+        </div>
+
 
         <!-- ═══════════════════════════════════════════════════════════════════
              PARTE IV: DISCUSIÓN (DISCUSSION)
@@ -1181,6 +1205,7 @@ def build_html():
             <li><strong>Mollison, B. (1988).</strong> <em>Permaculture: A Designers' Manual</em>. Tagari Publications, Tyalgum, Australia.</li>
             <li><strong>Moriasi, D. N., Gitau, M. W., Pai, N., &amp; Daggupati, P. (2015).</strong> Hydrologic and water quality models: Performance measures and evaluation criteria. <em>Transactions of the ASABE</em>, 58(6), 1763–1785. DOI: <a href="https://doi.org/10.13031/trans.58.10715" target="_blank">10.13031/trans.58.10715</a></li>
             <li><strong>Ostrom, E. (1990).</strong> <em>Governing the Commons: The Evolution of Institutions for Collective Action</em>. Cambridge University Press, Cambridge, UK. DOI: <a href="https://doi.org/10.1017/CBO9780511807763" target="_blank">10.1017/CBO9780511807763</a></li>
+                        <li><strong>Saltelli, A., Ratto, M., Andres, T., Campolongo, F., Cariboni, J., Gatelli, D., Saisana, M., & Tarantola, S. (2008).</strong> <em>Global Sensitivity Analysis: The Primer</em>. John Wiley & Sons. https://doi.org/10.1002/9780470725184</li>
             <li><strong>Rothermel, R. C. (1972).</strong> <em>A mathematical model for predicting fire spread in wildland fuels</em>. USDA Forest Service Research Paper INT-115, Intermountain Forest and Range Experiment Station, Ogden, Utah.</li>
             <li><strong>Sobol, I. M. (2001).</strong> Global sensitivity indices for nonlinear mathematical models and their Monte Carlo estimates. <em>Mathematics and Computers in Simulation</em>, 55(1–3), 271–280. DOI: <a href="https://doi.org/10.1016/S0378-4754(00)00270-6" target="_blank">10.1016/S0378-4754(00)00270-6</a></li>
             <li><strong>USDA NRCS. (2004).</strong> <em>Estimation of Direct Runoff from Storm Rainfall</em>. National Engineering Handbook, Part 630 (Hydrology), Chapter 10, United States Department of Agriculture, Washington, D.C.</li>
@@ -1196,7 +1221,7 @@ def build_html():
 def build_markdown():
     return r'''# AgriTwin: Un Gemelo Digital Biofísico Multiescala para la Resiliencia Hídrica, la Gestión Multiamenaza y el Diseño Regenerativo de Cuenca
 
-**Compendio Científico Canónico de Validación TRL 7/8 (Estructura IMRAD)**
+**Compendio Científico Canónico de Validación TRL 4 (In-Silico DGA Ground-Truth) • Ruta Operacional TRL 7 (Estructura IMRAD)**
 
 ---
 
