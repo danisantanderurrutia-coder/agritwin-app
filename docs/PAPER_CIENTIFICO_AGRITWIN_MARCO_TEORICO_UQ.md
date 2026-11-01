@@ -88,7 +88,7 @@ La agricultura mediterránea de Chile central enfrenta una encrucijada bioclimá
 
 Los enfoques convencionales de "agricultura de precisión" han fallado en otorgar resiliencia porque operan bajo un **sesgo de atomización predial**: encierran su mirada al interior del huerto mediante sensores costosos y frágiles, ignorando que el 80% de la variabilidad del agua, la recarga del pozo y la amenaza destructiva se originan en los procesos ecológicos e hidrológicos de la cuenca aguas arriba.
 
-**AgriTwin** traslada los principios de los Gemelos Digitales de la Tierra (*Destination Earth* / DestinE) a la escala de la cuenca agrícola, acoplando tres escalas físicas:
+**AgriTwin** fundamenta su perspectiva y cosmovisión en la **Permacultura y la Ecología del Paisaje Regenerativa** (Mollison 1988; Yeomans 1958), adoptando la **metodología computacional de los Gemelos Digitales de la Tierra** (*Destination Earth* / DestinE; Bauer et al., 2021) a la escala de la cuenca agrohidrológica, acoplando tres escalas físicas:
 1. **Macroescala:** Circulación atmosférica sinóptica y radiación solar global (ERA5 y Open-Meteo).
 2. **Mesoescala:** Hidrología semi-distribuida del territorio ($SCS\text{-}CN$ acoplado a $TWI$), balística de fuego en laderas, drenaje catabático de aire frío y balance de masa compartido.
 3. **Microescala:** Balance de energía y humedad en el continuo suelo-planta-atmósfera ($SPAC$) en dos capas de suelo.
