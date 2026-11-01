@@ -1042,34 +1042,34 @@ def build_html():
 
         <h2 class="section-title">3.2. Contrastación Cuantitativa de la Hipótesis 1 ($H_1$): Acoplamiento Multiescala</h2>
         <ul>
-            <li><strong>Modelo Control (Parcelario Convencional Desacoplado):</strong> Arrojó un sesgo sistemático severo de **$PBIAS = +28.4\%$** (subestimación del déficit de recarga estival) y una ventana de anticipación táctica de solo **2.1 días**.</li>
-            <li><strong>Tratamiento (Gemelo Digital AgriTwin):** Redujo el sesgo porcentual a **$PBIAS = +0.3\%\text{ a }+2.2\%$**, lo que representa una **reducción del sesgo del $92.2\%$** (superando holgadamente el umbral de prueba del $35\%$).</li>
-            <li><strong>Ventana Temporal de Alerta:</strong> Se expandió a **6.4 días** (**$+204\%$** de incremento), otorgando a los regantes una semana completa para coordinar trasvases de agua.</li>
-            <li><strong>Veredicto:** <span style="color:#047857; font-weight:bold;">HIPÓTESIS 1 FORMALMENTE ACEPTADA.</span></li>
+            <li><strong>Modelo Control (Parcelario Convencional Desacoplado):</strong> Arrojó un sesgo sistemático severo de <strong>$PBIAS = +28.4\%$</strong> (subestimación del déficit de recarga estival) y una ventana de anticipación táctica de solo <strong>2.1 días</strong>.</li>
+            <li><strong>Tratamiento (Gemelo Digital AgriTwin):</strong> Redujo el sesgo porcentual a <strong>$PBIAS = +0.3\%\text{ a }+2.2\%$</strong>, lo que representa una <strong>reducción del sesgo del $92.2\%$</strong> (superando holgadamente el umbral de prueba del $35\%$).</li>
+            <li><strong>Ventana Temporal de Alerta:</strong> Se expandió a <strong>6.4 días</strong> (<strong>$+204\%$</strong> de incremento), otorgando a los regantes una semana completa para coordinar trasvases de agua.</li>
+            <li><strong>Veredicto:</strong> <span style="color:#047857; font-weight:bold;">HIPÓTESIS 1 FORMALMENTE ACEPTADA.</span></li>
         </ul>
 
         <h2 class="section-title">3.3. Contrastación Cuantitativa de la Hipótesis 2 ($H_2$): Desempeño Espectral e Inferencia Radicular</h2>
         <ul>
-            <li><strong>Precisión en Dosel:</strong> El error relativo ponderado en variables de dosel foliar ($NDVI, NDRE, MCARI, NDMI, SAVI$) fue de **$RMSE_{\text{rel}} = 11.2\%$** (cumpliendo con la cota de tolerancia de $RMSE_{\text{rel}} \le 15\%$).</li>
-            <li><strong>Resistencia a Saturación:</strong> Las bandas Red Edge ($B05\text{-}B07$) mediante el índice $MCARI$ conservaron una correlación lineal fotosintética de **$R^2 = 0.89$** en etapas fenológicas de máximo follaje donde el $NDVI$ tradicional saturó asintóticamente ($NDVI > 0.82$).</li>
-            <li><strong>Inferencia en Profundidad:</strong> La asimilación de Richards acoplada a Sentinel-2 resolvió la humedad a 60 cm con un $RMSE$ de solo **$0.024\text{ m}^3/\text{m}^3$**.</li>
-            <li><strong>Veredicto:** <span style="color:#047857; font-weight:bold;">HIPÓTESIS 2 FORMALMENTE ACEPTADA.</span></li>
+            <li><strong>Precisión en Dosel:</strong> El error relativo ponderado en variables de dosel foliar ($NDVI, NDRE, MCARI, NDMI, SAVI$) fue de <strong>$RMSE_{\text{rel}} = 11.2\%$</strong> (cumpliendo con la cota de tolerancia de $RMSE_{\text{rel}} \le 15\%$).</li>
+            <li><strong>Resistencia a Saturación:</strong> Las bandas Red Edge ($B05\text{-}B07$) mediante el índice $MCARI$ conservaron una correlación lineal fotosintética de <strong>$R^2 = 0.89$</strong> en etapas fenológicas de máximo follaje donde el $NDVI$ tradicional saturó asintóticamente ($NDVI > 0.82$).</li>
+            <li><strong>Inferencia en Profundidad:</strong> La asimilación de Richards acoplada a Sentinel-2 resolvió la humedad a 60 cm con un $RMSE$ de solo <strong>$0.024\text{ m}^3/\text{m}^3$</strong>.</li>
+            <li><strong>Veredicto:</strong> <span style="color:#047857; font-weight:bold;">HIPÓTESIS 2 FORMALMENTE ACEPTADA.</span></li>
         </ul>
 
         <h2 class="section-title">3.4. Contrastación Cuantitativa de la Hipótesis 3 ($H_3$): Colapso de Varianza con el Sensor Mínimo</h2>
         <ul>
-            <li><strong>Descomposición Sobol:</strong> Los dos parámetros biofísicos dominantes ($ET_0$ y $Z_r$) explican el $70\%$ de la varianza total ($S_1 + S_2 = 0.70$), y al incorporar el coeficiente satelital $K_c$ se explica el **$86\%$ de la varianza total**.</li>
-            <li><strong>Simulación Monte Carlo ($N = 10.000$):** La Configuración A (1 estación meteorológica + 1 sonda TDR multinivel) colapsó la varianza epistémica en un **$86.4\%$** (de $\sigma^2 = 2.10$ a $\sigma^2 = 0.048$).</li>
-            <li><strong>Redundancia del Hardware Masivo:</strong> La adición de 49 nodos inalámbricos IoT adicionales distribuidos cada 50 metros en las hileras (Configuración B) solo redujo la varianza en un **$4.1\%$ adicional** (de $0.048$ a $0.036$), demostrando que la hiper-densificación de sensores aporta una fracción marginal y estadísticamente irrelevante.</li>
-            <li><strong>Veredicto:** <span style="color:#047857; font-weight:bold;">HIPÓTESIS 3 FORMALMENTE ACEPTADA.</span></li>
+            <li><strong>Descomposición Sobol:</strong> Los dos parámetros biofísicos dominantes ($ET_0$ y $Z_r$) explican el $70\%$ de la varianza total ($S_1 + S_2 = 0.70$), y al incorporar el coeficiente satelital $K_c$ se explica el <strong>$86\%$ de la varianza total</strong>.</li>
+            <li><strong>Simulación Monte Carlo ($N = 10.000$):</strong> La Configuración A (1 estación meteorológica + 1 sonda TDR multinivel) colapsó la varianza epistémica en un <strong>$86.4\%$</strong> (de $\sigma^2 = 2.10$ a $\sigma^2 = 0.048$).</li>
+            <li><strong>Redundancia del Hardware Masivo:</strong> La adición de 49 nodos inalámbricos IoT adicionales distribuidos cada 50 metros en las hileras (Configuración B) solo redujo la varianza en un <strong>$4.1\%$ adicional</strong> (de $0.048$ a $0.036$), demostrando que la hiper-densificación de sensores aporta una fracción marginal y estadísticamente irrelevante.</li>
+            <li><strong>Veredicto:</strong> <span style="color:#047857; font-weight:bold;">HIPÓTESIS 3 FORMALMENTE ACEPTADA.</span></li>
         </ul>
 
         <h2 class="section-title">3.5. Contrastación Cuantitativa de la Hipótesis 4 ($H_4$): Amortiguación Pirogénica bajo Keyline</h2>
         <ul>
             <li><strong>Escenario Control (Monocultivo y Matorral Continuo):</strong> Velocidad de avance de llama bajo viento Puelche ($U = 42\text{ km/h}$) alcanzó $R = 18.4\text{ m/min}$, con salto balístico de pavesas de $650\text{ m}$ y consumo de $440.5\text{ ha}$ a las 3 horas.</li>
             <li><strong>Escenario Tratamiento (Diseño Keyline y Cortafuegos Vivos):</strong> La retención de humedad en las zanjas de absorción elevó el $LFMC$ del estrato arbustivo esclerófilo, haciendo caer la velocidad media a $R = 8.3\text{ m/min}$.</li>
-            <li><strong>Magnitud de la Desaceleración:</strong> La desaceleración del avance fue del **$54.8\%$** (superando el umbral de prueba del $40\%$), reduciendo el área consumida a $199.1\text{ ha}$ y suprimiendo el desprendimiento balístico de pavesas hacia los cuarteles agrícolas.</li>
-            <li><strong>Veredicto:** <span style="color:#047857; font-weight:bold;">HIPÓTESIS 4 FORMALMENTE ACEPTADA.</span></li>
+            <li><strong>Magnitud de la Desaceleración:</strong> La desaceleración del avance fue del <strong>$54.8\%$</strong> (superando el umbral de prueba del $40\%$), reduciendo el área consumida a $199.1\text{ ha}$ y suprimiendo el desprendimiento balístico de pavesas hacia los cuarteles agrícolas.</li>
+            <li><strong>Veredicto:</strong> <span style="color:#047857; font-weight:bold;">HIPÓTESIS 4 FORMALMENTE ACEPTADA.</span></li>
         </ul>
 
         <h2 class="section-title">3.6. Figuras y Gráficos Canónicos del Banco de Pruebas en R</h2>
@@ -1148,7 +1148,7 @@ def build_html():
             El análisis global de sensibilidad de Sobol y la aceptación de la Hipótesis 3 tienen profundas implicancias socioeconómicas para la política agraria en Chile y el cono sur. Durante la última década, las políticas de fomento han subsidiado la adquisición de redes de telemetría IoT privadas cuyo costo de capital ($\$5.000$ a $\$12.000\text{ USD}$ por predio) y mantenimiento por deriva salina y baterías resulta prohibitivo para la pequeña y mediana agricultura (INDAP / Pequeños Regantes CNR).
         </p>
         <p>
-            Al demostrar que el $86\%$ de la varianza útil se captura combinando **satélites abiertos de la ESA (Sentinel-2), reanálisis atmosféricos públicos (ERA5) y exactamente dos instrumentos de referencia calibrados por microcuenca**, AgriTwin desmantela la trampa del hardware, permitiendo desplegar sistemas de soporte a decisiones críticas a un costo entre un **$80\%$ y un $90\%$ menor** que el paradigma de micro-sensores masivos, democratizando el acceso a la tecnología para comunidades rurales vulnerables.
+            Al demostrar que el $86\%$ de la varianza útil se captura combinando <strong>satélites abiertos de la ESA (Sentinel-2), reanálisis atmosféricos públicos (ERA5) y exactamente dos instrumentos de referencia calibrados por microcuenca</strong>, AgriTwin desmantela la trampa del hardware, permitiendo desplegar sistemas de soporte a decisiones críticas a un costo entre un <strong>$80\%$ y un $90\%$ menor</strong> que el paradigma de micro-sensores masivos, democratizando el acceso a la tecnología para comunidades rurales vulnerables.
         </p>
 
         <h2 class="section-title">4.3. Fronteras Físicas, Supuestos y Condiciones de Borde del Modelo</h2>
@@ -1177,8 +1177,8 @@ def build_html():
             El presente compendio formaliza el marco teórico, matemático y metrológico de <strong>AgriTwin</strong> como un Gemelo Digital Biofísico Multiescala para cuencas agrícolas mediterráneas:
         </p>
         <ol>
-            <li><strong>Validación Científica Plena:</strong> Las cuatro hipótesis fueron formalmente contrastadas y aceptadas, demostrando una reducción del sesgo sistemático ($PBIAS$) del **$92.2\%$**, una expansión de la alerta temprana del **$204\%$**, un error espectral relativo de dosel del **$11.2\%$** y una desaceleración de incendios del **$54.8\%$** bajo diseño Keyline.</li>
-            <li><strong>Acreditación TRL 7/8:</strong> La auditoría ciega multi-sitio en las cuencas del Maule Sur, Maipo y Biobío alcanzó una fidelidad biofísica global ponderada del **$90.5\%$**, certificando que los motores deterministas no sufren de sobreajuste local y son transferibles entre regímenes bioclimáticos contrastantes.</li>
+            <li><strong>Validación Científica Plena:</strong> Las cuatro hipótesis fueron formalmente contrastadas y aceptadas, demostrando una reducción del sesgo sistemático ($PBIAS$) del <strong>$92.2\%$</strong>, una expansión de la alerta temprana del <strong>$204\%$</strong>, un error espectral relativo de dosel del <strong>$11.2\%$</strong> y una desaceleración de incendios del <strong>$54.8\%$</strong> bajo diseño Keyline.</li>
+            <li><strong>Acreditación TRL 7/8:</strong> La auditoría ciega multi-sitio en las cuencas del Maule Sur, Maipo y Biobío alcanzó una fidelidad biofísica global ponderada del <strong>$90.5\%$</strong>, certificando que los motores deterministas no sufren de sobreajuste local y son transferibles entre regímenes bioclimáticos contrastantes.</li>
             <li><strong>Rigor Metrológico y Reprocesabilidad:</strong> Todo el modelo cumple con la Guía ISO/IEC 98-3 (GUM), transparenta las fuentes públicas de auditoría (DGA, AGROMET-INIA y CONAF), cuenta con scripts de prueba en R ejecutables y fundamenta cada algoritmo en referencias canónicas indexadas.</li>
             <li><strong>Impacto en Políticas Públicas e I+D:</strong> Este documento constituye el sustento teórico integral para respaldar postulaciones a fondos de ciencia aplicada de excelencia (ANID Fondecyt/Fondef, CORFO I+D) y publicaciones en revistas científicas Q1 de hidrología y teledetección territorial.</li>
         </ol>
