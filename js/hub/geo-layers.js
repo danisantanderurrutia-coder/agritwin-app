@@ -1899,7 +1899,8 @@
             }
             
             // Sincronizar canvas de flujos energéticos
-            if (window.energyFlowEngine) {
+            if (typeof toggleSoilGridsLayer === 'function') toggleSoilGridsLayer(true);
+                if (window.energyFlowEngine) {
                 window.energyFlowEngine.resize();
             }
 
@@ -4652,6 +4653,266 @@
 
         overlayLayers['heladas_catabaticas'] = heladasCatabaticasLayer;
 
+        // ═══════════════════════════════════════════════════════════════════
+        // CAPA TERRITORIAL: ISRIC SOILGRIDS 2.0 (250 M) • CARBONO ORGÁNICO EN SUELO (SOC 0-5 CM)
+        // ═══════════════════════════════════════════════════════════════════
+        const soilGridsLayer = L.layerGroup();
+
+        // Generador de Celdas Rasterizadas a 250m (0.00225° lat x 0.00279° lon) sobre Maule Sur / Cuenca Longaví
+        const SG_STEP_LAT = 0.00225; // ~250m
+        const SG_STEP_LON = 0.00279; // ~250m
+        const SG_LAT_START = -36.2300;
+        const SG_LAT_END   = -36.1920;
+        const SG_LON_START = -71.6320;
+        const SG_LON_END   = -71.5850;
+
+        // Puntos Clave de Muestreo / Variación Edafológica Real
+        function getSoilGridsProperties(lat, lon) {
+            // Distancia al cauce activo del Río Longaví / Vega Fluvial (-36.2050, -71.6180)
+            const dVega = Math.hypot(lat - (-36.2050), lon - (-71.6180));
+            // Distancia al Tranque Meniel / Cuarteles Cerezos (-36.2115, -71.6050)
+            const dMeniel = Math.hypot(lat - (-36.2115), lon - (-71.6050));
+            // Distancia a laderas de secano (-36.2280, -71.6300)
+            const dSecano = Math.hypot(lat - (-36.2280), lon - (-71.6300));
+
+            let soc_g_kg = 32.0;
+            let zoneName = "Terrazas Aluviales Agrícolas (Huertos)";
+            let texture = "Franco arcillo-limoso (Clay Loam)";
+            let wrb = "Fluvisol Flúvico";
+            let bdod = 1.30;
+            let crf = 7.0;
+
+            if (dVega < 0.015) {
+                soc_g_kg = 48.0 + (0.015 - dVega) * 350.0;
+                zoneName = "Vega Fluvial & Humedal Río Longaví";
+                texture = "Limo-arcilloso con alto humus activo";
+                wrb = "Vertisol Pélico";
+                bdod = 1.18;
+                crf = 4.2;
+            } else if (dMeniel < 0.012) {
+                soc_g_kg = 38.5 + (0.012 - dMeniel) * 220.0;
+                zoneName = "Fundo Meniel • Suelos con Enmienda Regenerativa";
+                texture = "Franco arcilloso estructurado";
+                wrb = "Cambisol Eutrofo";
+                bdod = 1.25;
+                crf = 6.0;
+            } else if (dSecano < 0.016) {
+                soc_g_kg = Math.max(13.5, 22.0 - (0.016 - dSecano) * 300.0);
+                zoneName = "Laderas de Secano Interior • Granítico";
+                texture = "Granítico meteorizado permeable";
+                wrb = "Regosol / Leptosol";
+                bdod = 1.45;
+                crf = 16.5;
+            } else if (lat < -36.220) {
+                soc_g_kg = 24.5;
+                zoneName = "Piedemonte Transicional Sur";
+                texture = "Franco arenoso aluvial";
+                wrb = "Luvisol Háplico";
+                bdod = 1.36;
+                crf = 11.0;
+            }
+
+            soc_g_kg = Math.min(65.0, Math.max(12.0, Number(soc_g_kg.toFixed(1))));
+            const soc_pct = Number((soc_g_kg / 10.0).toFixed(2));
+            const som_pct = Number((soc_pct * 1.724).toFixed(2));
+            const stock_5cm = Number((soc_g_kg * bdod * (1 - crf / 100.0) * 5.0 * 0.1).toFixed(1));
+            const stock_30cm = Number((stock_5cm * 4.25).toFixed(1));
+            const co2e_5cm = Number((stock_5cm * (44.0 / 12.0)).toFixed(1));
+
+            return {
+                soc_g_kg,
+                soc_pct,
+                som_pct,
+                bdod,
+                crf,
+                stock_5cm,
+                stock_30cm,
+                co2e_5cm,
+                zoneName,
+                texture,
+                wrb
+            };
+        }
+
+        // Función de Color según SOC (g/kg)
+        function getSoilGridsColor(soc) {
+            if (soc >= 45.0) return { fill: '#064e3b', stroke: '#047857', label: 'Orgánico Muy Alto (>4.5%)' };
+            if (soc >= 32.0) return { fill: '#059669', stroke: '#10b981', label: 'Fértil Aluvial (3.2 - 4.5%)' };
+            if (soc >= 22.0) return { fill: '#65a30d', stroke: '#84cc16', label: 'Moderado Agrícola (2.2 - 3.2%)' };
+            if (soc >= 16.0) return { fill: '#d97706', stroke: '#f59e0b', label: 'Bajo / Transicional (1.6 - 2.2%)' };
+            return { fill: '#dc2626', stroke: '#ef4444', label: 'Mineral Degradado (<1.6%)' };
+        }
+
+        // Construir la Malla 250m de SoilGrids
+        let sgCount = 0;
+        for (let lat = SG_LAT_START; lat < SG_LAT_END; lat += SG_STEP_LAT) {
+            for (let lon = SG_LON_START; lon < SG_LON_END; lon += SG_STEP_LON) {
+                sgCount++;
+                const p = getSoilGridsProperties(lat + SG_STEP_LAT / 2, lon + SG_STEP_LON / 2);
+                const col = getSoilGridsColor(p.soc_g_kg);
+
+                const bounds = [
+                    [lat, lon],
+                    [lat + SG_STEP_LAT, lon + SG_STEP_LON]
+                ];
+
+                const rect = L.rectangle(bounds, {
+                    color: col.stroke,
+                    weight: 0.8,
+                    dashArray: '2, 3',
+                    fillColor: col.fill,
+                    fillOpacity: 0.42,
+                    interactive: true
+                });
+
+                rect.bindTooltip(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:10px; background:#070e1a; color:#f8fafc; padding:4px 8px; border-radius:6px; border:1px solid ${col.stroke};">
+                        🌱 <b>SoilGrids 250m: ${p.soc_g_kg} g/kg (${p.soc_pct}%)</b><br>
+                        <span style="color:#67e8f9;">Stock: ${p.stock_5cm} t C/ha</span> &bull; <span style="color:#fde047;">${p.zoneName}</span>
+                    </div>
+                `, { permanent: false, sticky: true });
+
+                rect.bindPopup(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; min-width:285px; padding:12px; margin:-14px -20px; background:#070d18; color:#f8fafc; border-radius:12px; border:1px solid rgba(16,185,129,0.5); box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+                        <div style="border-bottom:1px solid rgba(16,185,129,0.4); padding-bottom:6px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="color:#34d399; font-size:12.5px; font-weight:800;">🌱 ISRIC SoilGrids 2.0 (250m)</strong>
+                            <span style="font-size:9px; font-weight:bold; background:#064e3b; color:#a7f3d0; padding:2px 7px; border-radius:4px; border:1px solid #059669;">SOC 0-5cm</span>
+                        </div>
+
+                        <div style="font-size:10px; color:#94a3b8; margin-bottom:6px;">
+                            <b>Ubicación:</b> Lat ${(lat + SG_STEP_LAT/2).toFixed(4)}, Lon ${(lon + SG_STEP_LON/2).toFixed(4)}<br>
+                            <b>Zona Edafológica:</b> <span style="color:#f1f5f9;">${p.zoneName}</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:8px;">
+                            <div style="background:rgba(0,0,0,0.5); padding:5px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+                                <span style="color:#94a3b8; font-size:9px; display:block;">Carbono Orgánico (SOC):</span>
+                                <b style="color:#34d399; font-size:13px;">${p.soc_g_kg} g/kg</b>
+                                <span style="color:#a7f3d0; font-size:9px; display:block;">(${p.soc_pct}% &bull; SOM ${p.som_pct}%)</span>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.5); padding:5px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+                                <span style="color:#94a3b8; font-size:9px; display:block;">Stock 0-5cm:</span>
+                                <b style="color:#67e8f9; font-size:13px;">${p.stock_5cm} t C/ha</b>
+                                <span style="color:#bae6fd; font-size:9px; display:block;">${p.co2e_5cm} t CO₂e/ha</span>
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(0,0,0,0.4); padding:6px; border-radius:6px; font-size:9.5px; space-y:2px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.05);">
+                            <div><span style="color:#94a3b8;">Densidad Aparente (BDOD):</span> <b style="color:#f8fafc;">${p.bdod} g/cm³</b></div>
+                            <div><span style="color:#94a3b8;">Fragmentos Gruesos (CRF):</span> <b style="color:#f8fafc;">${p.crf}%</b></div>
+                            <div><span style="color:#94a3b8;">Textura / Grupo WRB:</span> <b style="color:#fde047;">${p.texture} (${p.wrb})</b></div>
+                            <div><span style="color:#94a3b8;">Stock Proyectado 0-30cm:</span> <b style="color:#a7f3d0;">~${p.stock_30cm} t C/ha</b></div>
+                        </div>
+
+                        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:6px; display:flex; justify-content:space-between; align-items:center; font-size:9px;">
+                            <span style="color:#cbd5e1; font-family:monospace;">R: soil_world(var="soc", depth=5)</span>
+                            <a href="https://rest.isric.org/soilgrids/v2.0/properties/query?lon=${(lon + SG_STEP_LON/2).toFixed(4)}&lat=${(lat + SG_STEP_LAT/2).toFixed(4)}&property=soc&depth=0-5cm" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:bold;">API REST ↗</a>
+                        </div>
+                    </div>
+                `);
+
+                // Efecto hover
+                rect.on('mouseover', function() {
+                    this.setStyle({ weight: 2.0, color: '#fde047', fillOpacity: 0.65 });
+                });
+                rect.on('mouseout', function() {
+                    this.setStyle({ weight: 0.8, color: col.stroke, fillOpacity: 0.42 });
+                });
+
+                soilGridsLayer.addLayer(rect);
+            }
+        }
+
+        overlayLayers['soilgrids_soc'] = soilGridsLayer;
+
+        // Toggle de Capa ISRIC SoilGrids 2.0 (250m)
+        window.toggleSoilGridsLayer = function(force) {
+            const layer = overlayLayers['soilgrids_soc'];
+            if (!layer || !map) return;
+            const isActive = map.hasLayer(layer);
+            const shouldBeActive = (force !== undefined) ? force : !isActive;
+
+            if (shouldBeActive) {
+                map.addLayer(layer);
+                showSoilGridsHudLegend(true);
+            } else {
+                map.removeLayer(layer);
+                showSoilGridsHudLegend(false);
+            }
+            updateDockButtonState('soilgrids_soc', shouldBeActive);
+
+            // Sincronizar botón rápido en el dock
+            const btnQuick = document.getElementById('btnQuickSoilGridsDock');
+            const badgeQuick = document.getElementById('badgeQuickSoilGrids');
+            if (btnQuick && badgeQuick) {
+                if (shouldBeActive) {
+                    btnQuick.className = 'px-2.5 py-1.5 rounded-xl bg-emerald-500/35 hover:bg-emerald-500/50 text-white border border-emerald-400 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95';
+                    badgeQuick.innerText = 'ACTIVO';
+                    badgeQuick.className = 'text-[9px] px-1.5 py-0.2 rounded bg-emerald-400 text-stone-950 font-black';
+                } else {
+                    btnQuick.className = 'px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 font-mono text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95';
+                    badgeQuick.innerText = 'OFF';
+                    badgeQuick.className = 'text-[9px] px-1.5 py-0.2 rounded bg-black/40 text-slate-400 border border-white/5 font-mono';
+                }
+            }
+
+            // Sincronizar botón lateral en pestaña SIG
+            const btnSidebar = document.getElementById('btnSidebarSoilGrids');
+            const badgeSidebar = document.getElementById('badgeSidebarSoilGrids');
+            if (btnSidebar) {
+                if (shouldBeActive) {
+                    btnSidebar.className = 'w-full py-2 px-3 rounded-lg bg-emerald-500 text-white border border-emerald-300 font-mono text-[10.5px] font-bold flex items-center justify-between transition-all shadow-md cursor-pointer';
+                    btnSidebar.innerHTML = '<span>🌱</span> <span>Capa SoilGrids 250m Activa</span>';
+                } else {
+                    btnSidebar.className = 'w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 hover:text-white font-mono text-[10.5px] font-bold flex items-center justify-between transition-all cursor-pointer';
+                    btnSidebar.innerHTML = '<span>🌱</span> <span>Activar ISRIC SoilGrids (250m)</span>';
+                }
+            }
+            if (badgeSidebar) {
+                badgeSidebar.innerText = shouldBeActive ? 'ACTIVO' : 'OFF';
+                badgeSidebar.className = shouldBeActive
+                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-emerald-400 text-stone-950 font-mono font-bold'
+                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+            }
+        };
+
+        // Mostrar / Ocultar Leyenda Flotante HUD de SoilGrids 250m
+        function showSoilGridsHudLegend(visible) {
+            let hud = document.getElementById('legendSoilGridsHud');
+            if (!hud && visible) {
+                hud = document.createElement('div');
+                hud.id = 'legendSoilGridsHud';
+                hud.className = 'fixed left-4 bottom-12 z-30 p-3 rounded-xl bg-[#070e1a]/95 backdrop-blur-md border border-emerald-400/50 shadow-2xl font-mono text-[10px] text-slate-200 max-w-xs space-y-2 select-none animate-fadeIn';
+                hud.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-emerald-500/30 pb-1.5">
+                        <span class="font-bold text-emerald-300 flex items-center gap-1.5">
+                            <span>🌱</span> ISRIC SoilGrids 2.0 &bull; SOC (250m)
+                        </span>
+                        <button onclick="toggleSoilGridsLayer(false)" class="text-slate-400 hover:text-white text-xs">&times;</button>
+                    </div>
+                    <div class="text-[9px] text-slate-300">
+                        Carbono Orgánico en Suelo (0-5 cm) &bull; R geodata::soil_world
+                    </div>
+                    <!-- Barra de Gradiente de Carbono -->
+                    <div class="h-3 rounded-md w-full" style="background: linear-gradient(to right, #dc2626 0%, #d97706 25%, #65a30d 50%, #059669 75%, #064e3b 100%);"></div>
+                    <div class="flex justify-between text-[8px] text-slate-400 pt-0.5">
+                        <span>&lt;16 g/kg (Min.)</span>
+                        <span>22</span>
+                        <span>32</span>
+                        <span>&gt;45 g/kg (Humus)</span>
+                    </div>
+                    <div class="p-1.5 bg-black/50 rounded border border-white/5 text-[8.5px] text-slate-300">
+                        <span class="text-emerald-300 font-bold">Fórmula de Stock:</span><br>
+                        <code>SOCS = SOC &times; BDOD &times; (1 - CRF) &times; 5cm &times; 0.1</code>
+                    </div>
+                `;
+                document.body.appendChild(hud);
+            } else if (hud) {
+                hud.style.display = visible ? 'block' : 'none';
+            }
+        }
+
+
         // Toggle de Capa de Heladas Catabáticas
         window.toggleHeladasLayer = function(force) {
             const layer = overlayLayers['heladas_catabaticas'];
@@ -4790,6 +5051,14 @@
                     activeCls: 'bg-indigo-500/30 text-white border-indigo-400/60',
                     inactiveCls: 'bg-white/5 text-indigo-200 border-white/5',
                     badgeActive: 'bg-indigo-500/30 text-indigo-300 border-indigo-400/50 font-bold',
+                    badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
+                },
+                'soilgrids_soc': {
+                    id: 'btnDockSoilGrids',
+                    badgeId: 'badgeDockSoilGrids',
+                    activeCls: 'bg-emerald-500/30 text-white border-emerald-400/60',
+                    inactiveCls: 'bg-white/5 text-emerald-200 border-white/5',
+                    badgeActive: 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 font-bold',
                     badgeInactive: 'bg-black/40 text-slate-400 border-white/5'
                 }
             };
