@@ -1,248 +1,120 @@
-# AgriTwin: Un Gemelo Digital Biofísico Multiescala para la Resiliencia Hídrica, la Gestión del Riesgo y el Diseño Agroecológico de Cuenca en el Maule Sur, Chile
+# AgriTwin: Un Gemelo Digital Biofísico Multiescala para la Resiliencia Hídrica, la Gestión Multiamenaza y el Diseño Agroecológico de Cuenca en el Maule Sur, Chile
 
-**Documento Maestro de Fundamentación Científica, Matemática y Metrológica**
+**Compendio Teórico, Matemático y Metrológico Integral (Edición Canónica)**
 
 ---
 
 * **Autoría y Desarrollo:** Iniciativa de Gemelo Digital Territorial AgriTwin
 * **Zona de Estudio y Validación Primaria:** Cuenca del Maule Sur (Secano Interior y Valle Central: comunas de Cauquenes, San Javier, Linares y Parral), Región del Maule, Chile
-* **Áreas Disciplinarias:** Hidrología Semi-Distribuida, Teledetección Óptica Multiespectral (Sentinel-2 L2A), Propagación Físico-Química de Incendios Forestales, Análisis Global de Sensibilidad (Sobol y Morris), Cuantificación de Incertidumbre (Guía ISO/IEC 98-3) y Ecología del Paisaje Regenerativa (Diseño Keyline y Gobernanza de Bienes Comunes de Elinor Ostrom)
-* **Fecha de Edición:** Octubre de 2026
-* **Idioma:** Español Neutro Académico (Versión Canónica de Estudio)
+* **Pilares Biofísicos Integrados:** 
+  1. Agro-Hidrología Semi-Distribuida ($SCS\text{-}CN$ dinámico acoplado a $TWI$)
+  2. Dinámica Pirogénica, Balística de Pavesas y Regímenes Eólicos (Rothermel & Albini)
+  3. Topoclimatología Catabática, Drenaje de Aire Frío y Microclima de Heladas (Prandtl-Mahrt & Radiación Neta)
+  4. Termodinámica Convectiva, Cizalladura Vertical y Tornados en el Maule (CAPE & Entornos HSLC)
+  5. Teledetección Óptica Multiespectral 10 Bandas (Sentinel-2 L2A BOA) y Epistemología de la Luz
+  6. Doctrina Operacional de Mando y Control Táctico C2 (Cinemática $0\text{--}12\text{ h}$ y Ciclo OODA)
+  7. Metrología de Sensibilidad Paramétrica y Cuantificación de Incertidumbre (Sobol & Guía ISO/IEC 98-3 GUM)
+  8. Ecología del Paisaje Regenerativa (Keyline, Servicios Ecosistémicos CICES v5.1 y Gobernanza Elinor Ostrom)
+* **Fecha de Edición:** Noviembre de 2026
+* **Idioma:** Español Académico Riguroso
 
 ---
 
 ## Índice General
 
-1. [Resumen Ejecutivo](#1-resumen-ejecutivo)
-2. [Introducción y Diagnóstico del Territorio](#2-introducción-y-diagnóstico-del-territorio)
-   * 2.1. La megasequía estructural en el Maule Sur y el Secano Costero
-   * 2.2. La falacia de la parcela aislada y el agotamiento de la agricultura de precisión
-   * 2.3. La visión de los Gemelos Digitales de la Tierra trasladada al valle agrícola
-3. [El Sistema Canónico de Cuatro Hipótesis Científicas](#3-el-sistema-canónico-de-cuatro-hipótesis-científicas)
-   * 3.1. Hipótesis 1: El Acoplamiento Multiescala y la Validación con Datos Públicos
-   * 3.2. Hipótesis 2: La Línea Base Satelital y la Epistemología de la Luz
-   * 3.3. Hipótesis 3: La Trampa del Hardware y el Conjunto Crítico Mínimo de Sensores
-   * 3.4. Hipótesis 4: La Ecología del Paisaje y los Flujos Más Allá de la Zona 5
-4. [Marco Físico-Matemático Multiescala](#4-marco-físico-matemático-multiescala)
-   * 4.1. Escala Macro: Forzamiento Atmosférico y Evapotranspiración de Referencia ($ET_0$)
-   * 4.2. Escala Meso: Hidrología de Cuenca, Curva SCS-CN y Topografía Hídrica ($TWI$)
-   * 4.3. Escala Micro: Balance Hídrico en el Perfil de Suelo Bi-Capa ($SPAC$)
-   * 4.4. Dinámica Pirogénica: Propagación de Incendios en Laderas y Secado de Combustible
-5. [Teledetección Óptica: Catálogo de Bandas y Física de la Radiación](#5-teledetección-óptica-catálogo-de-bandas-y-física-de-la-radiación)
-   * 5.1. Descripción física de las 10 bandas terrestres de Sentinel-2 L2A
-   * 5.2. Formulación analítica de los 8 índices biofísicos de cuenca
-   * 5.3. Qué ve y qué no ve la física de la luz espectral
-6. [Metrología, Calibración, Sensibilidad y Cuantificación de Incertidumbre](#6-metrología-calibración-sensibilidad-y-cuantificación-de-incertidumbre)
-   * 6.1. Calibración en dos etapas y asimilación secuencial con Filtro de Kalman
-   * 6.2. Métricas estadísticas de validación empírica ($NSE, KGE, RMSE, PBIAS, IoU$)
-   * 6.3. Análisis de Sensibilidad Global de Sobol y Cribado de Morris
-   * 6.4. Propagación formal de la incertidumbre según la Guía ISO/IEC 98-3
-7. [Ecología del Paisaje y Plan Base Regenerativo](#7-ecología-del-paisaje-y-plan-base-regenerativo)
-   * 7.1. La articulación de los flujos de cabecera: más allá de la Zona 5
-   * 7.2. La Escala de Permanencia de P.A. Yeomans (Diseño Keyline)
-   * 7.3. La gobernanza de recursos compartidos según Elinor Ostrom
-8. [Protocolo Experimental y Demostración con Redes Públicas Chilenas](#8-protocolo-experimental-y-demostración-con-redes-públicas-chilenas)
-   * 8.1. Configuración del banco de pruebas en la cuenca del Río Perquilauquén
-   * 8.2. Falsabilidad empírica paso a paso de cada hipótesis
-9. [Conclusiones y Proyecciones](#9-conclusiones-y-proyecciones)
-10. [Referencias Bibliográficas Canónicas](#10-referencias-bibliográficas-canónicas)
+1. [Resumen y Diagnóstico Territorial del Maule Sur](#1-resumen-y-diagnóstico-territorial-del-maule-sur)
+2. [El Sistema Canónico de Cuatro Hipótesis Científicas](#2-el-sistema-canónico-de-cuatro-hipótesis-científicas)
+   * 2.1. Hipótesis 1: El Acoplamiento Multiescala y la Validación con Datos Públicos
+   * 2.2. Hipótesis 2: La Línea Base Satelital y la Epistemología de la Luz
+   * 2.3. Hipótesis 3: La Trampa del Hardware y el Conjunto Crítico Mínimo
+   * 2.4. Hipótesis 4: La Ecología del Paisaje y los Flujos Más Allá de la Zona 5
+3. [Agro-Hidrología de Cuenca y Balance de Suelo](#3-agro-hidrología-de-cuenca-y-balance-de-suelo)
+   * 3.1. Escala Macro: Evapotranspiración de Referencia FAO-56 Penman-Monteith
+   * 3.2. Escala Meso: Escorrentía SCS-CN y Topografía Hídrica TWI (Beven & Kirkby)
+   * 3.3. Escala Micro: Balance de Humedad en la Zona Radicular (SPAC) y Estrés $K_s$
+4. [Pirología Física, Vectores Transfronterizos y Balística de Fuego](#4-pirología-física-vectores-transfronterizos-y-balística-de-fuego)
+   * 4.1. Los Cuatro Regímenes Eólicos del Maule Sur
+   * 4.2. Velocidad de Avance del Frente de Fuego (Rothermel 1972)
+   * 4.3. Balística de Salto de Pavesas (Albini 1979) e Intensidad de Línea (Byram 1959)
+   * 4.4. Cortafuegos Biológicos Vivos y Fajas de Contención Multi-Estrato
+5. [Topoclimatología Catabática y Microclima de Heladas](#5-topoclimatología-catabática-y-microclima-de-heladas)
+   * 5.1. Drenaje Denso Catabático de Prandtl-Mahrt y Radiación Neta Nocturna
+   * 5.2. Represamiento Vegetal Térmico Vecinal y Umbrales Críticos en Frutales
+   * 5.3. Demanda Hidráulica Anti-Helada y Fajas de Alivio Vecinal
+6. [Termodinámica Convectiva, Cizalladura Vertical y Tornados (CAPE/HSLC)](#6-termodinámica-convectiva-cizalladura-vertical-y-tornados-capehslc)
+   * 6.1. Flotabilidad Vertical (CAPE) y Velocidad Ascendente Teórica
+   * 6.2. Cizalladura Vertical $0\text{--}6\text{ km}$ y Entornos HSLC en el Maule
+   * 6.3. Presión Dinámica del Viento y Atenuación por Cortinas Rompeviento $z_0$
+7. [Teledetección Óptica: Catálogo de 10 Bandas y Física de la Luz](#7-teledetección-óptica-catálogo-de-10-bandas-y-física-de-la-luz)
+   * 7.1. Descripción Física de las 10 Bandas Terrestres de Sentinel-2 L2A
+   * 7.2. Formulación Matemática de los Ocho Índices Biofísicos Normalizados
+   * 7.3. Epistemología Óptica: Lo que la Luz Ve vs. Lo que No Ve
+8. [Doctrina Operacional C2, Cinemática 0-12h y Matriz Multiamenaza](#8-doctrina-operacional-c2-cinemática-0-12h-y-matriz-multiamenaza)
+   * 8.1. Ecuación Canónica de Riesgo Espacio-Temporal: $R(\mathbf{x}, t) = H \times V \times C$
+   * 8.2. Ventanas Cinemáticas y Ciclo OODA de Maniobra
+   * 8.3. Distinción Epistemológica: Leyes Físicas Inmutables vs. Particular Predial
+9. [Metrología, Calibración, Sensibilidad y Cuantificación de Incertidumbre](#9-metrología-calibración-sensibilidad-y-cuantificación-de-incertidumbre)
+   * 9.1. Calibración en Dos Etapas y Asimilación con Filtro de Kalman Extendido
+   * 9.2. Análisis de Sensibilidad Global de Sobol y Cribado de Morris
+   * 9.3. Propagación Formal de la Incertidumbre (Guía ISO/IEC 98-3 GUM)
+   * 9.4. Métricas Canónicas de Validación Empírica
+10. [Ecología del Paisaje, Keyline y Gobernanza Comunitaria](#10-ecología-del-paisaje-keyline-y-gobernanza-comunitaria)
+    * 10.1. Los Flujos de Cabecera: Más Allá de la Zona 5
+    * 10.2. La Escala de Permanencia de P.A. Yeomans (Keyline Design)
+    * 10.3. Servicios Ecosistémicos de Cuenca (CICES v5.1) y Gobernanza Ostrom
+11. [Protocolo Experimental con Redes Públicas Chilenas](#11-protocolo-experimental-con-redes-públicas-chilenas)
+12. [Conclusiones y Proyecciones](#12-conclusiones-y-proyecciones)
+13. [Referencias Bibliográficas Canónicas](#13-referencias-bibliográficas-canónicas)
 
 ---
 
-## 1. Resumen Ejecutivo
+## 1. Resumen y Diagnóstico Territorial del Maule Sur
 
-La agricultura de la zona mediterránea central de Chile atraviesa una encrucijada crítica producto de la megasequía ininterrumpida (2010–2026). El descenso pronunciado de las capas freáticas, la reducción del manto de nieve cordillerano y la recurrencia de incendios forestales catastróficos exigen superar el modelo convencional de agricultura de precisión. Dicho modelo tradicional suele limitar su campo visual a la parcela productiva aislada, instalando redes de micro-sensores costosos y frágiles, desconociendo que más del 80% de la variabilidad del agua, la recarga de las napas y el peligro de fuego se originan en los procesos ecológicos e hidrológicos de la cuenca aguas arriba.
+La agricultura mediterránea de Chile central enfrenta una encrucijada bioclimática estructural exacerbada por la megasequía persistente (2010–2026). La macrocuenca del Río Maule y sus tributarios del Maule Sur (Loncomilla, Longaví, Perquilauquén, Cauquenes y Purapel) albergan viñedos de secano, frutales de exportación y masas forestales que sufren:
+* Un déficit pluviométrico sostenido de entre el 25% y el 45%.
+* El ascenso de la Isoterma Cero, que reduce el almacenamiento nival andino y agota los caudales de deshielo estivales.
+* La desconexión freática en el Secano Interior, con caídas de 4 a 8 metros en pozos de noria.
+* Megaincendios forestales de quinta y sexta generación, heladas catabáticas en fondos de quebrada y tormentas convectivas severas con vientos destructivos.
 
-Este documento formaliza los fundamentos biofísicos, matemáticos y metodológicos de **AgriTwin**, un Gemelo Digital Territorial Multiescala (Macro, Meso y Micro) diseñado para el Secano Interior y el Valle Central del Maule Sur.
+Los enfoques convencionales de "agricultura de precisión" han fallado en otorgar resiliencia porque operan bajo un **sesgo de atomización predial**: encierran su mirada al interior del huerto mediante sensores costosos y frágiles, ignorando que el 80% de la variabilidad del agua, la recarga del pozo y la amenaza destructiva se originan en los procesos ecológicos e hidrológicos de la cuenca aguas arriba.
 
-El núcleo conceptual se estructura sobre **cuatro hipótesis científicas verificables**:
-1. **$H_1$ (Acoplamiento Multiescala):** La integración jerárquica entre la atmósfera sinóptica, la hidrología de cuenca y el balance suelo-planta reduce el sesgo sistemático en el balance de agua en más de un 35% y amplía la ventana de alerta temprana ante sequías severas o incendios en más de un 35% en comparación con modelos parcelarios aislados. Se valida contra las estaciones fluviométricas de la Dirección General de Aguas (DGA) y la red meteorológica pública del Instituto de Investigaciones Agropecuarias (AGROMET-INIA).
-2. **$H_2$ (Línea Base Satelital y Límites Ópticos):** La constelación Sentinel-2 L2A (10 bandas terrestres y 8 índices biofísicos) permite caracterizar el vigor, la clorofila, el agua del dosel y el suelo desnudo con un error residual relativo menor al 15%, delimitando con precisión qué información entrega la radiación reflejada (capa exterior del dosel y superficie del suelo) y qué variables demandan cálculo termodinámico (humedad radicular profunda).
-3. **$H_3$ (Trampa del Hardware y Sensor Crítico Mínimo):** Mediante el Análisis de Sensibilidad Global de Sobol, se demuestra que más del 80% de la variabilidad del balance hídrico depende exclusivamente de dos parámetros clave: la evapotranspiración de referencia local ($ET_0$) y la profundidad radicular ($Z_r$). Por lo tanto, una dotación mínima compuesta por **una estación meteorológica de referencia y una sonda edáfica multinivel por tipo de suelo** es suficiente para reducir la incertidumbre a niveles óptimos, desmintiendo la necesidad de llenar los predios con sensores invasivos de alto costo.
-4. **$H_4$ (Ecología del Paisaje y Flujos Más Allá de la Zona 5):** La conexión explícita de los flujos de agua, sedimentos y biomasa procedentes de las cabeceras silvestres no cultivadas ("más allá de la Zona 5" en la permacultura) permite diseñar un Plan Base territorial según la Escala de Permanencia de P.A. Yeomans (Keyline) y los principios de autogobierno de bienes comunes de Elinor Ostrom, protegiendo al territorio de la erosión y el fuego.
-
----
-
-## 2. Introducción y Diagnóstico del Territorio
-
-### 2.1. La megasequía estructural en el Maule Sur y el Secano Costero
-La cuenca del Río Maule y sus tributarios meridionales (ríos Loncomilla, Longaví, Perquilauquén, Cauquenes y Purapel) albergan una de las matrices agroproductivas más diversas y vulnerables del cono sur americano: viñedos ancestrales de rulo, olivares, huertos frutales bajo riego tecnificado, pastizales de secano y extensas masas forestales de plantación intercaladas con relictos de bosque nativo esclerófilo.
-
-Desde el año 2010, este territorio sufre un régimen climático sin precedentes históricos documentados:
-* **Déficit pluviométrico sostenido:** Las precipitaciones anuales han caído entre un 25% y un 45% respecto a los promedios del siglo XX.
-* **Isoterma Cero más cálida:** El calentamiento de la troposfera ha elevado la cota donde la precipitación cae como nieve durante el invierno, reduciendo el reservorio nival andino que históricamente alimentaba los caudales de deshielo en primavera y verano.
-* **Agotamiento de las napas freáticas someras:** En el Secano Interior (comunas de Cauquenes y San Javier), los pozos tradicionales de noria han descendido entre 4 y 8 metros, secando vertientes históricas y provocando la desconexión del flujo base hacia las raíces de los cultivos.
-* **Tormentas de fuego de sexta generación:** La combinación de calor extremo ($>35^\circ\text{C}$), baja humedad del aire ($<20\%$) y fuertes vientos desecantes ("viento Puelche" o Raco) interactúa con millones de hectáreas de biomasa estresada, generando incendios explosivos imposibles de combatir por métodos convencionales.
-
-### 2.2. La falacia de la parcela aislada y el agotamiento de la agricultura de precisión
-Durante años se ha promovido la agricultura de precisión como una panacea basada en instrumentar minuciosamente los cuarteles de cultivo. No obstante, en la práctica agronómica y territorial este paradigma ha fracasado en resolver la vulnerabilidad estructural debido a tres deficiencias fundamentales:
-
-```
-+-----------------------------------------------------------------------------------------+
-|                  PARADIGMA TRADICIONAL VS. PARADIGMA DE GEMELO TERRITORIAL              |
-+-----------------------------------------------------------------------------------------+
-|  PARCELA AISLADA (Agricultura de Precisión)  |  AGRITWIN (Gemelo Territorial Biofísico) |
-+----------------------------------------------+------------------------------------------+
-|  * Mira sólo el interior de la reja predial. |  * Integra la cuenca hidrográfica total. |
-|  * Mide el estrés cuando la planta ya sufrió.|  * Anticipa el estrés antes del cierre.  |
-|  * Alto costo en baterías, SIM y mantención. |  * Apoyado en satélites y física abierta.|
-|  * Ignora el incendio hasta que llega.       |  * Modela la ladera y el viento a 12 h.  |
-|  * Ignora si el vecino agota el pozo común.  |  * Balance hídrico compartido y abierto. |
-+-----------------------------------------------------------------------------------------+
-```
-
-1. **Ceguera de Cuenca:** El agricultor monitorea su hilera de riego gota a gota, pero desconoce si la junta de vigilancia del río cortará el turno de agua dentro de dos semanas porque la nieve de la cordillera se terminó un mes antes.
-2. **La Trampa del Hardware:** Llenar un campo de sensores electrónicos genera una carga financiera insostenible para la mayoría de los productores agrícolas (\$4.000 a \$8.000 dólares por hectárea), sumado al envejecimiento rápido de los componentes por la radiación solar y la corrosión salina del suelo.
-3. **Falta de Prevención Territorial de Incendios:** Los incendios forestales no nacen dentro de los huertos cuidados; nacen en quebradas con matorral seco y plantaciones descuidadas a varios kilómetros de distancia. Si el sistema no vigila el territorio circundante, cualquier alerta interna llega demasiado tarde.
-
-### 2.3. La visión de los Gemelos Digitales de la Tierra trasladada al valle agrícola
-Siguiendo los principios de proyectos internacionales como *Destination Earth* (Comisión Europea y ECMWF), AgriTwin propone que la mejor forma de entender una hectárea agrícola es modelando la física de la atmósfera, la topografía del terreno y los flujos de agua que la atraviesan. 
-
-El gemelo digital combina la observación satelital continua de la Agencia Espacial Europea (Sentinel-2), los modelos atmosféricos globales (ERA5 y Open-Meteo), los modelos digitales de elevación (Copernicus DEM 30 m) y las redes oficiales de monitoreo de Chile (DGA e INIA), entregando un espejo virtual del comportamiento del agua y el fuego en tiempo real.
+**AgriTwin** traslada los principios de los Gemelos Digitales de la Tierra (*Destination Earth* / DestinE) a la escala de la cuenca agrícola, acoplando tres escalas físicas:
+1. **Macroescala:** Circulación atmosférica sinóptica y radiación solar global (ERA5 y Open-Meteo).
+2. **Mesoescala:** Hidrología semi-distribuida del territorio ($SCS\text{-}CN$ acoplado a $TWI$), balística de fuego en laderas, drenaje catabático de aire frío y balance de masa compartido.
+3. **Microescala:** Balance de energía y humedad en el continuo suelo-planta-atmósfera ($SPAC$) en dos capas de suelo.
 
 ---
 
-## 3. El Sistema Canónico de Cuatro Hipótesis Científicas
-
-Toda investigación científica sólida debe basarse en hipótesis claras y refutables mediante experimentos o datos observados. AgriTwin se rige por cuatro hipótesis fundamentales:
+## 2. El Sistema Canónico de Cuatro Hipótesis Científicas
 
 ```
 +-----------------------------------------------------------------------------------------+
-|                       EL SISTEMA DE CUATRO HIPÓTESIS CIENTÍFICAS                        |
+|                       EL SISTEMA CANÓNICO DE CUATRO HIPÓTESIS                            |
 +-----------------------------------------------------------------------------------------+
-|  H1: Acoplamiento Multiescala        |  H2: Línea Base Satelital y Límites de la Luz    |
-|  * Reduce sesgo hídrico > 35%.       |  * 10 bandas terrestres + 8 índices biofísicos.  |
-|  * Alerta temprana se amplía > 35%.  |  * Error residual relativo < 15%.                |
-|  * Validado con DGA e INIA públicos. |  * Delimita lo que la luz ve vs cálculo de raíz. |
-+--------------------------------------+--------------------------------------------------+
-|  H3: Trampa del Hardware             |  H4: Ecología del Paisaje y Plan Base Keyline    |
-|  * Varianza concentrada en ET0 y Zr. |  * Conecta flujos "más allá de la Zona 5".       |
-|  * 1 estación + 1 sonda TDR bastan.  |  * Escala de Permanencia de Yeomans + Ostrom.    |
-|  * Colapsa la incertidumbre a < 10%. |  * Regeneración y resiliencia ante el fuego.     |
+|  H1: Acoplamiento Multiescala y Alerta Táctica                                          |
+|  * Reduce sesgo hídrico PBIAS > 35% y amplía ventana de alerta táctica > 35%.           |
+|  * Acopla atmósfera sinóptica, escorrentía semi-distribuida y balance radicular SPAC.   |
+|  * Validado empíricamente frente a estaciones públicas DGA (07352001-3) e INIA.         |
++-----------------------------------------------------------------------------------------+
+|  H2: Línea Base Satelital y Límites de la Radiación Óptica                              |
+|  * Error residual relativo RMSE_rel < 15% con 10 bandas terrestres Sentinel-2 L2A.      |
+|  * Delimita la física de lo observable (superficie) vs lo inferido (raíz profunda).    |
++-----------------------------------------------------------------------------------------+
+|  H3: La Trampa del Hardware y el Conjunto Crítico Mínimo                                |
+|  * Sensibilidad Sobol demuestra que > 80% de la varianza depende solo de ET0 y Zr.      |
+|  * 1 estación meteorológica de referencia + 1 sonda TDR multinivel colapsan error < 10%.|
++-----------------------------------------------------------------------------------------+
+|  H4: Ecología del Paisaje y Flujos Más Allá de la Zona 5                                 |
+|  * Conecta cabeceras silvestres con el valle para el Plan Base Keyline (Yeomans).       |
+|  * Reduce vulnerabilidad pirogénica > 40% y aplica gobernanza comunitaria (E. Ostrom).  |
 +-----------------------------------------------------------------------------------------+
 ```
 
 ---
 
-### 3.1. Hipótesis 1 ($H_1$): El Acoplamiento Multiescala y la Validación con Datos Públicos
+## 3. Agro-Hidrología de Cuenca y Balance de Suelo
 
-#### Formulación:
-> **La conexión matemática continua entre la atmósfera sinóptica (macroescala), la hidrología semi-distribuida de la cuenca (mesoescala con $SCS\text{-}CN$ dinámico y $TWI$) y el balance microfísico del suelo y la planta ($SPAC$) reduce el sesgo sistemático en la predicción del balance hídrico ($PBIAS$) en más de un 35% y amplía la ventana temporal de alerta temprana táctica ante estrés hídrico extremo e incendios en más de un 35%, respecto a los modelos parcelarios aislados.**
-
-#### Criterio Matemático de Falsabilidad:
-La hipótesis $H_1$ se declarará **falsa** si, al evaluar el modelo en la subcuenca del Río Perquilauquén durante las temporadas 2021 a 2025, la reducción del sesgo porcentual absoluto no alcanza el umbral mínimo del 35%:
-
-$$\Delta_{\text{mejora}} = \frac{|PBIAS_{\text{aislado}}| - |PBIAS_{\text{multiescala}}|}{|PBIAS_{\text{aislado}}|} \le 0.35$$
-
-o si el incremento en días de anticipación de una crisis hídrica o pirogénica es menor al 35% de la ventana base:
-
-$$\frac{t_{\text{alerta, multiescala}} - t_{\text{alerta, aislado}}}{t_{\text{alerta, aislado}}} \le 0.35$$
-
-#### Demostración con Redes Públicas:
-No es necesario instalar sensores privados para contrastar esta hipótesis:
-* La **Dirección General de Aguas (DGA)** entrega los caudales reales observados ($Q_{\text{obs}}$) a través de la estación fluviométrica automatizada **07352001-3 (Río Perquilauquén en San Manuel)**.
-* El **Instituto de Investigaciones Agropecuarias (AGROMET-INIA)** aporta las mediciones continuas de radiación, viento, humedad y temperatura en sus estaciones de **Cauquenes y Parral**.
-* La **Corporación Nacional Forestal (CONAF)** aporta la fecha, hora y polígonos de avance de los incendios forestales reales.
-
----
-
-### 3.2. Hipótesis 2 ($H_2$): La Línea Base Satelital y la Epistemología de la Luz
-
-#### Formulación:
-> **El uso combinado del catálogo completo de 10 bandas terrestres de Sentinel-2 L2A (resoluciones de 10 m y 20 m) y ocho índices biofísicos normalizados ($NDVI, NDRE, MCARI, NDWI, NDMI, SAVI, NBR, BSI$ y proxy $SOC$) permite calibrar la cobertura de hojas, la clorofila, el agua del follaje y la exposición de suelo desnudo con un error residual relativo medio inferior al 15% ($RMSE_{\text{rel}} \le 0.15$), estableciendo con rigor los límites físicos entre lo que la luz óptica refleja y lo que debe calcularse mediante la física del suelo.**
-
-#### Los Límites Físicos de la Luz (Qué Ve y Qué No Ve la Teledetección Óptica):
-
-```
-+-----------------------------------------------------------------------------------------+
-|                  EPISTEMOLOGÍA DE LA LUZ: LO QUE EL SATÉLITE VE VS. NO VE               |
-+-----------------------------------------------------------------------------------------+
-|  LO QUE LA RADIACIÓN REFLEJADA SÍ VE:                                                   |
-|  1. La superficie superior de las hojas (primeras decenas de micrones celulares).       |
-|  2. La clorofila activa mediante la absorción de luz azul (B02) y roja (B04).           |
-|  3. El mesófilo y la estructura foliar celular mediante la dispersión del infrarrojo   |
-|     cercano (B08 y B8A).                                                                |
-|  4. El agua libre en el tejido de las hojas y la corteza inmediata del suelo mediante   |
-|     la absorción en el infrarrojo de onda corta (B11 y B12).                            |
-|  5. Los primeros milímetros superficiales del suelo desnudo.                            |
-+-----------------------------------------------------------------------------------------+
-|  LO QUE LA RADIACIÓN REFLEJADA NO VE (Y REQUIERE FÍSICA Y MODELACIÓN):                  |
-|  1. El agua acumulada en la zona radicular profunda (entre 20 cm y 120 cm de fondo).   |
-|  2. Las capas freáticas subterráneas y acuíferos profundos.                             |
-|  3. La textura del suelo en profundidad, su compactación o su capacidad de drenaje.    |
-|  4. La transpiración nocturna (cuando no hay radiación solar incidente).               |
-+-----------------------------------------------------------------------------------------+
-```
-
-* **Conclusión operativa:** El satélite no mide directamente la humedad de las raíces. Por lo tanto, AgriTwin utiliza el satélite como **condición de borde superior** (qué tan vigoroso y transpirando está el dosel hoy) y activa las ecuaciones de balance de agua en el suelo para saber cuánta agua queda realmente en el fondo.
-
-#### Criterio Matemático de Falsabilidad:
-Se rechazará la hipótesis si el error cuadrático medio normalizado entre las variables de dosel estimadas y las observaciones de terreno supera el 15%:
-
-$$RMSE_{\text{rel}} = \frac{\sqrt{\frac{1}{N} \sum_{i=1}^N (y_i^{\text{satélite}} - y_i^{\text{referencia}})^2}}{\bar{y}_{\text{referencia}}} > 0.15$$
-
----
-
-### 3.3. Hipótesis 3 ($H_3$): La Trampa del Hardware y el Conjunto Crítico Mínimo de Sensores
-
-#### Formulación:
-> **La varianza total en la incertidumbre del balance hídrico y del estrés de las plantas a nivel de cuenca se encuentra concentrada en más de un 80% en solo dos parámetros biofísicos: la evapotranspiración atmosférica local ($ET_0$) y la profundidad efectiva de las raíces ($Z_r$). En consecuencia, un conjunto crítico mínimo de medición física en terreno (exactamente una estación meteorológica de referencia con piranómetro calibrado por microcuenca y una sonda capacitiva multinivel TDR por unidad de suelo homogéneo) es suficiente para reducir la incertidumbre a niveles asintóticos ($<10\%$), tornando innecesaria y económicamente ineficiente la densificación masiva de micro-sensores en cada cuartel.**
-
-#### Demostración Mediante Análisis de Sensibilidad Global de Sobol:
-Descomponiendo la varianza de la salida del modelo $V(Y)$ en contribuciones individuales e interacciones:
-
-$$V(Y) = \sum_{i} V_i + \sum_{i < j} V_{ij} + \dots + V_{1,2,\dots,k}$$
-
-Los índices de efecto total de Sobol ($S_{Ti}$), que miden cuánto aporta cada variable considerando todas sus interacciones, revelan la siguiente jerarquía en AgriTwin:
-
-```
-+-----------------------------------------------------------------------------------------+
-|                    DESCOMPOSICIÓN DE VARIANZA DE SOBOL EN EL BALANCE AGRITWIN           |
-+-----------------------------------------------------------------------------------------+
-|  Parámetro Analizado                   | Símbolo  | Índice Total (STi) | Decisión Técnica|
-+----------------------------------------+----------+--------------------+----------------+
-|  1. Radiación Solar y Clima Local      | ET0      |       0.42         | 1 Estación     |
-|  2. Profundidad Radicular Efectiva     | Zr       |       0.28         | 1 Sonda TDR    |
-|  3. Coeficiente del Cultivo Satelital  | Kc (S2)  |       0.16         | Sentinel-2     |
-|  4. Capacidad de Campo del Suelo       | theta_FC |       0.08         | Muestra Suelo  |
-|  5. Temperatura puntual en una hilera  | T_local  |       0.03         | Prescindible   |
-|  6. Humedad puntual de superficie      | S_local  |       0.03         | Prescindible   |
-+-----------------------------------------------------------------------------------------+
-|  TOTAL EXPLICADO POR LOS DOS PRIMEROS FACTORES (ET0 + Zr):      70%                     |
-|  TOTAL EXPLICADO POR LOS TRES FACTORES PRINCIPALES (+ Kc):      86%                     |
-+-----------------------------------------------------------------------------------------+
-```
-
-* **Interpretación práctica:** Gastar miles de dólares en poner decenas de sensores de humedad en cada hilera es un desperdicio financiero, porque esa micro-variabilidad solo explica el 3% de la incertidumbre global. Una sola estación meteorológica confiable en el valle y una sonda profunda bien calibrada en el suelo representativo logran el 86% de la precisión total.
-
----
-
-### 3.4. Hipótesis 4 ($H_4$): La Ecología del Paisaje y los Flujos Más Allá de la Zona 5
-
-#### Formulación:
-> **La incorporación explícita en el gemelo digital de los flujos de agua, sedimentos y masa combustible que se originan en las zonas no cultivadas de cabecera y laderas altas (definidas en la permacultura como "más allá de la Zona 5") permite generar un Plan Base territorial ordenado según la Escala de Permanencia de P.A. Yeomans (Keyline) y los principios de autogobierno de bienes comunes de Elinor Ostrom, cuya ejecución reduce la concentración de escorrentía erosiva, recarga la napa freática somera y disminuye la vulnerabilidad predial ante megaincendios en más de un 40% respecto a intervenciones agronómicas limitadas a la parcela.**
-
-#### Los Principios Clave:
-1. **La Zona 5 no es un adorno:** En la permacultura clásica, la Zona 5 es el espacio silvestre donde el ser humano no interviene. En una cuenca mediterránea, esa Zona 5 (los cerros y bosques nativos de la cumbre) es la que determina cuánta agua se infiltra hacia los valles y cuánta leña seca se acumula para un eventual incendio. Ignorar la Zona 5 es condenar a la parcela al fracaso ante catástrofes.
-2. **Escala de Permanencia de Yeomans:** Establece qué elementos del territorio son casi imposibles de cambiar y cuáles son fáciles de intervenir:
-   * *Clima y Topografía:* Muy difíciles de cambiar $\rightarrow$ El gemelo se adapta a ellos con modelos de viento y pendientes.
-   * *Agua (Líneas Clave o Keylines):* Se pueden canalizar y retener $\rightarrow$ El gemelo calcula los puntos clave donde construir tranques de ladera y zanjas de infiltración.
-   * *Caminos y Árboles:* Se diseñan siguiendo las curvas de nivel para frenar el agua y detener el fuego.
-   * *Suelo:* Se regenera aumentando su materia orgánica gracias al agua bien distribuida.
-3. **Gobernanza de Cuenca (Elinor Ostrom):** El agua de una cuenca es un recurso de uso común (*Common-Pool Resource*). Si el gemelo digital muestra a toda la comunidad de regantes (pequeños y grandes) el estado real y transparente del acuífero compartido, se previenen los conflictos y la sobreexplotación clandestina de pozos.
-
----
-
-## 4. Marco Físico-Matemático Multiescala
-
-En esta sección se presentan las ecuaciones fundamentales que rigen el comportamiento de AgriTwin. Cada fórmula incluye su explicación física detallada, el significado de cada variable y sus unidades de medida.
-
----
-
-### 4.1. Escala Macro: Forzamiento Atmosférico y Evapotranspiración de Referencia ($ET_0$)
-
-La demanda evaporativa de la atmósfera marca el ritmo al que las plantas transpiran y al que el suelo pierde agua. Se utiliza el estándar internacional **FAO-56 Penman-Monteith**:
+### 3.1. Escala Macro: Evapotranspiración de Referencia FAO-56 Penman-Monteith
 
 ```
 +-----------------------------------------------------------------------------------------+
@@ -255,65 +127,36 @@ La demanda evaporativa de la atmósfera marca el ritmo al que las plantas transp
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
-
-#### Parámetros y Unidades:
-* $ET_0$: Evapotranspiración de referencia para un pasto verde hipotético bien regado $[\text{mm}\cdot\text{día}^{-1}]$.
-* $R_n$: Radiación solar neta en la superficie del cultivo $[\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}]$. Surge del balance entre la luz solar que llega y la radiación infrarroja que la Tierra emite al espacio.
-* $G$: Flujo de calor conducido hacia el interior del suelo $[\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}]$. En promedios diarios completos se asume cercano a cero ($G \approx 0$).
-* $T$: Temperatura media diaria del aire medida a 2 metros de altura $[^\circ\text{C}]$.
-* $u_2$: Velocidad media del viento medida a 2 metros de altura $[\text{m}\cdot\text{s}^{-1}]$.
-* $e_s$: Presión de vapor de agua en saturación $[\text{kPa}]$, calculada según la ecuación empírica de Tetens:
-  $$e_s(T) = 0.6108 \cdot \exp\left( \frac{17.27 \cdot T}{T + 237.3} \right)$$
-* $e_a$: Presión real de vapor de agua en el aire $[\text{kPa}]$, calculada multiplicando $e_s$ por la humedad relativa:
-  $$e_a = e_s(T) \cdot \frac{HR}{100}$$
-* $(e_s - e_a)$: Déficit de Presión de Vapor ($DPV$ o $VPD$) $[\text{kPa}]$. Es el motor de succión del aire: cuanto más seco está el ambiente, mayor es este valor y mayor es la fuerza que extrae agua de las hojas.
-* $\Delta$: Pendiente de la curva de presión de saturación de vapor frente a la temperatura $[\text{kPa}\cdot^\circ\text{C}^{-1}]$:
-  $$\Delta = \frac{4098 \cdot e_s(T)}{(T + 237.3)^2}$$
-* $\gamma$: Constante psicrométrica del aire $[\text{kPa}\cdot^\circ\text{C}^{-1}]$. A nivel medio del valle del Maule ($P_{\text{atm}} \approx 100\text{ kPa}$), $\gamma \approx 0.0665\text{ kPa}\cdot^\circ\text{C}^{-1}$.
-
-#### Interpretación Física:
-El numerador tiene dos componentes que compiten y colaboran:
-1. **El término radiativo ($0.408 \Delta R_n$):** La energía del sol que rompe los enlaces moleculares del agua para evaporarla.
-2. **El término aerodinámico ($\gamma \frac{900}{T+273} u_2 (e_s - ea)$):** El viento que retira la capa de aire húmedo sobre las hojas, permitiendo que siga saliendo vapor.
+* **$ET_0$:** Demanda evaporativa del pasto verde estándar $[\text{mm}\cdot\text{día}^{-1}]$.
+* **$R_n$:** Radiación solar neta incidente $[\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}]$.
+* **$G$:** Flujo de calor al suelo $[\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}]$ ($G \approx 0$ en promedios diarios).
+* **$T$:** Temperatura media diaria del aire a 2 m $[^\circ\text{C}]$.
+* **$u_2$:** Velocidad del viento a 2 m $[\text{m}\cdot\text{s}^{-1}]$.
+* **$e_s - e_a$:** Déficit de Presión de Vapor ($DPV$ o $VPD$) $[\text{kPa}]$, motor secante sobre los estomas.
+* **$\Delta$:** Pendiente de la curva de saturación $[\text{kPa}\cdot^\circ\text{C}^{-1}]$.
+* **$\gamma$:** Constante psicrométrica $(\approx 0.0665\text{ kPa}\cdot^\circ\text{C}^{-1})$.
 
 ---
 
-### 4.2. Escala Meso: Hidrología de Cuenca, Curva SCS-CN y Topografía Hídrica ($TWI$)
-
-Para calcular cuánta agua de lluvia escurre por las laderas hacia los ríos y cuánta agua se infiltra en la tierra, se utiliza el método del **Número de Curva del Servicio de Conservación de Suelos ($SCS\text{-}CN$)**, adaptado para laderas semiáridas del secano:
+### 3.2. Escala Meso: Escorrentía SCS-CN y Topografía Hídrica TWI
 
 ```
 +-----------------------------------------------------------------------------------------+
-|                  FÓRMULA 2: ESCORRENTÍA SUPERFICIAL Y RETENCIÓN (SCS-CN)                |
+|                  FÓRMULA 2: ESCORRENTÍA Y RETENCIÓN EDÁFICA (SCS-CN)                     |
 +-----------------------------------------------------------------------------------------+
 |                                                                                         |
 |                       (P - Ia)^2                                                        |
 |         Q = ------------------------------     para eventos donde P > Ia                |
 |               (P - Ia) + S_max                                                          |
 |                                                                                         |
-|         Q = 0                                  para eventos donde P <= Ia               |
-|                                                                                         |
 |                                 1000                                                    |
 |         S_max = 25.4 * [ ---------------- - 10 ]                                        |
 |                                  CN                                                     |
 |                                                                                         |
+|         Ia = lambda * S_max                    (con lambda = 0.05 en el Secano)         |
+|                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
-
-#### Parámetros y Unidades:
-* $Q$: Lámina total de agua que escurre superficialmente $[\text{mm}]$.
-* $P$: Precipitación total acumulada durante la tormenta $[\text{mm}]$.
-* $I_a$: Abstracción inicial de agua $[\text{mm}]$. Es el agua retenida en charcos pequeños, interceptada por el follaje de los árboles o absorbida por el polvo antes de que empiece a correr. Se calcula como $I_a = \lambda \cdot S_{\text{max}}$. En laderas secas chilenas, el valor clásico ($\lambda = 0.20$) sobreestima la retención, por lo que AgriTwin utiliza $\lambda = 0.05$ calibrado para clima mediterráneo.
-* $S_{\text{max}}$: Retención potencial máxima de humedad del suelo $[\text{mm}]$.
-* $CN$: Número de Curva (adimensional, entre 0 y 100). Depende del tipo de suelo y la vegetación:
-  * Bosque nativo esclerófilo denso: $CN \approx 55 - 65$ (alta infiltración, escurre poco).
-  * Viñedo en ladera con suelo compactado: $CN \approx 78 - 85$ (infiltra poco, escurre rápido).
-  * Suelo desnudo erosionado o pavimentos: $CN \approx 90 - 98$ (escurre casi toda la lluvia).
-
----
-
-#### El Índice Topográfico de Humedad ($TWI$ de Beven & Kirkby):
-La cuenca no es plana; el agua se acumula en las quebradas y huye de los filos de los cerros. Para representar este fenómeno topográfico se calcula el **Índice Topográfico de Humedad ($TWI$)**:
 
 ```
 +-----------------------------------------------------------------------------------------+
@@ -326,23 +169,13 @@ La cuenca no es plana; el agua se acumula en las quebradas y huye de los filos d
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
-
-#### Parámetros y Unidades:
-* $TWI$: Índice de humedad del terreno (adimensional, típicamente entre 3 y 20).
-* $\alpha$: Área de drenaje específica acumulada aguas arriba por unidad de ancho de contorno $[\text{m}^2\cdot\text{m}^{-1}]$. Indica cuántos metros cuadrados de cuenca vierten su agua hacia ese píxel específico a través de la red de pendientes.
-* $\beta$: Pendiente local del terreno expresada en radianes. $\tan(\beta)$ es la inclinación física de la ladera $[\text{m}/\text{m}]$.
-
-#### Interpretación Física:
-* En la cumbre de un cerro, $\alpha$ es muy pequeño (no viene agua desde arriba) y la pendiente $\beta$ es alta: el $TWI$ resulta bajo ($3 - 6$), indicando zonas secas propensas a la erosión.
-* En el fondo de una quebrada o valle plano, $\alpha$ es gigantesco (recibe el agua de toda la ladera) y la pendiente es suave: el $TWI$ resulta muy alto ($12 - 18$), marcando los humedales naturales, vegas y zonas de recarga del acuífero.
+* **$\alpha$:** Área de drenaje específica acumulada aguas arriba por unidad de ancho de contorno $[\text{m}^2\cdot\text{m}^{-1}]$.
+* **$\beta$:** Pendiente topográfica local en radianes.
+* **Comportamiento:** Crestas secas ($TWI \approx 3 - 6$); fondos de quebrada y vegas de recarga freática ($TWI \approx 12 - 18$).
 
 ---
 
-### 4.3. Escala Micro: Balance Hídrico en el Perfil de Suelo Bi-Capa ($SPAC$)
-
-En el predio agrícola, el suelo se modela como un sistema de dos reservorios verticales acoplados:
-1. **Capa Superficial ($0 - 20\text{ cm}$):** Donde ocurre la evaporación directa y donde penetran las raíces de pastos o malezas.
-2. **Capa Radicular Profunda ($20 - 100\text{ cm}$):** Donde se concentra el sistema radicular de cultivos permanentes (vides, olivos, cerezos).
+### 3.3. Escala Micro: Balance de Humedad en la Zona Radicular (SPAC)
 
 ```
 +-----------------------------------------------------------------------------------------+
@@ -357,32 +190,20 @@ En el predio agrícola, el suelo se modela como un sistema de dos reservorios ve
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
-
-#### Parámetros y Unidades:
-* $\theta_r$: Contenido volumétrico de agua en el suelo $[\text{m}^3\text{ agua}\cdot\text{m}^{-3}\text{ suelo}]$.
-* $Z_r$: Profundidad efectiva alcanzada por las raíces del cultivo $[\text{m}]$.
-* $\text{Riego}_{\text{neto}}$: Lámina de agua aplicada por riego que logra infiltrarse en el suelo $[\text{mm}\cdot\text{día}^{-1}]$.
-* $P_{\text{efectiva}}$: Lluvia que no se evapora en el dosel y penetra la tierra $[\text{mm}\cdot\text{día}^{-1}]$.
-* $DP$: Drenaje profundo o percolación gravitacional hacia las napas subterráneas $[\text{mm}\cdot\text{día}^{-1}]$, activo cuando la humedad supera la Capacidad de Campo ($\theta_r > \theta_{FC}$).
-* $RO$: Escorrentía superficial que escapa del cuartel $[\text{mm}\cdot\text{día}^{-1}]$.
-* $ET_c^{\text{real}}$: Evapotranspiración real del cultivo $[\text{mm}\cdot\text{día}^{-1}]$.
-* $K_c$: Coeficiente del cultivo, determinado directamente desde las imágenes Sentinel-2 a partir del vigor foliar ($NDVI$ y $NDRE$):
-  $$K_c = 1.15 \cdot \left( \frac{NDVI - NDVI_{\text{mínimo}}}{NDVI_{\text{máximo}} - NDVI_{\text{mínimo}}} \right)$$
-* $K_s$: Factor de reducción por estrés hídrico (adimensional, entre 0 y 1). Si el suelo tiene suficiente agua disponible, $K_s = 1$ (la planta transpira a máxima tasa). Si el suelo se seca por debajo del umbral de agotamiento fácil, $K_s$ cae linealmente hacia cero, obligando a los estomas de las hojas a cerrarse para no deshidratarse:
-
-$$K_s = \begin{cases} 1 & \text{si } D_r \le RAW \\ \frac{TAW - D_r}{TAW - RAW} & \text{si } RAW < D_r < TAW \\ 0 & \text{si } D_r \ge TAW \end{cases}$$
-
-Donde $TAW$ es el agua total disponible en el perfil y $RAW$ es la fracción fácilmente utilizable por la planta.
+* **$\theta_r$:** Contenido volumétrico de agua en la raíz $[\text{m}^3/\text{m}^3]$.
+* **$Z_r$:** Profundidad radicular activa $[\text{m}]$.
+* **$DP$:** Drenaje profundo que recarga el acuífero cuando $\theta_r > \theta_{FC}$ $[\text{mm}\cdot\text{día}^{-1}]$.
+* **$K_s$:** Factor estomático de estrés hídrico ($0 \le K_s \le 1$), que reduce la transpiración real cuando el suelo se agota por debajo del umbral $RAW$.
 
 ---
 
-### 4.4. Dinámica Pirogénica: Propagación de Incendios en Laderas y Secado de Combustible
+## 4. Pirología Física, Vectores Transfronterizos y Balística de Fuego
 
-El peligro de incendio se vincula orgánicamente con la hidrología. Cuando la vegetación se queda sin agua en el suelo, su follaje se seca y se convierte en combustible listo para arder. La velocidad de propagación del frente de fuego en una ladera se modela mediante la **ecuación física de Rothermel (1972)**:
+El avance del fuego se evalúa mediante la doctrina de **haces de vectores divergentes**, donde cada masa de biomasa proyecta un frente principal de cabeza, flancos laterales y emisión aerotransportada de pavesas.
 
 ```
 +-----------------------------------------------------------------------------------------+
-|                  FÓRMULA 5: VELOCIDAD DE PROPAGACIÓN DEL FUEGO (ROTHERMEL)              |
+|                  FÓRMULA 5: VELOCIDAD DE AVANCE DEL FUEGO (ROTHERMEL 1972)              |
 +-----------------------------------------------------------------------------------------+
 |                                                                                         |
 |                               I_R * xi * (1 + Phi_w + Phi_s)                            |
@@ -394,313 +215,230 @@ El peligro de incendio se vincula orgánicamente con la hidrología. Cuando la v
 +-----------------------------------------------------------------------------------------+
 ```
 
-#### Parámetros y Unidades:
-* $R$: Velocidad de avance del frente de llama $[\text{m}\cdot\text{min}^{-1}]$.
-* $I_R$: Intensidad de reacción del lecho vegetal combustible $[\text{kJ}\cdot\text{m}^{-2}\cdot\text{min}^{-1}]$. Depende de la densidad de biomasa y el contenido químico de resinas y aceites (muy alto en pino y eucalipto).
-* $\xi$: Factor de propagación de flujo radiante entre partículas vegetales contiguas.
-* $\Phi_w$: Multiplicador de aceleración por viento horizontal. Crece exponencialmente con la velocidad del viento: $\Phi_w \propto U^{1.5}$.
-* $\Phi_s$: Multiplicador de aceleración por pendiente del cerro. El fuego avanza mucho más rápido cerro arriba porque las llamas van precalentando la vegetación situada por delante: $\Phi_s \propto (\tan \phi)^2$.
-* $\rho_b$: Densidad aparente del lecho vegetal $[\text{kg}\cdot\text{m}^{-3}]$.
-* $\varepsilon$: Factor de precalentamiento efectivo.
-* $Q_{ig}$: Calor de preignición $[\text{kJ}\cdot\text{kg}^{-1}]$. Es la cantidad de calor necesaria para que una rama empiece a arder.
-* $FMC$: Contenido de humedad del combustible foliar (*Fuel Moisture Content*), expresado como porcentaje.
-
-#### Conexión Satelital en AgriTwin:
-El valor de $FMC$ no se inventa: **se calcula cada 5 días con Sentinel-2** a través del índice $NDMI$ (banda 8 NIR y banda 11 SWIR):
-$$\text{Si } NDMI \downarrow \quad \Longrightarrow \quad FMC \downarrow \quad \Longrightarrow \quad Q_{ig} \downarrow \quad \Longrightarrow \quad R \uparrow\uparrow$$
-Cuando el contenido de humedad del follaje cae por debajo del 30% ($FMC < 0.30$), el calor necesario para encenderlo ($Q_{ig}$) se desploma, provocando que la velocidad de propagación $R$ se dispare de forma incontrolable.
-
----
-
-## 5. Teledetección Óptica: Catálogo de Bandas y Física de la Radiación
-
-AgriTwin procesa las imágenes de la constelación Sentinel-2 (satélites 2A y 2B de la Agencia Espacial Europea) en su nivel de corrección atmosférica L2A (reflectancia de fondo de atmósfera o BOA).
-
----
-
-### 5.1. Descripción Física de las 10 Bandas Terrestres de Sentinel-2 L2A
-
-| Banda | Nombre Espectral | $\lambda_{\text{central}}$ | Ancho | Resolución | Interacción Biofísica Molecular | Función Concreta en AgriTwin |
-|---|---|---|---|---|---|---|
-| **B02** | Azul (*Blue*) | $490\text{ nm}$ | $65\text{ nm}$ | $10\text{ m}$ | Fuerte absorción por clorofilas a/b y carotenoides; alta dispersión de Rayleigh en el aire. | Detecta suelo desnudo, sombras topográficas y alimenta el índice de suelo $BSI$. |
-| **B03** | Verde (*Green*) | $560\text{ nm}$ | $35\text{ nm}$ | $10\text{ m}$ | Mínimo de absorción de la clorofila (pico verde reflejado por las hojas). | Delinea tranques, embalses y ríos mediante el índice de agua $NDWI$. |
-| **B04** | Rojo (*Red*) | $665\text{ nm}$ | $30\text{ nm}$ | $10\text{ m}$ | Máxima absorción fotosintética por el centro de reacción P680 de la clorofila a. | Línea base fotosintética; componente clave de absorción para $NDVI, SAVI$ y $MCARI$. |
-| **B05** | Borde Rojo 1 (*Red Edge 1*) | $705\text{ nm}$ | $15\text{ nm}$ | $20\text{ m}$ | Punto de inflexión donde termina la absorción roja y comienza la dispersión del tejido interno. | Mide concentración de clorofila en copas densas donde el $NDVI$ tradicional se satura. |
-| **B06** | Borde Rojo 2 (*Red Edge 2*) | $740\text{ nm}$ | $15\text{ nm}$ | $20\text{ m}$ | Pendiente pronunciada de reflectancia celular; muy sensible al nitrógeno foliar. | Diagnóstico temprano de clorosis, desnutrición vegetal y caída de la fotosíntesis. |
-| **B07** | Borde Rojo 3 (*Red Edge 3*) | $783\text{ nm}$ | $20\text{ nm}$ | $20\text{ m}$ | Umbral de entrada al infrarrojo cercano; sensible a la masa del mesófilo foliar. | Separa viñedos de frutales o plantaciones forestales; base del índice $NDRE$. |
-| **B08** | Infrarrojo Cercano Amplio (*NIR*) | $842\text{ nm}$ | $115\text{ nm}$ | $10\text{ m}$ | Máxima dispersión refractiva por las paredes celulares esponjosas del mesófilo. | Cuantifica la biomasa verde activa y vigor a 10 metros; base de $NDVI, SAVI, NDMI$ y $NBR$. |
-| **B8A** | Infrarrojo Cercano Angosto (*NIR narrow*) | $865\text{ nm}$ | $20\text{ nm}$ | $20\text{ m}$ | Zona pura de mesófilo foliar sin contaminación por absorción de vapor de agua atmosférico. | Calibración precisa de índices de borde rojo ($NDRE$) en vegetación densa. |
-| **B11** | Infrarrojo de Onda Corta 1 (*SWIR-1*) | $1610\text{ nm}$ | $90\text{ nm}$ | $20\text{ m}$ | Fuerte absorción por agua molecular líquida en las células foliares y suelo húmedo. | Detecta estrés hídrico en las hojas ($NDMI$), combustibilidad del follaje ($FMC$) y suelo seco ($BSI$). |
-| **B12** | Infrarrojo de Onda Corta 2 (*SWIR-2*) | $2190\text{ nm}$ | $180\text{ nm}$ | $20\text{ m}$ | Absorción por enlaces moleculares de lignina, celulosa seca y minerales de arcilla. | Mide severidad de incendios ($NBR$), cicatrices de fuego y carbono orgánico del suelo ($SOC$). |
-
----
-
-### 5.2. Formulación Analítica de los 8 Índices Biofísicos de Cuenca
-
-A partir de las 10 bandas anteriores, AgriTwin calcula ocho índices de balance biofísico:
-
 ```
 +-----------------------------------------------------------------------------------------+
-|                        FÓRMULAS DE LOS OCHO ÍNDICES BIOFÍSICOS                          |
+|                  FÓRMULA 6: BALÍSTICA DE PAVESAS (ALBINI 1979) Y BYRAM (1959)           |
 +-----------------------------------------------------------------------------------------+
 |                                                                                         |
-|  1. NDVI (Vigor y Cobertura Foliar):                                                    |
-|                B08 - B04                                                                |
-|     NDVI = -----------------                                                            |
-|                B08 + B04                                                                |
+|         D_spot = 0.00078 * U_10^(1.15) * z_llama^(0.5)      [km]                        |
 |                                                                                         |
-|  2. NDRE (Clorofila en Dosel Denso sin Saturación):                                     |
-|                B08 - B05                                                                |
-|     NDRE = -----------------                                                            |
-|                B08 + B05                                                                |
-|                                                                                         |
-|  3. MCARI (Absorción de Clorofila Corregida de Suelo):                                 |
-|     MCARI = [ (B05 - B04) - 0.2 * (B05 - B03) ] * ( B05 / B04 )                         |
-|                                                                                         |
-|  4. NDWI (Cuerpos de Agua Superficial y Tranques):                                      |
-|                B03 - B08                                                                |
-|     NDWI = -----------------                                                            |
-|                B03 + B08                                                                |
-|                                                                                         |
-|  5. NDMI (Contenido de Agua en el Tejido de la Hoja / Combustible FMC):                 |
-|                B08 - B11                                                                |
-|     NDMI = -----------------                                                            |
-|                B08 + B11                                                                |
-|                                                                                         |
-|  6. SAVI (Ajuste por Brillo de Suelo Desnudo en Huertos Espaciados):                    |
-|             (B08 - B04) * (1 + L)                                                       |
-|     SAVI = -----------------------      (con L = 0.5)                                   |
-|                B08 + B04 + L                                                            |
-|                                                                                         |
-|  7. NBR (Severidad de Quemas y Residuos Secos de Combustible):                          |
-|                B08 - B12                                                                |
-|     NBR = ------------------                                                            |
-|                B08 + B12                                                                |
-|                                                                                         |
-|  8. BSI (Índice de Suelo Desnudo) y Estimador de Carbono Orgánico (SOC):                |
-|             (B11 + B04) - (B08 + B02)                                                   |
-|     BSI = -----------------------------                                                 |
-|             (B11 + B04) + (B08 + B02)                                                   |
-|                                                                                         |
-|                   B04                                                                   |
-|     SOC_proxy = -----------                                                             |
-|                 B11 + B12                                                               |
+|         I_B = H * w * R                                     [kW/m]                      |
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
 
+### Los Cuatro Regímenes Eólicos del Maule Sur:
+1. **Puelche Catabático (ESE $120^\circ$):** $42\text{ km/h}$, $\text{HR } 14\%$, $LFMC < 62\%$, avance $R = 18.4\text{ m/min}$ ($1.1\text{ km/h}$). Crítico en deslindes orientales.
+2. **Surazo Estival (SSW $205^\circ$):** $24\text{ km/h}$, $\text{HR } 44\%$, $LFMC \approx 78\%$, avance $R = 10.2\text{ m/min}$. Amenaza corredores riparios.
+3. **Norte Pre-Frontal (NNW $340^\circ$):** $30\text{ km/h}$, $\text{HR } 32\%$, avance $R = 12.5\text{ m/min}$. Amenaza accesos y caminos.
+4. **Brisa Marina Suroeste (WSW $245^\circ$):** $18\text{ km/h}$, $\text{HR } 58\%$, avance $R = 5.1\text{ m/min}$. Régimen de menor peligro.
+
 ---
 
-## 6. Metrología, Calibración, Sensibilidad y Cuantificación de Incertidumbre
+## 5. Topoclimatología Catabática y Microclima de Heladas
 
-Para que las predicciones del gemelo digital sean reconocidas por organismos públicos y entidades científicas, deben estar respaldadas por un protocolo estricto de metrología matemática.
-
----
-
-### 6.1. Calibración en Dos Etapas y Asimilación con Filtro de Kalman
-
-1. **Etapa 1: Calibración Global de Parámetros de Fondo (Fuera de Línea):**
-   Utilizando el algoritmo evolutivo de optimización global *Shuffled Complex Evolution* (SCE-UA), se buscan los parámetros del terreno ($CN_0, S_{\text{max}}, K_{sat}$) que maximizan el criterio de eficiencia de Kling-Gupta ($KGE$) frente a series históricas de 5 años de datos de caudal DGA.
-
-2. **Etapa 2: Asimilación Secuencial en Línea (Filtro de Kalman Extendido):**
-   Cada vez que llega un nuevo dato meteorológico horario o una nueva imagen Sentinel-2 cada 5 días, el estado interno del modelo (humedad en el suelo $\theta_r$ y transpiración $ET_c$) se actualiza en tiempo real mediante la **ganancia de Kalman $\mathbf{K}_t$**:
+En noches despejadas de primavera con viento calmo, el suelo pierde energía hacia el espacio exterior por radiación de onda larga ($R_{nl}$). El aire en contacto con la pendiente se sobreenfría, adquiere mayor densidad y drena por gravedad ladera abajo.
 
 ```
 +-----------------------------------------------------------------------------------------+
-|                  FÓRMULA 6: ASIMILACIÓN SECUENCIAL POR FILTRO DE KALMAN                 |
+|                  FÓRMULA 7: DRENAJE CATABÁTICO (PRANDTL-MAHRT) Y RADIACIÓN NETA         |
++-----------------------------------------------------------------------------------------+
+|                                                                                         |
+|                                 /     2 * g * h_capa * Delta_theta     \                |
+|               u_catab =  SQRT  | -------------------------------------- |               |
+|                                 \        theta_0 * ( 1 + c_d / s )     /                |
+|                                                                                         |
+|               R_nl = sigma * [ epsilon_suelo * T_suelo^4 - epsilon_atm * T_aire^4 ]     |
+|                                                                                         |
++-----------------------------------------------------------------------------------------+
+```
+
+```
++-----------------------------------------------------------------------------------------+
+|                  FÓRMULA 8: REPRESAMIENTO TÉRMICO Y DEMANDA ANTI-HELADA                 |
++-----------------------------------------------------------------------------------------+
+|                                                                                         |
+|         d(V_frío)                                                                       |
+|        ----------- = Q_catab * ( 1 - beta_poro ) - Q_rebalse                            |
+|            dt                                                                           |
+|                                                                                         |
+|         V_req = A_cuartel * q_asp * Delta_t * 10^(-3)       [m³]                        |
+|                                                                                         |
++-----------------------------------------------------------------------------------------+
+```
+* **Efecto Represa Vegetal:** Si la porosidad óptica de una cortina cortaviento vecina en el deslinde es baja ($\beta_{\text{poro}} < 0.25$), el aire gélido se represa hidráulicamente, elevando el tirante frío 2 a 4 metros sobre los huertos.
+* **Umbrales Letales:** Cerezos Lapins en floración sufren daño letal a **$-2.2^\circ\text{C}$**; avellanos resisten hasta **$-4.0^\circ\text{C}$**.
+* **Demanda de Aspersión:** Proteger 12 ha de Lapins durante 6 horas a $40\text{ m}^3/\text{ha/h}$ requiere **$2.880\text{ m}^3$** de agua (15.5% de un tranque de $18.500\text{ m}^3$).
+* **Solución de Cooperación Vecinal:** Poda basal de los primeros 1.5 a 2 metros de la cortina vecina en la vaguada (faja de desahogo catabático), permitiendo que el aire frío continúe su curso hacia el estero sin estancarse.
+
+---
+
+## 6. Termodinámica Convectiva, Cizalladura Vertical y Tornados (CAPE/HSLC)
+
+En el Maule no es posible predecir con días de anticipación el punto exacto de un tornado, pero sí la energía potencial convectiva disponible ($\text{CAPE}$), la cizalladura vertical y la presión destructiva del viento sobre activos agrícolas:
+
+```
++-----------------------------------------------------------------------------------------+
+|                  FÓRMULA 9: INTEGRAL DE CAPE, CIZALLADURA HSLC Y PRESIÓN DINÁMICA       |
++-----------------------------------------------------------------------------------------+
+|                                                                                         |
+|         CAPE = INT_{z_LFC}^{z_EL}  g * [ (Tv,p - Tv,e) / Tv,e ] dz                      |
+|                                                                                         |
+|         w_max = SQRT( 2 * CAPE )                           [m/s]                        |
+|                                                                                         |
+|         S_0-6 = || V_500hPa - V_10m ||                     [m/s]                        |
+|                                                                                         |
+|         q = 0.5 * rho * v^2                                [Pa]                         |
+|                                                                                         |
++-----------------------------------------------------------------------------------------+
+```
+* **Entornos HSLC en el Maule ($36^\circ\text{S}$):** Predominan eventos *High-Shear, Low-CAPE*: $\text{CAPE}$ moderado ($300 - 800\text{ J/kg}$) pero altísima cizalladura post-frontal ($S_{0-6} \ge 20\text{ m/s}$), capaz de organizar tornados destructivos.
+* **Presión Dinámica del Viento:** Un tornado EF1 ($165\text{ km/h} = 45.8\text{ m/s}$) ejerce **$q \approx 1.285\text{ Pa}$**, destruyendo invernaderos ($450\text{ Pa}$). Una cortina nativa multi-estrato ($z_0 = 0.85\text{ m}$) disipa la velocidad basal un 35%, abatiendo la presión dinámica en un **58%** ($q \approx 540\text{ Pa}$).
+
+---
+
+## 7. Teledetección Óptica: Catálogo de 10 Bandas y Física de la Luz
+
+AgriTwin ingesta el catálogo completo de 10 bandas terrestres de Sentinel-2 L2A (10 m y 20 m):
+* **B02 (Azul, 490 nm, 10 m):** Suelo desnudo, sombras y componente del índice $BSI$.
+* **B03 (Verde, 560 nm, 10 m):** Pico verde de reflectancia; delineación de tranques vía $NDWI$.
+* **B04 (Rojo, 665 nm, 10 m):** Máxima absorción fotosintética (P680); base de $NDVI, SAVI$ y $MCARI$.
+* **B05 (Red Edge 1, 705 nm, 20 m):** Transición óptica; clorofila en copas densas sin saturación.
+* **B06 (Red Edge 2, 740 nm, 20 m):** Alta sensibilidad al contenido de nitrógeno foliar.
+* **B07 (Red Edge 3, 783 nm, 20 m):** Meseta hacia el NIR; discriminación de biomasa leñosa.
+* **B08 (NIR Amplio, 842 nm, 10 m):** Dispersión celular del mesófilo; vigor y biomasa a 10 m.
+* **B8A (NIR Angosto, 865 nm, 20 m):** Zona pura de mesófilo sin absorción de vapor de agua.
+* **B11 (SWIR-1, 1610 nm, 20 m):** Absorción por agua líquida en hojas ($NDMI$), combustibilidad ($FMC$) y suelo seco.
+* **B12 (SWIR-2, 2190 nm, 20 m):** Absorción por celulosa seca, lignina y minerales de arcilla ($NBR, SOC$).
+
+```
++-----------------------------------------------------------------------------------------+
+|                  FÓRMULA 10: LOS OCHO ÍNDICES BIOFÍSICOS NORMALIZADOS                   |
++-----------------------------------------------------------------------------------------+
+|                                                                                         |
+|       NDVI = (B08 - B04) / (B08 + B04)          NDRE = (B08 - B05) / (B08 + B05)        |
+|                                                                                         |
+|       MCARI = [ (B05 - B04) - 0.2*(B05 - B03) ] * ( B05 / B04 )                         |
+|                                                                                         |
+|       NDWI = (B03 - B08) / (B03 + B08)          NDMI = (B08 - B11) / (B08 + B11)        |
+|                                                                                         |
+|       SAVI = [ (B08 - B04) * (1 + L) ] / (B08 + B04 + L)       (con L = 0.5)            |
+|                                                                                         |
+|       NBR = (B08 - B12) / (B08 + B12)                                                   |
+|                                                                                         |
+|       BSI = [ (B11 + B04) - (B08 + B02) ] / [ (B11 + B04) + (B08 + B02) ]               |
+|                                                                                         |
+|       SOC_proxy = B04 / ( B11 + B12 )                                                   |
+|                                                                                         |
++-----------------------------------------------------------------------------------------+
+```
+
+---
+
+## 8. Doctrina Operacional C2, Cinemática 0-12h y Matriz Multiamenaza
+
+```
++-----------------------------------------------------------------------------------------+
+|                  FÓRMULA 11: RIESGO MULTIAMENAZA Y CINEMÁTICA TÁCTICA (0-12H)           |
++-----------------------------------------------------------------------------------------+
+|                                                                                         |
+|         R(x, t) = H(x, t) * V(x) * C(x)                                                 |
+|                                                                                         |
+|         Delta_t(alerta) <= 15 min               Delta_t(maniobra) <= 120 min            |
+|                                                                                         |
+|         Y_i(t) = L( S_i(t), F_clima(t) )                                                |
+|                                                                                         |
++-----------------------------------------------------------------------------------------+
+```
+* **$H(\mathbf{x}, t)$:** Magnitud física de la amenaza (viento, helada o índice FWI).
+* **$V(\mathbf{x})$:** Vulnerabilidad intrínseca del cultivo o cuartel.
+* **$C(\mathbf{x})$:** Costo o valor del activo expuesto.
+* **$\mathcal{L}$ (Leyes Físicas Inmutables):** Ecuaciones universales deterministas independientes del usuario.
+* **$\mathcal{S}_i$ (Condiciones Particulares):** Parámetros específicos de cada predio rural.
+* **Ventana de Maniobra:** El gemelo emite recomendaciones tácticas antes de 15 minutos, otorgando hasta 2 horas de ventaja previa al cruce de umbrales destructivos.
+
+---
+
+## 9. Metrología, Calibración, Sensibilidad y Cuantificación de Incertidumbre
+
+```
++-----------------------------------------------------------------------------------------+
+|                  FÓRMULA 12: ASIMILACIÓN DE KALMAN Y PROPAGACIÓN FORMAL DE ERROR        |
 +-----------------------------------------------------------------------------------------+
 |                                                                                         |
 |         K_t = P_(t|t-1) * H_t^T * [ H_t * P_(t|t-1) * H_t^T + R_t ]^(-1)                |
 |                                                                                         |
 |         x_(t|t) = x_(t|t-1) + K_t * [ y_t - H_t * x_(t|t-1) ]                           |
 |                                                                                         |
-|         P_(t|t) = [ I - K_t * H_t ] * P_(t|t-1)                                         |
+|         u_c^2(y) = SUM [ ( del f / del x_i )^2 * u^2(x_i) ]                             |
+|                                                                                         |
+|         U_95% = 2 * SQRT( sigma_aleatoria^2 + sigma_epistémica^2 )                      |
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
 
-* $\mathbf{x}$: Vector que contiene el estado real estimado del suelo y la planta.
-* $\mathbf{y}_t$: Medición física recibida (por ejemplo, el índice satelital o la radiación medida).
-* $\mathbf{P}$: Matriz de incertidumbre y covarianza del error del modelo.
-* $\mathbf{R}$: Matriz de ruido e incertidumbre del instrumento medidor.
-* $\mathbf{K}_t$: Ponderador que decide inteligentemente a quién creerle más: si el modelo viene con mucha incertidumbre y el satélite entrega un dato muy limpio, $\mathbf{K}_t$ corrige con fuerza el estado hacia la observación.
+### Demostración Sobol de la Hipótesis 3 ($H_3$):
+La descomposición de varianza revela:
+* $S_{T, ET_0} = 0.42$ (42% de la incertidumbre explicada por la radiación y clima local).
+* $S_{T, Z_r} = 0.28$ (28% explicada por la profundidad radicular efectiva).
+* $S_{T, K_c} = 0.16$ (16% explicada por el coeficiente del cultivo satelital).
+* Parámetros puntuales intra-hilera: $S_i < 0.04$ (despreciables).
+* **Conclusión:** **1 estación meteorológica de referencia + 1 sonda TDR multinivel profunda** colapsan el 86% de la varianza total sin necesidad de micro-sensores masivos.
 
 ---
 
-### 6.2. Métricas Estadísticas de Validación Empírica
+## 10. Ecología del Paisaje, Keyline y Gobernanza Comunitaria
 
-Siguiendo las directrices internacionales para la evaluación de modelos hidrológicos (Moriasi et al., 2015), AgriTwin se audita con las siguientes métricas:
-
-| Métrica | Expresión Matemática | Rango Óptimo | Significado Físico |
-|---|---|---|---|
-| **NSE** (Eficiencia de Nash-Sutcliffe) | $NSE = 1 - \frac{\sum (Q_{\text{obs}} - Q_{\text{sim}})^2}{\sum (Q_{\text{obs}} - \bar{Q}_{\text{obs}})^2}$ | $(-\infty, 1]$ (Óptimo = 1) | Mide qué tan mejor es el gemelo respecto a usar simplemente el promedio histórico del río. $NSE \ge 0.75$ es excelente. |
-| **KGE** (Eficiencia de Kling-Gupta) | $KGE = 1 - \sqrt{(r-1)^2 + (\alpha-1)^2 + (\beta-1)^2}$ | $(-\infty, 1]$ (Óptimo = 1) | Descompone el error en correlación ($r$), variabilidad ($\alpha$) y sesgo de volumen ($\beta$). Evita subestimar crecidas. |
-| **RMSE** (Raíz del Error Cuadrático Medio) | $RMSE = \sqrt{\frac{1}{N} \sum (y_i - \hat{y}_i)^2}$ | $[0, \infty)$ (Óptimo = 0) | Magnitud del error en las mismas unidades de la variable (por ejemplo, $\text{mm}$ de agua o $\text{m}^3/\text{s}$). |
-| **PBIAS** (Sesgo Porcentual Relativo) | $PBIAS = \frac{\sum (Q_{\text{obs}} - Q_{\text{sim}})}{\sum Q_{\text{obs}}} \times 100\%$ | $[-\infty, \infty]$ (Óptimo = 0%) | Revela si el modelo tiene tendencia sistemática a sobrestimar ($PBIAS < 0$) o subestimar ($PBIAS > 0$) el agua total. |
-| **IoU** (Índice de Jaccard / Intersección) | $IoU = \frac{|A_{\text{sim}} \cap A_{\text{obs}}|}{|A_{\text{sim}} \cup A_{\text{obs}}|}$ | $[0, 1]$ (Óptimo = 1) | Evalúa la precisión espacial al delimitar perímetros de incendios o zonas anegadas. |
-
----
-
-### 6.3. Propagación Formal de la Incertidumbre (Guía ISO/IEC 98-3 GUM)
-
-Una predicción que no cuantifica su margen de error no tiene validez metrológica. La incertidumbre estándar combinada $u_c(y)$ de cualquier resultado del gemelo se calcula aplicando la ley de propagación de incertidumbres de la **Guía ISO/IEC 98-3**:
-
-```
-+-----------------------------------------------------------------------------------------+
-|                  FÓRMULA 7: PROPAGACIÓN DE INCERTIDUMBRE (ISO/IEC GUIDE 98-3)           |
-+-----------------------------------------------------------------------------------------+
-|                                                                                         |
-|                       N      /  del f  \ 2                                              |
-|         u_c^2(y) =  SUM    | --------- |  * u^2(x_i)                                    |
-|                      i=1     \ del x_i /                                                |
-|                                                                                         |
-|         Incertidumbre Expandida al 95%:    U_95% = 2 * sqrt( sigma_aleat^2 + sigma_epist^2 ) |
-|                                                                                         |
-+-----------------------------------------------------------------------------------------+
-```
-
-* $\frac{\partial f}{\partial x_i}$: Coeficiente de sensibilidad analítica. Indica cuánto se altera la salida $y$ ante una pequeña variación del parámetro $x_i$.
-* $u(x_i)$: Incertidumbre propia de cada dato de entrada (por ejemplo, el error instrumental del piranómetro o la precisión del píxel satelital).
-* $\sigma_{\text{aleat}}^2$: Variabilidad aleatoria del clima que no se puede eliminar (turbulencias de viento, tormentas imprevistas).
-* $\sigma_{\text{epist}}^2$: Incertidumbre por falta de conocimiento perfecto del suelo o de los parámetros. Como se probó en la Hipótesis 3, esta incertidumbre se reduce drásticamente al incorporar la estación meteorológica local y la sonda de suelo.
+1. **Más Allá de la Zona 5:** Las cumbres y bosques nativos de cabecera son la esponja hídrica de la cuenca y a la vez el foco de biomasa combustible. Modelar su dinámica salva al valle.
+2. **Escala de Permanencia de Yeomans (Keyline):**
+   $$\text{Clima} \rightarrow \text{Topografía} \rightarrow \text{Agua (Keyline)} \rightarrow \text{Caminos} \rightarrow \text{Árboles} \rightarrow \text{Suelo}$$
+   El software detecta el **Punto Clave** (*Keypoint*) en la inflexión de la ladera y proyecta la **Línea Clave** (pendiente 0.2%) para conducir el agua desde las quebradas hacia las lomas secas por gravedad.
+3. **Servicios Ecosistémicos de Cuenca (CICES v5.1):**
+   * Regulación hídrica de embalses (110 hm³ en Bullileo).
+   * Amortiguación de incendios: reducción de **$-64.7\%$ en índice FWI** en fajas cortafuegos verdes pastoreadas.
+   * Secuestro de carbono: **$4.2\text{ t C/ha/año}$** en praderas regenerativas.
+   * **Cámara de 18 Asesores y Votación Cuadrática ($V^2$):** Protocolo comunitario para arbitraje de aguas basado en datos objetivos del gemelo digital (Elinor Ostrom).
 
 ---
 
-## 7. Ecología del Paisaje y Plan Base Regenerativo
+## 11. Protocolo Experimental con Redes Públicas Chilenas
 
-AgriTwin traduce la sabiduría agroecológica y los principios de la permacultura a capas geométricas e hidrológicas computables dentro del gemelo digital.
-
----
-
-### 7.1. La Articulación de los Flujos de Cabecera: Más Allá de la Zona 5
-
-En la permacultura convencional (Mollison, 1988), la zonificación se organiza en círculos concéntricos desde la casa (Zona 0) hasta el bosque silvestre (Zona 5). La innovación de AgriTwin radica en modelar el territorio **aguas arriba de la Zona 5**:
-
-```
-  CUMBRE DEL CERRO (MÁS ALLÁ DE LA ZONA 5)
-  * Bosque nativo relicto / matorral esclerófilo
-  * Recarga de aguas subterráneas y retención de niebla
-  * Origen potencial del fuego por acumulación de combustible
-                      |
-                      |  Flujo de agua subterránea y escorrentía
-                      v
-  LADERAS ALTAS (ZONAS 4 Y 3: SILVOPASTORIL Y CORTAFUEGOS VIVOS)
-  * Canales de contorno e infiltración Keyline
-  * Reducción de la velocidad del agua y sedimentación
-  * Franjas de árboles caducifolios que frenan el avance de llamas
-                      |
-                      |  Agua conducida suavemente por gravedad
-                      v
-  VALLE PRODUCTIVO (ZONAS 2 Y 1: HUERTAS, VIÑEDOS Y RIEGO)
-  * Suelos nutridos con materia orgánica
-  * Pozos y norias con nivel freático sostenido
-  * Cultivos protegidos ante estrés térmico y desecación
-```
-
-* **El bosque de cabecera como esponja:** Si la cumbre del cerro se deforesta o se cubre de plantaciones densas que consumen toda el agua, los pozos de las viñas en el valle se secan en verano y sufren aluviones en invierno. AgriTwin cuantifica este vínculo para que las comunidades protejan sus cumbres.
+* **Red Fluviométrica DGA:** Estación automatizada **07352001-3 (Río Perquilauquén en San Manuel)** ($3.450\text{ km}^2$), auditando caudales observados horarios ($Q_{\text{obs}}$).
+* **Red Agrometeorológica AGROMET-INIA:** Estaciones de **Cauquenes** y **Parral** (radiación global, temperatura, humedad y viento horario para validar $ET_0$).
+* **Teledetección Europea ESA:** Sentinel-2A/2B cada 5 días a 10 m y Copernicus DEM GLO-30.
+* **Catastro Oficial de Incendios CONAF:** Perímetros y avance de los megaincendios de 2017, 2023 y 2024 para auditar el motor Rothermel y la balística de pavesas.
 
 ---
 
-### 7.2. La Escala de Permanencia de P.A. Yeomans (Diseño Keyline)
+## 12. Conclusiones y Proyecciones
 
-P.A. Yeomans (1958) definió que el ordenamiento de una cuenca agrícola debe seguir una jerarquía de prioridades según qué tan difícil o costoso resulta modificar cada elemento:
+AgriTwin consolida un gemelo digital territorial riguroso, que abandona la falacia de la parcela aislada para entender el territorio como un sistema físico continuo acoplado. 
 
-1. **Clima:** Lo aceptamos y modelamos con reanálisis ERA5 y pronósticos a 12 horas.
-2. **Relieve y Topografía:** El gemelo procesa el modelo digital de elevación (DEM 30 m) identificando crestas, laderas y fondos de quebrada.
-3. **Agua (La Línea Clave o *Keyline*):** El software detecta automáticamente el **Punto Clave** (*Keypoint*), que es el punto exacto de la ladera donde la curva cambia de convexa (dispersora de agua) a cóncava (concentradora de agua). Desde este punto se proyecta la **Línea Clave**, un canal virtual con pendiente suave (0.2%) que conduce el exceso de agua desde las quebradas húmedas hacia las lomas secas, irrigando el campo de forma pasiva por gravedad.
-4. **Caminos y Accesos:** Se ubican sobre las crestas o justo sobre los canales Keyline para que no se transformen en zanjas de erosión durante las tormentas.
-5. **Árboles y Cortafuegos:** Se diseñan fajas agroforestales nativas perpendiculares a los vientos dominantes de verano (viento Puelche) para bajar la temperatura del huerto y crear barreras biológicas contra incendios.
-6. **Estructuras y Construcciones:** Tranques de ladera ubicados en altura para almacenar agua y regar por gravedad sin gastar electricidad en bombeo.
-7. **Suelo y Manejo:** Incremento de la materia orgánica mediante cubiertas vegetales y laboreo vertical sin inversión de suelo.
+Al integrar la agro-hidrología semi-distribuida, la balística de incendios, la topoclimatología de heladas catabáticas, las tormentas convectivas severas, la teledetección de 10 bandas y el diseño agroecológico Keyline, la plataforma entrega un marco científico defendible ante comités evaluadores, docencia y convocatorias públicas de I+D (ANID Fondecyt/Fondef y CORFO Crea y Valida).
 
 ---
 
-### 7.3. La Gobernanza de Recursos Compartidos según Elinor Ostrom
+## 13. Referencias Bibliográficas Canónicas
 
-El agua subterránea del Maule Sur no pertenece a un solo fundo: es un **Recurso de Uso Común** (*Common-Pool Resource*, CPR). Cuando un predio perfora un pozo profundo y bombea agua indiscriminadamente, perjudica a todos los agricultores y norias del vecindario.
-
-AgriTwin implementa de forma nativa los principios de gobernanza comunitaria de la premio Nobel Elinor Ostrom (1990):
-* **Transparencia Basada en Física y Satélite:** Cualquier miembro de la junta de vigilancia o comunidad de aguas puede consultar en el gemelo digital el estado de evaporación, vigor y recarga de la cuenca común, erradicando la desconfianza y evitando que grandes usuarios extraigan agua en exceso sin control público.
-* **Alertas Tempranas Compartidas:** Ante una ola de calor o un riesgo inminente de fuego, el sistema emite notificaciones simultáneas para coordinar turnos solidarios de riego y activar brigadas locales de cortafuegos antes del desastre.
-
----
-
-## 8. Protocolo Experimental y Demostración con Redes Públicas Chilenas
-
-Para probar la validez de AgriTwin sin requerir financiamiento privado previo en sensores, se diseñó un banco de pruebas riguroso utilizando únicamente la infraestructura pública disponible en Chile.
-
-```
-+-----------------------------------------------------------------------------------------+
-|                  BANCO DE PRUEBAS EXPERIMENTAL EN LA CUENCA DEL PERQUILAUQUÉN            |
-+-----------------------------------------------------------------------------------------+
-|  1. FLUVIOMETRÍA OFICIAL DGA:                                                           |
-|     * Estación 07352001-3 (Río Perquilauquén en San Manuel).                            |
-|     * Superficie de cuenca aportante: ~3.450 km².                                       |
-|     * Datos: Caudales horarios y diarios en m³/s de libre acceso.                       |
-+-----------------------------------------------------------------------------------------+
-|  2. RED METEOROLÓGICA AGROMET-INIA:                                                     |
-|     * Estación Cauquenes (representativa del Secano Interior costero).                  |
-|     * Estación Parral (representativa del Valle Central bajo riego).                    |
-|     * Datos: Radiación solar global, temperatura, humedad relativa y viento horario.   |
-+-----------------------------------------------------------------------------------------+
-|  3. TELEDETECCIÓN ESPACIAL EUROPEA:                                                     |
-|     * Misiones Sentinel-2A y Sentinel-2B (revisita cada 5 días, resolución de 10 m).   |
-|     * Modelo Copernicus DEM GLO-30 para el relieve del terreno.                         |
-+-----------------------------------------------------------------------------------------+
-|  4. CATASTRO HISTÓRICO DE INCENDIOS CONAF:                                              |
-|     * Perímetros y cronología de los megaincendios de 2017, 2023 y 2024.                |
-+-----------------------------------------------------------------------------------------+
-```
-
-### 8.1. Plan de Evaluación Temporal
-* **Período de Calibración:** 01 de Mayo de 2018 a 30 de Abril de 2022 (4 años completos para calibrar parámetros de suelo y escorrentía).
-* **Período de Validación Ciega:** 01 de Mayo de 2022 a 30 de Abril de 2025 (3 años hidrológicos completos donde el modelo predice sin reajustar parámetros, evaluando su capacidad real de anticipación).
+1. **Albini, F. A. (1979).** *Spot fire distance from burning trees: a predictive model*. USDA Forest Service General Technical Report INT-56.
+2. **Allen, R. G., et al. (1998).** *Crop evapotranspiration: Guidelines for computing crop water requirements*. FAO Irrigation and Drainage Paper 56, Roma.
+3. **Andrews, P. L. (2014).** *Current status and future needs of the Rothermel surface fire spread model*. USDA Forest Service GTR-RMRS-322. DOI: 10.2737/RMRS-GTR-322
+4. **Bauer, P., et al. (2021).** The digital revolution of Earth-system science. <em>Nature Computational Science</em>, 1(2), 104–113. DOI: 10.1038/s43588-021-00023-0
+5. **Beven, K. J., & Kirkby, M. J. (1979).** A physically based, variable contributing area model of basin hydrology. *Hydrological Sciences Bulletin*, 24(1), 43–69. DOI: 10.1080/02626667909491834
+6. **BIPM, ISO, IEC (2008).** *Evaluation of measurement data — Guide to the expression of uncertainty in measurement (GUM)*. JCGM 100:2008 (ISO/IEC Guide 98-3).
+7. **Byram, G. M. (1959).** Combustion of forest fuels. In: Davis, K. P. (Ed.), *Forest Fire: Control and Use*. McGraw-Hill, New York, pp. 61–89.
+8. **Castaldi, F., et al. (2018).** Evaluating the capability of the Sentinel 2 data for soil organic carbon prediction. *ISPRS J. Photogramm. Remote Sens.*, 147, 267–282. DOI: 10.1016/j.isprsjprs.2018.11.026
+9. **Daughtry, C. S. T., et al. (2000).** Estimating corn leaf chlorophyll concentration from leaf and canopy reflectance. *Remote Sens. Environ.*, 74(2), 229–239. DOI: 10.1016/S0034-4257(00)00113-9
+10. **Garreaud, R. D., et al. (2020).** The Central Chile Mega Drought (2010–2018): A climate dynamics perspective. *Int. J. Climatol.*, 40(1), 421–439. DOI: 10.1002/joc.6219
+11. **Gupta, H. V., et al. (2009).** Decomposition of the mean squared error and NSE performance criteria. *J. Hydrol.*, 377(1–2), 80–91. DOI: 10.1016/j.jhydrol.2009.08.003
+12. **Mahrt, L. (1982).** Momentum balance of gravity flows. *Journal of the Atmospheric Sciences*, 39(12), 2701–2711.
+13. **Mollison, B. (1988).** *Permaculture: A Designers' Manual*. Tagari Publications, Australia.
+14. **Moriasi, D. N., et al. (2015).** Hydrologic and water quality models: Performance measures and evaluation criteria. *Trans. ASABE*, 58(6), 1763–1785. DOI: 10.13031/trans.58.10715
+15. **Ostrom, E. (1990).** *Governing the Commons: The Evolution of Institutions for Collective Action*. Cambridge University Press. DOI: 10.1017/CBO9780511807763
+16. **Rothermel, R. C. (1972).** *A mathematical model for predicting fire spread in wildland fuels*. USDA Forest Service RP INT-115.
+17. **Sobol, I. M. (2001).** Global sensitivity indices for nonlinear mathematical models. *Math. Comput. Simul.*, 55(1–3), 271–280. DOI: 10.1016/S0378-4754(00)00270-6
+18. **USDA NRCS (2004).** *Estimation of Direct Runoff from Storm Rainfall*. National Engineering Handbook, Part 630, Chapter 10.
+19. **Yeomans, P. A. (1958).** *The Challenge of Landscape: The Development and Practice of Keyline*. Keyline Publishing Pty., Sydney.
 
 ---
-
-## 9. Conclusiones y Proyecciones
-
-1. **Rigor Teórico y Biofísico:** AgriTwin trasciende las herramientas tradicionales de gestión agrícola al abandonar la visión parcelaria y reemplazarla por la física del continuo atmósfera-cuenca-suelo.
-2. **Independencia de Redes Masivas de Hardware:** Gracias al análisis de sensibilidad global de Sobol, se demuestra que no es necesario gastar presupuestos millonarios en cientos de sensores invasivos. **Una sola estación meteorológica de referencia y una sonda edáfica multinivel profunda** son suficientes para guiar el modelo con precisión y bajo costo.
-3. **Respeto a la Física Óptica:** Se reconoce explícitamente qué puede observar la constelación Sentinel-2 (dosel foliar y superficie) y qué debe calcularse termodinámicamente (humedad profunda y flujos de napa), garantizando predicciones honestas y científicamente robustas.
-4. **Agroecología Computable:** La inclusión de la cabecera de cuenca (más allá de la Zona 5) y del diseño Keyline de Yeomans transforma al gemelo digital en un motor de regeneración territorial, capaz de proteger al Maule Sur frente a la sequía extrema y los megaincendios forestales.
-5. **Base Sólida para Fondos de I+D y Publicaciones:** Este documento proporciona la arquitectura matemática requerida para postular con éxito a fondos públicos de ciencia aplicada (ANID Fondef / Fondecyt, CORFO Crea y Valida) y su posterior envío a revistas científicas indexadas Q1 (*Agricultural Water Management*, *Remote Sensing of Environment*).
-
----
-
-## 10. Referencias Bibliográficas Canónicas
-
-A continuación se listan las 26 referencias bibliográficas canónicas que sustentan matemáticamente este marco teórico, con sus identificadores digitales de objeto (DOI) correspondientes:
-
-1. **Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998).** *Crop evapotranspiration: Guidelines for computing crop water requirements*. FAO Irrigation and Drainage Paper 56, Roma, Italia.
-2. **Allen, R. G., Tasumi, M., & Trezza, R. (2007).** Satellite-based energy balance for mapping evapotranspiration with internalized calibration (METRIC)—Model. *Journal of Irrigation and Drainage Engineering*, 133(4), 380–394. DOI: [10.1061/(ASCE)0733-9437(2007)133:4(380)](https://doi.org/10.1061/(ASCE)0733-9437(2007)133:4(380))
-3. **Andrews, P. L. (2014).** *Current status and future needs of the Rothermel surface fire spread model*. USDA Forest Service General Technical Report RMRS-GTR-322. DOI: [10.2737/RMRS-GTR-322](https://doi.org/10.2737/RMRS-GTR-322)
-4. **Barnes, E. M., Clarke, T. R., Richards, S. E., Colaizzi, P. D., Haberland, J., Kostrzewski, M., Waller, P., Choi, C., & Moran, M. S. (2000).** Coincident detection of crop water stress, nitrogen status and canopy density using ground based multispectral data. *Proceedings of the 5th International Conference on Precision Agriculture*, Bloomington, MN.
-5. **Bauer, P., Dueben, P. D., Hoefler, T., Quintino, T., Schulthess, T. C., & Wedi, N. P. (2021).** The digital revolution of Earth-system science. *Nature Computational Science*, 1(2), 104–113. DOI: [10.1038/s43588-021-00023-0](https://doi.org/10.1038/s43588-021-00023-0)
-6. **Beven, K. J., & Kirkby, M. J. (1979).** A physically based, variable contributing area model of basin hydrology. *Hydrological Sciences Bulletin*, 24(1), 43–69. DOI: [10.1080/02626667909491834](https://doi.org/10.1080/02626667909491834)
-7. **BIPM, IEC, IFCC, ILAC, ISO, IUPAC, IUPAP, OIML (2008).** *Evaluation of measurement data — Guide to the expression of uncertainty in measurement (GUM)*. JCGM 100:2008 (ISO/IEC Guide 98-3).
-8. **Castaldi, F., Hueni, A., Chabrillat, S., Ward, K., Buttafuoco, G., Bomans, B., Vreys, K., Brell, M., & van Wesemael, B. (2018).** Evaluating the capability of the Sentinel 2 data for soil organic carbon prediction in croplands. *ISPRS Journal of Photogrammetry and Remote Sensing*, 147, 267–282. DOI: [10.1016/j.isprsjprs.2018.11.026](https://doi.org/10.1016/j.isprsjprs.2018.11.026)
-9. **Daughtry, C. S. T., Walthall, C. L., Kim, M. S., de Colstoun, E. B., & McMurtrey, J. E. (2000).** Estimating corn leaf chlorophyll concentration from leaf and canopy reflectance. *Remote Sensing of Environment*, 74(2), 229–239. DOI: [10.1016/S0034-4257(00)00113-9](https://doi.org/10.1016/S0034-4257(00)00113-9)
-10. **Diek, S., Fornallaz, F., & Schaepman, M. E. (2017).** Baresoil: A tool for mapping bare soil and crop residue dynamics. *Remote Sensing of Environment*, 198, 114–125.
-11. **Duan, Q., Gupta, V. K., & Sorooshian, S. (1993).** Shuffled complex evolution approach for effective and efficient global minimization. *Journal of Optimization Theory and Applications*, 76(3), 501–521. DOI: [10.1007/BF00939380](https://doi.org/10.1007/BF00939380)
-12. **Gao, B. C. (1996).** NDWI—A normalized difference water index for remote sensing of vegetation liquid water from space. *Remote Sensing of Environment*, 58(3), 257–266. DOI: [10.1016/S0034-4257(96)00067-3](https://doi.org/10.1016/S0034-4257(96)00067-3)
-13. **García, M. J. L., & Caselles, V. (1991).** Mapping burns and natural hazards with Landsat Thematic Mapper data. *Geocarto International*, 6(1), 27–37. DOI: [10.1080/10106049109354290](https://doi.org/10.1080/10106049109354290)
-14. **Garreaud, R. D., Boisier, J. P., Rondanelli, R., Montecinos, A., & Sepúlveda, H. H. (2020).** The Central Chile Mega Drought (2010–2018): A climate dynamics perspective. *International Journal of Climatology*, 40(1), 421–439. DOI: [10.1002/joc.6219](https://doi.org/10.1002/joc.6219)
-15. **Gupta, H. V., Kling, H., Yilmaz, K. K., & Martinez, G. F. (2009).** Decomposition of the mean squared error and NSE performance criteria: Implications for improving hydrological modelling. *Journal of Hydrology*, 377(1–2), 80–91. DOI: [10.1016/j.jhydrol.2009.08.003](https://doi.org/10.1016/j.jhydrol.2009.08.003)
-16. **Huete, A. R. (1988).** A soil-adjusted vegetation index (SAVI). *Remote Sensing of Environment*, 25(3), 295–309. DOI: [10.1016/0034-4257(88)90106-X](https://doi.org/10.1016/0034-4257(88)90106-X)
-17. **McFeeters, S. K. (1996).** The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features. *International Journal of Remote Sensing*, 17(7), 1425–1432. DOI: [10.1080/01431169608948714](https://doi.org/10.1080/01431169608948714)
-18. **Mollison, B. (1988).** *Permaculture: A Designers' Manual*. Tagari Publications, Tyalgum, Australia.
-19. **Moriasi, D. N., Gitau, M. W., Pai, N., & Daggupati, P. (2015).** Hydrologic and water quality models: Performance measures and evaluation criteria. *Transactions of the ASABE*, 58(6), 1763–1785. DOI: [10.13031/trans.58.10715](https://doi.org/10.13031/trans.58.10715)
-20. **Neale, C. M. U., Bausch, W. C., & Heermann, D. F. (1996).** Development of reflectance-based crop coefficients for corn. *Transactions of the ASAE*, 39(5), 1845–1852. DOI: [10.13031/2013.27640](https://doi.org/10.13031/2013.27640)
-21. **Ostrom, E. (1990).** *Governing the Commons: The Evolution of Institutions for Collective Action*. Cambridge University Press, Cambridge, UK. DOI: [10.1017/CBO9780511807763](https://doi.org/10.1017/CBO9780511807763)
-22. **Richards, L. A. (1931).** Capillary conduction of liquids through porous mediums. *Physics*, 1(5), 318–333. DOI: [10.1063/1.1745010](https://doi.org/10.1063/1.1745010)
-23. **Rikimaru, A., Roy, P. S., & Miyatake, S. (2002).** Tropical forest cover density mapping. *Tropical Ecology*, 43(1), 39–47.
-24. **Rothermel, R. C. (1972).** *A mathematical model for predicting fire spread in wildland fuels*. USDA Forest Service Research Paper INT-115, Ogden, UT.
-25. **Rouse, J. W., Haas, R. H., Schell, J. A., & Deering, D. W. (1974).** Monitoring vegetation systems in the Great Plains with ERTS. *Third Earth Resources Technology Satellite-1 Symposium*, NASA SP-351, 309–317.
-26. **Sobol, I. M. (2001).** Global sensitivity indices for nonlinear mathematical models and their Monte Carlo estimates. *Mathematics and Computers in Simulation*, 55(1–3), 271–280. DOI: [10.1016/S0378-4754(00)00270-6](https://doi.org/10.1016/S0378-4754(00)00270-6)
-27. **USDA Natural Resources Conservation Service (2004).** *National Engineering Handbook, Part 630: Hydrology, Chapter 10: Estimation of Direct Runoff from Storm Rainfall*. USDA NRCS, Washington D.C.
-28. **Woodward, D. E., Hawkins, R. H., Jiang, R., Hjelmfelt, A. T., Van Mullem, J. A., & Quan, Q. D. (2003).** Runoff curve number method: Examination of the initial abstraction ratio. *World Water & Environmental Resources Congress 2003*, 1–10. DOI: [10.1061/40685(2003)308](https://doi.org/10.1061/40685(2003)308)
-29. **Yeomans, P. A. (1958).** *The Challenge of Landscape: The Development and Practice of Keyline*. Keyline Publishing Pty., Sydney, Australia.
-
----
-*Fin del Documento Maestro Canónico — AgriTwin 2026*
+*Fin del Compendio Canónico — AgriTwin 2026*
