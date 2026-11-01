@@ -1392,16 +1392,18 @@
             if (simInput) updateConsensusSimulator(simInput.value);
         }
 
-        // Subtabs del Centro de Documentación & Vault (4 Secciones Maestras)
+        // Subtabs del Centro de Documentación & Vault (5 Secciones Maestras)
         function switchDocsTab(tabId) {
             if (!tabId) tabId = 'docs-vecino';
-            // Mapeo hacia las 4 secciones maestras
+            // Mapeo hacia las secciones maestras
             if (tabId === 'docs-pipeline') {
                 tabId = 'docs-arch';
             } else if (tabId === 'docs-scripts' || tabId === 'docs-reporter') {
                 tabId = 'docs-dossier';
             } else if (tabId === 'docs-biomes') {
                 tabId = 'docs-tables';
+            } else if (tabId === 'docs-benchmark-suite' || tabId === 'docs-benchmark' || tabId === 'mod-teorico-9-incertidumbre') {
+                tabId = 'docs-uq';
             }
 
             document.querySelectorAll('.docs-subcontent').forEach(c => c.classList.add('hidden'));

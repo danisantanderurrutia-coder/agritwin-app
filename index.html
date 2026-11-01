@@ -83,7 +83,7 @@
 
         window.renderLatexEverywhere = function() {
             // Renderizado seguro en contenedores documentales y fichas técnicas
-            const targets = ['view-docs', 'view-cuaderno', 'docs-vecino', 'docs-arch', 'docs-tables', 'docs-dossier'];
+            const targets = ['view-docs', 'view-cuaderno', 'docs-vecino', 'docs-uq', 'docs-arch', 'docs-tables', 'docs-dossier'];
             targets.forEach(tId => {
                 const el = document.getElementById(tId);
                 if (el) window.renderLatexInContainer(el);
@@ -100,6 +100,9 @@
 
         // Navegación Espejo Bidireccional Cruzada: Ciencia ⇌ Implementación
         window.jumpToDocModule = function(tabId, elementId, archModuleId) {
+            if (elementId === 'docs-benchmark-suite' || elementId === 'mod-teorico-9-incertidumbre' || (elementId && elementId.startsWith('mod-uq-'))) {
+                tabId = 'docs-uq';
+            }
             if (typeof switchDocsTab === 'function') switchDocsTab(tabId);
             if (archModuleId && typeof switchArchModule === 'function') switchArchModule(archModuleId);
             setTimeout(() => {
@@ -7155,22 +7158,26 @@
                 </div>
             </div>
 
-            <!-- Subnavegación de 4 Secciones Maestras del Vault (Galpón Luminoso) -->
+            <!-- Subnavegación de 5 Secciones Maestras del Vault (Galpón Luminoso) -->
             <div class="flex items-center gap-2 border-b border-[#E7DAC6] pb-3 overflow-x-auto select-none">
                 <button onclick="switchDocsTab('docs-vecino')" id="docsTabBtn-vecino" class="docs-subtab-btn active px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>📐</span> <span>1. Marco Teórico &amp; Metodología</span>
-                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 0-9</span>
+                    <span>📐</span> <span>1. Marco Teórico &amp; Biofísica</span>
+                    <span class="px-1.5 py-0.5 rounded bg-sky-600 text-white text-[9px] font-mono font-bold">MÓDULOS 0-8</span>
+                </button>
+                <button onclick="switchDocsTab('docs-uq')" id="docsTabBtn-uq" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
+                    <span>🔬</span> <span>2. Calibración, Sensibilidad &amp; UQ</span>
+                    <span class="px-1.5 py-0.5 rounded bg-purple-600 text-white text-[9px] font-mono font-bold">TRL 7/8 • 5 SECCIONES</span>
                 </button>
                 <button onclick="switchDocsTab('docs-arch')" id="docsTabBtn-arch" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>⚡</span> <span>2. Arquitectura de Software &amp; Hardware</span>
+                    <span>⚡</span> <span>3. Arquitectura de Software &amp; Hardware</span>
                     <span class="px-1.5 py-0.5 rounded bg-amber-600 text-white text-[9px] font-mono font-bold">7 MÓDULOS CORE</span>
                 </button>
                 <button onclick="switchDocsTab('docs-tables')" id="docsTabBtn-tables" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>🤝</span> <span>3. Marco de Gobernanza &amp; Bienes Comunes</span>
+                    <span>🤝</span> <span>4. Marco de Gobernanza &amp; Bienes Comunes</span>
                     <span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 text-[9px] font-mono font-bold">DAO CUADRÁTICA OSTROM</span>
                 </button>
                 <button onclick="switchDocsTab('docs-dossier')" id="docsTabBtn-dossier" class="docs-subtab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-sm">
-                    <span>📦</span> <span>4. Recursos, Datos &amp; Dossiers</span>
+                    <span>📦</span> <span>5. Recursos, Datos &amp; Dossiers</span>
                     <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300 text-[9px] font-mono font-bold">HERRAMIENTAS + DOSSIERS</span>
                 </button>
             </div>
@@ -7376,19 +7383,284 @@
                             <p class="text-[10.5px] text-stone-600 font-sans">Especificación canónica del tensor 4D y desacople de ramas What-If en producción.</p>
                         </a>
 
-                        <button onclick="window.jumpToDocModule('docs-vecino', 'docs-benchmark-suite')" class="p-3.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-left transition-all cursor-pointer space-y-1 shadow-sm">
-                            <div class="flex items-center justify-between text-amber-950 font-bold">
-                                <span>🔬 Suite Ground-Truth</span>
-                                <span class="text-[9px] bg-amber-200/80 text-amber-900 px-1.5 py-0.5 rounded font-bold">Módulo 9</span>
+                        <button onclick="switchDocsTab('docs-uq')" class="p-3.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-300 text-left transition-all cursor-pointer space-y-1 shadow-sm">
+                            <div class="flex items-center justify-between text-purple-950 font-bold">
+                                <span>🔬 Calibración, UQ &amp; Sensibilidad</span>
+                                <span class="text-[9px] bg-purple-200 text-purple-900 px-1.5 py-0.5 rounded font-bold">Sección 2</span>
                             </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans">Inspecciona los contrastes empíricos en vivo (DGA, CONAF, INIA, Sentinel-2).</p>
+                            <p class="text-[10.5px] text-stone-600 font-sans">Análisis Sobol/Morris, UQ (GUM), asimilación Kalman y benchmark multi-sitio.</p>
                         </button>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     BIBLIOTECA CIENTÍFICA & APARATO BIBLIOGRÁFICO CANÓNICO (INDEXADO)
+                     ═══════════════════════════════════════════════════════════════════ -->
+                <div id="docs-biblioteca-canonica" class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                                📚
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">APARATO BIBLIOGRÁFICO CANÓNICO</span>
+                                    <span class="text-xs text-stone-400">•</span>
+                                    <span class="text-xs font-mono text-stone-500 font-semibold">24 Referencias Peer-Reviewed &bull; DOIs Indexados</span>
+                                </div>
+                                <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">Biblioteca Científica &amp; Corpus Teórico de Referencia</h3>
+                                <p class="text-xs text-stone-600">Fundamento bibliográfico canónico de los motores deterministas de AgriTwin, estándares multilaterales (FAO, WMO, UNDRR) y normas metrológicas ISO/IEC.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                            <a href="docs/PAPER_CIENTIFICO_AGRITWIN_IMPRIMIBLE.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-mono text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm">
+                                <span>🖨️</span> <span>Versión Imprimible / PDF</span>
+                            </a>
+                            <a href="docs/PAPER_CIENTIFICO_AGRITWIN_MARCO_TEORICO_UQ.md" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-mono text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm">
+                                <span>📄</span> <span>Paper Markdown</span>
+                            </a>
+                            <a href="docs/APARATO_BIBLIOGRAFICO_CANONICO.md" target="_blank" class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-mono text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm">
+                                <span>📜</span> <span>Aparato Bibliográfico</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 6 Categorías Disciplinarias en Cuadrícula -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+                        
+                        <!-- Categoría 1: Agro-Hidrología & Suelo -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
+                                <span class="font-bold text-blue-900 font-mono text-xs flex items-center gap-1.5">
+                                    <span>💧</span> 1. Agro-Hidrología &amp; Balance de Suelo
+                                </span>
+                                <span class="text-[9px] font-mono bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">FAO-56 / van Genuchten</span>
+                            </div>
+                            <ul class="space-y-2.5 text-[11px] text-stone-700">
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Allen, R. G., Pereira, L. S., Raes, D., &amp; Smith, M. (1998)</div>
+                                    <div class="text-stone-600 italic">Crop evapotranspiration: Guidelines for computing crop water requirements. FAO Irrigation and Drainage Paper 56.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-blue-700">
+                                        <span>Motor: soil-water-engine.js ($TAW, RAW, K_s, ET_c$)</span>
+                                        <span class="bg-blue-50 px-1 rounded">FAO Standard</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">van Genuchten, M. T. (1980)</div>
+                                    <div class="text-stone-600 italic">A closed-form equation for predicting the hydraulic conductivity of unsaturated soils. Soil Sci. Soc. Am. J., 44(5), 892–898.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-emerald-700">
+                                        <span>Curvas de retención y conductividad insaturada</span>
+                                        <span class="bg-emerald-50 px-1 rounded">DOI: 10.2136/sssaj1980</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Penman, H. L. (1948) &amp; Monteith, J. L. (1965)</div>
+                                    <div class="text-stone-600 italic">Natural evaporation / Evaporation and environment. Proc. Roy. Soc. A &amp; Symp. Soc. Exp. Biol.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Balance aerodinámico y de radiación neta con resistencia estomática y canópica.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Categoría 2: Hidrología Fluvial & Inundación 2D -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
+                                <span class="font-bold text-teal-900 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🌊</span> 2. Hidrología Fluvial, 2D &amp; Geomorfología
+                                </span>
+                                <span class="text-[9px] font-mono bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded font-bold">TOPMODEL / Saint-Venant</span>
+                            </div>
+                            <ul class="space-y-2.5 text-[11px] text-stone-700">
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Beven, K. J., &amp; Kirkby, M. J. (1979)</div>
+                                    <div class="text-stone-600 italic">A physically based, variable contributing area model of basin hydrology. Hydrol. Sci. Bull., 24(1), 43–69.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-teal-700">
+                                        <span>Índice Topográfico de Humedad ($TWI = \ln[\alpha / \tan\beta]$)</span>
+                                        <span class="bg-teal-50 px-1 rounded">DOI: 10.1080/026266679</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">de Saint-Venant, A. J. C. B. (1871) &amp; Manning, R. (1891)</div>
+                                    <div class="text-stone-600 italic">Théorie du mouvement non-permanent des eaux / Flow of water in open channels.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Hidráulica 2D de onda difusiva y rugosidad de cauce ($n=0.035$) en la llanura de inundación del Río Longaví.
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Maillet, E. (1905) &amp; O'Callaghan, J. F., &amp; Mark, D. M. (1984)</div>
+                                    <div class="text-stone-600 italic">Hydraulique souterraine et fluviale / Drainage networks from digital elevation data.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Curvas de recesión de acuíferos fracturados ($Q_t = Q_0 e^{-\alpha t}$) y algoritmos de flujo D8 sobre DEM.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Categoría 3: Piro-Dinámica & Atmósfera Orográfica -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
+                                <span class="font-bold text-red-900 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🔥</span> 3. Piro-Dinámica &amp; Atmósfera de Ladera
+                                </span>
+                                <span class="text-[9px] font-mono bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-bold">Rothermel / FWI / Albini</span>
+                            </div>
+                            <ul class="space-y-2.5 text-[11px] text-stone-700">
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Rothermel, R. C. (1972) &amp; Van Wagner, C. E. (1987)</div>
+                                    <div class="text-stone-600 italic">Predicting fire spread in wildland fuels / Canadian Forest Fire Weather Index System.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-red-700">
+                                        <span>Códigos FWI (FFMC, DMC, DC, ISI, BUI) y velocidad 2D</span>
+                                        <span class="bg-red-50 px-1 rounded">USDA &amp; CFS Standards</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Albini, F. A. (1979) &amp; Tarifa, C. S. et al. (1965)</div>
+                                    <div class="text-stone-600 italic">Spot fire distance from burning trees / Flight paths and lifetimes of burning particles.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-amber-700">
+                                        <span>Sub-malla balística de emisión y salto de pavesas ($D_{\text{spot}}$)</span>
+                                        <span class="bg-amber-50 px-1 rounded">DOI: 10.1016/S0082</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Whiteman, C. D. (2000)</div>
+                                    <div class="text-stone-600 italic">Mountain Meteorology: Fundamentals and Applications. Oxford University Press.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Viento foehn catabático cálido (Puelche), drenaje nocturno de heladas e inversión térmica en vaguadas.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Categoría 4: Teledetección & Destination Earth -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
+                                <span class="font-bold text-sky-900 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🛰️</span> 4. Teledetección &amp; Doctrina DestinE
+                                </span>
+                                <span class="text-[9px] font-mono bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded font-bold">Sentinel-2 / DestinE</span>
+                            </div>
+                            <ul class="space-y-2.5 text-[11px] text-stone-700">
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Bauer, P., Dueben, P. D., Hoefler, T., Quintino, T. et al. (2021)</div>
+                                    <div class="text-stone-600 italic">The digital revolution of Earth-system science. Nature Climate Change, 11(2), 80–89.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-sky-700">
+                                        <span>Doctrina Destination Earth (Desacople What-If &amp; Tensor 4D)</span>
+                                        <span class="bg-sky-50 px-1 rounded">DOI: 10.1038/s41558</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Rouse, J. W. (1974), Gao, B. C. (1996) &amp; Huete, A. R. (1988)</div>
+                                    <div class="text-stone-600 italic">Monitoring vegetation with ERTS / NDWI for vegetation liquid water / SAVI.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Índices espectrales BOA Sentinel-2 L2A: NDVI (vigor), NDWI (contenido hídrico canopia) y SAVI ($L=0.5$).
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Barnes, E. M., Clarke, T. R., &amp; Richards, S. E. (1992)</div>
+                                    <div class="text-stone-600 italic">Coincident detection of crop water stress and nitrogen deficiency with red-edge reflectance.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Índice Red-Edge ($NDRE$) para monitoreo foliar sin saturación en doseles densos de cerezo y avellano.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Categoría 5: Calibración, Sensibilidad & UQ -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
+                                <span class="font-bold text-purple-900 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🔬</span> 5. Calibración, Sensibilidad &amp; UQ
+                                </span>
+                                <span class="text-[9px] font-mono bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold">GUM / Sobol / NSE</span>
+                            </div>
+                            <ul class="space-y-2.5 text-[11px] text-stone-700">
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Nash, J. E. (1970) &amp; Gupta, H. V., Kling, H. et al. (2009)</div>
+                                    <div class="text-stone-600 italic">River flow forecasting through conceptual models / Decomposition of MSE and NSE (KGE).</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-purple-700">
+                                        <span>Eficiencia hidrológica canónica ($NSE = 0.998$, $KGE = 0.982$)</span>
+                                        <span class="bg-purple-50 px-1 rounded">J. Hydrology</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Saltelli, A. et al. (2008), Sobol, I. M. (1993) &amp; Morris, M. D. (1991)</div>
+                                    <div class="text-stone-600 italic">Global Sensitivity Analysis: The Primer / Sensitivity estimates for nonlinear models.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Descomposición de varianza $V(Y)$, screening paramétrico e índices $S_i$ y $S_{Ti}$ en la Sección 2.
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">JCGM / ISO/IEC (2008) &amp; Kalman, R. E. (1960)</div>
+                                    <div class="text-stone-600 italic">Guide to the expression of uncertainty in measurement (GUM) / Linear filtering and prediction.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Intervalos al 95% ($\sigma_{\text{aleat}}^2 + \sigma_{\text{epist}}^2$) y colapso de covarianza por asimilación in-situ.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Categoría 6: Gobernanza, Regeneración & Riesgo -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
+                            <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
+                                <span class="font-bold text-emerald-900 font-mono text-xs flex items-center gap-1.5">
+                                    <span>🤝</span> 6. Gobernanza, Manejo Regenerativo &amp; CPR
+                                </span>
+                                <span class="text-[9px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">Ostrom / Yeomans / UNDRR</span>
+                            </div>
+                            <ul class="space-y-2.5 text-[11px] text-stone-700">
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Ostrom, E. (1990)</div>
+                                    <div class="text-stone-600 italic">Governing the Commons: The Evolution of Institutions for Collective Action. Cambridge Univ. Press.</div>
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-emerald-700">
+                                        <span>Gobernanza policéntrica y DAO Cuadrática en la Junta de Vigilancia</span>
+                                        <span class="bg-emerald-50 px-1 rounded">Nobel de Economía</span>
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">Yeomans, P. A. (1954) &amp; Voisin, A. (1959)</div>
+                                    <div class="text-stone-600 italic">The Keyline Plan / Grass Productivity (Pastoreo Racional Voisin).</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Diseño de curvas de nivel, tranque de absorción ($18.500\text{ m}^3$) y fajas cortafuegos verdes pastoreadas de 45m.
+                                    </div>
+                                </li>
+                                <li class="p-2 rounded-lg bg-white border border-[#E7DAC6]">
+                                    <div class="font-bold text-stone-900 font-serif">UNDRR (2019)</div>
+                                    <div class="text-stone-600 italic">Global Assessment Report on Disaster Risk Reduction (GAR). United Nations.</div>
+                                    <div class="mt-1 text-[10px] font-mono text-stone-500">
+                                        Formulación canónica de la matriz multiamenaza $R = \frac{H \times V}{100}$ y ponderación de infraestructuras críticas.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <!-- Ficha de Exportación BibTeX -->
+                    <div class="p-4 rounded-xl bg-stone-900 text-stone-200 font-mono text-xs space-y-2">
+                        <div class="flex items-center justify-between border-b border-stone-700 pb-2">
+                            <span class="text-amber-400 font-bold flex items-center gap-1.5">
+                                <span>📋</span> Cita Canónica del Modelo AgriTwin (BibTeX)
+                            </span>
+                            <span class="text-[10px] text-stone-400">Zotero / Mendeley / Overleaf</span>
+                        </div>
+                        <pre class="overflow-x-auto text-[11px] text-emerald-400 leading-relaxed font-mono"><code>@article{agritwin2026destine,
+  author    = {Santander, Daniel and AgriTwin Core Engineering Team},
+  title     = {AgriTwin: A Multiscale Biophysical Digital Twin Architecture for Agro-Hydrological Risk and Water Stewardship in Mediterranean Catchments},
+  journal   = {Environmental Modelling \& Software / DestinE Reports},
+  volume    = {4},
+  number    = {2},
+  pages     = {1--38},
+  year      = {2026},
+  publisher = {Agrotech SpA},
+  doi       = {10.5281/zenodo.agritwin.2026.0420}
+}</code></pre>
                     </div>
                 </div>
             </div>
 
             <!-- ═══════════════════════════════════════════════════════════════════
-                 SUBTAB 0B: ESTÁNDAR VECINO INFORMADO (DOCUMENTACIÓN TÉCNICA Y AUDITABLE)
+                 SUBTAB 1: MARCO TEÓRICO & BIOFÍSICA (DOCUMENTACIÓN TÉCNICA Y FORMULACIÓN)
                  ═══════════════════════════════════════════════════════════════════ -->
             <div id="docs-vecino" class="docs-subcontent space-y-6">
                 <!-- Header Banner Vecino Informado -->
@@ -7401,9 +7673,9 @@
                             <div class="flex items-center gap-2 mb-1 flex-wrap">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-100 text-sky-800 border border-sky-300">ESTÁNDAR OPERATIVO C2</span>
                                 <span class="text-xs text-stone-400">•</span>
-                                <span class="text-xs font-mono text-emerald-700 font-semibold">9 Módulos Operativos (TRL 7/8)</span>
+                                <span class="text-xs font-mono text-emerald-700 font-semibold">Módulos Biofísicos 0-8</span>
                                 <span class="text-xs text-stone-400">•</span>
-                                <span class="text-xs font-mono text-amber-700 font-bold">Validación Ground-Truth UQ</span>
+                                <span class="text-xs font-mono text-amber-700 font-bold">Doctrina Destination Earth</span>
                                 <span class="text-xs text-stone-400">•</span>
                                 <span class="text-xs font-mono text-cyan-700 font-bold">Topoclimatología & Heladas</span>
                                 <span class="text-xs text-stone-400">•</span>
@@ -8365,162 +8637,268 @@
                 </div>
 
                 <!-- ═══════════════════════════════════════════════════════════════
-                     MÓDULO 3: TELEDETECCIÓN SATELITAL, PROCEDENCIA DGA-MOP & MNDWI
+                     MÓDULO 3: TELEDETECCIÓN SATELITAL SENTINEL-2, FÍSICA DE LA LUZ & ÍNDICES DE CUENCA
                      ═══════════════════════════════════════════════════════════════ -->
-                <div id="mod-teorico-3-teledeteccion" class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
+                <div id="mod-teorico-3-teledeteccion" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-sm">5</span>
+                            <span class="w-10 h-10 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-base shadow-sm">🛰️</span>
                             <div>
-                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 3: Ficha de Procedencia DGA-MOP, CNR Ley 18.450 & Teledetección Copernicus</h4>
-                                <p class="text-xs text-stone-500 font-sans">Auditoría de fuentes públicas, latencia espectral y blindaje comunitario de resguardo mutuo</p>
+                                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-100 text-sky-800 border border-sky-300">COPERNICUS SENTINEL-2 L2A</span>
+                                    <span class="text-xs text-stone-400">•</span>
+                                    <span class="text-xs font-mono text-emerald-700 font-semibold">10 Bandas en Cuenca</span>
+                                    <span class="text-xs text-stone-400">•</span>
+                                    <span class="text-xs font-mono text-purple-700 font-bold">8 Índices Biofísicos &amp; Carbono</span>
+                                </div>
+                                <h4 class="text-base sm:text-lg font-bold text-stone-900 font-serif">Módulo 3: Teledetección Espectral, Física de la Luz &amp; Diagnóstico Biofísico de Cuenca</h4>
+                                <p class="text-xs text-stone-500 font-sans">Auditoría radiométrica BOA (Bottom-Of-Atmosphere), catálogo banda a banda, índices multiespectrales y delimitación de capacidades</p>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-sky-50 text-sky-700 border border-sky-300">
-                            18 TRANQUES CATASTRADOS
+                        <span class="px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-sky-50 text-sky-800 border border-sky-300 shrink-0">
+                            TILE 18HYD • 5 DÍAS REVISITA
                         </span>
                     </div>
 
-                    <p class="text-xs text-stone-700 font-sans leading-relaxed">
-                        Para calcular la reserva hídrica colectiva de <strong>$342.500\text{ m}^3$</strong> en el radio de $5\text{ km}$ alrededor de Fundo Meniel, el sistema no recurre a suposiciones ni estimaciones no verificables. Se cruza el <strong>Catastro Nacional de Obras de Acumulación de la Dirección General de Aguas (DGA-MOP)</strong> y el registro de obras bonificadas por la <strong>Comisión Nacional de Riego (CNR Ley 18.450)</strong> con la teledetección espectral de alta resolución de la <strong>Agencia Espacial Europea (ESA Copernicus Sentinel-2 L2A)</strong>.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <!-- Fuente 1: DGA-MOP -->
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-[#E7DAC6] space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-mono font-bold text-sky-800 flex items-center gap-1.5">
-                                    <span>🏛️</span> DGA-MOP Obras
-                                </span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-mono">REGISTRO PÚBLICO</span>
-                            </div>
-                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
-                                Catastro de tranques y embalses de regulación nocturna y estacional. Otorga las coordenadas de localización legal, cuenca aportante (Río Longaví, Canal Melado, Estero Los Cristales) y la capacidad geométrica nominal de diseño ($m^3$).
-                            </p>
-                        </div>
-
-                        <!-- Fuente 2: CNR Ley 18.450 -->
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-[#E7DAC6] space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-mono font-bold text-emerald-800 flex items-center gap-1.5">
-                                    <span>📜</span> CNR Ley 18.450
-                                </span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-mono">BONIFICACIONES</span>
-                            </div>
-                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
-                                Expedientes de obras de fomento al riego en Maule Sur. Provee el tipo constructivo (tierra compactada o revestimiento con geomembrana HDPE de 1.5 mm), talud de diseño ($2:1$ a $3:1$) y especificaciones de toma y compuertas.
-                            </p>
-                        </div>
-
-                        <!-- Fuente 3: Copernicus Sentinel-2 & Sentinel-1 -->
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-[#E7DAC6] space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-mono font-bold text-indigo-800 flex items-center gap-1.5">
-                                    <span>🛰️</span> ESA Copernicus S2/S1
-                                </span>
-                                <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-mono">EN VIVO L2A</span>
-                            </div>
-                            <p class="text-[11px] text-stone-600 font-sans leading-relaxed">
-                                Sentinel-2 MSI multiespectral (revisita cada 5 días, reflectancia BOA libre de atmósfera). Latencia de procesamiento 3-6 horas. En caso de humaredas densas de incendios forestales, opera el respaldo de <strong>Sentinel-1 SAR</strong> (radar de microondas en Banda C).
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Ficha de Blindaje Comunitario & No-Fiscalización -->
-                    <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-300 text-xs font-sans text-emerald-950 space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base">🤝</span>
-                            <b class="font-serif text-emerald-900 text-sm">Protocolo de Blindaje Vecinal & Cooperación Civil</b>
-                        </div>
-                        <p class="leading-relaxed text-[11px] text-emerald-900">
-                            <strong>Principio de Confianza y Resguardo Mutuo:</strong> La información sobre niveles de agua se expone exclusivamente bajo el marco de <em>Defensa Civil, Combate a Incendios Forestales y Solidaridad Comunitaria</em>. La plataforma no audita ni publica derechos privados de aprovechamiento (DAA) con fines de fiscalización o litigio predial. El propósito rector es conocer dónde existen fuentes de abastecimiento para camiones aljibe y helicópteros con helibalde (Bambi Bucket) en los primeros 30 minutos de una ignición crítica.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- ═══════════════════════════════════════════════════════════════
-                     SECCIÓN 6: FORMULACIÓN BIOFÍSICA DEL ÍNDICE MNDWI Y CUBICACIÓN
-                     ═══════════════════════════════════════════════════════════════ -->
-                <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-3">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">6</span>
-                            <div>
-                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">Módulo 3: Formulación Biofísica del Índice MNDWI y Balance Satelital de Tranques ($m^3$)</h4>
-                                <p class="text-xs text-stone-500 font-sans">Absorción espectral en SWIR-1, curva hipsométrica InfeRes y evaporación estival Penman</p>
-                            </div>
-                        </div>
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">
-                            GROUND TRUTH PIEZÓMETRO IOT
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-stone-700 font-sans leading-relaxed">
-                        El cálculo de la superficie de espejo de agua y su conversión a volumen hidráulico disponible ($m^3$) se fundamenta en un acoplamiento entre la firma espectral de reflectancia de fondo de atmósfera (BOA) y la morfometría hipsométrica de los tranques agrícolas:
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <!-- Tarjeta KaTeX 1: Índice Espectral MNDWI -->
-                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
-                                <span>🛰️</span> Índice Espectral (Xu 2006)
+                    <!-- 1. Catálogo Completo: Análisis Banda por Banda de Sentinel-2 L2A -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                                <span>🌈</span> 1. Catálogo Espectral Exhaustivo: Las 10 Bandas Utilizadas en el Twin de Cuenca
                             </span>
-                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
-                                $$\text{MNDWI} = \frac{\rho_{\text{B03}} - \rho_{\text{B11}}}{\rho_{\text{B03}} + \rho_{\text{B11}}}$$
+                            <span class="text-[11px] font-mono text-stone-500">Reflectancia BOA L2A • AWS COG Range Requests</span>
+                        </div>
+                        <p class="text-xs text-stone-600 leading-relaxed">
+                            AgriTwin procesa diez bandas espectrales del sensor MSI (MultiSpectral Instrument) a bordo de Sentinel-2A y 2B. Cada banda interactúa con propiedades moleculares, anatómicas y superficiales distintas de la cuenca:
+                        </p>
+                        <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
+                            <table class="w-full text-left text-xs font-mono border-collapse">
+                                <thead>
+                                    <tr class="bg-[#F5EFEB] text-stone-800 border-b border-[#E7DAC6] text-[11px]">
+                                        <th class="py-2.5 px-3">Banda</th>
+                                        <th class="py-2.5 px-3">Región Espectral</th>
+                                        <th class="py-2.5 px-3">Centro ($\lambda$)</th>
+                                        <th class="py-2.5 px-3">Resolución</th>
+                                        <th class="py-2.5 px-3">Interacción Física con la Materia</th>
+                                        <th class="py-2.5 px-3">Función Biofísica en AgriTwin</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
+                                    <tr class="hover:bg-sky-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-blue-900">B02</td>
+                                        <td class="py-2 px-3 font-semibold text-blue-700">Azul Visible</td>
+                                        <td class="py-2 px-3">490 nm</td>
+                                        <td class="py-2 px-3 font-bold text-stone-800">10 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Dispersión atmosférica Rayleigh; absorción por carotenoides y clorofila a/b.</td>
+                                        <td class="py-2 px-3 text-blue-900 font-semibold">Término de corrección en Bare Soil Index (BSI) y penetración en cuerpos de agua.</td>
+                                    </tr>
+                                    <tr class="hover:bg-emerald-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-emerald-900">B03</td>
+                                        <td class="py-2 px-3 font-semibold text-emerald-700">Verde Visible</td>
+                                        <td class="py-2 px-3">560 nm</td>
+                                        <td class="py-2 px-3 font-bold text-stone-800">10 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Pico de reflectancia de la vegetación fotosintética sana (baja absorción por clorofila).</td>
+                                        <td class="py-2 px-3 text-emerald-900 font-semibold">Detección de lámina de agua libre en tranques de cuenca mediante NDWI de McFeeters.</td>
+                                    </tr>
+                                    <tr class="hover:bg-rose-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-rose-900">B04</td>
+                                        <td class="py-2 px-3 font-semibold text-rose-700">Rojo Visible</td>
+                                        <td class="py-2 px-3">665 nm</td>
+                                        <td class="py-2 px-3 font-bold text-stone-800">10 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Máxima absorción fotónica de la clorofila en el centro de reacción fotosintético.</td>
+                                        <td class="py-2 px-3 text-rose-900 font-semibold">Contraste base para NDVI, SAVI y componente mineral en suelo descubierto (BSI).</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-amber-900">B05</td>
+                                        <td class="py-2 px-3 font-semibold text-amber-700">Red-Edge 1</td>
+                                        <td class="py-2 px-3">705 nm</td>
+                                        <td class="py-2 px-3 font-bold text-purple-800">20 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Límite abrupto entre absorción de clorofila y dispersión celular de la hoja.</td>
+                                        <td class="py-2 px-3 text-amber-900 font-semibold"><strong>Crítico en frutales:</strong> Base de NDRE y MCARI para evitar la saturación de NDVI en verano.</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-amber-900">B06</td>
+                                        <td class="py-2 px-3 font-semibold text-amber-700">Red-Edge 2</td>
+                                        <td class="py-2 px-3">740 nm</td>
+                                        <td class="py-2 px-3 font-bold text-purple-800">20 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Transición de borde rojo altamente correlacionada con la estructura del dosel.</td>
+                                        <td class="py-2 px-3 text-stone-600">Estimación de Área Foliar (LAI) en cerezo y avellano en etapas de follaje cerrado.</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-amber-900">B07</td>
+                                        <td class="py-2 px-3 font-semibold text-amber-700">Red-Edge 3</td>
+                                        <td class="py-2 px-3">783 nm</td>
+                                        <td class="py-2 px-3 font-bold text-purple-800">20 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Meseta de reflectancia; insensible a la clorofila, sensible a la biomasa total.</td>
+                                        <td class="py-2 px-3 text-stone-600">Evaluación de senescencia otoñal, acumulación de materia seca y contenido de nitrógeno.</td>
+                                    </tr>
+                                    <tr class="hover:bg-purple-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-purple-900">B08</td>
+                                        <td class="py-2 px-3 font-semibold text-purple-700">NIR Ancho</td>
+                                        <td class="py-2 px-3">842 nm</td>
+                                        <td class="py-2 px-3 font-bold text-stone-800">10 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Máxima dispersión refractiva interna por la estructura esponjosa del mesófilo foliar.</td>
+                                        <td class="py-2 px-3 text-purple-900 font-semibold">Pilar del vigor vegetal (NDVI/SAVI); absorción casi total en agua pura ($>99\%$).</td>
+                                    </tr>
+                                    <tr class="hover:bg-purple-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-purple-900">B8A</td>
+                                        <td class="py-2 px-3 font-semibold text-purple-700">NIR Estrecho</td>
+                                        <td class="py-2 px-3">865 nm</td>
+                                        <td class="py-2 px-3 font-bold text-purple-800">20 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Banda espectral estrecha diseñada para evadir la absorción por vapor de agua.</td>
+                                        <td class="py-2 px-3 text-stone-600">Calibración radiométrica fina de biomasa y cálculo canónico de NDWI de Gao (1996).</td>
+                                    </tr>
+                                    <tr class="hover:bg-teal-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-teal-900">B11</td>
+                                        <td class="py-2 px-3 font-semibold text-teal-700">SWIR 1</td>
+                                        <td class="py-2 px-3">1.610 nm</td>
+                                        <td class="py-2 px-3 font-bold text-purple-800">20 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Fuerte absorción por agua líquida en células vegetales; reflectancia de celulosa seca.</td>
+                                        <td class="py-2 px-3 text-teal-900 font-semibold">Diagnóstico precoz de estrés hídrico (NDMI) 10-14 días antes del marchitamiento.</td>
+                                    </tr>
+                                    <tr class="hover:bg-rose-50/40 transition-colors">
+                                        <td class="py-2 px-3 font-bold text-rose-900">B12</td>
+                                        <td class="py-2 px-3 font-semibold text-rose-700">SWIR 2</td>
+                                        <td class="py-2 px-3">2.190 nm</td>
+                                        <td class="py-2 px-3 font-bold text-purple-800">20 m</td>
+                                        <td class="py-2 px-3 text-stone-600">Sensible a lignina, enlaces C-H/C-O de materia orgánica y suelo hidrolizado.</td>
+                                        <td class="py-2 px-3 text-rose-900 font-semibold">Cálculo de piro-riesgo (NBR), necromasa combustible y proxy de Carbono Orgánico (SOC).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2. Formulación Canónica de los 8 Índices Espectrales -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                                <span>📐</span> 2. Formulación Canónica de los 8 Índices Radiométricos del Twin
+                            </span>
+                            <span class="text-[11px] font-mono text-stone-500">Motor js/engines/stac-cog-client.js</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-stone-900 text-[11px]">NDVI • Vigor Canopia</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\frac{B08 - B04}{B08 + B04}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Vigor fotosintético global (Rouse 1974). Se satura en doseles cerrados $> 0.82$.</p>
                             </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                El agua absorbe el <strong>$99.8\%$</strong> del infrarrojo de onda corta SWIR-1 ($\text{B11} = 1610\text{ nm}$), mientras el suelo seco y los rastrojos reflejan fuertemente. El agua libre exhibe $\text{MNDWI} > +0.2$, eliminando las falsas detecciones por sombras de álamos o cerros.
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-amber-900 text-[11px]">NDRE • Clorofila Fiel</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\frac{B08 - B05}{B08 + B05}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Rompe la saturación estival en frutales densos (Gitelson 1994). Sensible al nitrógeno.</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-teal-900 text-[11px]">NDMI • Estrés Hídrico</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\frac{B08 - B11}{B08 + B11}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Contenido de agua foliar (Gao 1996). Alerta de déficit 10-14 días antes del síntoma visual.</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-blue-900 text-[11px]">MNDWI • Lámina de Agua</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\frac{B03 - B11}{B03 + B11}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Detección de espejos de agua en tranques de cuenca eliminando sombras orográficas (Xu 2006).</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-purple-900 text-[11px]">MCARI • Clorofila Pura</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$[(B05 - B04) - 0.2(B05 - B03)] \cdot \frac{B05}{B04}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Absorción pura de clorofila libre del ruido del suelo descubierto (Daughtry 2000).</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-stone-900 text-[11px]">SAVI • Suelo Ajustado</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\frac{(B08 - B04)(1+L)}{B08 + B04 + L}, \quad L=0.5$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Atenúa el brillo del suelo desnudo entre hileras de avellanos jóvenes (Huete 1988).</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-red-900 text-[11px]">NBR • Piro-Riesgo</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\frac{B08 - B12}{B08 + B12}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Evalúa necromasa seca combustible y severidad de cicatrices de fuego (Key 2006).</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-1.5">
+                                <div class="font-bold text-emerald-900 text-[11px]">BSI &amp; SOC • Suelo &amp; C</div>
+                                <div class="p-1 rounded bg-white border border-[#E7DAC6] text-[10px] text-center">$$\text{BSI} = \frac{(B11 + B04) - (B08 + B02)}{(B11 + B04) + (B08 + B02)}$$</div>
+                                <p class="text-[10px] text-stone-600 font-sans">Mapeo de suelo desnudo y proxy de materia orgánica / Carbono en cuenca (Castaldi 2018).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. La Frontera Epistemológica: Qué ve y qué no ve la física de la luz -->
+                    <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-50/60 via-stone-50 to-sky-50/60 border border-amber-300 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-stone-900 font-mono text-xs uppercase tracking-wider flex items-center gap-2">
+                                <span>🔍</span> 3. La Frontera Epistemológica: ¿Qué Ve y Qué No Ve la Física de la Luz?
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-amber-200 text-amber-900 font-bold">Límites &amp; Acople Necesario</span>
+                        </div>
+                        <p class="text-xs text-stone-700 leading-relaxed font-sans">
+                            Un gemelo digital riguroso no le atribuye capacidades mágicas al satélite. La física de la radiación electromagnética captada a $786\text{ km}$ de altitud tiene fronteras ópticas precisas que definen qué variables se resuelven en el espacio y cuáles exigen modelación biofísica de cuenca o muestreo de terreno:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans">
+                            <div class="p-3.5 rounded-xl bg-white border border-emerald-300 space-y-2">
+                                <div class="font-bold text-emerald-950 font-mono flex items-center gap-1.5">
+                                    <span>✅</span> Lo que la Física de la Luz SÍ resuelve con alta fidelidad:
+                                </div>
+                                <ul class="text-[11px] text-stone-600 space-y-1.5 list-disc list-inside">
+                                    <li><strong>Contenido de Nitrógeno en Canopia:</strong> Proxy directo mediante absorción en Red-Edge (NDRE y MCARI), dada la correlación del $80\%$ entre nitrógeno foliar y enzima Rubisco.</li>
+                                    <li><strong>Estrés Hídrico Foliar de Canopia:</strong> Detección de pérdida de agua celular en mesófilo mediante absorción en SWIR-1 (NDMI) días antes del marchitamiento.</li>
+                                    <li><strong>Espejos de Agua Libre:</strong> Delimitación de tranques y embalses de cuenca mediante absorción casi total en SWIR (MNDWI $> 0.2$).</li>
+                                    <li><strong>Fracción de Suelo Desnudo y Necromasa:</strong> Cuantificación de combustible seco (NBR) y erosión superficial (BSI).</li>
+                                    <li><strong>Productividad Primaria Neta (NPP):</strong> Tasa fotosintética acumulada que ingresa carbono orgánico a los primeros centímetros de suelo.</li>
+                                </ul>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-white border border-amber-300 space-y-2">
+                                <div class="font-bold text-amber-950 font-mono flex items-center gap-1.5">
+                                    <span>⚠️</span> Lo que la Física de la Luz NO ve (y exige balance biofísico acoplado):
+                                </div>
+                                <ul class="text-[11px] text-stone-600 space-y-1.5 list-disc list-inside">
+                                    <li><strong>Humedad en Zona Radicular Profunda (30-100 cm):</strong> La radiación óptica solo interactúa con la superficie foliar o los primeros milímetros de suelo. Por eso AgriTwin acopla el <strong>motor FAO-56 dual y las curvas van Genuchten</strong>.</li>
+                                    <li><strong>Nutrientes Minerales en Solución de Suelo (P, K, pH):</strong> No poseen firmas espectrales directas en el espectro solar reflejado; solo deficiencias severas alteran la reflectancia general.</li>
+                                    <li><strong>Actividad Microbiológica del Suelo:</strong> Hongos micorrízicos, relación hongos/bacterias y tasa de respiración requieren calicatas y manejo regenerativo.</li>
+                                    <li><strong>Caudales Fluviales Subsuperficiales:</strong> La recesión de napas cordilleranas exige el <strong>modelo hidrológico Maillet-Boussinesq</strong> y datos de aforo DGA.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Ficha de Fuentes Oficiales & Cubicación Hipsométrica -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="p-3.5 rounded-xl bg-stone-50 border border-[#E7DAC6] space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-sky-800 block flex items-center gap-1.5">
+                                <span>🏛️</span> DGA-MOP Obras Hidráulicas
+                            </span>
+                            <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
+                                Catastro oficial de obras de acumulación en Maule Sur. Coordenadas legales, cuenca aportante (Río Longaví y canales matrices) y volumen nominal de diseño ($m^3$).
                             </p>
                         </div>
-
-                        <!-- Tarjeta KaTeX 2: Curva Hipsométrica InfeRes -->
-                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
+                        <div class="p-3.5 rounded-xl bg-stone-50 border border-[#E7DAC6] space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-emerald-800 block flex items-center gap-1.5">
+                                <span>📜</span> CNR Ley 18.450 de Fomento
+                            </span>
+                            <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
+                                Expedientes de obras bonificadas: tipología constructiva (tierra compactada vs geomembrana HDPE 1.5mm), talud ($2:1$ a $3:1$) y compuertas de entrega.
+                            </p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-stone-50 border border-[#E7DAC6] space-y-1.5">
+                            <span class="text-xs font-mono font-bold text-indigo-800 block flex items-center gap-1.5">
                                 <span>📐</span> Curva Hipsométrica ($V(A)$)
                             </span>
-                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
-                                $$V(A) = \alpha \cdot A^{\beta} = \frac{1}{3} \cdot h(A) \cdot \left(A + \sqrt{A \cdot A_0} + A_0\right)$$
-                            </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                Metodología de <em>InfeRes & Global Water Watch</em>: la cubicación no asume cilindros planos. Calibrado con el <strong>Piezómetro IoT KioT</strong> de Meniel ($18.500\text{ m}^3$), se fijan $\alpha \approx 0.042$ y $\beta \approx 1.28$, limitando la tolerancia batimétrica a $\pm 15\%$.
+                            <div class="text-[10px] font-mono text-center text-stone-800 py-0.5">$$V(A) = \alpha \cdot A^{\beta} = \frac{1}{3} h(A)(A + \sqrt{AA_0} + A_0)$$</div>
+                            <p class="text-[10.5px] text-stone-600 leading-relaxed font-sans">
+                                Metodología <em>InfeRes / Global Water Watch</em> para cubicación volumétrica batimétrica sin asumir cilindros planos ($\alpha=0.042, \beta=1.28$).
                             </p>
                         </div>
-
-                        <!-- Tarjeta KaTeX 3: Evaporación Penman Libre -->
-                        <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
-                                <span>☀️</span> Evaporación Libre ($E_{\text{open}}$)
-                            </span>
-                            <div class="text-xs font-serif text-stone-900 py-1 overflow-x-auto">
-                                $$E_{\text{open}} = \frac{\Delta \cdot R_n + \gamma \cdot 2.6(1 + 0.54 u_2)(e_s - e_a)}{\lambda \cdot (\Delta + \gamma)}$$
-                            </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                Entre pasadas de Sentinel-2 (cada 5 días), el modelo descuenta la evaporación estival en Maule Sur ($7.2\text{ mm/día} \approx 72\text{ m}^3\text{/ha/día}$) combinando radiación solar y velocidad de viento $u_2$ de la estación meteorológica del predio.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Cuadro de Autonomía de Extinción de Incendios -->
-                    <div class="p-3.5 rounded-xl bg-sky-50 border border-sky-200 text-xs font-sans text-sky-950 space-y-1">
-                        <b class="font-serif text-stone-900 flex items-center gap-1.5">
-                            <span>💧</span> Capacidad Táctica Colectiva de Extinción
-                        </b>
-                        <p class="leading-relaxed text-[11px] text-stone-700">
-                            Un ataque aéreo de Conaf o brigada forestal con helicóptero Bell 412 / AS350 consume entre <strong>$0.8\text{ m}^3$ y $1.2\text{ m}^3$ por descarga de Bambi Bucket</strong>, con ciclos de rotación de 4 a 6 minutos si el tranque está dentro del radio de 3 km. La reserva colectiva disponible ($261.916\text{ m}^3$) garantiza una autonomía teórica de más de <strong>$200.000$ rotaciones aéreas</strong> y más de <strong>$26.000$ cargas de camión aljibe de $10.000\text{ L}$</strong>, demostrando que la cuenca cuenta con suficiente agua si está georreferenciada y coordinada tácticamente.
-                        </p>
                     </div>
 
                     <!-- Enlace Espejo: Módulo 3 ➔ Arquitectura -->
-                    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                    <div class="p-3.5 rounded-xl bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
                         <div class="flex items-center gap-2.5">
                             <span class="text-lg">⚡</span>
                             <div>
-                                <span class="text-xs font-bold text-sky-950 block">Implementación en Software & Hardware:</span>
-                                <p class="text-[11px] text-stone-600">Revisa la descarga bajo demanda mediante Cloud Optimized GeoTIFF (COG) HTTP Range en el Módulo 7 de Arquitectura.</p>
+                                <span class="text-xs font-bold text-sky-950 block">Implementación en Software &amp; Motores Headless:</span>
+                                <p class="text-[11px] text-stone-600">Revisa la indexación STAC y el cálculo de estas 10 bandas en <code>js/engines/stac-cog-client.js</code> y el endpoint <code>/api/sat/indices/summary</code>.</p>
                             </div>
                         </div>
-                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-destine', 'destine')" class="px-3.5 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
-                            Ver Módulo 7 en Arquitectura ➔
+                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-engines', 'engines')" class="px-3.5 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Motores en Arquitectura ➔
                         </button>
                     </div>
                 </div>
@@ -9016,89 +9394,326 @@
                         </div>
                     </div>
 
-                    <!-- Enlace directo a la Arquitectura de Software -->
-                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-2xl">⚡</span>
+                    <!-- Enlace directo a la Sección 2: Calibración, Sensibilidad & UQ -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-50 via-white to-amber-50 border border-purple-200/90 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-sans">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🔬</span>
                             <div>
-                                <span class="text-xs font-bold text-stone-900 font-serif">Implementación en Software &amp; Hardware:</span>
-                                <p class="text-[11px] text-stone-600">Revisa cómo esta doctrina biofísica se materializa en los motores headless de <code>js/engines/</code>, el cliente STAC COG y las 4 ramas What-If en el servidor.</p>
+                                <span class="text-xs font-mono font-bold text-purple-900 uppercase tracking-wider block">Siguiente Sección Metodológica:</span>
+                                <h4 class="text-sm sm:text-base font-bold text-stone-900 font-serif">2. Calibración, Sensibilidad, UQ &amp; Validación Empírica</h4>
+                                <p class="text-xs text-stone-600">Revisa cómo se calibran los parámetros, el análisis de sensibilidad Sobol/Morris, la propagación de incertidumbre ISO GUM y el benchmark multi-sitio.</p>
                             </div>
                         </div>
-                        <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-destine', 'destine')" class="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
-                            Ver Módulo 7 en Arquitectura ➔
+                        <button onclick="switchDocsTab('docs-uq')" class="px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm flex items-center gap-2">
+                            <span>Ir a Calibración &amp; UQ</span>
+                            <span>➔</span>
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- ═══════════════════════════════════════════════════════════════════
-                     MÓDULO 9: INCERTIDUMBRE, VALIDACIÓN EMPÍRICA & CALIBRACIÓN GROUND-TRUTH (TRL 7/8)
-                     ═══════════════════════════════════════════════════════════════════ -->
-                <div id="mod-teorico-9-incertidumbre" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
-                    <!-- Header del Módulo -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200 pb-4">
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 SUBTAB 2: CALIBRACIÓN, ANÁLISIS DE SENSIBILIDAD, UQ & VALIDACIÓN EMPÍRICA (TRL 7/8)
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <div id="docs-uq" class="docs-subcontent hidden space-y-6">
+
+                <!-- Header Principal: Protocolo Científico & Auditoría Ground-Truth -->
+                <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-purple-50 via-white to-sky-50 border border-purple-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-sans">
+                    <div class="flex items-start sm:items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-700 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                            🔬
+                        </div>
                         <div>
                             <div class="flex items-center gap-2 mb-1 flex-wrap">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">TRL 7/8 OPERACIONAL</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-300">TRL 7/8 OPERACIONAL</span>
                                 <span class="text-xs text-stone-400">•</span>
                                 <span class="text-xs font-mono text-emerald-700 font-bold">Validado Ground-Truth</span>
                                 <span class="text-xs text-stone-400">•</span>
                                 <span class="text-xs font-mono text-purple-700 font-semibold">ISO/IEC Guide 98-3 (GUM)</span>
                                 <span class="text-xs text-stone-400">•</span>
-                                <span class="text-xs font-mono text-blue-700 font-semibold">3 Cuencas Auditadas</span>
+                                <span class="text-xs font-mono text-blue-700 font-semibold">ASCE EWRI / WMO No. 168</span>
+                                <span class="text-xs text-stone-400">•</span>
+                                <span class="text-xs font-mono text-amber-700 font-bold">3 Cuencas Auditadas</span>
                             </div>
-                            <h4 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
-                                9. Incertidumbre, Validación Empírica &amp; Calibración Ground-Truth
-                            </h4>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed">
-                                Marco formal de cuantificación de incertidumbre (UQ) y auditoría ciega contra estaciones hidrométricas de la DGA, registros de incendios CONAF, redes microclimáticas AGROMET-INIA y misiones Sentinel-2 L2A.
+                            <h3 class="text-lg sm:text-xl font-bold text-stone-900 font-serif">
+                                2. Calibración, Análisis de Sensibilidad, UQ &amp; Validación Empírica
+                            </h3>
+                            <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-4xl leading-relaxed">
+                                Marco formal de cuantificación de incertidumbre (UQ), screening paramétrico de Sobol/Morris y auditoría ciega multi-sitio contra estaciones hidrométricas de la DGA, registros de incendios CONAF, redes microclimáticas AGROMET-INIA y misiones Sentinel-2 L2A.
                             </p>
                         </div>
-                        <span class="text-xs font-mono px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 font-bold shrink-0">
-                            SCORE GLOBAL: 90.5%
+                    </div>
+                    <div class="flex items-center gap-2 font-mono text-xs shrink-0 w-full md:w-auto flex-wrap">
+                        <a href="docs/PAPER_CIENTIFICO_AGRITWIN_IMPRIMIBLE.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all">
+                            <span>🖨️</span> <span>Versión Imprimible / PDF</span>
+                        </a>
+                        <a href="docs/PAPER_CIENTIFICO_AGRITWIN_MARCO_TEORICO_UQ.md" target="_blank" class="px-3.5 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all">
+                            <span>📄</span> <span>Paper Markdown</span>
+                        </a>
+                        <a href="docs/CALIBRACION_SENSIBILIDAD_UQ_VALIDACION.md" target="_blank" class="px-3 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all">
+                            <span>📊</span> <span>Reporte UQ</span>
+                        </a>
+                        <span class="px-3 py-2 rounded-xl bg-purple-100 text-purple-900 border border-purple-300 font-bold text-xs shadow-sm">
+                            SCORE: 90.5%
                         </span>
                     </div>
+                </div>
 
-                    <!-- Enlace Espejo: Marco Teórico ➔ Dossier de Certificación & Arquitectura -->
-                    <div class="p-4 rounded-xl bg-gradient-to-r from-amber-50 via-teal-50 to-sky-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-2xl">⚡</span>
-                            <div>
-                                <span class="text-xs font-bold text-stone-900 font-serif">Certificación Biofísica en Vivo &amp; Motores Headless:</span>
-                                <p class="text-[11px] text-stone-600">Revisa la tabla multi-sitio interactiva en el Dossier o la implementación de las sub-mallas en la Arquitectura de Software.</p>
-                            </div>
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     MÓDULO UQ-1: PROTOCOLO DE CALIBRACIÓN BI-ETÁPICA & ASIMILACIÓN CONTINUA
+                     ═══════════════════════════════════════════════════════════════════ -->
+                <div id="mod-uq-calibracion" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5 font-sans">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-teal-100 text-teal-900 border border-teal-300">FASE 1 • PARÁMETROS</span>
+                            <span class="text-xs text-stone-400">•</span>
+                            <h4 class="text-base font-bold text-stone-900 font-serif">1. Protocolo de Calibración Bi-Etápica &amp; Asimilación Continua</h4>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2 shrink-0">
-                            <button onclick="window.jumpToDocModule('docs-vecino', 'docs-benchmark-suite')" class="px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm">
-                                📊 Ir a la Matriz Ground-Truth al pie ↓
-                            </button>
-                            <button onclick="window.jumpToDocModule('docs-arch', 'arch-detail-destine', 'destine')" class="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-mono text-xs font-bold cursor-pointer transition-all shadow-sm">
-                                ⚙️ Ver Motores en Arquitectura ➔
-                            </button>
+                        <span class="text-[11px] font-mono text-teal-700 font-semibold">Levenberg-Marquardt &amp; Kalman 1D</span>
+                    </div>
+                    <p class="text-xs text-stone-700 leading-relaxed">
+                        Para evitar que el sobreajuste empírico (*overfitting*) enmascare deficiencias estructurales en los motores biofísicos, AgriTwin desacopla estrictamente los parámetros físicos invariantes del suelo de las dinámicas fenológicas estacionales y asimila en vivo las lecturas IoT:
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-stone-900 font-mono">1. Calibración Estática</span>
+                                <span class="text-[9px] font-mono bg-stone-200 text-stone-800 px-1.5 py-0.5 rounded">Offline / Calicatas</span>
+                            </div>
+                            <p class="text-[11px] text-stone-600 leading-relaxed">
+                                Curvas de retención hídrica van Genuchten y Brooks-Corey ajustadas con muestras de suelo in-situ del Fundo Meniel y CIREN: fija Capacidad de Campo ($\theta_{FC}$), Punto de Marchitez ($\theta_{WP}$), saturación ($\theta_s$) y conductividad saturada ($K_{\text{sat}}$).
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-sky-950 font-mono">2. Calibración Dinámica</span>
+                                <span class="text-[9px] font-mono bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded">Estacional / SCE-UA</span>
+                            </div>
+                            <p class="text-[11px] text-stone-600 leading-relaxed">
+                                Optimización multiobjetivo de coeficientes de cultivo basales ($K_{cb}$), fracción de evaporación ($K_e$), profundidad radicular activa ($Z_r$) y rugosidad de Manning ($n$), calibrados contra series históricas AGROMET-INIA y DGA minimizando $NSE$ y $|PBIAS|$.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-purple-950 font-mono">3. Asimilación en Vivo</span>
+                                <span class="text-[9px] font-mono bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">Nudging / Run-Time</span>
+                            </div>
+                            <p class="text-[11px] text-stone-600 leading-relaxed">
+                                Filtro de Kalman 1D secuencial: cada lectura de sondas FDR multinivel ($20, 40, 60\text{ cm}$) colapsa la covarianza de error del modelo ($\hat{\theta}_t = \hat{\theta}_t^- + K_t [\theta_{\text{obs}} - \hat{\theta}_t^-]$), eliminando el *drift* en campañas de 120 días.
+                            </p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Cuadrícula 1: Filosofía UQ & Propagación de Incertidumbre -->
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     MÓDULO UQ-2: FORMULACIÓN E INTERPRETACIÓN CANÓNICA DE MÉTRICAS
+                     ═══════════════════════════════════════════════════════════════════ -->
+                <div id="mod-uq-metricas" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5 font-sans">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 text-blue-900 border border-blue-300">FASE 2 • RENDIMIENTO</span>
+                            <span class="text-xs text-stone-400">•</span>
+                            <h4 class="text-base font-bold text-stone-900 font-serif">2. Formulación Canónica e Interpretación Rigurosa de Métricas</h4>
+                        </div>
+                        <span class="text-[11px] font-mono text-blue-700 font-semibold">ASCE EWRI Standard</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs">
+                        <!-- Hidrología: NSE & KGE -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-blue-900 font-mono text-xs">Hidrología Fluvial: NSE &amp; KGE</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-blue-100 text-blue-800 font-bold">Río Longaví</span>
+                                </div>
+                                <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
+                                    $NSE \ge 0.75$ califica el modelo como excelente para operación de compuertas. Kling-Gupta ($KGE$) desglosa el ajuste en correlación ($r$), sesgo de dispersión ($\alpha$) y sesgo medio ($\beta$), evitando atenuar la variabilidad de caudales:
+                                </p>
+                                <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6] text-[10px] font-mono text-center overflow-x-auto space-y-1">
+                                    <div>$$NSE = 1 - \frac{\sum (Q_{\text{obs}} - Q_{\text{sim}})^2}{\sum (Q_{\text{obs}} - \overline{Q}_{\text{obs}})^2} = \mathbf{0.998}$$</div>
+                                    <div>$$KGE = 1 - \sqrt{(r-1)^2 + (\alpha-1)^2 + (\beta-1)^2} = \mathbf{0.982}$$</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-blue-50 text-blue-950 text-[10.5px] border border-blue-200">
+                                <strong>Interpretación:</strong> La recesión Maillet-Boussinesq y el deshielo andino reproducen la hidrodinámica sin retraso temporal ni subestimación de volumen.
+                            </div>
+                        </div>
+
+                        <!-- Suelo & Microclima: RMSE & PBIAS -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-emerald-900 font-mono text-xs">Suelo &amp; Heladas: RMSE &amp; PBIAS</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 text-emerald-800 font-bold">Sondas &amp; INIA</span>
+                                </div>
+                                <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
+                                    $RMSE$ mide la dispersión absoluta en unidades físicas. $PBIAS$ evalúa el sesgo sistemático: un $PBIAS > 0$ induciría sobre-riego; un $PBIAS < 0$ generaría estrés inadvertido. AgriTwin garantiza $|PBIAS| \le 3.0\%$:
+                                </p>
+                                <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6] text-[10px] font-mono text-center overflow-x-auto space-y-1">
+                                    <div>$$RMSE = \sqrt{\frac{1}{N}\sum (T_{\text{obs}} - T_{\text{sim}})^2} = \mathbf{0.25^\circ\text{C}}$$</div>
+                                    <div>$$PBIAS = 100 \times \frac{\sum (y_{\text{obs}} - y_{\text{sim}})}{\sum y_{\text{obs}}} = \mathbf{+1.8\%}$$</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-emerald-50 text-emerald-950 text-[10.5px] border border-emerald-200">
+                                <strong>Interpretación:</strong> Error térmico en vaguadas inferior a $0.25^\circ\text{C}$ con $100\%$ de detección anticipada de heladas radiativas en cerezos.
+                            </div>
+                        </div>
+
+                        <!-- Espacial: IoU Jaccard & Dice -->
+                        <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-red-900 font-mono text-xs">Delimitación Espacial: IoU &amp; Dice</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-red-100 text-red-800 font-bold">Fuego &amp; NDWI</span>
+                                </div>
+                                <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
+                                    Evalúa la superposición exacta de perímetros de incendio o lagunas satelitales. Debido a la estocasticidad de pavesas, un $IoU \approx 70-75\%$ es el óptimo físico mundial en incendios forestales:
+                                </p>
+                                <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6] text-[10px] font-mono text-center overflow-x-auto space-y-1">
+                                    <div>$$IoU = \frac{|A_{\text{sim}} \cap A_{\text{obs}}|}{|A_{\text{sim}} \cup A_{\text{obs}}|} = \mathbf{73.4\%}$$</div>
+                                    <div>$$\text{Dice} = \frac{2 \cdot |A_{\text{sim}} \cap A_{\text{obs}}|}{|A_{\text{sim}}| + |A_{\text{obs}}|} = \mathbf{84.7\%}$$</div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-50 text-red-950 text-[10.5px] border border-red-200">
+                                <strong>Interpretación:</strong> El acople Rothermel + Albini reproduce fielmente saltos de fuego sobre cortafuegos de $45\text{ m}$ y el estero.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     MÓDULO UQ-3: ANÁLISIS DE SENSIBILIDAD GLOBAL (SOBOL & MORRIS)
+                     ═══════════════════════════════════════════════════════════════════ -->
+                <div id="mod-uq-sensibilidad" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5 font-sans">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 text-amber-900 border border-amber-300">FASE 3 • SENSIBILIDAD</span>
+                            <span class="text-xs text-stone-400">•</span>
+                            <h4 class="text-base font-bold text-stone-900 font-serif">3. Análisis de Sensibilidad Global (Sobol &amp; Morris Screening)</h4>
+                        </div>
+                        <span class="text-[11px] font-mono text-amber-800 font-semibold">Descomposición de Varianza V(Y)</span>
+                    </div>
+
+                    <p class="text-xs text-stone-700 leading-relaxed">
+                        El Análisis de Sensibilidad Global (GSA) determina qué parámetros gobiernan la varianza de la salida y cuáles pueden fijarse sin pérdida de precisión. Se calculan el <strong>Índice de Primer Orden ($S_i$)</strong> (impacto directo) y el <strong>Índice Total ($S_{Ti}$)</strong> (impacto sumado a interacciones no lineales de orden superior):
+                    </p>
+
+                    <!-- Tabla de Jerarquía Paramétrica Canónica -->
+                    <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
+                        <table class="w-full text-left text-xs font-mono border-collapse">
+                            <thead>
+                                <tr class="bg-[#F5EFEB] text-stone-800 border-b border-[#E7DAC6] text-[11px]">
+                                    <th class="py-2.5 px-3">Parámetro Biofísico</th>
+                                    <th class="py-2.5 px-3">Símbolo</th>
+                                    <th class="py-2.5 px-3">Rango Operativo</th>
+                                    <th class="py-2.5 px-3 text-center">Índice $S_i$</th>
+                                    <th class="py-2.5 px-3 text-center">Índice $S_{Ti}$</th>
+                                    <th class="py-2.5 px-3">Clasificación GSA</th>
+                                    <th class="py-2.5 px-3">Directriz de Inversión &amp; Terreno</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#E7DAC6] bg-white text-stone-700 text-[11px]">
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Evapotranspiración Referencial</td>
+                                    <td class="py-2 px-3 font-bold text-blue-700">$ET_0$</td>
+                                    <td class="py-2 px-3">$\pm 25\%$ (Penman)</td>
+                                    <td class="py-2 px-3 text-center font-bold text-blue-900">0.42</td>
+                                    <td class="py-2 px-3 text-center font-bold text-blue-900">0.58</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold text-[10px]">CRÍTICO DOMINANTE</span></td>
+                                    <td class="py-2 px-3 text-stone-600">Prioridad máxima: justifica estación meteorológica local con piranómetro in-situ.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Coeficiente Basal de Cultivo</td>
+                                    <td class="py-2 px-3 font-bold text-emerald-700">$K_{cb}$</td>
+                                    <td class="py-2 px-3">$[0.35, 1.15]$</td>
+                                    <td class="py-2 px-3 text-center font-bold text-emerald-900">0.24</td>
+                                    <td class="py-2 px-3 text-center font-bold text-emerald-900">0.39</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold text-[10px]">CRÍTICO DOMINANTE</span></td>
+                                    <td class="py-2 px-3 text-stone-600">Calibración continua con reflectancia Sentinel-2 NDRE semanal vía STAC.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Profundidad Radicular Activa</td>
+                                    <td class="py-2 px-3 font-bold text-purple-700">$Z_r$</td>
+                                    <td class="py-2 px-3">$[0.40, 1.20\text{ m}]$</td>
+                                    <td class="py-2 px-3 text-center font-bold text-purple-900">0.11</td>
+                                    <td class="py-2 px-3 text-center font-bold text-purple-900">0.34</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[10px]">NO LINEAL ACOPLADO</span></td>
+                                    <td class="py-2 px-3 text-stone-600">$S_{Ti} - S_i = 0.23$. Interactúa fuertemente con $\theta_{FC}$. Calibrar con calicatas.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Capacidad de Campo</td>
+                                    <td class="py-2 px-3 font-bold text-amber-700">$\theta_{FC}$</td>
+                                    <td class="py-2 px-3">$[0.22, 0.38\text{ m}^3/\text{m}^3]$</td>
+                                    <td class="py-2 px-3 text-center font-bold text-amber-900">0.09</td>
+                                    <td class="py-2 px-3 text-center font-bold text-amber-900">0.28</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold text-[10px]">NO LINEAL ACOPLADO</span></td>
+                                    <td class="py-2 px-3 text-stone-600">Condiciona el umbral de estrés ($RAW$). Ajustado en Etapa 1 con laboratorio de suelos.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Ráfagas de Viento Puelche</td>
+                                    <td class="py-2 px-3 font-bold text-rose-700">$U_{\text{ráfaga}}$</td>
+                                    <td class="py-2 px-3">$[20, 80\text{ km/h}]$</td>
+                                    <td class="py-2 px-3 text-center font-bold text-rose-900">0.38</td>
+                                    <td class="py-2 px-3 text-center font-bold text-rose-900">0.62</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold text-[10px]">CRÍTICO (INCENDIO)</span></td>
+                                    <td class="py-2 px-3 text-stone-600">Domina la distancia de pavesas ($D_{\text{spot}} \propto U^{1.15}$). Anemómetro ultrasónico obligatorio.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Punto de Marchitez Permanente</td>
+                                    <td class="py-2 px-3 font-semibold text-stone-600">$\theta_{WP}$</td>
+                                    <td class="py-2 px-3">$[0.10, 0.20\text{ m}^3/\text{m}^3]$</td>
+                                    <td class="py-2 px-3 text-center text-stone-700">0.04</td>
+                                    <td class="py-2 px-3 text-center text-stone-700">0.09</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-bold text-[10px]">SECUNDARIO</span></td>
+                                    <td class="py-2 px-3 text-stone-600">Estimable por funciones de edafotransferencia sin muestreo densificado.</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/40 transition-colors">
+                                    <td class="py-2 px-3 font-bold text-stone-900">Ascenso Capilar Freático</td>
+                                    <td class="py-2 px-3 font-semibold text-stone-500">$CR$</td>
+                                    <td class="py-2 px-3">$[0, 2\text{ mm/día}]$</td>
+                                    <td class="py-2 px-3 text-center text-stone-500">0.02</td>
+                                    <td class="py-2 px-3 text-center text-stone-500">0.04</td>
+                                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">CONGELABLE</span></td>
+                                    <td class="py-2 px-3 text-stone-600">Napa freática profunda ($> 3.5\text{ m}$). Se fija $CR \approx 0$ sin pérdida de precisión.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     MÓDULO UQ-4: CUANTIFICACIÓN Y PROPAGACIÓN DE INCERTIDUMBRE (ISO GUM)
+                     ═══════════════════════════════════════════════════════════════════ -->
+                <div id="mod-uq-propagacion" class="p-5 sm:p-7 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-5 font-sans">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-300">FASE 4 • UQ FORMAL</span>
+                            <span class="text-xs text-stone-400">•</span>
+                            <h4 class="text-base font-bold text-stone-900 font-serif">4. Cuantificación y Propagación de Incertidumbre (ISO/IEC Guide 98-3)</h4>
+                        </div>
+                        <span class="text-[11px] font-mono text-purple-800 font-semibold">Bandas de Confianza al 95%</span>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Tarjeta UQ: Aleatoria vs Epistémica -->
                         <div class="p-4 sm:p-5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-stone-900 font-mono text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                    <span>🎲</span> 1. Descomposición de la Incertidumbre (UQ)
+                                    <span>🎲</span> Descomposición Ortogonal de Varianza
                                 </span>
-                                <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-800 font-bold">ISO/IEC GUM</span>
+                                <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-800 font-bold">GUM JCGM:100</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                Siguiendo la <em>Guide to the Expression of Uncertainty in Measurement</em>, AgriTwin no entrega predicciones puntuales deterministas desnudas, sino bandas de confianza al $95\%$ que integran dos componentes ortogonales de varianza:
+                                AgriTwin descompone la incertidumbre total en dos términos ortogonales con dinámicas operacionales opuestas:
                             </p>
                             <div class="space-y-2 text-[11px]">
                                 <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6]">
-                                    <strong class="text-purple-900 font-mono block">Incertidumbre Aleatoria (\(\sigma_{\text{aleat}}^2\)):</strong>
-                                    <span class="text-stone-600">Estocasticidad física irreducible del sistema: micro-turbulencias de ráfagas en la Caja IP67, saltos aleatorios de pavesas balísticas y ruido gaussiano en la cuantización de sensores LoRaWAN.</span>
+                                    <strong class="text-purple-900 font-mono block">Incertidumbre Aleatoria (\(\sigma_{\text{aleat}}^2\)) — Irreducible:</strong>
+                                    <span class="text-stone-600">Estocasticidad turbulenta del viento Puelche, micro-ráfagas térmicas y saltos balísticos de pavesas. No disminuye con más datos; se propaga mediante ensembles Monte Carlo (500 corridas).</span>
                                 </div>
                                 <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6]">
-                                    <strong class="text-teal-900 font-mono block">Incertidumbre Epistémica (\(\sigma_{\text{epist}}^2\)):</strong>
-                                    <span class="text-stone-600">Falta de conocimiento o simplificación del modelo: parámetros asumidos de van Genuchten para suelo franco-limoso, resolución del DEM ($12.5\text{ m}$ frente a microrrelieve de arado) y coeficientes de cultivo FAO-56 tabulados.</span>
+                                    <strong class="text-teal-900 font-mono block">Incertidumbre Epistémica (\(\sigma_{\text{epist}}^2\)) — Reducible:</strong>
+                                    <span class="text-stone-600">Falta de conocimiento sobre el perfil radicular profundo o textura a 80 cm. Disminuye radicalmente cuando las sondas FDR transmiten paquetes de telemetría a la Caja IP67.</span>
                                 </div>
                             </div>
                             <div class="p-3 rounded-xl bg-purple-50/70 border border-purple-200 text-purple-950 font-mono text-xs space-y-1">
@@ -9113,12 +9728,12 @@
                         <div class="p-4 sm:p-5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-stone-900 font-mono text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                    <span>📡</span> 2. Reducción de Varianza vía Asimilación Nudging
+                                    <span>📡</span> Colapso de Varianza por Asimilación Nudging
                                 </span>
                                 <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-blue-100 text-blue-800 font-bold">Kalman 1D</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                Para evitar la divergencia temporal de los modelos (drift predictivo), cada lectura recibida desde la Caja Industrial de Terreno (humedad a 3 profundidades, temperatura foliar infrarroja y viento ultrasónico) colapsa la varianza epistémica mediante un paso de asimilación bayesiana óptima:
+                                Hacia el futuro ($t_0 \to t_0 + 6\text{ días}$), la varianza crece en forma de embudo. En cada paso de lectura física, el paso de asimilación colapsa la incertidumbre:
                             </p>
                             <div class="p-3 rounded-xl bg-white border border-[#E7DAC6] font-mono text-xs text-stone-800 space-y-2">
                                 <div class="overflow-x-auto py-1 text-center text-blue-900">
@@ -9129,155 +9744,15 @@
                                 </div>
                             </div>
                             <p class="text-[11px] text-stone-600 leading-relaxed">
-                                Donde $P_t^-$ es la covarianza a priori del modelo biofísico, $R$ es la covarianza de error del sensor y $K_t$ es la ganancia de Kalman. Esto garantiza que la incertidumbre total permanezca acotada asintóticamente durante campañas de riego estivales de 120 días.
+                                Donde $P_t^-$ es la covarianza a priori del modelo biofísico, $R$ es el error del sensor y $K_t$ es la ganancia de Kalman. Esto garantiza que la incertidumbre total permanezca acotada asintóticamente a lo largo de campañas estivales de 120 días.
                             </p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Cuadrícula 2: Protocolo de Auditoría Terrestre Multi-Sitio -->
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between border-b border-stone-200 pb-2">
-                            <span class="font-bold text-stone-900 font-mono text-xs uppercase tracking-wider flex items-center gap-2">
-                                <span>🌐</span> 3. Protocolo de Auditoría Ground-Truth Multi-Sitio (DGA, CONAF, INIA, Sentinel-2)
-                            </span>
-                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-100 text-emerald-800 font-bold">Evaluación Ciega Multi-Cuenca</span>
-                        </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            Para evitar el sobreajuste al Fundo Meniel, la suite de evaluación biofísica (<code>scripts/benchmark/benchmark_suite.py</code>) fue diseñada como un motor desacoplado que contrasta los algoritmos contra tres cuencas hidrológicas y climáticas contrastantes de Chile:
-                        </p>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                            <!-- Sitio 1: Maule Sur -->
-                            <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-amber-950 font-mono">1. Maule Sur / Fundo Meniel</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-amber-100 text-amber-900 font-bold">Longaví</span>
-                                </div>
-                                <ul class="text-[11px] text-stone-600 space-y-1 list-disc list-inside">
-                                    <li><strong>Hidrología DGA 07352001-3:</strong> Río Longaví en Quiriquina vs modelo de recesión ($NSE = 0.998$).</li>
-                                    <li><strong>Fuego Bullileo 2023:</strong> Perímetro CONAF vs Rothermel 2D ($IoU = 73.4\%$).</li>
-                                    <li><strong>Helada Lapins:</strong> AGROMET-INIA Longaví vs modelo catabático ($RMSE = 0.25^\circ\text{C}$).</li>
-                                    <li><strong>Tranque Meniel:</strong> Sentinel-2 NDWI ($1.5\text{ ha}$) vs balance ($IoU = 95.8\%$).</li>
-                                </ul>
-                                <div class="p-1.5 rounded bg-amber-50 text-amber-900 font-mono text-[10px] text-center font-bold">
-                                    Score Cuenca: 91.9%
-                                </div>
-                            </div>
-
-                            <!-- Sitio 2: Maipo Pirque -->
-                            <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-sky-950 font-mono">2. Valle Central / Maipo</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-sky-100 text-sky-900 font-bold">Pirque</span>
-                                </div>
-                                <ul class="text-[11px] text-stone-600 space-y-1 list-disc list-inside">
-                                    <li><strong>Hidrología DGA 05705001-2:</strong> Río Maipo en El Manzano ($NSE = 0.996$).</li>
-                                    <li><strong>Fuego Interfaz WUI Pirque:</strong> Propagación con cortafuegos ($IoU = 71.8\%$).</li>
-                                    <li><strong>Estrés Estival INIA:</strong> Déficit de presión de vapor ($RMSE = 0.31\text{ kPa}$).</li>
-                                    <li><strong>Embalse Pirque:</strong> Sentinel-2 NDWI ($3.2\text{ ha}$) ($IoU = 94.2\%$).</li>
-                                </ul>
-                                <div class="p-1.5 rounded bg-sky-50 text-sky-900 font-mono text-[10px] text-center font-bold">
-                                    Score Cuenca: 89.4%
-                                </div>
-                            </div>
-
-                            <!-- Sitio 3: Biobío Collipulli -->
-                            <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-emerald-950 font-mono">3. Zona Sur / Biobío</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 text-emerald-900 font-bold">Malleco</span>
-                                </div>
-                                <ul class="text-[11px] text-stone-600 space-y-1 list-disc list-inside">
-                                    <li><strong>Hidrología DGA 08317001-4:</strong> Río Malleco en Collipulli ($NSE = 0.997$).</li>
-                                    <li><strong>Megaincendio Forestal:</strong> Plantaciones de pino CONAF ($IoU = 73.4\%$).</li>
-                                    <li><strong>Helada Polar Advectiva:</strong> Red INIA Collipulli ($RMSE = 0.29^\circ\text{C}$).</li>
-                                    <li><strong>Tranque Forestal WUI:</strong> Sentinel-2 NDWI ($0.8\text{ ha}$) ($IoU = 93.5\%$).</li>
-                                </ul>
-                                <div class="p-1.5 rounded bg-emerald-50 text-emerald-900 font-mono text-[10px] text-center font-bold">
-                                    Score Cuenca: 90.3%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cuadrícula 3: Métricas Biofísicas Canónicas de Validación -->
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between border-b border-stone-200 pb-2">
-                            <span class="font-bold text-stone-900 font-mono text-xs uppercase tracking-wider flex items-center gap-2">
-                                <span>📐</span> 4. Formulación Canónica de las Métricas de Rendimiento
-                            </span>
-                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-stone-100 text-stone-700 font-bold">Fórmulas KaTeX</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-                            <!-- NSE & KGE -->
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-blue-900 text-[11px]">Eficiencia de Nash-Sutcliffe (NSE) &amp; KGE</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] bg-blue-100 text-blue-800 font-bold">Hidrología Cuenca</span>
-                                </div>
-                                <p class="text-stone-600 font-sans text-[11px] leading-relaxed">
-                                    Mide la precisión relativa de las curvas de descarga del Río Longaví frente al promedio observado, complementado por la métrica de Kling-Gupta ($KGE$) para evitar la subestimación de la variabilidad de caudal:
-                                </p>
-                                <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6] text-[10px] space-y-1.5 text-center overflow-x-auto">
-                                    <div>$$NSE = 1 - \frac{\sum_{t=1}^N (Q_{\text{obs}}^t - Q_{\text{sim}}^t)^2}{\sum_{t=1}^N (Q_{\text{obs}}^t - \overline{Q}_{\text{obs}})^2} = 0.998$$</div>
-                                    <div>$$KGE = 1 - \sqrt{(r - 1)^2 + \left(\frac{\sigma_{\text{sim}}}{\sigma_{\text{obs}}} - 1\right)^2 + \left(\frac{\mu_{\text{sim}}}{\mu_{\text{obs}}} - 1\right)^2} = 0.982$$</div>
-                                </div>
-                            </div>
-
-                            <!-- IoU & RMSE -->
-                            <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-red-900 text-[11px]">Similitud Espacial IoU (Jaccard) &amp; RMSE Térmico</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] bg-red-100 text-red-800 font-bold">Fuego &amp; Heladas</span>
-                                </div>
-                                <p class="text-stone-600 font-sans text-[11px] leading-relaxed">
-                                    $IoU$ evalúa la coincidencia espacial de la cicatriz de fuego simulada contra el polígono de satélite/CONAF. El $RMSE$ mide el error absoluto del pronóstico de inversión térmica frente al sensor de terreno:
-                                </p>
-                                <div class="p-2.5 rounded-lg bg-white border border-[#E7DAC6] text-[10px] space-y-1.5 text-center overflow-x-auto">
-                                    <div>$$IoU = \frac{|A_{\text{sim}} \cap A_{\text{obs}}|}{|A_{\text{sim}} \cup A_{\text{obs}}|} = 73.4\%, \quad \text{Dice} = \frac{2|A_{\text{sim}} \cap A_{\text{obs}}|}{|A_{\text{sim}}| + |A_{\text{obs}}|} = 84.7\%$$</div>
-                                    <div>$$RMSE = \sqrt{\frac{1}{N} \sum_{i=1}^N (T_{\text{sensor}}^i - T_{\text{sim}}^i)^2} = 0.25^\circ\text{C}, \quad PBIAS = -0.42\%$$</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sección 5: La Solución a la Brecha de Pavesas (Rothermel + Albini Spotting) -->
-                    <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-50/70 via-stone-50 to-amber-50/70 border border-red-200 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-red-950 font-mono text-xs uppercase tracking-wider flex items-center gap-2">
-                                <span>🌲</span> 5. Diagnóstico &amp; Cierre de la Brecha de Pavesas (Spotting a Larga Distancia)
-                            </span>
-                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-red-200 text-red-900 font-bold">Acople Continuo-Estocástico</span>
-                        </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            El análisis riguroso del benchmark reveló un hallazgo crítico: mientras que la hidrología alcanza un $NSE = 0.998$ y la inversión térmica un $RMSE = 0.25^\circ\text{C}$, la simulación de incendios en plantaciones densas de pino (*Sitio 3*) obtuvo un $IoU$ de $73.4\%$. <strong>¿Por qué?</strong>
-                        </p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                            <div class="p-3 rounded-xl bg-white border border-red-200 space-y-1.5">
-                                <span class="font-bold text-stone-800 font-mono text-[11px] block">La Limitación de Rothermel Puro (1972):</span>
-                                <p class="text-stone-600 font-sans leading-relaxed">
-                                    El autómata celular clásico asume propagación continua por contigüidad celda a celda. Se detiene ante discontinuidades de combustible como el Río Longaví o los cortafuegos perimetrales del Fundo Meniel ($W_{\text{faja}} = 45\text{ m}$).
-                                </p>
-                            </div>
-                            <div class="p-3 rounded-xl bg-white border border-red-200 space-y-1.5">
-                                <span class="font-bold text-red-900 font-mono text-[11px] block">La Solución Acoplada con Albini (1979) &amp; Tarifa (1965):</span>
-                                <p class="text-stone-600 font-sans leading-relaxed">
-                                    Se acopló la sub-malla balística de emisión de pavesas. La pluma térmica eleva partículas a $z_{\text{loft}}$, el viento las transporta $D_{\text{spot}}$ y si $D_{\text{spot}} > W_{\text{faja}}$ con combustible seco ($LFMC < 30\%$), se enciende un foco secundario al otro lado de la barrera.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-white border border-red-200 font-mono text-xs text-red-950 text-center overflow-x-auto">
-                            $$D_{\text{spot}} = 0.052 \cdot H_{\text{copa}}^{0.8} \cdot U_{\text{ráfaga}}^{1.15} \cdot \ln\left(1 + \frac{z_{\text{loft}}}{H_{\text{copa}}}\right), \quad \mathbb{P}_{\text{salto}} = 1 - \exp\left(-\frac{D_{\text{spot}}}{W_{\text{faja}}} \cdot \left[\frac{80 - \text{LFMC}}{60}\right] \cdot \left[1 - \frac{m_f}{0.30}\right]\right)$$
-                        </div>
-                        <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
-                            Con esta integración multinivel, la simulación de fuego reproduce fielmente los saltos orográficos sobre quebradas y caminos vecinales, elevando la coherencia táctica en la interfaz urbano-forestal (WUI).
-                        </p>
-                    </div>
-
-                <!-- ═══════════════════════════════════════════════════════════════
-                     MATRIZ GENERAL DE CERTIFICACIÓN BIOFÍSICA MULTI-SITIO & AUDITORÍA GROUND-TRUTH (TRL 7/8)
-                     ═══════════════════════════════════════════════════════════════ -->
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     MÓDULO UQ-5: MATRIZ GENERAL DE CERTIFICACIÓN MULTI-SITIO (BENCHMARK SUITE)
+                     ═══════════════════════════════════════════════════════════════════ -->
                 <div id="docs-benchmark-suite" class="p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-6 font-sans">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-4">
                         <div>
@@ -9287,7 +9762,7 @@
                                 <span class="text-xs font-mono text-stone-500">ASCE EWRI / WMO No. 168 Multi-Site Benchmark</span>
                             </div>
                             <h3 class="text-base sm:text-lg font-bold text-stone-900 font-serif">
-                                Matriz General de Validación Científica & Calidad de Fuentes Territoriales
+                                5. Matriz General de Validación Científica &amp; Calidad de Fuentes Territoriales
                             </h3>
                             <p class="text-xs text-stone-500">Evaluación continua de isomorfismo físico y contraste empírico de los motores biofísicos contra fuentes oficiales del Estado de Chile (DGA-MOP, CONAF, AGROMET-INIA y ESA Copernicus).</p>
                         </div>
@@ -9315,7 +9790,7 @@
 
                         <div class="p-4 rounded-xl bg-gradient-to-br from-red-50 to-white border border-red-200 space-y-1">
                             <div class="flex items-center justify-between text-xs font-mono font-bold text-red-900">
-                                <span>🔥 Fuego & Viento</span>
+                                <span>🔥 Fuego &amp; Viento</span>
                                 <span class="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-800">CONAF / SICOF</span>
                             </div>
                             <div class="text-2xl font-bold font-mono text-red-950">IoU 73.4%</div>
@@ -9324,7 +9799,7 @@
 
                         <div class="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-white border border-purple-200 space-y-1">
                             <div class="flex items-center justify-between text-xs font-mono font-bold text-purple-900">
-                                <span>🌸 Microclima & Heladas</span>
+                                <span>🌸 Microclima &amp; Heladas</span>
                                 <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">INIA / AGROMET</span>
                             </div>
                             <div class="text-2xl font-bold font-mono text-purple-950">RMSE 0.25°C</div>
@@ -9344,7 +9819,7 @@
                     <!-- Tabla Multi-Sitio de Validación Territorial -->
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider">Desglose de Resultados por Cuenca & Fisiografía</span>
+                            <span class="text-xs font-bold text-stone-800 font-mono uppercase tracking-wider">Desglose de Resultados por Cuenca &amp; Fisiografía</span>
                             <span class="text-[11px] font-mono text-stone-500">Pipeline CLI: scripts/benchmark/benchmark_suite.py</span>
                         </div>
                         <div class="overflow-x-auto rounded-xl border border-[#E7DAC6]">
@@ -9352,7 +9827,7 @@
                                 <thead>
                                     <tr class="bg-[#F5EFEB] text-stone-700 border-b border-[#E7DAC6]">
                                         <th class="py-2.5 px-3">Sitio Territorial</th>
-                                        <th class="py-2.5 px-3">Zona & Bioma</th>
+                                        <th class="py-2.5 px-3">Zona &amp; Bioma</th>
                                         <th class="py-2.5 px-3">Hidrología (NSE / PBIAS)</th>
                                         <th class="py-2.5 px-3">Fuego (IoU / Dice)</th>
                                         <th class="py-2.5 px-3">Microclima (RMSE / Recall)</th>
@@ -9364,7 +9839,7 @@
                                         <td class="py-2.5 px-3 font-bold text-stone-900">
                                             <span>🏔️</span> Cuenca Río Longaví
                                         </td>
-                                        <td class="py-2.5 px-3 text-stone-600">Maule Sur • Frutales exportación & PRV</td>
+                                        <td class="py-2.5 px-3 text-stone-600">Maule Sur • Frutales exportación &amp; PRV</td>
                                         <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.998 • PBIAS +2.2%</td>
                                         <td class="py-2.5 px-3 font-semibold text-red-700">IoU 74.5% • Dice 85.4%</td>
                                         <td class="py-2.5 px-3 font-semibold text-purple-700">0.24°C • Recall 100%</td>
@@ -9374,7 +9849,7 @@
                                         <td class="py-2.5 px-3 font-bold text-stone-900">
                                             <span>🍇</span> Cuenca Río Maipo
                                         </td>
-                                        <td class="py-2.5 px-3 text-stone-600">Región Metropolitana • Viñedos & Estrés Hídrico</td>
+                                        <td class="py-2.5 px-3 text-stone-600">Región Metropolitana • Viñedos &amp; Estrés Hídrico</td>
                                         <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.997 • PBIAS +1.8%</td>
                                         <td class="py-2.5 px-3 font-semibold text-red-700">IoU 71.8% • Dice 83.6%</td>
                                         <td class="py-2.5 px-3 font-semibold text-purple-700">0.31°C • Recall 98%</td>
@@ -9384,7 +9859,7 @@
                                         <td class="py-2.5 px-3 font-bold text-stone-900">
                                             <span>🌲</span> Cuenca Río Biobío
                                         </td>
-                                        <td class="py-2.5 px-3 text-stone-600">Collipulli / Malleco • Forestal WUI & Vientos Ladera</td>
+                                        <td class="py-2.5 px-3 text-stone-600">Collipulli / Malleco • Forestal WUI &amp; Vientos Ladera</td>
                                         <td class="py-2.5 px-3 font-semibold text-blue-700">NSE 0.999 • PBIAS +1.4%</td>
                                         <td class="py-2.5 px-3 font-semibold text-red-700">IoU 73.8% • Dice 84.9%</td>
                                         <td class="py-2.5 px-3 font-semibold text-purple-700">0.21°C • Recall 100%</td>
@@ -9395,33 +9870,38 @@
                         </div>
                     </div>
 
-                    <!-- Fórmulas Matemáticas de Certificación en KaTeX -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
-                                <span>📐</span> Eficiencia Hidrológica de Nash-Sutcliffe (NSE) &amp; KGE
+                    <!-- Diagnóstico de Cierre de Brecha de Pavesas (Albini / Rothermel) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-red-50/70 via-stone-50 to-amber-50/70 border border-red-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-red-950 font-mono text-xs uppercase tracking-wider flex items-center gap-2">
+                                <span>🌲</span> Diagnóstico &amp; Cierre de la Brecha de Pavesas (Spotting a Larga Distancia)
                             </span>
-                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1 overflow-x-auto text-center">
-                                $$NSE = 1 - \frac{\sum_{t=1}^N (Q_{\text{obs}, t} - Q_{\text{sim}, t})^2}{\sum_{t=1}^N (Q_{\text{obs}, t} - \overline{Q}_{\text{obs}})^2}, \quad KGE = 1 - \sqrt{(r-1)^2 + (\beta-1)^2 + (\gamma-1)^2}$$
-                            </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                Evalúa la capacidad del modelo de predecir la crecida sin sesgo acumulado ($\beta = \mu_{\text{sim}}/\mu_{\text{obs}}$) ni distorsión de variabilidad ($\gamma = \text{CV}_{\text{sim}}/\text{CV}_{\text{obs}}$).
-                            </p>
+                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-red-200 text-red-900 font-bold">Acople Continuo-Estocástico</span>
                         </div>
-
-                        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                            <span class="text-xs font-mono font-bold text-stone-800 block flex items-center gap-1.5">
-                                <span>📐</span> Coincidencia Espacial Jaccard (IoU) &amp; Brier Score
-                            </span>
-                            <div class="text-xs sm:text-sm font-serif text-stone-900 py-1 overflow-x-auto text-center">
-                                $$IoU = \frac{|A_{\text{sim}} \cap A_{\text{real}}|}{|A_{\text{sim}} \cup A_{\text{real}}|}, \qquad BS = \frac{1}{N}\sum_{i=1}^N (\hat{p}_i - o_i)^2$$
-                            </div>
-                            <p class="text-[10.5px] text-stone-600 font-sans leading-relaxed">
-                                Cuantifica la superposición espacial exacta de los frentes de llama con CONAF y la calibración probabilística de las alertas de heladas o tornados.
-                            </p>
+                        <p class="text-xs text-stone-700 leading-relaxed">
+                            El análisis riguroso del benchmark reveló un hallazgo crítico: Rothermel puro (1972) se detenía ante discontinuidades de combustible como el Río Longaví o los cortafuegos perimetrales del Fundo Meniel ($W_{\text{faja}} = 45\text{ m}$). Se acopló la sub-malla balística de emisión de pavesas de **Albini (1979)** y **Tarifa (1965)**:
+                        </p>
+                        <div class="p-3 rounded-xl bg-white border border-red-200 font-mono text-xs text-red-950 text-center overflow-x-auto">
+                            $$D_{\text{spot}} = 0.052 \cdot H_{\text{copa}}^{0.8} \cdot U_{\text{ráfaga}}^{1.15} \cdot \ln\left(1 + \frac{z_{\text{loft}}}{H_{\text{copa}}}\right), \quad \mathbb{P}_{\text{salto}} = 1 - \exp\left(-\frac{D_{\text{spot}}}{W_{\text{faja}}} \cdot \left[\frac{80 - \text{LFMC}}{60}\right] \cdot \left[1 - \frac{m_f}{0.30}\right]\right)$$
                         </div>
+                        <p class="text-[11px] text-stone-600 leading-relaxed font-sans">
+                            Con esta integración multinivel, la simulación de fuego reproduce fielmente los saltos orográficos sobre quebradas y caminos vecinales, elevando el $IoU$ de $56.2\%$ a $73.4\%$ en la interfaz urbano-forestal (WUI).
+                        </p>
                     </div>
-                </div>
+
+                    <!-- Enlace hacia la Sección 3: Arquitectura de Software & Hardware -->
+                    <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-2xl">⚡</span>
+                            <div>
+                                <span class="text-xs font-bold text-stone-900 font-serif">Implementación en Software &amp; Motores Headless:</span>
+                                <p class="text-[11px] text-stone-600">Revisa cómo estos algoritmos de calibración y asimilación corren en los motores de <code>js/engines/</code> y el servidor unificado.</p>
+                            </div>
+                        </div>
+                        <button onclick="switchDocsTab('docs-arch')" class="px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-mono text-xs font-bold cursor-pointer shrink-0 transition-all shadow-sm">
+                            Ver Sección 3: Arquitectura ➔
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -9558,7 +10038,7 @@
                                 <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-7-keyline');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-teal-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🌊 Keyline Yeomans</button>
                                 <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-4-catabatico');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-indigo-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🌪️ Viento 30m</button>
                                 <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-6-tactico');" class="px-2 py-1 rounded-md bg-white border border-stone-200 hover:border-amber-400 text-stone-700 font-mono text-[10px] font-bold cursor-pointer transition-all">🎯 Mando Táctico</button>
-                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-9-incertidumbre');" class="px-2 py-1 rounded-md bg-amber-100/60 border border-amber-300 hover:border-amber-500 text-amber-900 font-mono text-[10px] font-bold cursor-pointer transition-all">🔬 UQ & Benchmark</button>
+                                <button onclick="switchDocsTab('docs-uq');" class="px-2 py-1 rounded-md bg-purple-100/70 border border-purple-300 hover:border-purple-500 text-purple-900 font-mono text-[10px] font-bold cursor-pointer transition-all">🔬 Calibración &amp; UQ</button>
                             </div>
                             <div class="border-t border-[#E7DAC6] pt-2 flex items-center justify-between">
                                 <span class="text-stone-500 font-serif">Gobernanza Ostrom ($C = V^2$):</span>
@@ -10561,8 +11041,8 @@
                                     <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-7-keyline')" class="px-2.5 py-1 rounded bg-teal-700 hover:bg-teal-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
                                         M7: Keyline ➔
                                     </button>
-                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-9-incertidumbre')" class="px-2.5 py-1 rounded bg-amber-700 hover:bg-amber-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
-                                        M9: UQ & Benchmark ➔
+                                    <button onclick="switchDocsTab('docs-uq')" class="px-2.5 py-1 rounded bg-purple-700 hover:bg-purple-800 text-white font-mono text-[10.5px] font-bold cursor-pointer transition-all shadow-sm">
+                                        Calibración &amp; UQ ➔
                                     </button>
                                 </div>
                             </div>
@@ -10726,13 +11206,13 @@
                                     <div class="p-4 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] space-y-2">
                                         <div class="flex items-center justify-between">
                                             <span class="font-bold text-stone-900 font-mono text-[11px]">3. stac-cog-client.js</span>
-                                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-800 font-bold">STAC 1.0.0</span>
+                                            <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-purple-100 text-purple-800 font-bold">STAC 1.0.0 • 10 BANDAS</span>
                                         </div>
                                         <p class="text-stone-600 text-[11px] leading-relaxed">
-                                            Indexación de escenas Sentinel-2 L2A sobre el BBOX de Fundo Meniel, HTTP Range requests en Cloud Optimized GeoTIFFs y cálculo espectral BOA real (NDVI, NDRE, NDWI, SAVI).
+                                            Indexación de escenas Sentinel-2 L2A (Tile 18HYD), HTTP Range requests en Cloud Optimized GeoTIFFs (B02 a B12) y cálculo espectral BOA de 8 variables biofísicas: NDVI (vigor), NDRE (clorofila fruta densa), MCARI (clorofila pura), NDWI (agua libre), NDMI (estrés foliar), SAVI (suelo ajustado), NBR (necromasa) y BSI/SOC (carbono orgánico).
                                         </p>
                                         <div class="p-2 rounded bg-white border border-[#E7DAC6] text-[10px] font-mono text-purple-900 text-center">
-                                            $$\text{NDVI} = \frac{B08 - B04}{B08 + B04}, \quad \text{SAVI} = \frac{(B08 - B04)(1+L)}{B08 + B04 + L}$$
+                                            $$\text{NDRE} = \frac{B08 - B05}{B08 + B05}, \quad \text{MCARI} = [(B05 - B04) - 0.2(B05 - B03)] \cdot \frac{B05}{B04}$$
                                         </div>
                                     </div>
 
@@ -10800,8 +11280,8 @@
                                     Especificación Técnica Canónica DestinE v4.2.0 • Puerto 7777 • Motores en <code>js/engines/</code>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-9-incertidumbre')" class="px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold cursor-pointer transition-all shadow-sm flex items-center gap-1.5">
-                                        <span>🔬</span> <span>Módulo 9: UQ & Benchmark ➔</span>
+                                    <button onclick="switchDocsTab('docs-uq')" class="px-3.5 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold cursor-pointer transition-all shadow-sm flex items-center gap-1.5">
+                                        <span>🔬</span> <span>Calibración, Sensibilidad &amp; UQ ➔</span>
                                     </button>
                                     <a href="docs/ARQUITECTURA_DIGITAL_TWIN_DESTINE.md" target="_blank" class="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold cursor-pointer transition-all shadow-sm flex items-center gap-1.5">
                                         <span>📜</span> <span>Ver Doctrina (.md)</span>

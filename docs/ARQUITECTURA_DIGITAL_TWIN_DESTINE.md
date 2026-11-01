@@ -102,11 +102,15 @@ Modelación dinámica acoplada de cabecera:
 ---
 
 ### 4.3 Cliente Satelital STAC y Reflectancia COG (`stac-cog-client.js`)
-Consume metadatos de SpatioTemporal Asset Catalog y define las transformaciones espectrales BOA (*Bottom-Of-Atmosphere*):
+Consume metadatos de SpatioTemporal Asset Catalog (Earth Search AWS / Copernicus CDSE) y define las transformaciones espectrales BOA (*Bottom-Of-Atmosphere*) sobre las 10 bandas activas de Sentinel-2 L2A en cuenca:
+
+* **Bandas Utilizadas:** B02 (Azul, 490nm), B03 (Verde, 560nm), B04 (Rojo, 665nm), B05 (RedEdge1, 705nm), B06 (RedEdge2, 740nm), B07 (RedEdge3, 783nm), B08 (NIR, 842nm), B8A (NIR Estrecho, 865nm), B11 (SWIR1, 1610nm), B12 (SWIR2, 2190nm).
 
 $$\text{NDVI} = \frac{B08 - B04}{B08 + B04}, \quad \text{NDRE} = \frac{B08 - B05}{B08 + B05}$$
 $$\text{NDWI} = \frac{B03 - B08}{B03 + B08}, \quad \text{NDMI} = \frac{B08 - B11}{B08 + B11}$$
-$$\text{SAVI} = \frac{(B08 - B04) \cdot (1 + L)}{B08 + B04 + L} \quad (L = 0.5)$$
+$$\text{SAVI} = \frac{(B08 - B04) \cdot (1 + L)}{B08 + B04 + L} \quad (L = 0.5), \quad \text{NBR} = \frac{B08 - B12}{B08 + B12}$$
+$$\text{MCARI} = \left[(B05 - B04) - 0.2(B05 - B03)\right] \cdot \frac{B05}{B04}, \quad \text{BSI} = \frac{(B11 + B04) - (B08 + B02)}{(B11 + B04) + (B08 + B02)}$$
+$$\text{SOC}_{\text{proxy}} = \left(1 - \text{BSI}\right) \cdot 0.5 + \left(1 - \frac{B11 + B12}{2}\right) \cdot 0.5$$
 
 ---
 
