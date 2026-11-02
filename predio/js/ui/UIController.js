@@ -32,7 +32,7 @@ export class UIController {
     this.alertMessage = document.getElementById('alertMessage');
 
     this.currentSelectedEntityId = null;
-    this.activeHouseTab = 'sig'; // sig | metabolism | livestock | permaculture | sensors | weather | astro | features | info
+    this.activeHouseTab = 'metabolism'; // metabolism | livestock | permaculture | sensors | weather | astro | features
     this.selectedDayOfYear = 172; // Solsticio Invierno Parral
     this.selectedHourOfDay = 12;
     this.selectedSensorId = 'IOT-SN-01';
@@ -53,8 +53,8 @@ export class UIController {
     this.setupGrazingChart();
     this.setupPermacultureToggles();
 
-    // Iniciar con el Tablero Maestro Predial y de Capas SIG
-    this.activeHouseTab = 'sig';
+    // Iniciar con el Tablero Maestro del Predio (7 Pestañas de Gestión)
+    this.activeHouseTab = 'metabolism';
     this.renderMainHouseDashboard();
     this.collapseDrawer();
 
@@ -1731,228 +1731,8 @@ export class UIController {
 
   renderDefaultCreatorView() {
     this.currentSelectedEntityId = null;
-    this.activeHouseTab = 'sig';
+    this.activeHouseTab = 'metabolism';
     this.renderMainHouseDashboard();
-  }
-
-  renderSigLayersTab() {
-    return `
-      <!-- 1. Teledetección Multiespectral & Topografía DEM -->
-      <div class="glass-card" style="border-left: 4px solid var(--accent-cyan); padding: 12px; margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <div class="metric-label" style="color: #38bdf8; font-weight: 800; font-size: 11px;">🛰️ TELEDETECCIÓN & MODELO DEM</div>
-          <span style="font-size: 9px; color: #7dd3fc; font-family: monospace;">SENTINEL-2 / DEM</span>
-        </div>
-        <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.35;">
-          Alterna capas espectrales calibradas y modelos hipsométricos de terreno sobre el predio:
-        </p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button id="btnStudioSpectralNdvi" class="btn-tool" style="justify-content: center; font-size: 10.5px; padding: 7px 6px;">
-            <span>🌱 NDVI (Vigor)</span>
-          </button>
-          <button id="btnStudioSpectralDem" class="btn-tool" style="justify-content: center; font-size: 10.5px; padding: 7px 6px;">
-            <span>🏔️ DEM (Curvas)</span>
-          </button>
-          <button id="btnStudioSpectralNdwi" class="btn-tool" style="justify-content: center; font-size: 10.5px; padding: 7px 6px;">
-            <span>💧 NDWI (Humedad)</span>
-          </button>
-          <button id="btnStudioSpectralNbr" class="btn-tool" style="justify-content: center; font-size: 10.5px; padding: 7px 6px;">
-            <span>🔥 NBR (Biomasa)</span>
-          </button>
-          <button id="btnStudioSpectralSat" class="btn-tool" style="justify-content: center; font-size: 10.5px; padding: 7px 6px;">
-            <span>🛰️ Satélite Real</span>
-          </button>
-          <button id="btnStudioSpectralHybrid" class="btn-tool" style="justify-content: center; font-size: 10.5px; padding: 7px 6px;">
-            <span>⚡ Gemelo Híbrido</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 2. Capas Biofísicas del Predio 3D -->
-      <div class="glass-card" style="border-left: 4px solid var(--accent-emerald); padding: 12px; margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <div class="metric-label" style="color: #34d399; font-weight: 800; font-size: 11px;">🌱 CAPAS BIOFÍSICAS 3D</div>
-          <span style="font-size: 9px; color: #6ee7b7; font-family: monospace;">PREDIO & MANEJO</span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <button id="btnLayerLivestock" class="btn-tool active" style="justify-content: space-between; padding: 7px 10px; font-size: 11px;">
-            <span style="display: flex; align-items: center; gap: 6px;"><span>🐄</span> Pastoreo PRV (8 Potreros)</span>
-            <span class="status-indicator" style="font-weight: 800; color: #34d399;">ON</span>
-          </button>
-          <button id="btnLayerZones" class="btn-tool active" style="justify-content: space-between; padding: 7px 10px; font-size: 11px;">
-            <span style="display: flex; align-items: center; gap: 6px;"><span>🌿</span> Zonificación 0-5 Mollison</span>
-            <span class="status-indicator" style="font-weight: 800; color: #34d399;">ON</span>
-          </button>
-          <button id="btnLayerKeyline" class="btn-tool active" style="justify-content: space-between; padding: 7px 10px; font-size: 11px;">
-            <span style="display: flex; align-items: center; gap: 6px;"><span>🚜</span> Trazado Keyline Yeomans</span>
-            <span class="status-indicator" style="font-weight: 800; color: #34d399;">ON</span>
-          </button>
-          <button id="btnLayerSensors" class="btn-tool active" style="justify-content: space-between; padding: 7px 10px; font-size: 11px;">
-            <span style="display: flex; align-items: center; gap: 6px;"><span>📡</span> Red 15 Sondas FDR IoT</span>
-            <span class="status-indicator" style="font-weight: 800; color: #34d399;">ON</span>
-          </button>
-          <button id="btnLayerTrees" class="btn-tool active" style="justify-content: space-between; padding: 7px 10px; font-size: 11px;">
-            <span style="display: flex; align-items: center; gap: 6px;"><span>🌳</span> Canopia & Corredor Ripario</span>
-            <span class="status-indicator" style="font-weight: 800; color: #34d399;">ON</span>
-          </button>
-          <button id="btnLayerParcels" class="btn-tool active" style="justify-content: space-between; padding: 7px 10px; font-size: 11px;">
-            <span style="display: flex; align-items: center; gap: 6px;"><span>🏡</span> Cuarteles y Parcelas</span>
-            <span class="status-indicator" style="font-weight: 800; color: #34d399;">ON</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 3. Flujos Hidro-Geomórficos & Viento -->
-      <div class="glass-card" style="border-left: 4px solid var(--accent-amber); padding: 12px; margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <div class="metric-label" style="color: #fbbf24; font-weight: 800; font-size: 11px;">📐 FLUJOS GEOMÓRFICOS & VIENTO</div>
-          <span style="font-size: 9px; color: #fde047; font-family: monospace;">HIDRÁULICA / GPU</span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <button id="btnStudioGeoWaterFlow" class="btn-tool" style="justify-content: flex-start; padding: 8px 10px;">
-            <span>🌊</span>
-            <div style="text-align: left; margin-left: 6px;">
-              <div style="font-weight: 700; color: #38bdf8; font-size: 11px;">Flechas de Flujo Hidráulico (D8 Talwegs)</div>
-              <div style="font-size: 9px; color: var(--text-muted);">Vectores de escorrentía hacia el estero</div>
-            </div>
-          </button>
-          <button id="btnStudioGeoWindyStream" class="btn-tool" style="justify-content: flex-start; padding: 8px 10px;">
-            <span>🌪️</span>
-            <div style="text-align: left; margin-left: 6px;">
-              <div style="font-weight: 700; color: #fbbf24; font-size: 11px;">Campo de Viento Animado (GPU)</div>
-              <div style="font-size: 9px; color: var(--text-muted);">Streamlines de flujo orográfico</div>
-            </div>
-          </button>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding-left: 6px;">
-            <button id="btnStudioWindPuelche" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🔴</span> Puelche E-NE
-            </button>
-            <button id="btnStudioWindBreeze" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🔵</span> Brisa SW
-            </button>
-            <button id="btnStudioWindCatabatic" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🟣</span> Catabático (Helada)
-            </button>
-            <button id="btnStudioWindTalweg" class="btn-tool active" style="font-size: 9px; padding: 5px 6px; justify-content: flex-start;">
-              <span>🟢</span> Chorro Quebrada
-            </button>
-          </div>
-          <button id="btnStudioGeoHazardZones" class="btn-tool" style="justify-content: flex-start; padding: 8px 10px;">
-            <span>📐</span>
-            <div style="text-align: left; margin-left: 6px;">
-              <div style="font-weight: 700; color: #f472b6; font-size: 11px;">Zonas de Inundación & Defensa WUI</div>
-              <div style="font-size: 9px; color: var(--text-muted);">Envolvente crecida y cortafuegos 45m</div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. Herramientas Espaciales del Gemelo 3D -->
-      <div class="glass-card" style="padding: 12px;">
-        <div class="metric-label" style="color: #cbd5e1; font-weight: 700; font-size: 11px; margin-bottom: 8px;">🛠️ HERRAMIENTAS ESPACIALES</div>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <button id="btnQuickDrawFromStudio" class="btn-tool" style="width: 100%; justify-content: center; font-size: 11px; padding: 8px;">
-            <span>🎨 Abrir Pincel Vectorial 3D</span>
-          </button>
-          <button id="btnQuickSculptFromStudio" class="btn-tool" style="width: 100%; justify-content: center; font-size: 11px; padding: 8px;">
-            <span>⛰️ Esculpir Terreno (Hacedor de Relieve DEM)</span>
-          </button>
-          <button id="btnQuickCatalogFromStudio" class="btn-tool" style="width: 100%; justify-content: center; font-size: 11px; padding: 8px;">
-            <span>ℹ️ Ver Catálogo Botánico de 35 Ítems</span>
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  renderInfoTab() {
-    return `
-      <!-- 1. Full Creator Brand & Official Logo Card -->
-      <div class="creator-card" style="text-align: center;">
-        <div class="brand-logo-container" style="margin-bottom: 12px;">
-          <img src="assets/agritwin_logo_full.png" alt="AgriTwin 3D Digital Twin" style="width: 100%; max-width: 240px; height: auto; border-radius: 12px; filter: drop-shadow(0 6px 16px rgba(0,0,0,0.5));">
-        </div>
-        <div class="creator-name">Daniel Santander Urrutia</div>
-        <div class="creator-titles">
-          Geofísico • Permacultor<br>
-          Manejador Ambiental • Protector Ambiental
-        </div>
-        <div class="creator-bio">
-          Diseñador del Gemelo Digital Agroecológico para Predio Meniels en Parral, Maule.
-        </div>
-      </div>
-
-      <!-- 2. Active Ground-Truth Simulation Status Banner (FAO-56 / ERA5) -->
-      <div class="glass-card" style="background: rgba(16, 185, 129, 0.12); border-left: 4px solid var(--accent-emerald); padding: 12px 14px; margin-top: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; font-family: monospace; color: var(--accent-emerald); font-weight: 700;">● MODO GROUND-TRUTH SIMULADO</span>
-          <span style="font-size: 10px; color: var(--accent-amber); font-weight: 600;">FAO-56 / ERA5</span>
-        </div>
-        <div style="font-size: 12px; color: #fff; margin-top: 4px; font-weight: 600;">
-          Operando con telemetría sintética calibrada mientras no hay despliegue físico total de sensores.
-        </div>
-      </div>
-
-      <!-- 3. Quick Selector for the 3 AgroTwin B2B Modules -->
-      <div class="glass-card" style="padding: 12px; margin-top: 10px;">
-        <div class="future-title" style="color: #6ee7b7; margin-bottom: 8px; font-size: 11px;">🌱 Selecciona el Módulo Operativo:</div>
-        <div style="display: grid; grid-template-columns: 1fr; gap: 6px;">
-          <button id="btn_quick_enterprise" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 8px 12px; font-size: 11px;">
-            <span>🍇</span>
-            <div style="text-align: left; margin-left: 8px;">
-              <strong style="color: #fff; display: block;">1. AgroTwin Enterprise</strong>
-              <span style="font-size: 10px; color: var(--text-muted);">Viñedos: Riego mm, CWSI y Alertas de Helada</span>
-            </div>
-          </button>
-
-          <button id="btn_quick_territorial" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 8px 12px; font-size: 11px;">
-            <span>🏛️</span>
-            <div style="text-align: left; margin-left: 8px;">
-              <strong style="color: #fff; display: block;">2. AgroTwin Territorial</strong>
-              <span style="font-size: 10px; color: var(--text-muted);">Municipios/APRs: Recarga de Napa & FWI Incendios</span>
-            </div>
-          </button>
-
-          <button id="btn_quick_esg" class="btn-tool" style="width: 100%; justify-content: flex-start; padding: 8px 12px; font-size: 11px;">
-            <span>🌿</span>
-            <div style="text-align: left; margin-left: 8px;">
-              <strong style="color: #fff; display: block;">3. AgroTwin ESG / MRV</strong>
-              <span style="font-size: 10px; color: var(--text-muted);">Fondos: Captura de Carbono & Cero Deforestación EUDR</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. Ecosystem Family Card (AgroTech Chile • Rewild • AgriTwin 3D) -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="future-title" style="color: var(--accent-cyan); display: flex; align-items: center; gap: 8px;">
-          <span>🌐</span> Ecosistema AgroTech Chile
-        </div>
-        <div style="font-size: 11px; margin-top: 8px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
-          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-cyan);">
-            <strong style="color: #fff;">1. AgroTech Chile</strong><br>
-            Plataforma madre de tecnología agrícola de precisión & sensorización IoT.
-          </div>
-          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);">
-            <strong style="color: #fff;">2. Rewild</strong><br>
-            Aplicación de terreno enfocada en ecología, curvas topográficas & restauración de suelos.
-          </div>
-          <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid var(--accent-amber);">
-            <strong style="color: #fff;">3. AgriTwin 3D</strong><br>
-            Gemelo Digital 3D, simulación predictiva, mallas de datos espaciales & capas de riesgo.
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. Vision & Mission Card -->
-      <div class="glass-card" style="margin-top: 10px;">
-        <div class="future-title" style="color: var(--accent-emerald);">🎯 Visión & Misión del Proyecto</div>
-        <div class="future-desc" style="margin-top: 6px; line-height: 1.5; font-size: 11px; color: var(--text-secondary);">
-          <strong style="color: #fff;">Visión:</strong> Transformar la agricultura chilena mediante gemelos digitales 3D para la autonomía alimentaria, eficiencia hídrica y soberanía energética.<br><br>
-          <strong style="color: #fff;">Misión:</strong> Proporcionar herramientas de simulación en tiempo real para optimizar la producción de alimento, biomasa y conservación ambiental.
-        </div>
-      </div>
-    `;
   }
 
   onEntitySelected(data) {
@@ -2001,7 +1781,6 @@ export class UIController {
 
     const tabHeader = `
       <div class="panel-tab-bar" style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px;">
-        <button id="tab_btn_sig" class="tab-btn ${this.activeHouseTab === 'sig' ? 'active' : ''}">🗺️ Capas SIG</button>
         <button id="tab_btn_meta" class="tab-btn ${this.activeHouseTab === 'metabolism' ? 'active' : ''}">🏡 Predio</button>
         <button id="tab_btn_livestock" class="tab-btn ${this.activeHouseTab === 'livestock' ? 'active' : ''}">🐄 Ganadería</button>
         <button id="tab_btn_perma" class="tab-btn ${this.activeHouseTab === 'permaculture' ? 'active' : ''}">🌱 Permacultura</button>
@@ -2009,14 +1788,11 @@ export class UIController {
         <button id="tab_btn_weather" class="tab-btn ${this.activeHouseTab === 'weather' ? 'active' : ''}">🌦️ Clima</button>
         <button id="tab_btn_astro" class="tab-btn ${this.activeHouseTab === 'astro' ? 'active' : ''}">🧭 Sol</button>
         <button id="tab_btn_feat" class="tab-btn ${this.activeHouseTab === 'features' ? 'active' : ''}">⚡ Features</button>
-        <button id="tab_btn_info" class="tab-btn ${this.activeHouseTab === 'info' ? 'active' : ''}">ℹ️ Info</button>
       </div>
     `;
 
     let tabBody = '';
-    if (this.activeHouseTab === 'sig') {
-      tabBody = this.renderSigLayersTab();
-    } else if (this.activeHouseTab === 'metabolism') {
+    if (this.activeHouseTab === 'metabolism') {
       tabBody = this.renderMetabolismTab();
     } else if (this.activeHouseTab === 'livestock') {
       tabBody = this.renderLivestockTab();
@@ -2030,14 +1806,11 @@ export class UIController {
       tabBody = this.renderSensorsTab();
     } else if (this.activeHouseTab === 'features') {
       tabBody = this.renderFeaturesTab();
-    } else if (this.activeHouseTab === 'info') {
-      tabBody = this.renderInfoTab();
     }
 
     this.drawerBody.innerHTML = tabHeader + tabBody;
 
     // Bind tab button click listeners
-    const btnSig = document.getElementById('tab_btn_sig');
     const btnMeta = document.getElementById('tab_btn_meta');
     const btnLivestock = document.getElementById('tab_btn_livestock');
     const btnPerma = document.getElementById('tab_btn_perma');
@@ -2045,9 +1818,7 @@ export class UIController {
     const btnAstro = document.getElementById('tab_btn_astro');
     const btnSens = document.getElementById('tab_btn_sens');
     const btnFeat = document.getElementById('tab_btn_feat');
-    const btnInfo = document.getElementById('tab_btn_info');
 
-    if (btnSig) btnSig.addEventListener('click', () => { this.activeHouseTab = 'sig'; this.renderMainHouseDashboard(); });
     if (btnMeta) btnMeta.addEventListener('click', () => { this.activeHouseTab = 'metabolism'; this.renderMainHouseDashboard(); });
     if (btnLivestock) btnLivestock.addEventListener('click', () => { this.activeHouseTab = 'livestock'; this.renderMainHouseDashboard(); bus.emit('map:flyto', 'livestock'); });
     if (btnPerma) btnPerma.addEventListener('click', () => { this.activeHouseTab = 'permaculture'; this.renderMainHouseDashboard(); bus.emit('map:flyto', 'permaculture'); });
@@ -2055,128 +1826,6 @@ export class UIController {
     if (btnAstro) btnAstro.addEventListener('click', () => { this.activeHouseTab = 'astro'; this.renderMainHouseDashboard(); });
     if (btnSens) btnSens.addEventListener('click', () => { this.activeHouseTab = 'sensors'; this.renderMainHouseDashboard(); });
     if (btnFeat) btnFeat.addEventListener('click', () => { this.activeHouseTab = 'features'; this.renderMainHouseDashboard(); });
-    if (btnInfo) btnInfo.addEventListener('click', () => { this.activeHouseTab = 'info'; this.renderMainHouseDashboard(); });
-
-    // Bind specific handlers for active tabs
-    if (this.activeHouseTab === 'sig') {
-      // Multispectral & DEM
-      document.getElementById('btnStudioSpectralNdvi')?.addEventListener('click', () => {
-        bus.emit('map:set_layer_mode', 'ndvi');
-        this.showAlert('🌱 Capa NDVI Activa: Índice de Vigor Vegetal Sentinel-2 (B8/B4)');
-      });
-      document.getElementById('btnStudioSpectralDem')?.addEventListener('click', () => {
-        bus.emit('map:set_layer_mode', 'dem');
-        this.showAlert('🏔️ Topografía DEM: Modelo Hipsométrico y Curvas de Nivel');
-      });
-      document.getElementById('btnStudioSpectralNdwi')?.addEventListener('click', () => {
-        bus.emit('map:set_layer_mode', 'ndwi');
-        this.showAlert('💧 Hidrología NDWI: Detección de Humedad y Estero Colliguay');
-      });
-      document.getElementById('btnStudioSpectralNbr')?.addEventListener('click', () => {
-        bus.emit('map:set_layer_mode', 'nbr');
-        this.showAlert('🔥 Biomasa NBR: Índice de Combustible Forestal y Riesgo Incendio');
-      });
-      document.getElementById('btnStudioSpectralSat')?.addEventListener('click', () => {
-        bus.emit('map:set_layer_mode', 'sat');
-        this.showAlert('🛰️ Satélite Óptico Real: Cobertura Sentinel-2 L2A');
-      });
-      document.getElementById('btnStudioSpectralHybrid')?.addEventListener('click', () => {
-        bus.emit('map:set_layer_mode', 'hybrid');
-        this.showAlert('⚡ Gemelo Híbrido 3D: Textura de alta resolución con relieve procedural');
-      });
-
-      // Bio-layers 3D
-      let liveActive = true;
-      let zonesActive = true;
-      let keylineActive = true;
-      let sensorsActive = true;
-      let treesActive = true;
-      let parcelsActive = true;
-
-      const toggleBioBtn = (id, eventName, getVal, setVal, name) => {
-        const btn = document.getElementById(id);
-        if (!btn) return;
-        btn.addEventListener('click', () => {
-          const nVal = !getVal();
-          setVal(nVal);
-          btn.classList.toggle('active', nVal);
-          const ind = btn.querySelector('.status-indicator');
-          if (ind) {
-            ind.textContent = nVal ? 'ON' : 'OFF';
-            ind.style.color = nVal ? '#34d399' : '#94a3b8';
-          }
-          bus.emit(eventName, nVal);
-          this.showAlert(`🌱 Capa 3D ${name}: ${nVal ? 'Activada' : 'Oculta'}`);
-        });
-      };
-
-      toggleBioBtn('btnLayerLivestock', 'layer:livestock', () => liveActive, (v) => { liveActive = v; }, 'Pastoreo PRV');
-      toggleBioBtn('btnLayerZones', 'layer:permaculture_zones', () => zonesActive, (v) => { zonesActive = v; }, 'Zonificación 0-5');
-      toggleBioBtn('btnLayerKeyline', 'layer:keyline', () => keylineActive, (v) => { keylineActive = v; }, 'Trazado Keyline');
-      toggleBioBtn('btnLayerSensors', 'layer:sensors', () => sensorsActive, (v) => { sensorsActive = v; }, 'Sondas FDR');
-      toggleBioBtn('btnLayerTrees', 'layer:trees', () => treesActive, (v) => { treesActive = v; }, 'Canopia & Árboles');
-      toggleBioBtn('btnLayerParcels', 'layer:parcels', () => parcelsActive, (v) => { parcelsActive = v; }, 'Cuarteles y Parcelas');
-
-      // Geomorphic & Wind flows
-      let waterFlowActive = false;
-      let windStreamActive = false;
-      let hazardZonesActive = false;
-
-      document.getElementById('btnStudioGeoWaterFlow')?.addEventListener('click', (e) => {
-        waterFlowActive = !waterFlowActive;
-        e.currentTarget.classList.toggle('active', waterFlowActive);
-        bus.emit('geomorph:toggle_water_flows', waterFlowActive);
-        this.showAlert(`🌊 Flechas D8 de Flujo Hidráulico: ${waterFlowActive ? 'Visibles' : 'Ocultas'}`);
-      });
-
-      document.getElementById('btnStudioGeoWindyStream')?.addEventListener('click', (e) => {
-        windStreamActive = !windStreamActive;
-        e.currentTarget.classList.toggle('active', windStreamActive);
-        bus.emit('geomorph:toggle_wind_streamlines', windStreamActive);
-        this.showAlert(`🌪️ Campo de Viento Orográfico: ${windStreamActive ? 'Animado' : 'Detenido'}`);
-      });
-
-      document.getElementById('btnStudioGeoHazardZones')?.addEventListener('click', (e) => {
-        hazardZonesActive = !hazardZonesActive;
-        e.currentTarget.classList.toggle('active', hazardZonesActive);
-        bus.emit('geomorph:toggle_hazard_zones', hazardZonesActive);
-        this.showAlert(`📐 Zonas de Riesgo & Cortafuegos: ${hazardZonesActive ? 'Visibles' : 'Ocultas'}`);
-      });
-
-      // Wind current chips
-      const bindWindChip = (id, currentId, speed, dir, risk, label) => {
-        document.getElementById(id)?.addEventListener('click', () => {
-          bus.emit('geomorph:toggle_wind_current', { currentId, active: true });
-          bus.emit('geomorph:set_wind_params', { speed, direction: dir });
-          bus.emit('geomorph:toggle_wind_streamlines', true);
-          bus.emit('risk:set_mode', risk);
-          this.showAlert(`🌬️ Corriente de Viento: ${label} (${speed} km/h, ${dir}°)`);
-        });
-      };
-      bindWindChip('btnStudioWindPuelche', 'puelche', 36, 70, 'fire', 'Puelche E-NE (FWI Crítico)');
-      bindWindChip('btnStudioWindBreeze', 'breeze', 14, 220, 'none', 'Brisa SW (Normal)');
-      bindWindChip('btnStudioWindCatabatic', 'catabatic', 8, 120, 'frost', 'Catabático Nocturno (Heladas)');
-      bindWindChip('btnStudioWindTalweg', 'talweg', 18, 45, 'none', 'Chorro Quebrada Talweg');
-
-      // Spatial Tools
-      document.getElementById('btnQuickDrawFromStudio')?.addEventListener('click', () => {
-        this.drawingManager?.toggleDrawingMode(true);
-        this.showAlert('🎨 Pincel Vectorial 3D: Haz clic sobre el terreno para trazar un polígono');
-      });
-      document.getElementById('btnQuickSculptFromStudio')?.addEventListener('click', () => {
-        document.getElementById('dropdown_relief')?.classList.add('open');
-      });
-      document.getElementById('btnQuickCatalogFromStudio')?.addEventListener('click', () => {
-        const modal = document.getElementById('infoModalOverlay') || document.getElementById('catalogPolyModal');
-        if (modal) modal.style.display = 'flex';
-      });
-    }
-
-    if (this.activeHouseTab === 'info') {
-      document.getElementById('btn_quick_enterprise')?.addEventListener('click', () => this.renderEnterpriseDashboard());
-      document.getElementById('btn_quick_territorial')?.addEventListener('click', () => this.renderTerritorialDashboard());
-      document.getElementById('btn_quick_esg')?.addEventListener('click', () => this.renderEsgDashboard());
-    }
 
     if (this.activeHouseTab === 'weather') {
       setTimeout(() => {
