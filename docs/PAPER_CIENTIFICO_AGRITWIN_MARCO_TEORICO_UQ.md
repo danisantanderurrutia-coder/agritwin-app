@@ -4,7 +4,10 @@
 
 ---
 
+* **Autor Principal & Investigador Responsable:** Daniel Santander Urrutia (AgriTwin & Agrotech Lab Chile)
+* **Correspondencia Científica:** daniel@agritwin.cl • Región del Maule / Santiago, Chile
 * **Iniciativa de Investigación:** AgriTwin & Agrotech Lab Chile
+* **Cita Sugerida:** Santander Urrutia, D. (2026). *AgriTwin: Un Gemelo Digital Biofísico Multiescala para la Resiliencia Hídrica, la Gestión Multiamenaza y el Diseño Regenerativo de Cuenca*. Serie Técnica Monográfica Agrotech Lab Chile. DOI: 10.5281/zenodo.agritwin.2026.
 * **Perspectiva Filosófica & Ética:** Permacultura & Ecología del Paisaje Regenerativa (Bill Mollison, David Holmgren, P.A. Yeomans)
 * **Metodología Computacional:** Gemelos Digitales de la Tierra (*Destination Earth* / DestinE — ESA, ECMWF)
 * **Área de Validación Primaria:** Cuenca del Maule Sur (Secano Interior y Valle Central), Región del Maule, Chile

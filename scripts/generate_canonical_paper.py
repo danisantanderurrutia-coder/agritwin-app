@@ -440,7 +440,27 @@ def build_html():
                 De la atomización parcelaria al continuo territorial: Integración de Agro-Hidrología semi-distribuida, Balística de Incendios, Topoclimatología Catabática, Teledetección de 10 Bandas, Geometría Keyline y Metrología ISO/IEC Guide 98-3 (GUM) en el Maule Sur, Chile
             </div>
 
+            <!-- Bloque Canónico de Autoría -->
+            <div class="cover-author-block" style="margin: 26px auto 28px auto; padding: 20px 28px; background: #fafaf9; border: 1.5px solid #d6d3d1; border-radius: 10px; max-width: 680px; box-shadow: 0 2px 5px rgba(0,0,0,0.04);">
+                <div style="font-size: 11px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 2px; color: #b45309; font-weight: 700; margin-bottom: 5px;">
+                    Autor Principal &amp; Investigador Responsable
+                </div>
+                <div style="font-size: 25px; font-weight: 800; color: #1c1917; font-family: 'Georgia', serif; letter-spacing: 0.3px;">
+                    Daniel Santander Urrutia
+                </div>
+                <div style="font-size: 13px; color: #44403c; font-family: 'Georgia', serif; font-style: italic; margin-top: 4px;">
+                    AgriTwin &amp; Agrotech Lab Chile • Centro de Biofísica Territorial y Modelación Ambiental
+                </div>
+                <div style="font-size: 11px; color: #78716c; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">
+                    Correspondencia: daniel@agritwin.cl • Región del Maule / Santiago, Chile
+                </div>
+            </div>
+
             <div class="cover-metadata-grid">
+                <div class="cover-metadata-item">
+                    <strong>Autoría &amp; Dirección Científica</strong>
+                    Daniel Santander Urrutia (Investigador Líder • AgriTwin / Agrotech Lab)
+                </div>
                 <div class="cover-metadata-item">
                     <strong>Perspectiva Filosófica & Ética</strong>
                     Permacultura & Ecología del Paisaje Regenerativa (Bill Mollison, David Holmgren, P.A. Yeomans)
@@ -1284,7 +1304,10 @@ def build_markdown():
 
 ---
 
+* **Autor Principal & Investigador Responsable:** Daniel Santander Urrutia (AgriTwin & Agrotech Lab Chile)
+* **Correspondencia Científica:** daniel@agritwin.cl • Región del Maule / Santiago, Chile
 * **Iniciativa de Investigación:** AgriTwin & Agrotech Lab Chile
+* **Cita Sugerida:** Santander Urrutia, D. (2026). *AgriTwin: Un Gemelo Digital Biofísico Multiescala para la Resiliencia Hídrica, la Gestión Multiamenaza y el Diseño Regenerativo de Cuenca*. Serie Técnica Monográfica Agrotech Lab Chile. DOI: 10.5281/zenodo.agritwin.2026.
 * **Perspectiva Filosófica & Ética:** Permacultura & Ecología del Paisaje Regenerativa (Bill Mollison, David Holmgren, P.A. Yeomans)
 * **Metodología Computacional:** Gemelos Digitales de la Tierra (*Destination Earth* / DestinE — ESA, ECMWF)
 * **Área de Validación Primaria:** Cuenca del Maule Sur (Secano Interior y Valle Central), Región del Maule, Chile
