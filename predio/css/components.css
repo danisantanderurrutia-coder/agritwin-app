@@ -517,6 +517,21 @@ body:not(.drawer-collapsed) .btn-dropdown-label {
   line-height: 1.4;
 }
 
+/* Permanent Drawer Navigation Bar (Submenús de capas prediales) */
+.drawer-nav {
+  padding: 8px 12px 6px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 14, 26, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.drawer-nav .panel-tab-bar {
+  margin-bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
 /* Tab Bar Navigation */
 .panel-tab-bar {
   display: flex;

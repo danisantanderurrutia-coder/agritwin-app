@@ -17,6 +17,7 @@ export class UIController {
     this.simulationEngine = simulationEngine;
 
     this.sideDrawer = document.getElementById('sideDrawer');
+    this.drawerNav = document.getElementById('drawerNav');
     this.drawerTitle = document.getElementById('drawerTitle');
     this.drawerSubtitle = document.getElementById('drawerSubtitle');
     this.drawerBody = document.getElementById('drawerBody');
@@ -32,6 +33,7 @@ export class UIController {
     this.alertMessage = document.getElementById('alertMessage');
 
     this.currentSelectedEntityId = null;
+    this.selectedEntityProps = null;
     this.activeHouseTab = 'metabolism'; // metabolism | livestock | permaculture | sensors | weather | astro | features
     this.selectedDayOfYear = 172; // Solsticio Invierno Parral
     this.selectedHourOfDay = 12;
@@ -166,7 +168,9 @@ export class UIController {
     if (this.closeDrawerBtn) {
       this.closeDrawerBtn.addEventListener('click', () => {
         this.currentSelectedEntityId = null;
+        this.selectedEntityProps = null;
         this.collapseDrawer();
+        this.renderMainHouseDashboard();
       });
     }
 
@@ -1731,13 +1735,88 @@ export class UIController {
 
   renderDefaultCreatorView() {
     this.currentSelectedEntityId = null;
+    this.selectedEntityProps = null;
     this.activeHouseTab = 'metabolism';
     this.renderMainHouseDashboard();
   }
 
+  renderDrawerNav() {
+    if (!this.drawerNav) {
+      this.drawerNav = document.getElementById('drawerNav');
+      if (!this.drawerNav) return;
+    }
+
+    const hasEntity = !!(this.selectedEntityProps && this.currentSelectedEntityId);
+    let entityLabel = 'Detalle';
+    if (hasEntity) {
+      if (this.selectedEntityProps.name) {
+        entityLabel = this.selectedEntityProps.name;
+      } else if (this.selectedEntityProps.parcelId) {
+        entityLabel = `Parcela ${this.selectedEntityProps.parcelId}`;
+      } else if (this.selectedEntityProps.itemName) {
+        entityLabel = this.selectedEntityProps.itemName;
+      }
+      if (entityLabel.length > 15) entityLabel = entityLabel.substring(0, 13) + '…';
+    }
+
+    this.drawerNav.innerHTML = `
+      <div class="panel-tab-bar" style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 0;">
+        <button id="tab_btn_meta" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'metabolism') ? 'active' : ''}" title="Metabolismo y Balance Predial">🏡 Predio</button>
+        <button id="tab_btn_livestock" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'livestock') ? 'active' : ''}" title="Ganadería PRV & Rotación 8 Potreros">🐄 Ganadería</button>
+        <button id="tab_btn_perma" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'permaculture') ? 'active' : ''}" title="Zonificación 0 a 5 & Keyline Yeomans">🌱 Permacultura</button>
+        <button id="tab_btn_sens" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'sensors') ? 'active' : ''}" title="Red de 15 Sondas FDR IoT">📡 Sensores</button>
+        <button id="tab_btn_weather" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'weather') ? 'active' : ''}" title="Estación Agroclimática & Pronóstico">🌦️ Clima</button>
+        <button id="tab_btn_astro" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'astro') ? 'active' : ''}" title="Tracker Solar 3D & Mareas">🧭 Sol</button>
+        <button id="tab_btn_feat" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'features') ? 'active' : ''}" title="Features Prediales & WUI">⚡ Features</button>
+        ${hasEntity ? `
+          <button id="tab_btn_entity_detail" class="tab-btn active" style="background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fde047;" title="Elemento Actual Seleccionado">
+            <span>📍</span> ${entityLabel}
+          </button>
+        ` : ''}
+      </div>
+    `;
+
+    // Bind tab button click listeners
+    const btnMeta = document.getElementById('tab_btn_meta');
+    const btnLivestock = document.getElementById('tab_btn_livestock');
+    const btnPerma = document.getElementById('tab_btn_perma');
+    const btnWeather = document.getElementById('tab_btn_weather');
+    const btnAstro = document.getElementById('tab_btn_astro');
+    const btnSens = document.getElementById('tab_btn_sens');
+    const btnFeat = document.getElementById('tab_btn_feat');
+    const btnEntityDetail = document.getElementById('tab_btn_entity_detail');
+
+    const switchToTab = (tabName, flyTarget) => {
+      this.currentSelectedEntityId = null;
+      this.selectedEntityProps = null;
+      this.activeHouseTab = tabName;
+      this.renderMainHouseDashboard();
+      if (flyTarget) bus.emit('map:flyto', flyTarget);
+    };
+
+    if (btnMeta) btnMeta.addEventListener('click', () => switchToTab('metabolism'));
+    if (btnLivestock) btnLivestock.addEventListener('click', () => switchToTab('livestock', 'livestock'));
+    if (btnPerma) btnPerma.addEventListener('click', () => switchToTab('permaculture', 'permaculture'));
+    if (btnWeather) btnWeather.addEventListener('click', () => switchToTab('weather'));
+    if (btnAstro) btnAstro.addEventListener('click', () => switchToTab('astro'));
+    if (btnSens) btnSens.addEventListener('click', () => switchToTab('sensors'));
+    if (btnFeat) btnFeat.addEventListener('click', () => switchToTab('features'));
+    if (btnEntityDetail && this.selectedEntityProps) {
+      btnEntityDetail.addEventListener('click', () => {
+        const p = this.selectedEntityProps;
+        if (p.type === 'parcel') this.renderParcelPanel(p);
+        else if (p.type === 'crop' || p.type === 'tree') this.renderCropPanel(p);
+        else if (p.isCustom || p.type === 'custom_polygon') this.renderCustomPolygonPanel(p);
+      });
+    }
+  }
+
   onEntitySelected(data) {
-    this.currentSelectedEntityId = data.id;
-    const props = data.properties || {};
+    if (!data) return;
+    const props = data.properties || data || {};
+    this.currentSelectedEntityId = data.id || props.id || props.parcelId;
+    this.selectedEntityProps = props;
+    this.openDrawer();
 
     if (props.isCustom || props.type === 'custom_polygon') {
       this.renderCustomPolygonPanel(props);
@@ -1745,30 +1824,30 @@ export class UIController {
       this.selectedAnimalId = props.id || props.animalId;
       if (props.paddockId) this.selectedPaddockId = props.paddockId;
       this.activeHouseTab = 'livestock';
-      this.openDrawer();
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     } else if (props.type === 'paddock_prv' || props.type === 'livestock_herd' || props.type === 'livestock_coop') {
       this.selectedPaddockId = props.paddockId || 'P3';
       this.activeHouseTab = 'livestock';
-      this.openDrawer();
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     } else if (props.type === 'permaculture_zone' || props.type === 'keyline') {
       this.activeHouseTab = 'permaculture';
-      this.openDrawer();
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     } else if (props.type === 'house' || props.id === 'house_main') {
-      this.openDrawer();
+      this.activeHouseTab = 'metabolism';
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     } else if (props.type === 'sensor') {
       this.selectedSensorId = props.sensorId || props.id.replace('sensor_', '');
       this.activeHouseTab = 'sensors';
-      this.openDrawer();
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     } else if (props.type === 'parcel') {
       this.renderParcelPanel(props);
     } else if (props.type === 'territorial_hex') {
       this.selectedTerritorialHex = props.data;
-      this.openDrawer();
       this.renderTerritorialDashboard(props.data);
     } else if (props.type === 'crop' || props.type === 'tree') {
       this.renderCropPanel(props);
@@ -1779,17 +1858,7 @@ export class UIController {
     this.drawerTitle.textContent = 'Predio Meniels (Parral, Maule)';
     this.drawerSubtitle.textContent = 'Fundo Estero Colliguay | Lat -36.14°S, Lon -71.60°W';
 
-    const tabHeader = `
-      <div class="panel-tab-bar" style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px;">
-        <button id="tab_btn_meta" class="tab-btn ${this.activeHouseTab === 'metabolism' ? 'active' : ''}">🏡 Predio</button>
-        <button id="tab_btn_livestock" class="tab-btn ${this.activeHouseTab === 'livestock' ? 'active' : ''}">🐄 Ganadería</button>
-        <button id="tab_btn_perma" class="tab-btn ${this.activeHouseTab === 'permaculture' ? 'active' : ''}">🌱 Permacultura</button>
-        <button id="tab_btn_sens" class="tab-btn ${this.activeHouseTab === 'sensors' ? 'active' : ''}">📡 Sensores</button>
-        <button id="tab_btn_weather" class="tab-btn ${this.activeHouseTab === 'weather' ? 'active' : ''}">🌦️ Clima</button>
-        <button id="tab_btn_astro" class="tab-btn ${this.activeHouseTab === 'astro' ? 'active' : ''}">🧭 Sol</button>
-        <button id="tab_btn_feat" class="tab-btn ${this.activeHouseTab === 'features' ? 'active' : ''}">⚡ Features</button>
-      </div>
-    `;
+    this.renderDrawerNav();
 
     let tabBody = '';
     if (this.activeHouseTab === 'metabolism') {
@@ -1808,24 +1877,7 @@ export class UIController {
       tabBody = this.renderFeaturesTab();
     }
 
-    this.drawerBody.innerHTML = tabHeader + tabBody;
-
-    // Bind tab button click listeners
-    const btnMeta = document.getElementById('tab_btn_meta');
-    const btnLivestock = document.getElementById('tab_btn_livestock');
-    const btnPerma = document.getElementById('tab_btn_perma');
-    const btnWeather = document.getElementById('tab_btn_weather');
-    const btnAstro = document.getElementById('tab_btn_astro');
-    const btnSens = document.getElementById('tab_btn_sens');
-    const btnFeat = document.getElementById('tab_btn_feat');
-
-    if (btnMeta) btnMeta.addEventListener('click', () => { this.activeHouseTab = 'metabolism'; this.renderMainHouseDashboard(); });
-    if (btnLivestock) btnLivestock.addEventListener('click', () => { this.activeHouseTab = 'livestock'; this.renderMainHouseDashboard(); bus.emit('map:flyto', 'livestock'); });
-    if (btnPerma) btnPerma.addEventListener('click', () => { this.activeHouseTab = 'permaculture'; this.renderMainHouseDashboard(); bus.emit('map:flyto', 'permaculture'); });
-    if (btnWeather) btnWeather.addEventListener('click', () => { this.activeHouseTab = 'weather'; this.renderMainHouseDashboard(); });
-    if (btnAstro) btnAstro.addEventListener('click', () => { this.activeHouseTab = 'astro'; this.renderMainHouseDashboard(); });
-    if (btnSens) btnSens.addEventListener('click', () => { this.activeHouseTab = 'sensors'; this.renderMainHouseDashboard(); });
-    if (btnFeat) btnFeat.addEventListener('click', () => { this.activeHouseTab = 'features'; this.renderMainHouseDashboard(); });
+    this.drawerBody.innerHTML = tabBody;
 
     if (this.activeHouseTab === 'weather') {
       setTimeout(() => {
@@ -2983,8 +3035,11 @@ export class UIController {
   }
 
   renderParcelPanel(props) {
+    this.selectedEntityProps = props;
+    this.currentSelectedEntityId = props.id || props.parcelId;
     this.drawerTitle.textContent = `Parcela ${props.parcelId}`;
     this.drawerSubtitle.textContent = `Cultivo: ${props.crop} | Predio Meniels (Parral)`;
+    this.renderDrawerNav();
 
     let waterRiskBadge = `<span class="status-badge optimal"><span class="status-dot"></span> Suficiente</span>`;
     let frostRiskBadge = `<span class="status-badge optimal"><span class="status-dot"></span> Bajo</span>`;
@@ -3046,13 +3101,17 @@ export class UIController {
 
     document.getElementById('btnBackToPredioTabs')?.addEventListener('click', () => {
       this.currentSelectedEntityId = null;
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     });
   }
 
   renderCropPanel(props) {
+    this.selectedEntityProps = props;
+    this.currentSelectedEntityId = props.id;
     this.drawerTitle.textContent = props.name || 'Plantación';
     this.drawerSubtitle.textContent = `Especie: ${props.species} | Categoría: ${props.cropCategory || 'Agroecológico'}`;
+    this.renderDrawerNav();
 
     this.drawerBody.innerHTML = `
       <button id="btnBackToPredioTabs" class="btn-tool" style="width: 100%; margin-bottom: 12px; font-size: 11px; justify-content: flex-start; padding: 7px 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; cursor: pointer; color: #f8fafc;">
@@ -3067,6 +3126,7 @@ export class UIController {
 
     document.getElementById('btnBackToPredioTabs')?.addEventListener('click', () => {
       this.currentSelectedEntityId = null;
+      this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
     });
   }
@@ -3095,6 +3155,8 @@ export class UIController {
    * to change the item type or delete the polygon.
    */
   renderCustomPolygonPanel(props) {
+    this.selectedEntityProps = props;
+    this.currentSelectedEntityId = props.id;
     const icon = props.icon || '📍';
     const name = props.name || 'Polígono 3D';
     const itemName = props.itemName || props.name;
@@ -3104,6 +3166,7 @@ export class UIController {
 
     this.drawerTitle.textContent = `${icon} ${name}`;
     this.drawerSubtitle.textContent = `${itemName} | ${areaHa} ha | Catálogo de Ítems`;
+    this.renderDrawerNav();
 
     this.drawerBody.innerHTML = `
       <button id="btnBackToPredioTabs" class="btn-tool" style="width: 100%; margin-bottom: 12px; font-size: 11px; justify-content: flex-start; padding: 7px 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; cursor: pointer; color: #f8fafc;">
@@ -3153,6 +3216,12 @@ export class UIController {
         </button>
       </div>
     `;
+
+    document.getElementById('btnBackToPredioTabs')?.addEventListener('click', () => {
+      this.currentSelectedEntityId = null;
+      this.selectedEntityProps = null;
+      this.renderMainHouseDashboard();
+    });
 
     const changeBtn = document.getElementById('btnChangeCustomPolyItem');
     if (changeBtn) {

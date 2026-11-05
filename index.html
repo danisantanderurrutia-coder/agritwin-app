@@ -14831,85 +14831,87 @@ print(meniel_soil)</code></pre>
                  ═══════════════════════════════════════════════════════════════ -->
             <div id="tab-sig" class="tab-content space-y-4">
                 
-                <!-- Cobertura de Suelo LULC -->
-                <div class="bg-[#08101e]/90 p-3.5 rounded-xl border border-white/10 space-y-3">
-                    <h2 class="text-xs text-slate-300 font-semibold uppercase tracking-wider font-mono flex items-center justify-between">
-                        <span>🗺️ Cobertura de Suelo (LULC)</span>
-                        <span class="text-[9px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">SENTINEL-2 L2A</span>
-                    </h2>
-                    
-                    <div class="h-44">
-                        <canvas id="lulcChart"></canvas>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
-                            <div class="text-[9.5px] text-slate-400 uppercase">Área Cuenca</div>
-                            <div class="text-sm font-bold text-slate-200">122,070 ha</div>
-                        </div>
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
-                            <div class="text-[9.5px] text-slate-400 uppercase">Última Pasada S2</div>
-                            <div class="text-sm font-bold text-emerald-400">2026-09-21</div>
-                        </div>
-                    </div>
-
-                    <!-- Módulo 1: Botón Accionador LULC Biofísico Dual LOD -->
-                    <button onclick="toggleBiofisicoLulcLayer()" id="btnSidebarLulcBio" class="w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 hover:text-white font-mono text-[10.5px] font-bold flex items-center justify-between transition-all cursor-pointer">
-                        <span class="flex items-center gap-1.5">
-                            <span>🌱</span>
-                            <span>Mosaico Biofísico (LOD 5km)</span>
+                <!-- Cobertura de Suelo LULC (Estilo Cartografía Suiza) -->
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
+                            <span>🗺️</span> Cobertura Vegetal & Uso de Suelo
                         </span>
-                        <span id="badgeSidebarLulcBio" class="text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono">ACTIVAR</span>
+                        <span class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/10">
+                            S2 L2A • 122k ha
+                        </span>
+                    </div>
+                    
+                    <!-- Barra de composición horizontal estilizada (reemplazo del donut gigante) -->
+                    <div class="space-y-1.5">
+                        <div class="h-2.5 w-full bg-slate-800 rounded-full overflow-hidden flex">
+                            <div class="bg-emerald-500 h-full" style="width: 38%;" title="Bosque Nativo 38%"></div>
+                            <div class="bg-amber-600 h-full" style="width: 24%;" title="Cultivos Riego 24%"></div>
+                            <div class="bg-lime-500 h-full" style="width: 18%;" title="Pastizales 18%"></div>
+                            <div class="bg-rose-500 h-full" style="width: 12%;" title="Matorral Secano 12%"></div>
+                            <div class="bg-sky-500 h-full" style="width: 8%;" title="Cuerpos de Agua 8%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-sans">
+                            <span>Bosque (38%)</span>
+                            <span>Riego (24%)</span>
+                            <span>Secano (30%)</span>
+                            <span>Agua (8%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Canvas oculto para preservar inicialización de charts -->
+                    <canvas id="lulcChart" style="display:none;"></canvas>
+
+                    <!-- Botón sobrio con indicador LED discreto -->
+                    <button onclick="toggleBiofisicoLulcLayer()" id="btnSidebarLulcBio" class="w-full py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 text-xs font-medium flex items-center justify-between transition-colors cursor-pointer font-sans">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Mosaico Biofísico 10m (Cuenca Completa)</span>
+                        </span>
+                        <span id="badgeSidebarLulcBio" class="text-[9px] font-mono text-slate-400 px-1.5 py-0.5 rounded bg-black/40 border border-white/5">ACTIVAR</span>
                     </button>
                 </div>
 
-
-                <!-- Tarjeta Edafológica: ISRIC SoilGrids 2.0 (250 m) • Carbono Orgánico en Suelo -->
-                <div class="bg-[#08101e]/90 p-3.5 rounded-xl border border-emerald-500/30 space-y-3 font-mono">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-base text-emerald-400">🌱</span>
-                            <div>
-                                <h3 class="text-xs font-bold text-emerald-300 uppercase tracking-wider">
-                                    ISRIC SoilGrids 2.0 (250m)
-                                </h3>
-                                <p class="text-[9px] text-slate-400">Carbono Orgánico del Suelo (SOC 0-5 cm) &bull; R geodata</p>
-                            </div>
-                        </div>
-                        <span id="badgeSidebarSoilGrids" class="text-[8.5px] px-1.5 py-0.5 rounded bg-emerald-400 text-stone-950 font-bold">ACTIVO</span>
+                <!-- Tarjeta Edafológica: ISRIC SoilGrids 2.0 (250 m) (Estilo Cartografía Suiza) -->
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
+                            <span>🌱</span> Carbono Orgánico en Suelo (ISRIC 250m)
+                        </span>
+                        <span id="badgeSidebarSoilGrids" class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-bold">
+                            ACTIVO
+                        </span>
                     </div>
-
-                    <!-- Métricas Cuenca Longaví -->
-                    <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                        <div class="p-2 bg-black/40 rounded-lg border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">SOC Medio</span>
-                            <b class="text-emerald-400 text-xs">38.5 g/kg</b>
-                            <span class="text-slate-500 text-[8px]">(3.85%)</span>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Concentración SOC</span>
+                            <span class="text-xs font-mono font-bold text-slate-200">38.5 g/kg</span>
+                            <span class="text-[8px] text-slate-500 font-mono block">3.85%</span>
                         </div>
-                        <div class="p-2 bg-black/40 rounded-lg border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">Stock 0-5cm</span>
-                            <b class="text-sky-300 text-xs">24.2 t C/ha</b>
-                            <span class="text-slate-500 text-[8px]">88.7 t CO₂e</span>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Stock Areal (0-5cm)</span>
+                            <span class="text-xs font-mono font-bold text-slate-200">24.2 t C/ha</span>
+                            <span class="text-[8px] text-slate-500 font-mono block">88.7 t CO₂e</span>
                         </div>
-                        <div class="p-2 bg-black/40 rounded-lg border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">Resolución</span>
-                            <b class="text-amber-300 text-xs">250 metros</b>
-                            <span class="text-slate-500 text-[8px]">6.25 ha/px</span>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Resolución WoSIS</span>
+                            <span class="text-xs font-mono font-bold text-slate-200">250 metros</span>
+                            <span class="text-[8px] text-slate-500 font-mono block">6.25 ha/px</span>
                         </div>
                     </div>
-
-                    <!-- Botón Toggle de Capa -->
-                    <button onclick="toggleSoilGridsLayer()" id="btnSidebarSoilGrids" class="w-full py-2 px-3 rounded-lg bg-emerald-500 text-white border border-emerald-300 font-mono text-[10.5px] font-bold flex items-center justify-between transition-all shadow-md cursor-pointer">
-                        <span>🌱</span>
-                        <span>Capa SoilGrids 250m Activa</span>
+                    <button onclick="toggleSoilGridsLayer()" id="btnSidebarSoilGrids" class="w-full py-2 px-3 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-slate-100 text-xs font-medium flex items-center justify-between transition-colors cursor-pointer shadow-sm font-sans">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Capa SoilGrids Activa</span>
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">ON</span>
                     </button>
-
                     <!-- Acceso directo al Vault -->
-                    <button onclick="switchMasterView('docs'); switchDocsTab('docs-scripts'); switchScriptDatasetItem('soilgrids');" class="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-emerald-300 hover:text-white border border-emerald-500/30 text-[9.5px] flex items-center justify-between transition-all cursor-pointer">
+                    <button onclick="switchMasterView('docs'); switchDocsTab('docs-scripts'); switchScriptDatasetItem('soilgrids');" class="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[9.5px] flex items-center justify-between transition-all cursor-pointer font-sans">
                         <span class="flex items-center gap-1.5">
                             <span>📚</span> <span>Ver Código R & API REST en el Vault</span>
                         </span>
-                        <span>➔</span>
+                        <span class="text-slate-500 font-mono">➔</span>
                     </button>
                 </div>
 
@@ -14921,20 +14923,20 @@ print(meniel_soil)</code></pre>
                 <!-- ═══════════════════════════════════════════════════════════════
                      GRUPO 1 CONSOLIDADO: RED DE TELEMETRÍA & MONITOREO HÍDRICO-CLIMÁTICO (GROUND-TRUTH & PÚBLICA)
                      ═══════════════════════════════════════════════════════════════ -->
-                <details class="group bg-[#08101e]/90 rounded-xl border border-emerald-500/30 overflow-hidden transition-all duration-200">
+                <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
                     <summary class="flex items-center justify-between p-3.5 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
                         <div class="flex items-center gap-2">
-                            <span class="text-emerald-400 text-sm">📡</span>
+                            <span class="text-slate-400 text-sm">📡</span>
                             <div>
-                                <h2 class="text-xs text-emerald-400 font-mono font-bold uppercase tracking-wider">
-                                    Red Centinela & Telemetría Pública
+                                <h2 class="text-xs text-slate-200 font-semibold tracking-wide font-sans">
+                                    Red Centinela & Telemetría In-Situ
                                 </h2>
-                                <p class="text-[9px] text-slate-400 font-mono">Sensores FDR in-situ, piezometría y estaciones oficiales DGA/DMC</p>
+                                <p class="text-[9px] text-slate-400 font-sans">Sensores FDR in-situ, piezometría y estaciones oficiales DGA/DMC</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-[9px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40 font-bold">9 NODOS</span>
-                            <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-mono text-slate-400">9 nodos</span>
+                            <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                         </div>
                     </summary>
 
