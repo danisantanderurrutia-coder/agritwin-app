@@ -5627,7 +5627,7 @@
             toggleContainer.innerHTML = `
                 <div class="space-y-2.5">
                     <!-- BLOQUE 1: CARTOGRAFÍA BASE ESTRUCTURAL -->
-                    <details class="group bg-black/40 rounded-xl border border-sky-500/25 overflow-hidden transition-all duration-200" open>
+                    <details class="group bg-black/40 rounded-xl border border-sky-500/25 overflow-hidden transition-all duration-200">
                         <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
                             <span class="text-[10px] font-bold text-sky-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
                                 <span>🛰️</span> 1. Cartografía Base Estructural
@@ -5656,7 +5656,7 @@
                     </details>
 
                     <!-- BLOQUE 2: TOPOGRAFÍA & RELIEVE DEM -->
-                    <details class="group bg-black/40 rounded-xl border border-amber-500/25 overflow-hidden transition-all duration-200" open>
+                    <details class="group bg-black/40 rounded-xl border border-amber-500/25 overflow-hidden transition-all duration-200">
                         <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
                             <span class="text-[10px] font-bold text-amber-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
                                 <span>🏔️</span> 2. Topografía & Relieve DEM
@@ -5721,7 +5721,7 @@
                     </details>
 
                     <!-- BLOQUE 3: TELEDETECCIÓN ESPECTRAL & RADAR (SENTINEL 1 & 2) -->
-                    <details class="group bg-black/40 rounded-xl border border-emerald-500/25 overflow-hidden transition-all duration-200" open>
+                    <details class="group bg-black/40 rounded-xl border border-emerald-500/25 overflow-hidden transition-all duration-200">
                         <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
                             <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
                                 <span>📡</span> 3. Frecuencias Satelitales (Sentinel)
@@ -5775,7 +5775,7 @@
                     </details>
 
                     <!-- BLOQUE 4: HERRAMIENTAS DE GEOMORFOLOGÍA & MODELOS DE CORTE -->
-                    <details class="group bg-black/40 rounded-xl border border-sky-500/25 overflow-hidden transition-all duration-200" open>
+                    <details class="group bg-black/40 rounded-xl border border-sky-500/25 overflow-hidden transition-all duration-200">
                         <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
                             <span class="text-[10px] font-bold text-sky-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
                                 <span>📐</span> 4. Herramientas de Geomorfología
