@@ -8,8 +8,28 @@
     <!-- KaTeX para Renderizado Matemático de Precisión -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
-            onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var retries = 0;
+            function initKaTeX() {
+                if (typeof renderMathInElement === "function") {
+                    renderMathInElement(document.body, {
+                        delimiters: [
+                            {left: "$$", right: "$$", display: true},
+                            {left: "$", right: "$", display: false}
+                        ],
+                        throwOnError: false,
+                        errorColor: "#dc2626"
+                    });
+                } else if (retries < 50) {
+                    retries++;
+                    setTimeout(initKaTeX, 60);
+                }
+            }
+            initKaTeX();
+        });
+    </script>
 
     <style>
         :root {
@@ -664,7 +684,7 @@
 
         <h2 class="section-title">1.2. Crítica al Sesgo de Atomización Parcelaria y Desarme de la «Trampa del Hardware»</h2>
         <p>
-            Ante esta crisis, la respuesta hegemónica de la agroindustria ha sido la promoción acrítica de la denominada "agricultura de precisión". Este enfoque sufre de un <strong>error ontológico de escala</strong>: asume que el cuartel productivo es un sistema termodinámico cerrado y autosuficiente. Se instalan redes densas de micro-sensores IoT intra-hilera (sondas capacitivas, micro-estaciones inalámbricas de bajo costo) con inversiones que oscilan entre $\$5.000$ y $\$12.000\text{ USD}$ por predio, incurriendo además en costos recurrentes de mantenimiento por deriva de calibración, ensuciamiento salino y recambio de baterías.
+            Ante esta crisis, la respuesta hegemónica de la agroindustria ha sido la promoción acrítica de la denominada "agricultura de precisión". Este enfoque sufre de un <strong>error ontológico de escala</strong>: asume que el cuartel productivo es un sistema termodinámico cerrado y autosuficiente. Se instalan redes densas de micro-sensores IoT intra-hilera (sondas capacitivas, micro-estaciones inalámbricas de bajo costo) con inversiones que oscilan entre $USD 5.000$ y $USD 12.000\text{ USD}$ por predio, incurriendo además en costos recurrentes de mantenimiento por deriva de calibración, ensuciamiento salino y recambio de baterías.
         </p>
         <p>
             Esta <em>trampa del hardware</em> excluye al $85\%$ de los pequeños y medianos agricultores (usuarios INDAP y asociaciones de canalistas) y fracasa operativamente: un sensor clavado en una hilera detecta el estrés cuando los estomas del cultivo ya se han cerrado y el daño celular es irreversible, ignorando que el $80\%$ de la recarga freática, la presión de vapor ambiental y el riesgo de fuego o helada se originan en los procesos ecológicos y geomorfológicos de toda la cuenca hidrográfica aguas arriba.
@@ -1292,7 +1312,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
 
         <h2 class="section-title">4.2. Democratización de la Resiliencia y Desarme de la «Trampa del Hardware»</h2>
         <p>
-            El análisis global de sensibilidad de Sobol y la aceptación de la Hipótesis 3 tienen profundas implicancias socioeconómicas para la política agraria en Chile y el cono sur. Durante la última década, las políticas de fomento han subsidiado la adquisición de redes de telemetría IoT privadas cuyo costo de capital ($\$5.000$ a $\$12.000\text{ USD}$ por predio) y mantenimiento por deriva salina y baterías resulta prohibitivo para la pequeña y mediana agricultura (INDAP / Pequeños Regantes CNR).
+            El análisis global de sensibilidad de Sobol y la aceptación de la Hipótesis 3 tienen profundas implicancias socioeconómicas para la política agraria en Chile y el cono sur. Durante la última década, las políticas de fomento han subsidiado la adquisición de redes de telemetría IoT privadas cuyo costo de capital ($USD 5.000$ a $USD 12.000\text{ USD}$ por predio) y mantenimiento por deriva salina y baterías resulta prohibitivo para la pequeña y mediana agricultura (INDAP / Pequeños Regantes CNR).
         </p>
         <p>
             Al demostrar que el $86\%$ de la varianza útil se captura combinando <strong>satélites abiertos de la ESA (Sentinel-2), reanálisis atmosféricos públicos (ERA5) y exactamente dos instrumentos de referencia calibrados por microcuenca</strong>, AgriTwin desmantela la trampa del hardware, permitiendo desplegar sistemas de soporte a decisiones críticas a un costo entre un <strong>$80\%$ y un $90\%$ menor</strong> que el paradigma de micro-sensores masivos, democratizando el acceso a la tecnología para comunidades rurales vulnerables.
