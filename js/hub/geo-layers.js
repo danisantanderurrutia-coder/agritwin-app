@@ -1534,8 +1534,8 @@
                 'sarRadar': 'btnLayerSar',
                 'falseColorSwir': 'btnLayerSwir'
             };
-            const actCls = 'px-2 py-1.5 rounded-lg bg-sky-500/30 text-sky-200 border border-sky-400/60 font-mono text-[10px] font-bold transition-all cursor-pointer text-center shadow-[0_0_10px_rgba(56,189,248,0.25)]';
-            const inactCls = 'px-2 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-center';
+            const actCls = 'px-2 py-1.5 rounded-lg bg-white/15 text-white border border-white/25 font-sans text-[10.5px] font-semibold transition-all cursor-pointer text-center shadow-sm';
+            const inactCls = 'px-2 py-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-white border border-white/5 font-sans text-[10.5px] transition-all cursor-pointer text-center';
 
             allLayerButtons.forEach(btnId => {
                 const el = document.getElementById(btnId);
@@ -4856,23 +4856,23 @@
                 }
             }
 
-            // Sincronizar botón lateral en pestaña SIG
+            // Sincronizar botón lateral en pestaña SIG (Estilo Cartografía Suiza)
             const btnSidebar = document.getElementById('btnSidebarSoilGrids');
             const badgeSidebar = document.getElementById('badgeSidebarSoilGrids');
             if (btnSidebar) {
                 if (shouldBeActive) {
-                    btnSidebar.className = 'w-full py-2 px-3 rounded-lg bg-emerald-500 text-white border border-emerald-300 font-mono text-[10.5px] font-bold flex items-center justify-between transition-all shadow-md cursor-pointer';
-                    btnSidebar.innerHTML = '<span>🌱</span> <span>Capa SoilGrids 250m Activa</span>';
+                    btnSidebar.className = 'w-full py-2 px-3 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-slate-100 text-xs font-medium flex items-center justify-between transition-colors cursor-pointer shadow-sm font-sans';
+                    btnSidebar.innerHTML = '<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span>Capa SoilGrids Activa</span></span> <span class="text-[10px] font-mono text-slate-400">ON</span>';
                 } else {
-                    btnSidebar.className = 'w-full py-2 px-3 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 hover:text-white font-mono text-[10.5px] font-bold flex items-center justify-between transition-all cursor-pointer';
-                    btnSidebar.innerHTML = '<span>🌱</span> <span>Activar ISRIC SoilGrids (250m)</span>';
+                    btnSidebar.className = 'w-full py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-medium flex items-center justify-between transition-colors cursor-pointer font-sans';
+                    btnSidebar.innerHTML = '<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span> <span>Capa SoilGrids (250m)</span></span> <span class="text-[10px] font-mono text-slate-500">OFF</span>';
                 }
             }
             if (badgeSidebar) {
                 badgeSidebar.innerText = shouldBeActive ? 'ACTIVO' : 'OFF';
                 badgeSidebar.className = shouldBeActive
-                    ? 'text-[8.5px] px-1.5 py-0.5 rounded bg-emerald-400 text-stone-950 font-mono font-bold'
-                    : 'text-[8.5px] px-1.5 py-0.5 rounded bg-black/60 text-slate-300 border border-white/10 font-mono';
+                    ? 'text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-bold'
+                    : 'text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/10';
             }
         };
 
@@ -5621,99 +5621,99 @@
         }
         window.selectSidebarTab = selectSidebarTab;
 
-        // Populate Layer Toggles con 5 Bloques Coherentes de Capas SIG & Terreno
+        // Populate Layer Toggles con 4 Bloques Coherentes de Capas SIG & Terreno (Estilo Cartografía Suiza)
         const toggleContainer = document.getElementById('layer-toggles');
         if (toggleContainer) {
             toggleContainer.innerHTML = `
-                <div class="space-y-2.5">
+                <div class="space-y-2">
                     <!-- BLOQUE 1: CARTOGRAFÍA BASE ESTRUCTURAL -->
-                    <details class="group bg-black/40 rounded-xl border border-sky-500/25 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
-                            <span class="text-[10px] font-bold text-sky-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
-                                <span>🛰️</span> 1. Cartografía Base Estructural
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
+                                <span>🛰️</span> 1. Cartografía Base & Relieve
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] font-mono text-sky-400 bg-sky-950/80 px-1.5 py-0.5 rounded border border-sky-500/30 font-bold">3 CAPAS</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">3 capas</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-3 pt-1 border-t border-white/5 space-y-2">
-                            <div class="grid grid-cols-3 gap-1.5">
-                                <button onclick="setMapBaseLayer('esriSat')" id="btnLayerSat" class="px-2 py-1.5 rounded-lg bg-sky-500/30 text-sky-200 border border-sky-400/60 font-mono text-[10px] font-bold transition-all cursor-pointer text-center shadow-[0_0_10px_rgba(56,189,248,0.25)]">
-                                    🛰️ Satélite HD
+                        <div class="p-3 pt-0 border-t border-white/5 space-y-2">
+                            <div class="grid grid-cols-3 gap-1.5 pt-2">
+                                <button onclick="setMapBaseLayer('esriSat')" id="btnLayerSat" class="px-2 py-1.5 rounded-lg bg-white/15 text-white border border-white/25 font-sans text-[10.5px] font-semibold transition-all cursor-pointer text-center shadow-sm">
+                                    Satélite HD
                                 </button>
-                                <button onclick="setMapBaseLayer('demColor')" id="btnLayerDemColor" class="px-2 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-center" title="Modelo Digital de Elevación con rampa hipsométrica viva y sombreado 3D">
-                                    🏔️ DEM Color
+                                <button onclick="setMapBaseLayer('demColor')" id="btnLayerDemColor" class="px-2 py-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-white border border-white/5 font-sans text-[10.5px] transition-all cursor-pointer text-center" title="Modelo Digital de Elevación con rampa hipsométrica viva y sombreado 3D">
+                                    DEM Color
                                 </button>
-                                <button onclick="setMapBaseLayer('openTopo')" id="btnLayerTopo" class="px-2 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-center" title="Cartografía con caminos, toponimia y límites administrativos">
-                                    🏛️ Topo-Admin
+                                <button onclick="setMapBaseLayer('openTopo')" id="btnLayerTopo" class="px-2 py-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-white border border-white/5 font-sans text-[10.5px] transition-all cursor-pointer text-center" title="Cartografía con caminos, toponimia y límites administrativos">
+                                    Topo-Admin
                                 </button>
                             </div>
-                            <p class="text-[8.5px] text-slate-400 font-mono leading-tight">
+                            <p class="text-[9px] text-slate-400 font-sans leading-tight">
                                 Base de referencia geográfica, relieve hipsométrico continuo y delimitaciones comunales.
                             </p>
                         </div>
                     </details>
 
                     <!-- BLOQUE 2: TOPOGRAFÍA & RELIEVE DEM -->
-                    <details class="group bg-black/40 rounded-xl border border-amber-500/25 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
-                            <span class="text-[10px] font-bold text-amber-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
                                 <span>🏔️</span> 2. Topografía & Relieve DEM
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] font-mono text-amber-400 bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-500/30 font-bold">FÍSICA 3D</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">Física 3D</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-3 pt-1 border-t border-white/5 space-y-2">
-                            <div class="grid grid-cols-2 gap-1.5">
-                                <button onclick="setMapBaseLayer('demColor')" id="btnLayerDemColorAlt" class="px-2 py-2 rounded-lg bg-amber-500/20 text-amber-200 hover:text-white border border-amber-500/40 font-mono text-[10px] transition-all cursor-pointer text-center flex flex-col items-center justify-center gap-0.5">
-                                    <span class="font-bold">🏔️ Hipsometría DEM</span>
-                                    <span class="text-[8px] text-amber-300/80 font-normal">Paleta Viva 3D & Relieve</span>
+                        <div class="p-3 pt-0 border-t border-white/5 space-y-2.5">
+                            <div class="grid grid-cols-2 gap-1.5 pt-2">
+                                <button onclick="setMapBaseLayer('demColor')" id="btnLayerDemColorAlt" class="px-2.5 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-sans text-[10.5px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-white">🏔️ Hipsometría DEM</span>
+                                    <span class="text-[8.5px] text-slate-400">Rampa Viva 3D & Relieve</span>
                                 </button>
-                                <button onclick="window.toggleKeylineContoursLayer()" id="btnKeylineContours" class="px-2 py-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-center flex flex-col items-center justify-center gap-0.5">
-                                    <span class="font-bold">📐 Curvas Keyline</span>
-                                    <span class="text-[8px] text-emerald-300/80 font-normal">Isolíneas Meniel 2m</span>
+                                <button onclick="window.toggleKeylineContoursLayer()" id="btnKeylineContours" class="px-2.5 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-sans text-[10.5px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-white">📐 Curvas Keyline</span>
+                                    <span class="text-[8.5px] text-slate-400">Isolíneas Meniel 2m</span>
                                 </button>
                             </div>
 
                             <!-- Sonda de Elevación & Batimetría / Profundidad en Vivo -->
-                            <div class="p-2.5 rounded-lg bg-black/50 border border-sky-500/30 space-y-1.5 font-mono text-[9.5px]">
+                            <div class="p-2.5 rounded-lg bg-black/40 border border-white/10 space-y-1.5 font-sans text-[10px]">
                                 <div class="flex items-center justify-between border-b border-white/10 pb-1">
-                                    <span class="text-sky-300 font-bold flex items-center gap-1">
+                                    <span class="text-slate-200 font-semibold flex items-center gap-1.5">
                                         <span>📍</span> Sonda de Elevación & Profundidad
                                     </span>
-                                    <span class="text-[8px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">MUESTRA DINÁMICA</span>
+                                    <span class="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-slate-400 border border-white/10">Dinámica</span>
                                 </div>
-                                <div class="grid grid-cols-2 gap-1.5">
-                                    <div class="bg-white/5 p-1.5 rounded">
-                                        <span class="text-slate-400 block text-[8px]">Cota Terrestre:</span>
-                                        <b id="sondaElevVal" class="text-amber-300 text-[10.5px]">194 msnm</b>
+                                <div class="grid grid-cols-2 gap-1.5 font-mono">
+                                    <div class="bg-black/30 p-1.5 rounded border border-white/5">
+                                        <span class="text-slate-400 block text-[8px] font-sans">Cota Terrestre:</span>
+                                        <b id="sondaElevVal" class="text-slate-200 text-[10.5px]">194 msnm</b>
                                     </div>
-                                    <div class="bg-white/5 p-1.5 rounded">
-                                        <span class="text-slate-400 block text-[8px]">Profundidad / Columna:</span>
+                                    <div class="bg-black/30 p-1.5 rounded border border-white/5">
+                                        <span class="text-slate-400 block text-[8px] font-sans">Profundidad / Columna:</span>
                                         <b id="sondaDepthVal" class="text-sky-300 text-[10.5px]">-18.5 m (Napa)</b>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-between text-[8.5px] text-slate-300 pt-0.5">
-                                    <span>Pendiente: <b id="sondaSlopeVal" class="text-emerald-400">4.2% (Valle Aluvial)</b></span>
-                                    <span id="sondaZoneVal" class="text-slate-400 text-[8px]">Meniel / Longaví</span>
+                                <div class="flex items-center justify-between text-[9px] text-slate-400 pt-0.5">
+                                    <span>Pendiente: <b id="sondaSlopeVal" class="text-slate-300 font-mono">4.2% (Valle Aluvial)</b></span>
+                                    <span id="sondaZoneVal" class="text-slate-500 font-mono text-[8px]">Meniel / Longaví</span>
                                 </div>
                             </div>
 
                             <!-- Ingesta DEM Propio -->
-                            <div class="p-2.5 rounded-lg bg-amber-950/20 border border-amber-500/30 space-y-1.5">
+                            <div class="p-2.5 rounded-lg bg-black/40 border border-white/10 space-y-1.5">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-[9.5px] font-bold text-amber-200 font-mono flex items-center gap-1">
+                                    <span class="text-[10px] font-semibold text-slate-200 font-sans flex items-center gap-1">
                                         <span>📥</span> Ingesta DEM / Dron / LiDAR
                                     </span>
-                                    <span class="text-[8px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono">GeoTIFF</span>
+                                    <span class="text-[8px] px-1.5 py-0.2 rounded bg-white/5 text-slate-400 border border-white/10 font-mono">GeoTIFF</span>
                                 </div>
-                                <p class="text-[8.5px] text-slate-400 font-mono leading-tight">
+                                <p class="text-[9px] text-slate-400 font-sans leading-tight">
                                     Cargue ortofotos y modelos de elevación procesados en WebODM / QGIS para el predio Meniel.
                                 </p>
-                                <button onclick="window.openDemUploadModal()" class="w-full py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-amber-200 hover:text-white font-mono text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                                <button onclick="window.openDemUploadModal()" class="w-full py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-sans text-[10px] font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5">
                                     <span>⬆️</span> Cargar DEM Propio (.tif / .geojson)
                                 </button>
                             </div>
@@ -5721,49 +5721,49 @@
                     </details>
 
                     <!-- BLOQUE 3: TELEDETECCIÓN ESPECTRAL & RADAR (SENTINEL 1 & 2) -->
-                    <details class="group bg-black/40 rounded-xl border border-emerald-500/25 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
-                            <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
                                 <span>📡</span> 3. Frecuencias Satelitales (Sentinel)
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] font-mono text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/30 font-bold">8 BANDAS</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">8 bandas</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-3 pt-1 border-t border-white/5 space-y-2">
-                            <div class="grid grid-cols-2 gap-1.5">
-                                <button onclick="setMapBaseLayer('ndviSat')" id="btnLayerNdvi" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-emerald-300 flex items-center gap-1">🌱 Vigor NDVI</span>
-                                    <span class="text-[8px] text-slate-400">NIR/Red &bull; Clorofila</span>
+                        <div class="p-3 pt-0 border-t border-white/5 space-y-2">
+                            <div class="grid grid-cols-2 gap-1.5 pt-2">
+                                <button onclick="setMapBaseLayer('ndviSat')" id="btnLayerNdvi" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Vigor NDVI</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">NIR/Red • Clorofila</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('ndwiSat')" id="btnLayerNdwi" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-sky-300 flex items-center gap-1">💧 Humedad NDWI</span>
-                                    <span class="text-[8px] text-slate-400">Green/NIR &bull; Agua Libre</span>
+                                <button onclick="setMapBaseLayer('ndwiSat')" id="btnLayerNdwi" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Humedad NDWI</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">Green/NIR • Agua Libre</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('ndmiSat')" id="btnLayerNdmi" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-cyan-300 flex items-center gap-1">🌿 Estrés NDMI</span>
-                                    <span class="text-[8px] text-slate-400">NIR/SWIR &bull; Canopia</span>
+                                <button onclick="setMapBaseLayer('ndmiSat')" id="btnLayerNdmi" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-cyan-400"></span> Estrés NDMI</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">NIR/SWIR • Canopia</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('eviSat')" id="btnLayerEvi" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-lime-300 flex items-center gap-1">🌾 Vigor EVI</span>
-                                    <span class="text-[8px] text-slate-400">Ajustado por Suelo</span>
+                                <button onclick="setMapBaseLayer('eviSat')" id="btnLayerEvi" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-lime-400"></span> Vigor EVI</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">Ajustado por Suelo</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('nbrSat')" id="btnLayerNbr" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-rose-300 flex items-center gap-1">🔥 Combustible NBR</span>
-                                    <span class="text-[8px] text-slate-400">B8A/B12 &bull; Peligro Fuego</span>
+                                <button onclick="setMapBaseLayer('nbrSat')" id="btnLayerNbr" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Combustible NBR</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">B8A/B12 • Peligro Fuego</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('lstThermal')" id="btnLayerLst" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-red-300 flex items-center gap-1">🌡️ LST Térmico</span>
-                                    <span class="text-[8px] text-slate-400">Radiometría Superficie</span>
+                                <button onclick="setMapBaseLayer('lstThermal')" id="btnLayerLst" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-400"></span> LST Térmico</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">Radiometría Superficie</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('sarRadar')" id="btnLayerSar" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-purple-300 flex items-center gap-1">📡 Radar SAR S-1</span>
-                                    <span class="text-[8px] text-slate-400">Microondas Todo-Tiempo</span>
+                                <button onclick="setMapBaseLayer('sarRadar')" id="btnLayerSar" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400"></span> Radar SAR S-1</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">Microondas Todo-Tiempo</span>
                                 </button>
-                                <button onclick="setMapBaseLayer('falseColorSwir')" id="btnLayerSwir" class="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/10 font-mono text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
-                                    <span class="font-bold text-amber-200 flex items-center gap-1">🛰️ SWIR Humo</span>
-                                    <span class="text-[8px] text-slate-400">Penetración Aerosoles</span>
+                                <button onclick="setMapBaseLayer('falseColorSwir')" id="btnLayerSwir" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-sans text-[10px] transition-all cursor-pointer text-left flex flex-col gap-0.5">
+                                    <span class="font-semibold text-slate-100 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span> SWIR Humo</span>
+                                    <span class="text-[8.5px] text-slate-400 font-mono">Penetración Aerosoles</span>
                                 </button>
                             </div>
 
@@ -5775,48 +5775,48 @@
                     </details>
 
                     <!-- BLOQUE 4: HERRAMIENTAS DE GEOMORFOLOGÍA & MODELOS DE CORTE -->
-                    <details class="group bg-black/40 rounded-xl border border-sky-500/25 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 px-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
-                            <span class="text-[10px] font-bold text-sky-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
                                 <span>📐</span> 4. Herramientas de Geomorfología
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] font-mono text-sky-400 bg-sky-950/80 px-1.5 py-0.5 rounded border border-sky-500/30 font-bold">MODAL HD</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">4 herramientas</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-3 pt-1 border-t border-white/5 space-y-2">
-                            <p class="text-[9px] text-slate-400 font-mono leading-tight">
+                        <div class="p-3 pt-0 border-t border-white/5 space-y-2">
+                            <p class="text-[9px] text-slate-400 font-sans leading-tight pt-2">
                                 Modelos de corte biofísico y perfiles de elevación en ventana superpuesta de alta resolución.
                             </p>
                             <div class="space-y-1.5">
-                                <button onclick="window.openBiophysicalModal('transect')" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-sky-500/15 border border-white/5 hover:border-sky-500/30 flex items-center justify-between text-xs text-sky-200 transition-all cursor-pointer">
-                                    <span class="flex items-center gap-2 font-mono">
+                                <button onclick="window.openBiophysicalModal('transect')" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 flex items-center justify-between text-xs text-slate-200 transition-all cursor-pointer font-sans">
+                                    <span class="flex items-center gap-2">
                                         <span>📐</span>
                                         <span>Transecto Longitudinal X-Y (Andes ➔ Valle)</span>
                                     </span>
-                                    <span class="text-[9px] text-sky-400 font-bold">Ver HD ↗</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">Ver ↗</span>
                                 </button>
-                                <button onclick="window.openBiophysicalModal('sediments')" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-200 transition-all cursor-pointer">
-                                    <span class="flex items-center gap-2 font-mono">
+                                <button onclick="window.openBiophysicalModal('sediments')" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 flex items-center justify-between text-xs text-slate-200 transition-all cursor-pointer font-sans">
+                                    <span class="flex items-center gap-2">
                                         <span>🌊</span>
                                         <span>Corte de Sedimentos & Shields</span>
                                     </span>
-                                    <span class="text-[9px] text-emerald-400 font-bold">Ver HD ↗</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">Ver ↗</span>
                                 </button>
-                                <button onclick="window.openBiophysicalModal('slope25d')" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-yellow-500/15 border border-white/5 hover:border-yellow-500/30 flex items-center justify-between text-xs text-yellow-200 transition-all cursor-pointer">
-                                    <span class="flex items-center gap-2 font-mono">
+                                <button onclick="window.openBiophysicalModal('slope25d')" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 flex items-center justify-between text-xs text-slate-200 transition-all cursor-pointer font-sans">
+                                    <span class="flex items-center gap-2">
                                         <span>🏔️</span>
                                         <span>Bloque Geomorfológico 2.5D (Ladera 34°)</span>
                                     </span>
-                                    <span class="text-[9px] text-yellow-400 font-bold">Ver HD ↗</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">Ver ↗</span>
                                 </button>
-                                <button onclick="window.toggleAtmosphericInfluenceSurfaces()" id="btnToggleInfluenceSurfaces" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-sky-500/15 border border-white/5 hover:border-sky-500/30 flex items-center justify-between text-xs text-sky-200 transition-all cursor-pointer">
-                                    <span class="flex items-center gap-2 font-mono">
+                                <button onclick="window.toggleAtmosphericInfluenceSurfaces()" id="btnToggleInfluenceSurfaces" class="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 flex items-center justify-between text-xs text-slate-200 transition-all cursor-pointer font-sans">
+                                    <span class="flex items-center gap-2">
                                         <span>🌐</span>
                                         <span>Áreas de Influencia & Isopletas</span>
                                     </span>
-                                    <span id="labelInfluenceStatus" class="text-[9px] text-sky-400 font-bold font-mono">Activar ↗</span>
+                                    <span id="labelInfluenceStatus" class="text-[9px] text-slate-400 font-mono">Activar ↗</span>
                                 </button>
                             </div>
                         </div>
