@@ -830,6 +830,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 2: Evapotranspiración de Referencia ($ET_0$) FAO-56 Penman-Monteith</div>
             <div class="formula-body">
+                $$\mathcal{ET}_0 = \frac{0.408\,\Delta\,(R_n - G) + \gamma\,\left(\frac{900}{T_{\text{med}} + 273}\right)\,u_2\,(e_s - e_a)}{\Delta + \gamma\,(1 + 0.34\,u_2)}$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $R_n$ es la radiación neta incidente en la superficie del dosel [$\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}$] (asimilada desde reanálisis ERA5-Land y validada con piranómetros terrestres); $G$ es la densidad del flujo térmico en el suelo [$\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}$] ($G \approx 0$ a escala diaria); $T_{\text{med}}$ es la temperatura media del aire a $2\,\text{m}$ [${}^\circ\text{C}$]; $u_2$ es la velocidad del viento a $2\,\text{m}$ de altura [$\text{m}\cdot\text{s}^{-1}$]; $(e_s - e_a)$ representa el déficit de presión de vapor atmosférico ($VPD$) [$\text{kPa}$]; $\Delta$ simboliza la pendiente de la curva de presión de vapor de saturación frente a la temperatura [$\text{kPa}\cdot{}^\circ\text{C}^{-1}$]; y $\gamma$ es la constante psicrométrica dependiente de la presión barométrica local corregida por altitud topográfica ($z$) [$\text{kPa}\cdot{}^\circ\text{C}^{-1}$].
@@ -837,8 +838,31 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         </div>
 
         <p>
-            <strong>Acoplamiento con el Estrés Radicular:</strong> La evapotranspiración real ($\mathcal{ET}_a$) no equivale a $\mathcal{ET}_0$, sino que se desacopla mediante el coeficiente de cultivo basal ($K_{cb}$) y el coeficiente de reducción por estrés hídrico edáfico ($K_s(\theta)$):
-            donde $K_s(\theta_t) = \frac{\theta(t) - \theta_{WP}}{\theta_{RAW} - \theta_{WP}} \in [0, 1]$. Si el contenido de agua decae por debajo de la humedad de agotamiento fácilmente disponible ($\theta_{RAW}$), la conductancia estomática disminuye proporcionalmente, forzando la preservación de agua celular.
+            <strong>Acoplamiento con el Estrés Radicular:</strong> La evapotranspiración real ($\mathcal{ET}_a$) no equivale a la demanda atmosférica potencial $\mathcal{ET}_0$, sino que se desacopla dinámicamente mediante el coeficiente basal dual de cultivo ($K_{cb}$), la evaporación del suelo superficial ($K_e$) y el coeficiente de reducción por estrés hídrico edáfico ($K_s(\theta_t)$):
+        </p>
+
+        <div style="text-align: center; margin: 16px 0 12px 0;">
+            $$\mathcal{ET}_a(t) = \left[ K_{cb} \cdot K_s(\theta_t) + K_e \right] \cdot \mathcal{ET}_0(t)$$
+        </div>
+
+        <p>
+            El factor de penalización estomática $K_s(\theta_t)$ se formula como una función continua por tramos en su propia línea de cálculo analítico:
+        </p>
+
+        <div style="text-align: center; margin: 16px 0 12px 0;">
+            $$K_s(\theta_t) = \begin{cases} 1, & \theta(t) > \theta_{\text{RAW}} \\[8pt] \dfrac{\theta(t) - \theta_{\text{WP}}}{\theta_{\text{RAW}} - \theta_{\text{WP}}}, & \theta_{\text{WP}} < \theta(t) \le \theta_{\text{RAW}} \\[8pt] 0, & \theta(t) \le \theta_{\text{WP}} \end{cases}$$
+        </div>
+
+        <p>
+            donde el umbral de humedad de agotamiento fácilmente disponible se determina mediante:
+        </p>
+
+        <div style="text-align: center; margin: 16px 0 16px 0;">
+            $$\theta_{\text{RAW}} = \theta_{\text{FC}} - p \cdot (\theta_{\text{FC}} - \theta_{\text{WP}})$$
+        </div>
+
+        <p>
+            donde $p \approx 0.5$ es la fracción de agotamiento sin estrés. Cuando el contenido de agua cae por debajo de $\theta_{\text{RAW}}$, los estomas se cierran gradualmente para prevenir cavitación en el xilema, reduciendo la transpiración real hasta anularse completamente al llegar al punto de marchitez permanente ($\theta_{\text{WP}}$).
         </p>
 
         <h3 style="font-size: 1.15rem; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.5rem;">2.2.4. Generación de Escorrentía Directa Superficial mediante SCS-CN Dinámico</h3>
@@ -868,6 +892,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 4: Índice Topográfico de Humedad ($TWI$, Beven & Kirkby)</div>
             <div class="formula-body">
+                $$TWI(x, y) = \ln\left( \frac{\alpha(x, y)}{\tan \beta(x, y)} \right)$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $\alpha$ es el área de contribución específica drenada aguas arriba por unidad de ancho de contorno [$\text{m}^2\cdot\text{m}^{-1}$], calculada a partir del Modelo Digital de Elevación (DEM) corregido hidrológicamente mediante algoritmos de dirección de flujo múltiple ($MD\infty$); y $\beta$ es la pendiente local de la ladera [$\text{radianes}$].
@@ -889,6 +914,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 5: Stock de Carbono Orgánico del Suelo en el Horizonte Superior ($\text{SOCS}_{0\text{-}5\,\text{cm}}$, Batjes 1996 &amp; Poggio et al. 2021)</div>
             <div class="formula-body">
+                $$\text{SOCS}_{0\text{-}5\,\text{cm}} = \text{SOC} \times \text{BDOD} \times \left(1 - \frac{\text{CRF}}{100}\right) \times \Delta z \times 0.1 \quad \left[\frac{\text{t C}}{\text{ha}}\right]$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $\text{SOC}$ es la concentración de carbono orgánico en la fracción de tierra fina ($< 2\,\text{mm}$) [$\text{g}\cdot\text{kg}^{-1}$]; $\text{BDOD}$ es la densidad aparente seca de la fracción fina [$\text{g}\cdot\text{cm}^{-3}$]; $\text{CRF}$ es el porcentaje volumétrico de gravas y fragmentos rocosos mayores a $2\,\text{mm}$ [$\%$]; $\Delta z = 5\,\text{cm}$ es el espesor del estrato analizado; y $0.1$ es el factor de conversión estequiométrico dimensional ($\text{g}\cdot\text{cm}^{-2} \to \text{t C}\cdot\text{ha}^{-1}$).
@@ -902,6 +928,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 6: Equivalencia Estequiométrica de Captura y Almacenamiento de $\text{CO}_2\text{e}$</div>
             <div class="formula-body">
+                $$\text{Stock CO}_2\text{e} = \text{SOCS} \times \frac{M_{\text{CO}_2}}{M_{\text{C}}} = \text{SOCS} \times \frac{44.01}{12.011} \approx \text{SOCS} \times 3.667 \quad \left[\frac{\text{t CO}_2\text{e}}{\text{ha}}\right]$$
             </div>
             <div class="formula-footer">
                 <strong>Aplicación Operativa:</strong> Provee el activo auditable para proyectos de bonos de carbono por manejo agroecológico, siembra de suelo mediante arado Keyline y adición de enmiendas orgánicas bioestabilizadas.
@@ -951,6 +978,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 8: Alcance Máximo de Pavesas ($D_{\text{spot}}$) e Intensidad de Línea de Fuego de Byram ($I_B$)</div>
             <div class="formula-body">
+                $$D_{\text{spot}} = 0.0252 \cdot U_{10}^{1.15} \cdot \left(\frac{I_B}{h_{\text{dosel}}}\right)^{0.45}, \qquad I_B = H_{\text{comb}} \cdot w_{\text{cons}} \cdot R_{\text{fuego}}$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $D_{\text{spot}}$ es la distancia máxima proyectada de generación de focos secundarios [$\text{km}$]; $U_{10}$ es la ráfaga de viento a $10\,\text{m}$ de altura [$\text{km}\cdot\text{h}^{-1}$]; $I_B$ es la intensidad de línea de Byram [$\text{kW}\cdot\text{m}^{-1}$]; $h_{\text{dosel}}$ es la altura media del estrato arbóreo dominante [$\text{m}$]; $H_{\text{comb}}$ es el calor de combustión de la biomasa ($\approx 18,\!600\,\text{kJ}\cdot\text{kg}^{-1}$); y $w_{\text{cons}}$ es la carga de biomasa consumida por unidad de superficie [$\text{kg}\cdot\text{m}^{-2}$].
@@ -971,6 +999,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 9: Velocidad Estacionaria de Drenaje Catabático de Ladera ($u_{\text{catab}}$)</div>
             <div class="formula-body">
+                $$u_{\text{catab}} = \sqrt{\frac{2 \cdot g \cdot h_{\text{capa}} \cdot \sin \alpha_s \cdot \left(\dfrac{\theta_v(z) - \theta_{v,s}}{\theta_0}\right)}{c_d + \kappa_{\text{veg}}}}$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $g = 9.81\,\text{m}\cdot\text{s}^{-2}$; $h_{\text{capa}}$ es el espesor de la capa de inversión térmica superficial [$\text{m}$]; $\alpha_s$ es el ángulo de inclinación de la ladera [$\text{grados}$]; $\theta_v(z)$ y $\theta_{v,s}$ representan las temperaturas potenciales virtuales del aire libre y de la superficie enfriada [$\text{K}$]; $\theta_0$ es la temperatura potencial de referencia ($288.15\,\text{K}$); $c_d$ es el coeficiente de arrastre aerodinámico de superficie desnuda ($\approx 0.005$); y $\kappa_{\text{veg}}$ es el factor de rugosidad y porosidad inducido por el arbolado o las cortinas vegetales.
@@ -989,6 +1018,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 10: Radiación Neta Nocturna de Onda Larga ($R_{nl}$)</div>
             <div class="formula-body">
+                $$R_{nl} = \sigma \cdot \left( \varepsilon_{\text{suelo}} \cdot T_{\text{suelo}}^4 - \varepsilon_{\text{atm}}(e_a, T_a) \cdot T_{\text{aire}}^4 \right)$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $\sigma = 5.67 \times 10^{-8}\,\text{W}\cdot\text{m}^{-2}\cdot\text{K}^{-4}$ es la constante de Stefan-Boltzmann; $\varepsilon_{\text{suelo}} \approx 0.95\text{--}0.98$ es la emisividad espectral infrarroja del suelo; $T_{\text{suelo}}$ y $T_{\text{aire}}$ son las temperaturas termodinámicas absolutas [$\text{K}$]; y $\varepsilon_{\text{atm}}$ es la emisividad aparente de la atmósfera calculada en función de la presión parcial de vapor $e_a$ [$\text{hPa}$] según Brutsaert (1975): $\varepsilon_{\text{atm}} = 1.24 \cdot (e_a / T_a)^{1/7}$.
@@ -1009,6 +1039,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 11: Energía Potencial Convectiva Disponible ($CAPE$)</div>
             <div class="formula-body">
+                $$CAPE = \int_{z_{LFC}}^{z_{EL}} g \cdot \left( \frac{T_{v,\text{parcela}}(z) - T_{v,\text{entorno}}(z)}{T_{v,\text{entorno}}(z)} \right) dz$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $z_{LFC}$ es la cota del Nivel de Convección Libre [$\text{m}$]; $z_{EL}$ es el Nivel de Equilibrio térmico donde la parcela ascendente se equipara a la masa circundante [$\text{m}$]; $g$ es la gravedad estándar; y $T_{v,\text{parcela}}$ y $T_{v,\text{entorno}}$ representan las temperaturas virtuales respectivas [$\text{K}$], computadas asimilando sondeos termodinámicos y reanálisis ERA5.
@@ -1023,6 +1054,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 12: Magnitud de la Cizalladura Vertical Profunda de Viento ($DLS_{0\text{-}6\,\text{km}}$)</div>
             <div class="formula-body">
+                $$DLS_{0\text{-}6\,\text{km}} = \sqrt{ \left( u_{6\,\text{km}} - u_{10\,\text{m}} \right)^2 + \left( v_{6\,\text{km}} - v_{10\,\text{m}} \right)^2 }$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $(u_{6\,\text{km}}, v_{6\,\text{km}})$ son las componentes zonales y meridionales del viento horizontal a $6\,\text{km}$ sobre el nivel del suelo [$\text{m}\cdot\text{s}^{-1}$]; y $(u_{10\,\text{m}}, v_{10\,\text{m}})$ son las componentes del viento superficial a $10\,\text{m}$.
@@ -1056,6 +1088,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 13: Ecuación General del Riesgo Táctico Multiamenaza ($R_{\text{táctico}}$)</div>
             <div class="formula-body">
+                $$R_{\text{táctico}}(x, y, t) = \mathcal{H}(x, y, t) \times \mathcal{V}(x, y, t) \times \left[ 1 - \mathcal{C}(x, y, t) \right]$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $\mathcal{H} \in [0, 1]$ es el vector de Amenaza Físico-Climática (severidad de helada, frente de fuego o déficit de infiltración); $\mathcal{V} \in [0, 1]$ es la Vulnerabilidad Intrínseca del elemento expuesto (estado fenológico del cultivo, edad de la cepa, combustibilidad de la edificación); y $\mathcal{C} \in [0, 1]$ representa la Capacidad de Respuesta Adaptativa instalada localmente (volumen de agua acumulado en tranques Keyline, brigadas comunitarias equipadas, defensas pasivas activas).
@@ -1086,6 +1119,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuaciones 14 y 15: Índices de Sensibilidad de Sobol de Primer Orden ($S_i$) y Total ($S_{Ti}$)</div>
             <div class="formula-body">
+                $$S_i = \frac{\mathbb{V}_{X_i}\left(\mathbb{E}_{\mathbf{X}_{\sim i}}[Y \mid X_i]\right)}{\mathbb{V}(Y)}, \qquad S_{Ti} = 1 - \frac{\mathbb{V}_{\mathbf{X}_{\sim i}}\left(\mathbb{E}_{X_i}[Y \mid \mathbf{X}_{\sim i}]\right)}{\mathbb{V}(Y)}$$
             </div>
             <div class="formula-footer">
                 <strong>Donde:</strong> $Y = f(\mathbf{X})$ representa la variable de salida del modelo (p. ej., caudal pico de crecida o humedad radicular); $X_i$ es el $i$-ésimo parámetro bajo escrutinio ($CN$, conductividad saturada $K_{\text{sat}}$, coeficiente de Manning $n$, porosidad $\theta_{\text{sat}}$, albedo); $\mathbb{V}(Y)$ es la varianza incondicional total evaluada mediante $N = 10,\!000$ realizaciones Monte Carlo con muestreo Quasi-Monte Carlo de Sobol; $S_i$ mide el efecto principal individual de $X_i$; y $S_{Ti}$ cuantifica el efecto total incluyendo todas las interacciones no lineales de orden superior con los demás parámetros.
@@ -1100,6 +1134,7 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <div class="formula-card">
             <div class="formula-header">Ecuación 16: Ecuación Diferencial de Asimilación Dinámica por Nudging Continuo</div>
             <div class="formula-body">
+                $$\frac{d\hat{\theta}(z, t)}{dt} = \mathcal{M}\left( \hat{\theta}(z, t), \mathbf{F}_{\text{clima}}(t) \right) + G_n \cdot \mathcal{W}(z, z_{\text{obs}}) \cdot \left[ \theta_{\text{obs}}(t) - \hat{\theta}(z_{\text{obs}}, t) \right]$$
             </div>
             <div class="formula-footer">
             </div>
@@ -1514,9 +1549,23 @@ $$\frac{d\mathcal{S}_w(x, y, t)}{dt} = P_{\text{eff}}(x, y, t) - \mathcal{ET}_a(
 #### 2.2.3. Partición Energética y Demanda Evaporativa según FAO-56 Penman-Monteith
 Para modelar la demanda vertical de vapor sin caer en las subestimaciones de fórmulas puramente térmicas bajo vientos desecantes del este (Puelche), se adopta la parametrización física de Penman-Monteith estandarizada por FAO (Allen et al., 1998):
 
+$$\mathcal{ET}_0 = \frac{0.408\,\Delta\,(R_n - G) + \gamma\,\left(\frac{900}{T_{\text{med}} + 273}\right)\,u_2\,(e_s - e_a)}{\Delta + \gamma\,(1 + 0.34\,u_2)}$$ \quad (2)
 
 * **Exégesis de Variables:** $R_n$ es la radiación neta incidente [$\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}$] (asimilada desde ERA5-Land y piranómetros terrestres); $G$ es el flujo térmico en el suelo ($G \approx 0$ a escala diaria); $T_{\text{med}}$ es la temperatura media a $2\,\text{m}$ [${}^\circ\text{C}$]; $u_2$ es la velocidad del viento a $2\,\text{m}$ [$\text{m}\cdot\text{s}^{-1}$]; $(e_s - e_a)$ representa el déficit de presión de vapor ($VPD$) [$\text{kPa}$]; $\Delta$ es la pendiente de la curva de saturación de vapor; y $\gamma$ es la constante psicrométrica corregida por cota DEM.
-* **Acoplamiento con el Estrés Radicular:** La evapotranspiración real se acopla dinámicamente mediante $\mathcal{ET}_a(t) = [K_{cb} \cdot K_s(\theta_t) + K_e] \cdot \mathcal{ET}_0(t)$, donde el factor de penalización estomática $K_s(\theta_t) \in [0, 1]$ reduce la transpiración cuando la humedad desciende por debajo de la capacidad de campo.
+
+* **Acoplamiento con el Estrés Radicular:** La evapotranspiración real ($\mathcal{ET}_a$) no equivale a la demanda potencial $\mathcal{ET}_0$, sino que se desacopla mediante el coeficiente de cultivo basal ($K_{cb}$), la evaporación superficial ($K_e$) y el coeficiente de reducción estomática por estrés edáfico ($K_s(\theta_t)$):
+
+$$\mathcal{ET}_a(t) = \left[ K_{cb} \cdot K_s(\theta_t) + K_e \right] \cdot \mathcal{ET}_0(t)$$
+
+El coeficiente de estrés hídrico radicular $K_s(\theta_t)$ se define formalmente en su propia formulación analítica de umbral piecewise:
+
+$$K_s(\theta_t) = \begin{cases} 1, & \theta(t) > \theta_{\text{RAW}} \\[8pt] \dfrac{\theta(t) - \theta_{\text{WP}}}{\theta_{\text{RAW}} - \theta_{\text{WP}}}, & \theta_{\text{WP}} < \theta(t) \le \theta_{\text{RAW}} \\[8pt] 0, & \theta(t) \le \theta_{\text{WP}} \end{cases}$$
+
+con el umbral de humedad de agotamiento fácilmente disponible calculado según:
+
+$$\theta_{\text{RAW}} = \theta_{\text{FC}} - p \cdot (\theta_{\text{FC}} - \theta_{\text{WP}})$$
+
+donde $p \approx 0.5$ representa la fracción de tolerancia al agotamiento hídrico. Cuando $\theta(t) \le \theta_{\text{RAW}}$, el cierre estomático penaliza linealmente la transpiración real hasta su anulación total al alcanzar el punto de marchitez ($\theta_{\text{WP}}$).
 
 #### 2.2.4. Generación de Escorrentía Directa Superficial mediante SCS-CN Dinámico
 La partición entre el agua infiltrada y el volumen de escorrentía superficial directa se resuelve mediante el método del Número de Curva del Servicio de Conservación de Suelos (SCS-CN, USDA-NRCS, 2004), actualizado dinámicamente:
@@ -1534,6 +1583,10 @@ Para modelar la convergencia gravitacional del agua subsuperficial a partir del 
 * **Aplicación Regenerativa en Keyline:** Los valores altos ($TWI > 9$) identifican quebradas con riesgo de erosión y anegamiento. AgriTwin utiliza este mapa para trazar los surcos Keyline (Yeomans, 1958), invirtiendo el gradiente para conducir el agua desde las vaguadas hacia los lomos secos ($TWI < 4$).
 
 #### 2.2.6. Línea de Base Edafológica Macro-Territorial ISRIC SoilGrids 2.0 a 250 m y Estimación de Stocks de Carbono Orgánico SOCS
+Para parametrizar las propiedades hidrofísicas y biogeoquímicas de la zona vadosa a escala de cuenca sin incurrir en la prohibitiva densidad de calicatas presenciales, AgriTwin acopla la base global de datos edafológicos grillados **ISRIC SoilGrids 2.0** (Poggio et al., 2021) a 250 metros de resolución espacial:
+
+$$\text{SOCS}_{0\text{-}5\,\text{cm}} = \text{SOC} \times \text{BDOD} \times \left(1 - \frac{\text{CRF}}{100}\right) \times \Delta z \times 0.1 \quad \left[\frac{\text{t C}}{\text{ha}}\right]$$ \quad (5)
+
 Para parametrizar las propiedades hidrofísicas y biogeoquímicas de la zona vadosa a escala de cuenca sin incurrir en la prohibitiva densidad de calicatas presenciales, AgriTwin acopla la base global de datos edafológicos grillados **ISRIC SoilGrids 2.0** (Poggio et al., 2021) a 250 metros de resolución espacial. Este sistema modela la distribución tridimensional de propiedades edáficas mediante bosques aleatorios cuantílicos (*Quantile Regression Forests*) calibrados sobre más de 240,000 perfiles estandarizados del repositorio global WoSIS acoplados a covariables bioclimáticas y geomorfológicas derivadas de MODIS y DEM.
 
 A partir de los horizontes superficiales ($0\text{--}5\,\text{cm}$), se extraen simultáneamente la concentración de carbono orgánico ($\text{SOC}$, $\text{dg}\cdot\text{kg}^{-1}$), la densidad aparente del suelo seco en terrón/tierra fina ($\text{BDOD}$, $\text{cg}\cdot\text{cm}^{-3}$) y la fracción volumétrica de fragmentos gruesos ($\text{CRF}$, $\text{cm}^3 / 100\,\text{cm}^3$ o $\%$). El stock areal de carbono orgánico del suelo ($\text{SOCS}$) se cuantifica siguiendo la formulación de pedotransferencia estandarizada por IPCC y Batjes (1996):

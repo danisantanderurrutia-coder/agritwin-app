@@ -155,9 +155,23 @@ $$\frac{d\mathcal{S}_w(x, y, t)}{dt} = P_{\text{eff}}(x, y, t) - \mathcal{ET}_a(
 #### 2.2.3. Partición Energética y Demanda Evaporativa según FAO-56 Penman-Monteith
 Para modelar la demanda vertical de vapor sin caer en las subestimaciones de fórmulas puramente térmicas bajo vientos desecantes del este (Puelche), se adopta la parametrización física de Penman-Monteith estandarizada por FAO (Allen et al., 1998):
 
+$$\mathcal{ET}_0 = \frac{0.408\,\Delta\,(R_n - G) + \gamma\,\left(\frac{900}{T_{\text{med}} + 273}\right)\,u_2\,(e_s - e_a)}{\Delta + \gamma\,(1 + 0.34\,u_2)}$$ \quad (2)
 
 * **Exégesis de Variables:** $R_n$ es la radiación neta incidente [$\text{MJ}\cdot\text{m}^{-2}\cdot\text{día}^{-1}$] (asimilada desde ERA5-Land y piranómetros terrestres); $G$ es el flujo térmico en el suelo ($G \approx 0$ a escala diaria); $T_{\text{med}}$ es la temperatura media a $2\,\text{m}$ [${}^\circ\text{C}$]; $u_2$ es la velocidad del viento a $2\,\text{m}$ [$\text{m}\cdot\text{s}^{-1}$]; $(e_s - e_a)$ representa el déficit de presión de vapor ($VPD$) [$\text{kPa}$]; $\Delta$ es la pendiente de la curva de saturación de vapor; y $\gamma$ es la constante psicrométrica corregida por cota DEM.
-* **Acoplamiento con el Estrés Radicular:** La evapotranspiración real se acopla dinámicamente mediante $\mathcal{ET}_a(t) = [K_{cb} \cdot K_s(\theta_t) + K_e] \cdot \mathcal{ET}_0(t)$, donde el factor de penalización estomática $K_s(\theta_t) \in [0, 1]$ reduce la transpiración cuando la humedad desciende por debajo de la capacidad de campo.
+
+* **Acoplamiento con el Estrés Radicular:** La evapotranspiración real ($\mathcal{ET}_a$) no equivale a la demanda potencial $\mathcal{ET}_0$, sino que se desacopla mediante el coeficiente de cultivo basal ($K_{cb}$), la evaporación superficial ($K_e$) y el coeficiente de reducción estomática por estrés edáfico ($K_s(\theta_t)$):
+
+$$\mathcal{ET}_a(t) = \left[ K_{cb} \cdot K_s(\theta_t) + K_e \right] \cdot \mathcal{ET}_0(t)$$
+
+El coeficiente de estrés hídrico radicular $K_s(\theta_t)$ se define formalmente en su propia formulación analítica de umbral piecewise:
+
+$$K_s(\theta_t) = \begin{cases} 1, & \theta(t) > \theta_{\text{RAW}} \\[8pt] \dfrac{\theta(t) - \theta_{\text{WP}}}{\theta_{\text{RAW}} - \theta_{\text{WP}}}, & \theta_{\text{WP}} < \theta(t) \le \theta_{\text{RAW}} \\[8pt] 0, & \theta(t) \le \theta_{\text{WP}} \end{cases}$$
+
+con el umbral de humedad de agotamiento fácilmente disponible calculado según:
+
+$$\theta_{\text{RAW}} = \theta_{\text{FC}} - p \cdot (\theta_{\text{FC}} - \theta_{\text{WP}})$$
+
+donde $p \approx 0.5$ representa la fracción de tolerancia al agotamiento hídrico. Cuando $\theta(t) \le \theta_{\text{RAW}}$, el cierre estomático penaliza linealmente la transpiración real hasta su anulación total al alcanzar el punto de marchitez ($\theta_{\text{WP}}$).
 
 #### 2.2.4. Generación de Escorrentía Directa Superficial mediante SCS-CN Dinámico
 La partición entre el agua infiltrada y el volumen de escorrentía superficial directa se resuelve mediante el método del Número de Curva del Servicio de Conservación de Suelos (SCS-CN, USDA-NRCS, 2004), actualizado dinámicamente:
@@ -175,6 +189,10 @@ Para modelar la convergencia gravitacional del agua subsuperficial a partir del 
 * **Aplicación Regenerativa en Keyline:** Los valores altos ($TWI > 9$) identifican quebradas con riesgo de erosión y anegamiento. AgriTwin utiliza este mapa para trazar los surcos Keyline (Yeomans, 1958), invirtiendo el gradiente para conducir el agua desde las vaguadas hacia los lomos secos ($TWI < 4$).
 
 #### 2.2.6. Línea de Base Edafológica Macro-Territorial ISRIC SoilGrids 2.0 a 250 m y Estimación de Stocks de Carbono Orgánico SOCS
+Para parametrizar las propiedades hidrofísicas y biogeoquímicas de la zona vadosa a escala de cuenca sin incurrir en la prohibitiva densidad de calicatas presenciales, AgriTwin acopla la base global de datos edafológicos grillados **ISRIC SoilGrids 2.0** (Poggio et al., 2021) a 250 metros de resolución espacial:
+
+$$\text{SOCS}_{0\text{-}5\,\text{cm}} = \text{SOC} \times \text{BDOD} \times \left(1 - \frac{\text{CRF}}{100}\right) \times \Delta z \times 0.1 \quad \left[\frac{\text{t C}}{\text{ha}}\right]$$ \quad (5)
+
 Para parametrizar las propiedades hidrofísicas y biogeoquímicas de la zona vadosa a escala de cuenca sin incurrir en la prohibitiva densidad de calicatas presenciales, AgriTwin acopla la base global de datos edafológicos grillados **ISRIC SoilGrids 2.0** (Poggio et al., 2021) a 250 metros de resolución espacial. Este sistema modela la distribución tridimensional de propiedades edáficas mediante bosques aleatorios cuantílicos (*Quantile Regression Forests*) calibrados sobre más de 240,000 perfiles estandarizados del repositorio global WoSIS acoplados a covariables bioclimáticas y geomorfológicas derivadas de MODIS y DEM.
 
 A partir de los horizontes superficiales ($0\text{--}5\,\text{cm}$), se extraen simultáneamente la concentración de carbono orgánico ($\text{SOC}$, $\text{dg}\cdot\text{kg}^{-1}$), la densidad aparente del suelo seco en terrón/tierra fina ($\text{BDOD}$, $\text{cg}\cdot\text{cm}^{-3}$) y la fracción volumétrica de fragmentos gruesos ($\text{CRF}$, $\text{cm}^3 / 100\,\text{cm}^3$ o $\%$). El stock areal de carbono orgánico del suelo ($\text{SOCS}$) se cuantifica siguiendo la formulación de pedotransferencia estandarizada por IPCC y Batjes (1996):
