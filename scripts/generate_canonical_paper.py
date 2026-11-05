@@ -62,6 +62,27 @@ def build_html():
             border: 1px solid #e7e5e4;
         }
 
+        /* Tipografía de código en línea ajustada armónicamente (1 tamaño menor que el texto) */
+        code {
+            font-family: "JetBrains Mono", "SF Mono", "Fira Code", "Consolas", monospace;
+            font-size: 0.82em;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 1.5px 5.5px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            vertical-align: 0.5px;
+            font-weight: 500;
+        }
+
+        pre code {
+            font-size: 0.86em;
+            background: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
         /* ═══════════════════════════════════════════════════════════════════
            PORTADA EDITORIAL CHINGONA (ACADEMIC BOOK COVER)
            ═══════════════════════════════════════════════════════════════════ */
