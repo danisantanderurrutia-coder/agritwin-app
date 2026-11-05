@@ -4416,13 +4416,13 @@
 
         // Filtrado dinámico de la lista de tranques en el Sidebar
         window.filterTranquesByAptitude = function(aptitude) {
-            // Actualizar botones de filtro
+            // Actualizar botones de filtro (Cartografía Suiza)
             document.querySelectorAll('.tranque-filter-btn').forEach(btn => {
-                btn.className = 'tranque-filter-btn px-2 py-0.5 rounded bg-black/40 text-slate-300 hover:text-white border border-white/10 cursor-pointer whitespace-nowrap text-[9px]';
+                btn.className = 'tranque-filter-btn px-2.5 py-0.5 rounded-full bg-white/5 text-slate-400 hover:text-white border border-white/10 cursor-pointer whitespace-nowrap text-[9px]';
             });
             const activeBtn = event ? event.target : null;
             if (activeBtn) {
-                activeBtn.className = 'tranque-filter-btn active px-2 py-0.5 rounded bg-sky-500/30 text-sky-200 border border-sky-400/50 font-bold cursor-pointer whitespace-nowrap text-[9px]';
+                activeBtn.className = 'tranque-filter-btn active px-2.5 py-0.5 rounded-full bg-white/15 text-white border border-white/25 font-bold cursor-pointer whitespace-nowrap text-[9px]';
             }
 
             renderRecursosTranquesList(aptitude);
@@ -4449,34 +4449,34 @@
                 const fillBarColor = p.fill_pct > 75 ? 'bg-emerald-500' : (p.fill_pct > 50 ? 'bg-cyan-500' : 'bg-amber-500');
 
                 return `
-                    <div class="p-2 rounded-lg bg-black/40 border ${isMeniel ? 'border-emerald-500/50 bg-emerald-950/20' : 'border-white/5 hover:border-cyan-500/30'} space-y-1 text-[9.5px] transition-all">
+                    <div class="p-2.5 rounded-xl bg-slate-900/50 border ${isMeniel ? 'border-emerald-500/40 bg-emerald-950/20' : 'border-white/10 hover:border-white/20'} space-y-1.5 text-[9.5px] transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="font-bold ${isMeniel ? 'text-emerald-300' : 'text-slate-200'} truncate flex items-center gap-1">
+                            <span class="font-semibold ${isMeniel ? 'text-emerald-300' : 'text-slate-200'} truncate flex items-center gap-1.5">
                                 <span>${isMeniel ? '🏡' : '💧'}</span>
                                 <span class="truncate">${p.name}</span>
                             </span>
-                            <span class="text-[8.5px] font-mono text-cyan-300 shrink-0 font-bold">
+                            <span class="text-[8.5px] font-mono text-slate-300 shrink-0 font-bold">
                                 ${(p.current_m3 / 1000).toFixed(1)}k m³
                             </span>
                         </div>
                         <div class="flex items-center justify-between text-[8.5px] text-slate-400 font-mono">
                             <span>${p.dist_km === 0 ? 'En Caserío' : `${p.dist_km.toFixed(1)} km ${p.bearing}`} &bull; ${p.rol}</span>
-                            <span class="${p.fill_pct > 75 ? 'text-emerald-400' : 'text-cyan-400'} font-bold">${p.fill_pct}% Lleno (&plusmn;${p.tolerance_pct}%)</span>
+                            <span class="${p.fill_pct > 75 ? 'text-emerald-400' : 'text-slate-300'} font-bold">${p.fill_pct}% Lleno (&plusmn;${p.tolerance_pct}%)</span>
                         </div>
-                        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                             <div class="${fillBarColor} h-full rounded-full" style="width: ${p.fill_pct}%"></div>
                         </div>
                         <div class="flex items-center justify-between pt-1 border-t border-white/5 text-[8.5px]">
-                            <div class="flex items-center gap-1 text-slate-300">
+                            <div class="flex items-center gap-1.5 text-slate-400">
                                 ${p.aptitude.includes('aljibe') ? '<span title="Apto para Aljibe">🚒</span>' : ''}
                                 ${p.aptitude.includes('helipunto') ? '<span title="Helipunto Bambi Bucket">🚁</span>' : ''}
                                 ${p.aptitude.includes('bombeo') ? '<span title="Motobomba fija">🔌</span>' : ''}
                             </div>
-                            <div class="flex items-center gap-1">
-                                <button onclick="centerTranque('${p.id}')" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-cyan-500/30 text-cyan-200 font-bold transition-all cursor-pointer" title="Centrar en el mapa">
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="centerTranque('${p.id}')" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 font-medium transition-all cursor-pointer" title="Centrar en el mapa">
                                     🔍 Ver
                                 </button>
-                                <button onclick="inspectTranqueMNDWI('${p.id}')" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-sky-500/30 text-sky-200 font-bold transition-all cursor-pointer" title="Ver en Banda Espectral MNDWI">
+                                <button onclick="inspectTranqueMNDWI('${p.id}')" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 font-medium transition-all cursor-pointer" title="Ver en Banda Espectral MNDWI">
                                     🛰️ MNDWI
                                 </button>
                             </div>
@@ -5587,15 +5587,15 @@
         // Tabs Logic
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                // Remove active classes
+                // Remove active classes (Estilo Cartografía Suiza)
                 document.querySelectorAll('.tab-btn').forEach(b => {
-                    b.classList.remove('text-emerald-400', 'border-emerald-500');
+                    b.classList.remove('text-emerald-400', 'border-emerald-500', 'text-white', 'border-white');
                     b.classList.add('text-slate-400', 'border-transparent');
                 });
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 
                 // Add active to clicked
-                btn.classList.add('text-emerald-400', 'border-emerald-500');
+                btn.classList.add('text-white', 'border-white');
                 btn.classList.remove('text-slate-400', 'border-transparent');
                 const targetId = btn.dataset.target;
                 const targetEl = document.getElementById(targetId);
@@ -6769,7 +6769,7 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
                 const btn = document.getElementById('btnWindyVar-' + v);
                 if (btn) {
                     if (v === varKey) {
-                        btn.className = 'p-2 rounded-lg bg-sky-500/30 border border-sky-400 text-sky-200 font-bold text-left flex items-center justify-between cursor-pointer transition-all shadow-md';
+                        btn.className = 'p-2 rounded-lg bg-white/15 border border-white/25 text-white font-semibold text-left flex items-center justify-between cursor-pointer transition-all shadow-sm';
                     } else {
                         btn.className = 'p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all';
                     }
@@ -6853,10 +6853,10 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             const btnGfs = document.getElementById('btnHubModelGfs');
             if (btnEcmwf && btnGfs) {
                 if (modelKey === 'ecmwf') {
-                    btnEcmwf.className = 'px-2 py-0.5 rounded bg-sky-500/30 border border-sky-400 text-sky-200 font-bold cursor-pointer transition-all';
+                    btnEcmwf.className = 'px-2 py-0.5 rounded bg-white/15 border border-white/25 text-white font-semibold cursor-pointer transition-all';
                     btnGfs.className = 'px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer transition-all';
                 } else {
-                    btnGfs.className = 'px-2 py-0.5 rounded bg-sky-500/30 border border-sky-400 text-sky-200 font-bold cursor-pointer transition-all';
+                    btnGfs.className = 'px-2 py-0.5 rounded bg-white/15 border border-white/25 text-white font-semibold cursor-pointer transition-all';
                     btnEcmwf.className = 'px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer transition-all';
                 }
             }
@@ -8449,20 +8449,20 @@ window.renderLatexInContainer = function(target) {
                 if (paneControles) paneControles.classList.add('hidden');
 
                 if (btnResumen) {
-                    btnResumen.className = 'flex-1 py-1.5 px-3 rounded-lg font-bold text-sky-300 bg-sky-500/20 border border-sky-400/50 shadow transition-all cursor-pointer flex items-center justify-center gap-1.5';
+                    btnResumen.className = 'flex-1 py-1.5 px-3 rounded-lg font-medium text-white bg-white/15 border border-white/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
                 }
                 if (btnControles) {
-                    btnControles.className = 'flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-400 hover:text-white hover:bg-white/5 border border-transparent transition-all cursor-pointer flex items-center justify-center gap-1.5';
+                    btnControles.className = 'flex-1 py-1.5 px-3 rounded-lg font-medium text-slate-400 hover:text-white hover:bg-white/5 border border-transparent transition-all cursor-pointer flex items-center justify-center gap-1.5';
                 }
             } else {
                 if (paneResumen) paneResumen.classList.add('hidden');
                 if (paneControles) paneControles.classList.remove('hidden');
 
                 if (btnControles) {
-                    btnControles.className = 'flex-1 py-1.5 px-3 rounded-lg font-bold text-sky-300 bg-sky-500/20 border border-sky-400/50 shadow transition-all cursor-pointer flex items-center justify-center gap-1.5';
+                    btnControles.className = 'flex-1 py-1.5 px-3 rounded-lg font-medium text-white bg-white/15 border border-white/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
                 }
                 if (btnResumen) {
-                    btnResumen.className = 'flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-400 hover:text-white hover:bg-white/5 border border-transparent transition-all cursor-pointer flex items-center justify-center gap-1.5';
+                    btnResumen.className = 'flex-1 py-1.5 px-3 rounded-lg font-medium text-slate-400 hover:text-white hover:bg-white/5 border border-transparent transition-all cursor-pointer flex items-center justify-center gap-1.5';
                 }
             }
         };
