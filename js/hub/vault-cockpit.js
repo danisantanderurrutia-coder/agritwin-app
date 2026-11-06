@@ -666,12 +666,60 @@ FIN DEL INFORME TÉCNICO • AGROTWIN DIGITAL TWIN PLATFORM (HTTP://LOCALHOST:77
         }
 
         function handleRouteHash() {
-            const hash = window.location.hash.replace('#', '');
+            const rawHash = window.location.hash.replace('#', '');
+            if (!rawHash) {
+                if (typeof switchMasterView === 'function') switchMasterView('landing');
+                return;
+            }
+
+            const [baseRoute, queryString] = rawHash.split('?');
+            const params = new URLSearchParams(queryString || '');
+            const hash = baseRoute.toLowerCase();
+
+            // Si se pasa ?predio=ID, sincronizar el perfil activo del usuario
+            if (params.has('predio') && typeof window.farmProfileManager !== 'undefined' && window.farmProfileManager) {
+                window.farmProfileManager.setActiveProfile(params.get('predio'));
+            }
+
             if (hash && typeof dismissAlchemicalSplash === 'function') {
                 dismissAlchemicalSplash();
             }
 
-            if (hash === 'cuenca' || hash === 'cuenca-gis' || hash === 'cuenca-map') {
+            // ── 1. SLUGS GENERALES: CUENCA & INCENDIOS (Contextual al predio del usuario) ──
+            if (hash === 'cuenca-incendios' || hash === 'cuenca-fuego' || hash === 'cuenca-validacion' || hash === 'incendios') {
+                const evParam = params.get('evento') || params.get('event');
+                if (evParam === 'vina' || evParam === 'vina_2024') {
+                    if (typeof openHindcastSiteInCuenca === 'function') openHindcastSiteInCuenca('vina_2024');
+                    else openCerroMap();
+                } else if (evParam === 'santajuana' || evParam === 'santa_juana' || evParam === 'santa_juana_2023') {
+                    if (typeof openHindcastSiteInCuenca === 'function') openHindcastSiteInCuenca('santa_juana_2023');
+                    else openCerroMap();
+                } else {
+                    if (typeof openCerroMap === 'function') openCerroMap();
+                    setTimeout(() => {
+                        if (typeof hindcastSitesLayer !== 'undefined' && window.map && !map.hasLayer(hindcastSitesLayer)) {
+                            hindcastSitesLayer.addTo(map);
+                        }
+                    }, 400);
+                }
+            }
+            // ── 2. SLUGS GENERALES: HINDCAST & AUDITORÍA DE MODELO ──
+            else if (hash === 'hindcast' || hash.startsWith('hindcast-') || hash === 'auditoria-incendios') {
+                switchMasterView('docs');
+                if (typeof switchDocsTab === 'function') switchDocsTab('docs-uq');
+                if (typeof window.switchUqTab === 'function') window.switchUqTab('hindcast');
+                if (typeof window.syncHindcastFarmProfile === 'function') window.syncHindcastFarmProfile();
+
+                if (hash === 'hindcast-modo-a' && typeof window.switchHindcastView === 'function') {
+                    window.switchHindcastView('modo-a');
+                } else if (hash === 'hindcast-modo-b' && typeof window.switchHindcastView === 'function') {
+                    window.switchHindcastView('modo-b');
+                } else if (hash === 'hindcast-contraste' && typeof window.switchHindcastView === 'function') {
+                    window.switchHindcastView('contraste');
+                }
+            }
+            // ── 3. RUTAS TRADICIONALES DE CUENCA & CERRO ──
+            else if (hash === 'cuenca' || hash === 'cuenca-gis' || hash === 'cuenca-map') {
                 openCerroMap();
             }
             else if (hash === 'cuenca-sim') {

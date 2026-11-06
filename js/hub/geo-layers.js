@@ -2107,6 +2107,10 @@
                                 <span style="color:#38bdf8; font-weight:bold;">${p.area_ha.toLocaleString('es-CL')} ha</span>
                             </div>
                             <div style="color:#64748b; font-size:9.5px; margin-bottom:5px;">${p.area_source}</div>
+                            <div style="padding:4px 6px; border-radius:4px; background:rgba(14,165,233,0.12); border:1px solid rgba(14,165,233,0.3); color:#7dd3fc; font-size:10px; margin-bottom:5px;">
+                                📍 Distancia a tu predio activo (<span style="font-weight:bold; color:#ffffff;">${(window.farmProfileManager?.getActiveProfile()?.farmName || "Fundo Meniel")}</span>): 
+                                <strong>${((map.distance(L.latLng(p.centroid[1], p.centroid[0]), L.latLng(window.farmProfileManager?.getActiveProfile()?.coordinates?.lat || -36.2115, window.farmProfileManager?.getActiveProfile()?.coordinates?.lon || -71.6050)) / 1000).toFixed(1))} km</strong>
+                            </div>
                             ${principal ? `
                             <div style="border-top:1px solid #1e293b; padding-top:4px; margin-top:2px;">
                                 <div style="color:#94a3b8; font-size:10px; margin-bottom:2px;">Clima ERA5 · ${(w.dias || []).join(', ')}</div>
@@ -2135,6 +2139,11 @@
 
         // Navegación: abre el modo cuenca, activa la capa y vuela al evento
         window.openHindcastSiteInCuenca = function(eventKey) {
+            const evSlug = (eventKey === 'vina_2024') ? 'vina' : 'santajuana';
+            if (history && history.replaceState) {
+                history.replaceState(null, null, '#cuenca-incendios?evento=' + evSlug);
+            }
+
             if (typeof switchMasterView === 'function') switchMasterView('territory');
             setTimeout(() => {
                 if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
@@ -3436,7 +3445,13 @@
 
             const clickLat = e.latlng.lat;
             const clickLng = e.latlng.lng;
-            const menielEastBoundary = [-36.2115, -71.5950];
+            const activeUserFarm = (typeof window.farmProfileManager !== 'undefined' && window.farmProfileManager)
+                ? window.farmProfileManager.getActiveProfile()
+                : null;
+            const targetFarmName = activeUserFarm?.farmName || "Fundo Meniel";
+            const menielEastBoundary = activeUserFarm?.coordinates 
+                ? [activeUserFarm.coordinates.lat, activeUserFarm.coordinates.lon]
+                : [-36.2115, -71.5950];
 
             // Distancia geodésica a los límites de Fundo Meniel
             const distBoundaryMeters = map.distance(e.latlng, L.latLng(menielEastBoundary[0], menielEastBoundary[1]));
@@ -3521,7 +3536,7 @@
             const flameMarker = L.marker([clickLat, clickLng], { icon: flameIcon });
             flameMarker.bindTooltip(`
                 <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:bold; color:#fecaca; background:rgba(18,6,6,0.95); padding:3px 6px; border-radius:4px; border:1px solid #ef4444;">
-                    🎯 FOCO AD-HOC • ${distBoundaryKm.toFixed(2)} km a Meniel (${arrivalTimeMin} min)
+                    🎯 FOCO AD-HOC • ${distBoundaryKm.toFixed(2)} km a ${targetFarmName} (${arrivalTimeMin} min)
                 </div>
             `, { permanent: true, direction: 'top', offset: [0, -18] });
             flameMarker.addTo(customIgnitionLayer);

@@ -102,6 +102,28 @@
         // ═══════════════════════════════════════════════════════════════════
         // MÓDULO 5: AUDITORÍA RETROSPECTIVA HINDCAST (INTERACTIVIDAD COMPLETA)
         // ═══════════════════════════════════════════════════════════════════
+        // Sincronización del Cockpit Hindcast con el Predio Activo del Usuario
+        window.syncHindcastFarmProfile = function() {
+            const activeFarm = (typeof window.farmProfileManager !== 'undefined' && window.farmProfileManager)
+                ? window.farmProfileManager.getActiveProfile()
+                : null;
+            const farmName = activeFarm?.farmName || 'Fundo Meniel';
+            const areaHa = activeFarm?.areaHa ? (activeFarm.areaHa + ' ha') : '24.8 ha';
+            const tranqueM3 = activeFarm?.branches?.predio?.waterStorageM3 
+                ? (activeFarm.branches.predio.waterStorageM3.toLocaleString('es-CL') + ' m³')
+                : '18.500 m³';
+
+            const nameEl = document.getElementById('hindcast-farm-name-label');
+            const svgNameEl = document.getElementById('hindcast-svg-farm-name');
+            const areaEl = document.getElementById('hindcast-farm-area-label');
+            const tranqueEl = document.getElementById('hindcast-farm-tranque-label');
+
+            if (nameEl) nameEl.innerText = farmName;
+            if (svgNameEl) svgNameEl.textContent = farmName;
+            if (areaEl) areaEl.innerText = areaHa;
+            if (tranqueEl) tranqueEl.innerText = tranqueM3;
+        };
+
         window.switchHindcastView = function(viewId) {
             console.log('[Hindcast] Conmutando a vista:', viewId);
             document.querySelectorAll('.hindcast-subpanel').forEach(p => p.classList.add('hidden'));
@@ -10677,13 +10699,13 @@
 
                         <!-- Selector Interno de Navegación del Módulo Hindcast -->
                         <div class="flex items-center gap-2 pt-1 overflow-x-auto select-none">
-                            <button onclick="switchHindcastView('modo-b')" id="hindcastBtn-b" class="hindcast-nav-btn active px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-rose-600 text-white border border-rose-500 flex items-center gap-1.5 shadow-sm">
+                            <button onclick="switchHindcastView('modo-b'); if (history.replaceState) history.replaceState(null, null, '#hindcast-modo-b');" id="hindcastBtn-b" class="hindcast-nav-btn active px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-rose-600 text-white border border-rose-500 flex items-center gap-1.5 shadow-sm">
                                 <span>🖥️</span> <span>Modo B: Pantallazo Interactivo Visor Cuenca 3D</span>
                             </button>
-                            <button onclick="switchHindcastView('modo-a')" id="hindcastBtn-a" class="hindcast-nav-btn px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-white/10 text-slate-300 hover:bg-white/15 border border-white/10 flex items-center gap-1.5">
+                            <button onclick="switchHindcastView('modo-a'); if (history.replaceState) history.replaceState(null, null, '#hindcast-modo-a');" id="hindcastBtn-a" class="hindcast-nav-btn px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-white/10 text-slate-300 hover:bg-white/15 border border-white/10 flex items-center gap-1.5">
                                 <span>📊</span> <span>Modo A: Auditoría Numérica Formal (Benchmark)</span>
                             </button>
-                            <button onclick="switchHindcastView('contraste')" id="hindcastBtn-c" class="hindcast-nav-btn px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-white/10 text-slate-300 hover:bg-white/15 border border-white/10 flex items-center gap-1.5">
+                            <button onclick="switchHindcastView('contraste'); if (history.replaceState) history.replaceState(null, null, '#hindcast-contraste');" id="hindcastBtn-c" class="hindcast-nav-btn px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all bg-white/10 text-slate-300 hover:bg-white/15 border border-white/10 flex items-center gap-1.5">
                                 <span>⚖️</span> <span>Contraste Lado a Lado & Alcance Biofísico</span>
                             </button>
                         </div>
@@ -10895,7 +10917,7 @@
 
                                             <!-- Predio Fundo Meniel Protegido -->
                                             <rect x="50" y="70" width="85" height="110" rx="8" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="2" />
-                                            <text x="58" y="95" fill="#6ee7b7" font-size="9.5" font-family="monospace" font-weight="bold">Fundo Meniel</text>
+                                            <text id="hindcast-svg-farm-name" x="58" y="95" fill="#6ee7b7" font-size="9.5" font-family="monospace" font-weight="bold">Fundo Meniel</text>
                                             <text x="58" y="112" fill="#a7f3d0" font-size="8" font-family="monospace">Cerezos/Avellano</text>
                                             <text x="58" y="127" fill="#34d399" font-size="8" font-family="monospace">Tranque: 18.5k m³</text>
                                             <text x="58" y="160" fill="#10b981" font-size="8" font-family="monospace">✅ PROTEGIDO</text>
@@ -10931,7 +10953,7 @@
                                 <div class="lg:col-span-3 p-4 bg-slate-900/60 border-t lg:border-t-0 lg:border-l border-slate-800 space-y-3.5 text-xs">
                                     
                                     <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-1.5 flex items-center justify-between">
-                                        <span>🛡️ Defensa Fundo Meniel</span>
+                                        <span>🛡️ Defensa: <strong id="hindcast-farm-name-label" class="text-white">Fundo Meniel</strong></span>
                                         <span class="text-emerald-400">Acción Táctica</span>
                                     </div>
 
