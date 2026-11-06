@@ -2651,6 +2651,9 @@
                 `, { permanent: true, direction: 'top', offset: [0, -8] });
                 vinaFirebreak.addTo(hindcastSimulationLayer);
 
+                // Flecha táctica operacional de avance de frente en Viña del Mar
+                createTacticalArrowMarker(-33.0880, -71.4980, 270, 'AVANCE SURAZO 65 km/h ▲', 'rgba(220, 38, 38, 0.92)', '#ffffff', false).addTo(hindcastSimulationLayer);
+
             } else {
                 // ── TRANSECTOS TÁCTICOS SANTA JUANA (P-SJ-01 A 03) ──
                 const cellSJ01 = createTacticalAlertCell({
@@ -2745,6 +2748,9 @@
                 spotArrowSJ.shaft.addTo(hindcastSimulationLayer);
                 spotArrowSJ.headMarker.addTo(hindcastSimulationLayer);
                 if (spotArrowSJ.badgeMarker) spotArrowSJ.badgeMarker.addTo(hindcastSimulationLayer);
+
+                // Flecha táctica operacional de avance en Santa Juana
+                createTacticalArrowMarker(-37.2900, -72.9100, 315, 'AVANCE PUELCHE 58 km/h ◄', 'rgba(220, 38, 38, 0.92)', '#ffffff', true).addTo(hindcastSimulationLayer);
             }
 
             const ellipseCoords = generateFireEllipseCoords(originLat, originLng, lenKm, widthKm, bearingDeg);

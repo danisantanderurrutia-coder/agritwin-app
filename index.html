@@ -1517,6 +1517,15 @@
             100% { opacity: 1.0; transform: scale(1.03); }
         }
 
+        @keyframes tacticalVectorFlow {
+            0% { stroke-dashoffset: 24; }
+            100% { stroke-dashoffset: 0; }
+        }
+        .tactical-fire-vector-shaft {
+            stroke-dasharray: 12, 6 !important;
+            animation: tacticalVectorFlow 1.2s linear infinite !important;
+        }
+
         #cerroUnifiedTabsBar::-webkit-scrollbar {
             height: 4px;
         }
@@ -17584,13 +17593,13 @@ print(meniel_soil)</code></pre>
     <script src="js/engines/basin-hydrology-engine.js"></script>
     <script src="js/engines/stac-cog-client.js"></script>
     <script src="js/engines/data-cube-engine.js"></script>
-    <script src="js/hub/geo-layers.js?v=4.2.7-hindcast-complete-tactical"></script>
-    <script src="js/hub/hub-navigation.js?v=4.2.7-hindcast-complete-tactical"></script>
-    <script src="js/hub/mesa-vecinos.js?v=4.2.7-hindcast-complete-tactical"></script>
-    <script src="js/hub/vault-cockpit.js?v=4.2.7-hindcast-complete-tactical"></script>
-    <script src="js/hub/cerro-cuenca.js?v=4.2.7-hindcast-complete-tactical"></script>
-    <script src="js/hub/ecosystem-advisors.js?v=4.2.7-hindcast-complete-tactical"></script>
-    <script src="js/hub/mesa-hotspots-lenses.js?v=4.2.7-hindcast-complete-tactical"></script>
+    <script src="js/hub/geo-layers.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/hub-navigation.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/mesa-vecinos.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/vault-cockpit.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/cerro-cuenca.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/ecosystem-advisors.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/mesa-hotspots-lenses.js?v=4.2.8-animated-flow-chevrons"></script>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          DRAWER LATERAL: FICHA TERRITORIAL VECINAL & CUADERNO DE CAMPO
@@ -18729,7 +18738,7 @@ print(meniel_soil)</code></pre>
 <script src="js/hub/pitch-deck-viewer.js"></script>
 <script src="js/hub/hub-diegetic-modals.js"></script>
 <script src="js/hub/hub-report-generator.js"></script>
-<script src="js/hub/farm-profile-manager.js?v=4.2.7-hindcast-complete-tactical"></script>
+<script src="js/hub/farm-profile-manager.js?v=4.2.8-animated-flow-chevrons"></script>
 <script>
     function runInteractiveSoilGridsCalc() {
         const soc = parseFloat(document.getElementById('sg-soc')?.value || 38.5);
