@@ -298,10 +298,11 @@
                     if (sidebar) sidebar.style.top = '3.5rem';
                 }
 
-                if (map) {
+                const lMap = (window.map && typeof window.map.invalidateSize === 'function') ? window.map : ((typeof map !== 'undefined' && map && typeof map.invalidateSize === 'function') ? map : null);
+                if (lMap) {
                     initObrasGisMarkers();
                     setTimeout(() => {
-                        map.invalidateSize(true);
+                        lMap.invalidateSize(true);
                         if (window.energyFlowEngine) {
                             window.energyFlowEngine.resize();
                             window.energyFlowEngine.resume();
@@ -309,7 +310,7 @@
                         }
                     }, 60);
                     setTimeout(() => {
-                        map.invalidateSize(true);
+                        lMap.invalidateSize(true);
                         if (window.energyFlowEngine) {
                             window.energyFlowEngine.resize();
                             window.energyFlowEngine.resume();

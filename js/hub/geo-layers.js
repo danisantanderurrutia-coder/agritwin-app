@@ -2228,19 +2228,47 @@
             if (infoRiesgo) infoRiesgo.className = (mode === 'riesgo') ? 'space-y-3' : 'hidden space-y-3';
             if (infoComparar) infoComparar.className = (mode === 'comparar') ? 'space-y-3' : 'hidden space-y-3';
 
-            // Control de Capas en el Mapa Leaflet
+            // Control de Capas en el Mapa Leaflet y Flujos Vivos (Living Energy Flow 60 FPS)
+            const badgeVectors = document.getElementById('badgeSidebarFireVectors');
             if (mode === 'incendio') {
                 // Solo cicatriz real observada (rojo)
                 if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
                 if (map.hasLayer(hindcastSimulationLayer)) map.removeLayer(hindcastSimulationLayer);
+                if (window.energyFlowEngine) window.energyFlowEngine.toggle('fireWave', false);
+                if (badgeVectors) {
+                    badgeVectors.innerText = 'INACTIVO';
+                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-400 font-mono';
+                }
             } else if (mode === 'riesgo') {
-                // Solo emulación táctica preventiva de AgriTwin (transectos, haces, faja, elipse)
+                // Solo emulación táctica preventiva de AgriTwin (transectos, haces, faja, pavesas, flujos)
                 if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
                 if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
+                if (window.energyFlowEngine) {
+                    window.energyFlowEngine.toggle('fireWave', true);
+                    window.energyFlowEngine.toggles.wind = true;
+                    window.energyFlowEngine.windDir = 190;
+                    window.energyFlowEngine.windSpeed = 35;
+                    window.energyFlowEngine.render();
+                }
+                if (badgeVectors) {
+                    badgeVectors.innerText = 'ACTIVO (VIÑA)';
+                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-red-600 text-white font-mono font-bold';
+                }
             } else {
-                // Modo 'comparar': AMBAS capas activas simultáneamente
+                // Modo 'comparar': AMBAS capas activas simultáneamente + flujos
                 if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
                 if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
+                if (window.energyFlowEngine) {
+                    window.energyFlowEngine.toggle('fireWave', true);
+                    window.energyFlowEngine.toggles.wind = true;
+                    window.energyFlowEngine.windDir = 190;
+                    window.energyFlowEngine.windSpeed = 35;
+                    window.energyFlowEngine.render();
+                }
+                if (badgeVectors) {
+                    badgeVectors.innerText = 'ACTIVO (VIÑA)';
+                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-red-600 text-white font-mono font-bold';
+                }
             }
         };
 
@@ -2258,8 +2286,21 @@
             }
         };
 
-        // Volver a la cámara del predio activo
+        // Volver a la cámara del predio activo (restaurando línea base de Fundo Meniel)
         window.returnToActiveFarmFromHindcast = function() {
+            window.currentHindcastEvent = null;
+            window.closeVinaBenchmarkDrawer();
+            if (window.energyFlowEngine) {
+                window.energyFlowEngine.toggle('fireWave', false);
+                window.energyFlowEngine.setRegime('base');
+                window.energyFlowEngine.render();
+            }
+            if (typeof window.updateHvrMatrix === 'function') {
+                window.updateHvrMatrix('normal');
+            }
+            if (typeof syncTacticalFireVectorsUI === 'function') {
+                syncTacticalFireVectorsUI(false, null);
+            }
             const prof = (window.farmProfileManager && window.farmProfileManager.getActiveProfile)
                 ? window.farmProfileManager.getActiveProfile()
                 : null;
@@ -2268,11 +2309,17 @@
             map.flyTo([lat, lon], 13, { duration: 1.2 });
             const hud = document.getElementById('hindcastMapHUD');
             if (hud) hud.classList.add('hidden');
+            if (map.hasLayer(hindcastSimulationLayer)) map.removeLayer(hindcastSimulationLayer);
+            if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
+            if (history && history.replaceState) {
+                history.replaceState(null, null, '#cuenca');
+            }
         };
 
         // Controlador Maestro: Carga el Benchmark Hindcast en el mapa y la barra lateral
         window.loadHindcastBenchmarkInCuenca = function(eventKey) {
             const isVina = (eventKey === 'vina_2024');
+            window.currentHindcastEvent = eventKey;
             const evSlug = isVina ? 'vina' : 'santajuana';
 
             if (history && history.replaceState) {
@@ -2302,7 +2349,7 @@
             const topPill = document.getElementById('hubWindyTopPill');
             if (topPill) topPill.style.display = 'flex';
 
-            // 2. Abrir pestaña de Riesgos Climáticos en barra lateral
+            // 2. Abrir pestaña de Riesgos Climáticos en barra lateral derecha ("Visor Táctico")
             if (typeof window.selectSidebarTab === 'function') {
                 window.selectSidebarTab('tab-riesgos');
             } else {
@@ -2352,15 +2399,16 @@
             }
 
             // 5. Dibujar la SUITE TÁCTICA COMPLETA DE AGRITWIN en hindcastSimulationLayer:
-            //    • Elipse paramétrica Rothermel-Fons
-            //    • Transectos de amenaza pirogénica calibrados (P-01..P-03)
-            //    • Haces vectoriales balísticos de cabeza y flancos (Huygens)
+            //    • Polígonos de alerta orográficos reales (siguiendo relieve y quebradas)
+            //    • Haces vectoriales balísticos de cabeza y flancos (Huygens) con puntas militares y badges
+            //    • Salto Balístico de Pavesas (Albini 1979) con arcos punteados y chispas
             //    • Faja defensiva WUI de contención y diagnóstico de salto de pavesas
-            //    • Marcadores de foco y spotting
+            //    • Elipse paramétrica Rothermel-Fons
             hindcastSimulationLayer.clearLayers();
 
             if (isVina) {
-                // ── TRANSECTOS TÁCTICOS VIÑA DEL MAR (P-VINA-01 A 03) ──
+                // ── TRANSECTOS TÁCTICOS VIÑA DEL MAR (P-VINA-01 A 03) CON FORMAS TOPOGRÁFICAS REALES ──
+                // P-VINA-01: Foco Reserva Lago Peñuelas & Bosque Denso Eucalipto
                 const cellVina01 = createTacticalAlertCell({
                     id: 'P-VINA-01',
                     threatType: 'fire',
@@ -2369,7 +2417,11 @@
                     phase: '0-2h Disparo Inicial',
                     color: '#ef4444',
                     badgeLabel: '[P-VINA-01] 95% CRÍTICO • FWI 72',
-                    coords: [[-33.1500, -71.5150], [-33.1500, -71.4850], [-33.1250, -71.4850], [-33.1250, -71.5150]],
+                    coords: [
+                        [-33.1550, -71.5200], [-33.1480, -71.5300], [-33.1320, -71.5250],
+                        [-33.1250, -71.5050], [-33.1280, -71.4800], [-33.1420, -71.4700],
+                        [-33.1560, -71.4900], [-33.1580, -71.5100]
+                    ],
                     metricsHtml: `
                         <div>• FWI Severidad: <b style="color:#ef4444;">72 (Extremo)</b></div>
                         <div>• Ráfaga Sur: <b style="color:#f97316;">65 km/h S–SSO</b></div>
@@ -2381,15 +2433,20 @@
                 cellVina01.poly.addTo(hindcastSimulationLayer);
                 cellVina01.badge.addTo(hindcastSimulationLayer);
 
+                // P-VINA-02: Cañón Quebrada Las Pataguas & Aceleración Chimenea
                 const cellVina02 = createTacticalAlertCell({
                     id: 'P-VINA-02',
                     threatType: 'fire',
                     severityPercent: 88,
-                    name: '🔥 Garganta Quebradas Las Pataguas',
-                    phase: '2-5h Aceleración & Spotting',
+                    name: '🔥 Garganta Quebrada Las Pataguas',
+                    phase: '2-5h Aceleración Chimenea',
                     color: '#f97316',
                     badgeLabel: '[P-VINA-02] 88% ALTO • CHIMENEA',
-                    coords: [[-33.1200, -71.5200], [-33.1200, -71.4700], [-33.0800, -71.4700], [-33.0800, -71.5200]],
+                    coords: [
+                        [-33.1250, -71.5150], [-33.1100, -71.5280], [-33.0900, -71.5220],
+                        [-33.0720, -71.5120], [-33.0750, -71.4780], [-33.0950, -71.4680],
+                        [-33.1180, -71.4750], [-33.1250, -71.4950]
+                    ],
                     metricsHtml: `
                         <div>• Efecto Chimenea: <b style="color:#f97316;">Quebrada Suroeste</b></div>
                         <div>• Salto Pavesas: <b style="color:#fde047;">1.85 km (Albini)</b></div>
@@ -2401,15 +2458,20 @@
                 cellVina02.poly.addTo(hindcastSimulationLayer);
                 cellVina02.badge.addTo(hindcastSimulationLayer);
 
+                // P-VINA-03: Interfaz Urbano-Forestal (WUI) Achupallas / Canal Chacao / Jardín Botánico
                 const cellVina03 = createTacticalAlertCell({
                     id: 'P-VINA-03',
                     threatType: 'fire',
                     severityPercent: 98,
-                    name: '🔥 Interfaz WUI Achupallas / Canal Chacao / El Olivar',
+                    name: '🔥 Interfaz WUI Achupallas / Canal Chacao / Jardín Botánico',
                     phase: '5-9h Ruptura Urbana',
                     color: '#dc2626',
                     badgeLabel: '[P-VINA-03] 98% CATASTRÓFICO',
-                    coords: [[-33.0750, -71.5350], [-33.0750, -71.4500], [-33.0350, -71.4500], [-33.0350, -71.5350]],
+                    coords: [
+                        [-33.0720, -71.5380], [-33.0550, -71.5450], [-33.0380, -71.5320],
+                        [-33.0320, -71.4980], [-33.0350, -71.4650], [-33.0500, -71.4450],
+                        [-33.0680, -71.4550], [-33.0750, -71.4850], [-33.0720, -71.5150]
+                    ],
                     metricsHtml: `
                         <div>• Ruptura WUI: <b style="color:#ef4444;">94% Salto Faja</b></div>
                         <div>• Tejido Urbano: <b style="color:#f87171;">Alta densidad</b></div>
@@ -2455,7 +2517,7 @@
                         weight: 4.0,
                         dashArray: '6, 3',
                         badgeText: '🔥 FLANCO OESTE 84% • 14 m/min',
-                        popupHtml: '<div><b>Flanco Oeste WUI</b>: Propagación lateral por ladera sur.</div>'
+                        popupHtml: '<div><b>Flanco Oeste WUI</b>: Propagación lateral por ladera sur hacia Mirador Reñaca.</div>'
                     }
                 );
                 arrowVinaFlankW.shaft.addTo(hindcastSimulationLayer);
@@ -2478,6 +2540,100 @@
                 arrowVinaFlankE.shaft.addTo(hindcastSimulationLayer);
                 arrowVinaFlankE.headMarker.addTo(hindcastSimulationLayer);
                 if (arrowVinaFlankE.badgeMarker) arrowVinaFlankE.badgeMarker.addTo(hindcastSimulationLayer);
+
+                // ── SALTO BALÍSTICO DE PAVESAS (ALBINI 1979 - SPOTTING D_SPOT = 1.85 KM) ──
+                // Pavesa 1: Achupallas (Salto sobre Faja Cortafuegos 45m)
+                const spotArrowAchupallas = createTacticalFireArrow(
+                    [-33.0680, -71.5050],
+                    [-33.0580, -71.5030],
+                    [-33.0480, -71.5080],
+                    {
+                        color: '#fbbf24',
+                        weight: 3.5,
+                        dashArray: '5, 5',
+                        headSize: 18,
+                        badgeText: '💥 Pavesas +1.85 km • Salto Faja 94%',
+                        popupHtml: `
+                            <div style="font-family:'JetBrains Mono',monospace; min-width:250px; font-size:11px; padding:4px; color:#f8fafc;">
+                                <strong style="color:#fbbf24; font-size:12px;">💥 Salto Balístico de Pavesas (Albini 1979)</strong>
+                                <div style="font-size:10px; color:#cbd5e1; margin-top:3px; line-height:1.4;">
+                                    • Origen: <b>Quebrada Las Pataguas (Eucalipto adulto)</b><br>
+                                    • Destino: <b>Achupallas (Techos y quebradas urbanas)</b><br>
+                                    • Alcance Balístico: <b>1.85 km bajo ráfaga 65 km/h</b><br>
+                                    • Penetración Faja 45m: <b style="color:#ef4444;">94% Salto Aéreo</b>
+                                </div>
+                            </div>
+                        `
+                    }
+                );
+                spotArrowAchupallas.shaft.addTo(hindcastSimulationLayer);
+                spotArrowAchupallas.headMarker.addTo(hindcastSimulationLayer);
+                if (spotArrowAchupallas.badgeMarker) spotArrowAchupallas.badgeMarker.addTo(hindcastSimulationLayer);
+
+                // Pavesa 2: Jardín Botánico (Foco Secundario)
+                const spotArrowBotanico = createTacticalFireArrow(
+                    [-33.0620, -71.4920],
+                    [-33.0520, -71.4900],
+                    [-33.0420, -71.4950],
+                    {
+                        color: '#f59e0b',
+                        weight: 3.2,
+                        dashArray: '5, 5',
+                        headSize: 18,
+                        badgeText: '💥 Foco Secundario • Jardín Botánico',
+                        popupHtml: `
+                            <div style="font-family:'JetBrains Mono',monospace; min-width:250px; font-size:11px; padding:4px; color:#f8fafc;">
+                                <strong style="color:#f59e0b; font-size:12px;">💥 Foco Secundario: Jardín Botánico</strong>
+                                <div style="font-size:10px; color:#cbd5e1; margin-top:3px;">
+                                    Pavesas incandescentes superan la barrera topográfica e inician la ignición descontrolada del Jardín Botánico.
+                                </div>
+                            </div>
+                        `
+                    }
+                );
+                spotArrowBotanico.shaft.addTo(hindcastSimulationLayer);
+                spotArrowBotanico.headMarker.addTo(hindcastSimulationLayer);
+                if (spotArrowBotanico.badgeMarker) spotArrowBotanico.badgeMarker.addTo(hindcastSimulationLayer);
+
+                // Pavesa 3: Canal Chacao
+                const spotArrowChacao = createTacticalFireArrow(
+                    [-33.0650, -71.4750],
+                    [-33.0560, -71.4710],
+                    [-33.0480, -71.4700],
+                    {
+                        color: '#f59e0b',
+                        weight: 3.0,
+                        dashArray: '5, 5',
+                        headSize: 16,
+                        badgeText: '💥 Pavesas • Canal Chacao',
+                        popupHtml: '<div style="font-family:\'JetBrains Mono\',monospace; font-size:11px;">Salto de pavesas incandescentes sobre población Canal Chacao (Quilpué / Viña).</div>'
+                    }
+                );
+                spotArrowChacao.shaft.addTo(hindcastSimulationLayer);
+                spotArrowChacao.headMarker.addTo(hindcastSimulationLayer);
+                if (spotArrowChacao.badgeMarker) spotArrowChacao.badgeMarker.addTo(hindcastSimulationLayer);
+
+                // Marcadores luminosos de chispa / pavesa en los puntos de impacto
+                function createPavesaSpark(lat, lng, label) {
+                    const sparkIcon = L.divIcon({
+                        className: 'tactical-pavesa-spark',
+                        html: `
+                            <div style="position:relative; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
+                                <div style="position:absolute; width:26px; height:26px; border-radius:50%; background:rgba(251,191,36,0.45); animation:ping 1.3s cubic-bezier(0,0,0.2,1) infinite;"></div>
+                                <div style="width:20px; height:20px; border-radius:50%; background:#d97706; border:2px solid #fef08a; display:flex; align-items:center; justify-content:center; font-size:10px; box-shadow:0 0 10px #fbbf24;">
+                                    ✨
+                                </div>
+                            </div>`,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14]
+                    });
+                    const m = L.marker([lat, lng], { icon: sparkIcon });
+                    m.bindTooltip(`<b>✨ ${label}</b>`, { direction: 'top', offset: [0, -10] });
+                    return m;
+                }
+                createPavesaSpark(-33.0480, -71.5080, 'Impacto Pavesa: Achupallas (Salto Faja 45m)').addTo(hindcastSimulationLayer);
+                createPavesaSpark(-33.0420, -71.4950, 'Impacto Pavesa: Jardín Botánico').addTo(hindcastSimulationLayer);
+                createPavesaSpark(-33.0480, -71.4700, 'Impacto Pavesa: Canal Chacao').addTo(hindcastSimulationLayer);
 
                 // ── FAJA DEFENSIVA CORTAFUEGOS WUI DE CONTENCIÓN TEÓRICA ──
                 const vinaFirebreak = L.polyline([
@@ -2571,6 +2727,24 @@
                 arrowSJHead.shaft.addTo(hindcastSimulationLayer);
                 arrowSJHead.headMarker.addTo(hindcastSimulationLayer);
                 if (arrowSJHead.badgeMarker) arrowSJHead.badgeMarker.addTo(hindcastSimulationLayer);
+
+                // Pavesas cruce río Biobío (2.4 km)
+                const spotArrowSJ = createTacticalFireArrow(
+                    [-37.3100, -72.8400],
+                    [-37.2800, -72.8600],
+                    [-37.2500, -72.8800],
+                    {
+                        color: '#fbbf24',
+                        weight: 3.2,
+                        dashArray: '5, 5',
+                        headSize: 18,
+                        badgeText: '💥 Pavesas +2.4 km • Cruce Río Biobío',
+                        popupHtml: '<div><b>Salto Transfronterizo Río Biobío</b>: Pavesas incandescentes cruzan el cauce de más de 1.5 km de ancho.</div>'
+                    }
+                );
+                spotArrowSJ.shaft.addTo(hindcastSimulationLayer);
+                spotArrowSJ.headMarker.addTo(hindcastSimulationLayer);
+                if (spotArrowSJ.badgeMarker) spotArrowSJ.badgeMarker.addTo(hindcastSimulationLayer);
             }
 
             const ellipseCoords = generateFireEllipseCoords(originLat, originLng, lenKm, widthKm, bearingDeg);
@@ -2637,19 +2811,43 @@
 
             if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
 
-            // 6. Volar la cámara hacia el polígono con bounds de respaldo garantizados
+            // 6. Activar partículas vivas a 60 FPS (Living Energy Flow) acordes al evento
+            if (window.energyFlowEngine) {
+                window.energyFlowEngine.toggle('fireWave', true);
+                window.energyFlowEngine.toggles.wind = true;
+                if (isVina) {
+                    window.energyFlowEngine.windDir = 190; // Surazo SSW hacia el Norte
+                    window.energyFlowEngine.windSpeed = 35;
+                    if (typeof window.energyFlowEngine.setAtmosphericState === 'function') {
+                        window.energyFlowEngine.setAtmosphericState({
+                            windSpeedKmh: 65,
+                            windDeg: 190,
+                            airTempC: 34.4,
+                            relativeHumidity: 21,
+                            activeVariable: 'fwi'
+                        });
+                    }
+                } else {
+                    window.energyFlowEngine.windDir = 150; // Puelche SE
+                    window.energyFlowEngine.windSpeed = 38;
+                }
+                window.energyFlowEngine.render();
+            }
+
+            // 7. Volar la cámara hacia el polígono con bounds de respaldo garantizados
             const fallbackBounds = {
                 vina_2024: L.latLngBounds([[-33.16, -71.56], [-33.01, -71.41]]),
                 santa_juana_2023: L.latLngBounds([[-37.45, -73.15], [-37.10, -72.70]])
             };
             setTimeout(() => {
-                if (window.map) {
-                    map.invalidateSize(true);
+                const lMap = (window.map && typeof window.map.invalidateSize === 'function') ? window.map : ((typeof map !== 'undefined' && map && typeof map.invalidateSize === 'function') ? map : null);
+                if (lMap) {
+                    lMap.invalidateSize(true);
                     const b = (hindcastBoundsByEvent && hindcastBoundsByEvent[eventKey]) || fallbackBounds[eventKey];
                     if (b && b.isValid()) {
-                        map.flyToBounds(b, { padding: [50, 50], duration: 1.3 });
+                        lMap.flyToBounds(b, { padding: [50, 50], duration: 1.3 });
                     } else {
-                        map.flyTo([originLat, originLng], 12, { duration: 1.2 });
+                        lMap.flyTo([originLat, originLng], 12, { duration: 1.2 });
                     }
                 }
             }, 300);
@@ -2662,7 +2860,51 @@
                 window.closeVinaBenchmarkDrawer();
             }
 
-            // 7. Mostrar y actualizar HUD flotante en el mapa
+            // 8. Sincronizar el Visor Táctico Lateral (Barra Lateral Derecha)
+            if (typeof window.updateHvrMatrix === 'function') {
+                window.updateHvrMatrix(isVina ? 'vina_2024' : 'santa_juana_2023');
+            }
+
+            const titleEl = document.getElementById('tacticalScenarioTitle');
+            const speedEl = document.getElementById('tacticalScenarioSpeed');
+            const lfmcEl = document.getElementById('tacticalScenarioLfmc');
+            const dfmcEl = document.getElementById('tacticalScenarioDfmc');
+            const sectorEl = document.getElementById('tacticalScenarioSector');
+            const descEl = document.getElementById('tacticalScenarioDesc');
+            const badgeVectors = document.getElementById('badgeSidebarFireVectors');
+            const btnVectors = document.getElementById('btnSidebarFireVectors');
+
+            if (isVina) {
+                if (titleEl) {
+                    titleEl.innerText = 'Viña del Mar 2024 (Surazo 65 km/h)';
+                    titleEl.className = 'text-red-400 text-[10.5px] font-bold';
+                }
+                if (speedEl) speedEl.innerText = '65 km/h';
+                if (lfmcEl) lfmcEl.innerText = '58%';
+                if (dfmcEl) dfmcEl.innerText = '3.2%';
+                if (sectorEl) sectorEl.innerText = 'Interfaz Achupallas / Canal Chacao / Jardín Botánico';
+                if (descEl) descEl.innerText = 'Efecto chimenea en Quebrada Las Pataguas con salto masivo de pavesas (1.85 km Albini) sobre fajas de contención.';
+                if (badgeVectors) {
+                    badgeVectors.innerText = 'ACTIVO (VIÑA)';
+                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-red-600 text-white font-mono font-bold';
+                }
+                if (btnVectors) {
+                    btnVectors.className = 'py-1 px-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white border border-red-400 text-[10px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md';
+                }
+                // Deseleccionar otros regímenes y activar Surazo
+                ['puelche', 'surazo', 'norte', 'live'].forEach(rk => {
+                    const btnRk = document.getElementById(`btnTacticalRegime_${rk}`);
+                    if (btnRk) {
+                        if (rk === 'surazo') {
+                            btnRk.className = 'py-1.5 px-2 rounded-lg bg-orange-600 text-white font-mono text-[10px] font-bold transition-all border border-orange-400 cursor-pointer flex items-center justify-center gap-1 shadow-md';
+                        } else {
+                            btnRk.className = 'py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] transition-all border border-white/5 cursor-pointer flex items-center justify-center gap-1';
+                        }
+                    }
+                });
+            }
+
+            // 9. Mostrar y actualizar HUD flotante en el mapa
             const hud = document.getElementById('hindcastMapHUD');
             if (hud) {
                 hud.classList.remove('hidden');
@@ -2683,7 +2925,7 @@
                 document.getElementById('hindcastHudFarmDist').innerText = `${distKm} km desde ${farmName}`;
             }
 
-            // 8. Sincronizar botones en la barra lateral
+            // 10. Sincronizar botones en la barra lateral
             const btnSanta = document.getElementById('btnSidebarHindcastSanta');
             const btnVina = document.getElementById('btnSidebarHindcastVina');
             if (btnSanta && btnVina) {
@@ -3893,6 +4135,12 @@
 
         // Conmutador del Régimen Eólico Activo (permite activar o desactivar al hacer clic de nuevo)
         window.setTacticalWindRegime = function(regimeKey) {
+            if (window.currentHindcastEvent === 'vina_2024') {
+                if (regimeKey === 'surazo') {
+                    window.setVinaDisplayMode('comparar');
+                    return;
+                }
+            }
             if (!regimeKey || regimeKey === 'off' || (window.isTacticalFireVectorsActive && window.currentTacticalWindRegime === regimeKey)) {
                 window.toggleTacticalFireVectorsLayer(false);
                 return;
@@ -3904,6 +4152,13 @@
 
         // Toggle principal de la capa de Vectores Tácticos (Módulo 2)
         window.toggleTacticalFireVectorsLayer = function(force) {
+            if (window.currentHindcastEvent === 'vina_2024') {
+                const isActive = map.hasLayer(hindcastSimulationLayer);
+                const shouldBeActive = (force !== undefined) ? !!force : !isActive;
+                window.setVinaDisplayMode(shouldBeActive ? 'comparar' : 'incendio');
+                return;
+            }
+
             const layer = overlayLayers['fire_threat_vectors'];
             if (!layer || !map) return;
             const isActive = map.hasLayer(layer);
@@ -7769,6 +8024,32 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             const key = presetKey || (window.cuencaForecastState?.activePreset || 'normal');
             
             const matrixData = {
+                'vina_2024': {
+                    h: 94, v: 88, r: 82.7,
+                    tag: 'VIÑA DEL MAR 2024 • SURAZO 65 KM/H',
+                    tagColor: 'bg-red-950 text-red-300 border-red-500/60',
+                    levelClass: 'CLASE 5 • CATASTRÓFICO (>0.8)',
+                    badgeColor: 'bg-red-600/30 text-red-200 border-red-500/50',
+                    rColor: 'text-red-500',
+                    descH: 'Viento Sur 65 km/h • Humedad 21% • Temp 34.4°C • Sequía 30.6mm (90d) • FWI 72',
+                    descV: 'Interfaz WUI Achupallas / Canal Chacao • Foco secundario Jardín Botánico • Sin faja húmeda',
+                    deltaTag: '+78% (Catástrofe WUI)',
+                    deltaAvg: '+78.5%',
+                    deltaPeak: '+88.3%'
+                },
+                'santa_juana_2023': {
+                    h: 98, v: 85, r: 83.3,
+                    tag: 'SANTA JUANA 2023 • PUELCHE 58 KM/H',
+                    tagColor: 'bg-red-950 text-red-300 border-red-500/60',
+                    levelClass: 'CLASE 5 • CATASTRÓFICO (>0.8)',
+                    badgeColor: 'bg-red-600/30 text-red-200 border-red-500/50',
+                    rColor: 'text-red-500',
+                    descH: 'Viento Puelche 58 km/h ESE • Humedad 11% • Temp 40°C • FWI 78 Extremo',
+                    descV: '42.599 ha monocultivo pino/eucalipto • Casco urbano Santa Juana y ribera Biobío',
+                    deltaTag: '+74% (Megaincendio Forestal)',
+                    deltaAvg: '+73.5%',
+                    deltaPeak: '+83.3%'
+                },
                 'storm_t100': {
                     h: 92, v: 74, r: 68.1,
                     tag: 'RÍO ATMOSFÉRICO T=100 (CRÍTICO)',
