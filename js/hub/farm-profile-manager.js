@@ -503,10 +503,18 @@
     };
 
     const urlParams = new URLSearchParams(window.location.search);
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    const targetMode = urlParams.get('mode') || urlParams.get('view') || (hash ? hash : null);
+    const rawHash = window.location.hash.replace('#', '');
+    const cleanHash = rawHash.split('?')[0].toLowerCase();
+    const targetMode = urlParams.get('mode') || urlParams.get('view') || null;
 
-    if (targetMode) {
+    if (rawHash) {
+      dismissSplash();
+      setTimeout(() => {
+        if (typeof handleRouteHash === 'function') {
+          handleRouteHash();
+        }
+      }, 60);
+    } else if (targetMode) {
       dismissSplash();
       setTimeout(() => {
         if (targetMode === 'map' || targetMode === 'cuenca' || targetMode === 'cuenca_map' || targetMode === 'cuenca-gis' || targetMode === 'territory') {
@@ -517,10 +525,10 @@
           if (typeof setCerroSubView === 'function') setCerroSubView('sim');
         } else if (targetMode === 'cerro') {
           if (typeof openCerroMap === 'function') openCerroMap();
-        } else if (typeof switchMasterView === 'function') {
+        } else if (typeof switchMasterView === 'function' && ['landing', 'dashboard', 'panal', 'telemetry', 'docs', 'cuaderno', 'juegos', 'galpon', 'invernadero', 'establo', 'incursion', 'cerro', 'mesa', 'territory'].includes(targetMode)) {
           switchMasterView(targetMode);
         }
-      }, 200);
+      }, 150);
     }
 
     window.addEventListener('hashchange', function() {

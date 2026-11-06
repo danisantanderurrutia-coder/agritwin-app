@@ -2221,12 +2221,36 @@
                 history.replaceState(null, null, '#cuenca-incendios?evento=' + evSlug);
             }
 
-            // 1. Asegurar vista Cuenca / Cerro
-            if (typeof switchMasterView === 'function') switchMasterView('territory', 'cerro');
+            if (typeof window.dismissAlchemicalSplash === 'function') {
+                window.dismissAlchemicalSplash();
+            }
 
-            // 2. Abrir pestaña de Riesgos Climáticos en barra lateral si existe
-            const tabRisk = document.getElementById('tabBtn-risks');
-            if (tabRisk && typeof tabRisk.onclick === 'function') tabRisk.onclick();
+            // 1. Asegurar vista Cuenca / Cerro completa con todos sus elementos visibles
+            if (typeof switchMasterView === 'function') switchMasterView('territory', 'cerro');
+            const cerroSatNav = document.getElementById('cerroSatelliteSubdeckNav');
+            if (cerroSatNav) cerroSatNav.style.display = 'flex';
+            const sidebar = document.getElementById('territorialSidebar');
+            if (sidebar) {
+                sidebar.style.top = '98px';
+                sidebar.style.display = 'flex';
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.style.transform = 'translateX(0)';
+                sidebar.style.pointerEvents = 'auto';
+            }
+            const mapDock = document.getElementById('cuencaMapControlDock');
+            if (mapDock) mapDock.style.display = 'flex';
+            const scrubber = document.getElementById('cuencaWindyTimelineScrubber');
+            if (scrubber) scrubber.style.display = 'block';
+            const topPill = document.getElementById('hubWindyTopPill');
+            if (topPill) topPill.style.display = 'flex';
+
+            // 2. Abrir pestaña de Riesgos Climáticos en barra lateral
+            if (typeof window.selectSidebarTab === 'function') {
+                window.selectSidebarTab('tab-riesgos');
+            } else {
+                const btnRiesgos = document.querySelector('.tab-btn[data-target="tab-riesgos"]');
+                if (btnRiesgos) btnRiesgos.click();
+            }
             const detailsRisk = document.getElementById('detailsRiskFire');
             if (detailsRisk) detailsRisk.open = true;
 
@@ -2336,12 +2360,20 @@
 
             if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
 
-            // 6. Volar la cámara hacia el polígono
+            // 6. Volar la cámara hacia el polígono con bounds de respaldo garantizados
+            const fallbackBounds = {
+                vina_2024: L.latLngBounds([[-33.16, -71.56], [-33.01, -71.41]]),
+                santa_juana_2023: L.latLngBounds([[-37.45, -73.15], [-37.10, -72.70]])
+            };
             setTimeout(() => {
-                map.invalidateSize();
-                const b = hindcastBoundsByEvent[eventKey];
-                if (b && b.isValid()) {
-                    map.flyToBounds(b, { padding: [50, 50], duration: 1.3 });
+                if (window.map) {
+                    map.invalidateSize(true);
+                    const b = (hindcastBoundsByEvent && hindcastBoundsByEvent[eventKey]) || fallbackBounds[eventKey];
+                    if (b && b.isValid()) {
+                        map.flyToBounds(b, { padding: [50, 50], duration: 1.3 });
+                    } else {
+                        map.flyTo([originLat, originLng], 12, { duration: 1.2 });
+                    }
                 }
             }, 300);
 

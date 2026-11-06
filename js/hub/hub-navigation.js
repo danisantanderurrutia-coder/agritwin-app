@@ -213,6 +213,12 @@
                 viewId = 'territory';
                 if (!mode) mode = 'cerro';
             }
+            // Guardia de seguridad: no ocultar la interfaz si la vista recibida no es válida
+            const validViews = ['landing', 'dashboard', 'panal', 'telemetry', 'docs', 'cuaderno', 'juegos', 'galpon', 'invernadero', 'establo', 'incursion', 'cerro', 'mesa', 'territory', 'cuenca'];
+            if (!validViews.includes(viewId)) {
+                console.warn('[Navigation] switchMasterView ignoró vista no reconocida para evitar pantalla negra:', viewId);
+                return;
+            }
             currentMasterView = viewId;
             if (mode) currentTerritorialMode = mode;
             window.scrollTo(0, 0);
