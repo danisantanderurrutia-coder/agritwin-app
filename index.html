@@ -13,6 +13,20 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Si el usuario entra con un deep-link (#hash), ocultar el splash negro inmediatamente
+        if (window.location.hash && window.location.hash.length > 1) {
+            document.write('<style>#alchemicalAppSplash { display: none !important; opacity: 0 !important; pointer-events: none !important; }</style>');
+        }
+        window.dismissAlchemicalSplash = function() {
+            const splash = document.getElementById('alchemicalAppSplash');
+            if (splash) {
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                splash.style.display = 'none';
+            }
+        };
+    </script>
+    <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -17368,13 +17382,13 @@ print(meniel_soil)</code></pre>
     <script src="js/engines/basin-hydrology-engine.js"></script>
     <script src="js/engines/stac-cog-client.js"></script>
     <script src="js/engines/data-cube-engine.js"></script>
-    <script src="js/hub/geo-layers.js?v=4.1.0-windy-cuenca"></script>
-    <script src="js/hub/hub-navigation.js?v=4.1.0-windy-cuenca"></script>
-    <script src="js/hub/mesa-vecinos.js"></script>
-    <script src="js/hub/vault-cockpit.js"></script>
-    <script src="js/hub/cerro-cuenca.js"></script>
-    <script src="js/hub/ecosystem-advisors.js?v=4.1.0-windy-cuenca"></script>
-    <script src="js/hub/mesa-hotspots-lenses.js"></script>
+    <script src="js/hub/geo-layers.js?v=4.2.5-hindcast"></script>
+    <script src="js/hub/hub-navigation.js?v=4.2.5-hindcast"></script>
+    <script src="js/hub/mesa-vecinos.js?v=4.2.5-hindcast"></script>
+    <script src="js/hub/vault-cockpit.js?v=4.2.5-hindcast"></script>
+    <script src="js/hub/cerro-cuenca.js?v=4.2.5-hindcast"></script>
+    <script src="js/hub/ecosystem-advisors.js?v=4.2.5-hindcast"></script>
+    <script src="js/hub/mesa-hotspots-lenses.js?v=4.2.5-hindcast"></script>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          DRAWER LATERAL: FICHA TERRITORIAL VECINAL & CUADERNO DE CAMPO
@@ -18513,7 +18527,8 @@ print(meniel_soil)</code></pre>
 <script src="js/hub/pitch-deck-viewer.js"></script>
 <script src="js/hub/hub-diegetic-modals.js"></script>
 <script src="js/hub/hub-report-generator.js"></script>
-<script src="js/hub/farm-profile-manager.js">
+<script src="js/hub/farm-profile-manager.js?v=4.2.5-hindcast"></script>
+<script>
     function runInteractiveSoilGridsCalc() {
         const soc = parseFloat(document.getElementById('sg-soc')?.value || 38.5);
         const bdod = parseFloat(document.getElementById('sg-bdod')?.value || 1.28);
