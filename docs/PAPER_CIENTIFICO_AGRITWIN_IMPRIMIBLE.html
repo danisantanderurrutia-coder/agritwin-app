@@ -7,10 +7,56 @@
     
     <!-- KaTeX para Renderizado Matemático de Precisión -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
     <script>
+        // Tema y Formato interactivo (Persistente en localStorage)
+        function initThemeAndFormat() {
+            var savedTheme = localStorage.getItem('agritwin_theme') || 'light';
+            var savedFormat = localStorage.getItem('agritwin_format') || 'hombros';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.documentElement.setAttribute('data-format', savedFormat);
+            updateControlsUI(savedTheme, savedFormat);
+        }
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme') || 'light';
+            var next = (current === 'light') ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('agritwin_theme', next);
+            updateControlsUI(next, document.documentElement.getAttribute('data-format'));
+        }
+
+        function changeFormat(formatKey) {
+            document.documentElement.setAttribute('data-format', formatKey);
+            localStorage.setItem('agritwin_format', formatKey);
+            updateControlsUI(document.documentElement.getAttribute('data-theme'), formatKey);
+        }
+
+        function updateControlsUI(theme, format) {
+            var btn = document.getElementById('themeToggleBtn');
+            var icon = document.getElementById('themeIcon');
+            var label = document.getElementById('themeLabel');
+            var select = document.getElementById('formatSelect');
+            if (icon && label) {
+                if (theme === 'dark') {
+                    icon.textContent = '☀️';
+                    label.textContent = 'Claro';
+                } else {
+                    icon.textContent = '🌙';
+                    label.textContent = 'Oscuro';
+                }
+            }
+            if (select && format) {
+                select.value = format;
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
+            initThemeAndFormat();
             var retries = 0;
             function initKaTeX() {
                 if (typeof renderMathInElement === "function") {
@@ -20,7 +66,7 @@
                             {left: "$", right: "$", display: false}
                         ],
                         throwOnError: false,
-                        errorColor: "#dc2626"
+                        errorColor: "#ef4444"
                     });
                 } else if (retries < 50) {
                     retries++;
@@ -31,47 +77,483 @@
         });
     </script>
 
-    <style>
-        :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #047857;
-            --accent-color: #b45309;
-            --text-main: #1c1917;
-            --text-muted: #57534e;
-            --bg-paper: #fdfbf7;
-            --border-light: #e7e5e4;
+        <style>
+        /* ═══════════════════════════════════════════════════════════════════
+           SISTEMA DE TOKENS DE DISEÑO: HOMBROS SOLARPUNK & COSMOS OBSIDIAN
+           ═══════════════════════════════════════════════════════════════════ */
+        :root, [data-theme="light"] {
+            /* Paleta Travertino, Celadón & Arcilla (Proyecto Hombros) */
+            --canvas-bg: #F5F2EB;
+            --canvas-gradient: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(125, 178, 178, 0.22) 0%, transparent 60%),
+                               radial-gradient(circle 900px at 10% 25%, rgba(200, 109, 81, 0.12) 0%, transparent 55%),
+                               radial-gradient(circle 900px at 90% 70%, rgba(72, 112, 117, 0.18) 0%, transparent 60%);
+            --card-bg: #FFFFFF;
+            --card-secondary: #F0ECE1;
+            --text-main: #1E293B;       /* Slate Ink */
+            --text-muted: #475569;      /* Slate Muted */
+            --text-subtle: #64748B;
+            --border-color: #DDD5C5;
+            --border-subtle: #EBE5D8;
+            --border-focus: #7DB2B2;
+
+            /* Acentos Solarpunk */
+            --accent-teal: #376E6F;
+            --accent-celadon: #7DB2B2;
+            --accent-clay: #C86D51;
+            --accent-brass: #D4A373;
+            --accent-forest: #16A34A;
+            --accent-indigo: #28475A;
+
+            /* Elementos Especiales */
+            --formula-bg: #F8FAF9;
+            --formula-border: #7DB2B2;
+            --formula-header-bg: #EAE6DC;
+            --code-bg: #EDE8DC;
+            --code-color: #1E293B;
+            --table-header-bg: #EDE8DC;
+            --table-row-alt: #FAF8F3;
+            --callout-bg: #F0FDF4;
+            --callout-border: #16A34A;
+            --card-shadow: 0 16px 40px -6px rgba(40, 71, 90, 0.08), 0 4px 14px -2px rgba(40, 71, 90, 0.04);
+            --header-badge-bg: #E2F4F2;
+            --header-badge-text: #376E6F;
+            --header-badge-border: #7DB2B2;
         }
 
+        [data-theme="dark"] {
+            /* Paleta Cosmos Obsidian & Neón Bio-Digital */
+            --canvas-bg: #090D16;
+            --canvas-gradient: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(45, 212, 191, 0.12) 0%, transparent 60%),
+                               radial-gradient(circle 900px at 10% 25%, rgba(248, 113, 113, 0.08) 0%, transparent 55%),
+                               radial-gradient(circle 900px at 90% 70%, rgba(56, 189, 248, 0.10) 0%, transparent 60%);
+            --card-bg: #0F172A;
+            --card-secondary: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-subtle: #64748B;
+            --border-color: #334155;
+            --border-subtle: #1E293B;
+            --border-focus: #2DD4BF;
+
+            /* Acentos Neón Bio */
+            --accent-teal: #2DD4BF;
+            --accent-celadon: #5EEAD4;
+            --accent-clay: #F87171;
+            --accent-brass: #FBBF24;
+            --accent-forest: #34D399;
+            --accent-indigo: #38BDF8;
+
+            /* Elementos Especiales */
+            --formula-bg: #141E33;
+            --formula-border: #2DD4BF;
+            --formula-header-bg: #1E293B;
+            --code-bg: #1E293B;
+            --code-color: #E2E8F0;
+            --table-header-bg: #1E293B;
+            --table-row-alt: #131D2E;
+            --callout-bg: #064E3B;
+            --callout-border: #34D399;
+            --card-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.65), 0 0 25px rgba(45, 212, 191, 0.05);
+            --header-badge-bg: #134E4A;
+            --header-badge-text: #5EEAD4;
+            --header-badge-border: #2DD4BF;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           PRESETS DE FORMATO TIPOGRÁFICO Y DENSIDAD
+           ═══════════════════════════════════════════════════════════════════ */
+        /* FORMATO 1: HOMBROS SOLARPUNK MODERNO (RECOMENDADO) */
+        :root, [data-format="hombros"] {
+            --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-heading: "Plus Jakarta Sans", "Space Grotesk", sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+            --body-font-size: 16px;
+            --body-line-height: 1.82;
+            --card-radius: 24px;
+            --card-inner-radius: 16px;
+            --max-text-width: 900px;
+        }
+
+        /* FORMATO 2: NATURE / FRONTIERS EDITORIAL */
+        [data-format="nature"] {
+            --font-body: "Newsreader", "Charter", Georgia, serif;
+            --font-heading: "Space Grotesk", "Inter", sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+            --body-font-size: 16.5px;
+            --body-line-height: 1.88;
+            --card-radius: 12px;
+            --card-inner-radius: 8px;
+            --max-text-width: 880px;
+        }
+
+        /* FORMATO 3: MINIMAL TECH DOSSIER (OPENAI/DEEPMIND STYLE) */
+        [data-format="tech"] {
+            --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-heading: "Inter", sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+            --body-font-size: 15.5px;
+            --body-line-height: 1.76;
+            --card-radius: 16px;
+            --card-inner-radius: 10px;
+            --max-text-width: 920px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           ESTILOS GENERALES
+           ═══════════════════════════════════════════════════════════════════ */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: "Charter", "Bitstream Charter", "Georgia", "Cambria", serif;
-            font-size: 15px;
-            line-height: 1.75;
+            font-family: var(--font-body);
+            font-size: var(--body-font-size);
+            line-height: var(--body-line-height);
             color: var(--text-main);
-            background-color: #f5f5f4;
-            padding: 20px;
+            background-color: var(--canvas-bg);
+            background-image: var(--canvas-gradient);
+            background-attachment: fixed;
+            padding: 85px 20px 40px 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .paper-container {
+        /* ═══════════════════════════════════════════════════════════════════
+           BARRA DE CONTROL FLOTANTE MODERNA (TOOLBAR)
+           ═══════════════════════════════════════════════════════════════════ */
+        .floating-toolbar {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
             max-width: 960px;
-            margin: 20px auto;
-            background: var(--bg-paper);
-            padding: 65px 85px;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e7e5e4;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            transition: all 0.3s ease;
         }
 
-        /* Tipografía de código en línea ajustada armónicamente (1 tamaño menor que el texto) */
+        .toolbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 13.5px;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+        }
+
+        .toolbar-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background: var(--accent-forest);
+            box-shadow: 0 0 10px var(--accent-forest);
+        }
+
+        .toolbar-pill {
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            background: var(--header-badge-bg);
+            color: var(--header-badge-text);
+            border: 1px solid var(--header-badge-border);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-family: var(--font-heading);
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: var(--card-secondary);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .toolbar-btn:hover {
+            border-color: var(--border-focus);
+            transform: translateY(-1px);
+        }
+
+        .toolbar-btn.btn-primary {
+            background: var(--accent-teal);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(55, 110, 111, 0.25);
+        }
+
+        .toolbar-btn.btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .format-select-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toolbar-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .toolbar-label { display: inline-block; }
+        }
+
+        .toolbar-select {
+            padding: 5px 12px;
+            border-radius: 9999px;
+            font-family: var(--font-heading);
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            background: var(--card-secondary);
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-select:focus {
+            border-color: var(--border-focus);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           CONTENEDOR DEL PAPER (CANVAS CENTRAL ESPACIOSO)
+           ═══════════════════════════════════════════════════════════════════ */
+        .paper-container {
+            max-width: var(--max-text-width);
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 60px 75px;
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 80px 12px 24px 12px; }
+            .paper-container { padding: 35px 22px; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           PORTADA MODERNA ESTILO HOMBROS (MODERN EDITORIAL CARD)
+           ═══════════════════════════════════════════════════════════════════ */
+        .cover-page {
+            border-radius: var(--card-radius);
+            padding: 50px 48px;
+            margin-bottom: 50px;
+            background: var(--card-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-page::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-celadon), var(--accent-clay), var(--accent-brass));
+        }
+
+        .cover-institution {
+            font-family: var(--font-heading);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-teal);
+        }
+
+        .cover-series {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .cover-badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .cover-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            background: var(--header-badge-bg);
+            color: var(--header-badge-text);
+            border: 1px solid var(--header-badge-border);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .cover-title {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.28;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+            margin-top: 6px;
+        }
+
+        @media (min-width: 768px) {
+            .cover-title { font-size: 33px; }
+        }
+
+        .cover-subtitle {
+            font-size: 15.5px;
+            line-height: 1.68;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .cover-metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cover-metadata-item {
+            background: var(--card-bg);
+            padding: 14px 18px;
+            border-radius: var(--card-inner-radius);
+            border: 1px solid var(--border-subtle);
+            font-size: 13px;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+
+        .cover-metadata-item strong {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-teal);
+            margin-bottom: 4px;
+        }
+
+        .cover-footer {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-subtle);
+            font-family: var(--font-mono);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           TITULARES Y SECCIONES IMRAD
+           ═══════════════════════════════════════════════════════════════════ */
+        h1.part-title {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            margin: 60px 0 28px 0;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2.section-title {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.015em;
+            margin: 40px 0 16px 0;
+        }
+
+        h3.section-subtitle {
+            font-family: var(--font-heading);
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin: 28px 0 12px 0;
+        }
+
+        p {
+            margin-bottom: 1.45rem;
+            color: var(--text-main);
+        }
+
+        ul, ol {
+            margin: 0 0 1.5rem 1.8rem;
+        }
+
+        li {
+            margin-bottom: 0.65rem;
+            line-height: var(--body-line-height);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           CÓDIGO EN LÍNEA Y BLOQUES
+           ═══════════════════════════════════════════════════════════════════ */
         code {
-            font-family: "JetBrains Mono", "SF Mono", "Fira Code", "Consolas", monospace;
+            font-family: var(--font-mono);
             font-size: 0.82em;
-            background-color: #f1f5f9;
-            color: #0f172a;
-            padding: 1.5px 5.5px;
-            border-radius: 4px;
-            border: 1px solid #cbd5e1;
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            padding: 2.5px 7px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
             vertical-align: 0.5px;
             font-weight: 500;
         }
@@ -85,353 +567,274 @@
         }
 
         /* ═══════════════════════════════════════════════════════════════════
-           PORTADA EDITORIAL CHINGONA (ACADEMIC BOOK COVER)
+           BLOQUES DE ECUACIONES CIENTÍFICAS (FORMULA CARDS)
            ═══════════════════════════════════════════════════════════════════ */
-        .cover-page {
-            border: 3px double #b45309;
-            padding: 55px 45px;
-            margin-bottom: 50px;
-            background: #ffffff;
-            box-shadow: 0 0 0 6px #fdfbf7, 0 0 0 8px #d97706;
-            text-align: center;
-            position: relative;
-        }
-
-        .cover-institution {
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: #78350f;
-            margin-bottom: 8px;
-        }
-
-        .cover-series {
-            font-size: 13px;
-            font-family: "Georgia", serif;
-            font-style: italic;
-            color: #57534e;
-            margin-bottom: 30px;
-        }
-
-        .cover-seal {
-            width: 75px;
-            height: 75px;
-            margin: 0 auto 22px auto;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #b45309, #78350f);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-            box-shadow: 0 4px 12px rgba(180, 83, 9, 0.35);
-        }
-
-        .cover-badge {
-            display: inline-block;
-            padding: 5px 14px;
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #f59e0b;
-            border-radius: 4px;
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 25px;
-        }
-
-        .cover-title {
-            font-family: "Georgia", "Times New Roman", serif;
-            font-size: 27px;
-            font-weight: 800;
-            color: #0f172a;
-            line-height: 1.25;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .cover-subtitle {
-            font-size: 14.5px;
-            font-style: italic;
-            color: #44403c;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto 30px auto;
-        }
-
-        .cover-metadata-grid {
-            text-align: left;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid #e7e5e4;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px 30px;
-            font-size: 12.5px;
-            line-height: 1.5;
-        }
-
-        .cover-metadata-item strong {
-            display: block;
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 10px;
-            text-transform: uppercase;
-            color: #78350f;
-            letter-spacing: 0.8px;
-            margin-bottom: 2px;
-        }
-
-        .cover-footer {
-            margin-top: 35px;
-            padding-top: 15px;
-            border-top: 2px solid #b45309;
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 11px;
-            color: #78716c;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           ESTILOS IMRAD, SECCIONES Y TABLAS
-           ═══════════════════════════════════════════════════════════════════ */
-        h1.part-title {
-            font-family: "Georgia", serif;
-            font-size: 22px;
-            color: #1e3a8a;
-            border-bottom: 2px solid #1e3a8a;
-            padding-bottom: 8px;
-            margin-top: 45px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        h2.section-title {
-            font-family: "Georgia", serif;
-            font-size: 18px;
-            color: #0f172a;
-            border-left: 4px solid #b45309;
-            padding-left: 12px;
-            margin-top: 32px;
-            margin-bottom: 14px;
-        }
-
-        h3.subsection-title {
-            font-family: "Georgia", serif;
-            font-size: 15.5px;
-            color: #334155;
-            margin-top: 24px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        p {
-            margin-bottom: 16px;
-            text-align: justify;
-            text-justify: inter-word;
-        }
-
-        ul, ol {
-            margin-bottom: 20px;
-            padding-left: 28px;
-        }
-
-        li { margin-bottom: 8px; }
-
-        /* Glosario de Conceptos */
-        .glossary-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12.5px;
-            margin: 20px 0 35px 0;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-        }
-
-        .glossary-table th {
-            background-color: #f1f5f9;
-            color: #0f172a;
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #cbd5e1;
-            padding: 9px 12px;
-            text-align: left;
-        }
-
-        .glossary-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #f1f5f9;
-            vertical-align: top;
-        }
-
-        .glossary-table td.term {
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-weight: 700;
-            color: #1e3a8a;
-            white-space: nowrap;
-            width: 22%;
-        }
-
-        /* Bloques de Ecuaciones */
         .formula-card {
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            border-left: 4px solid var(--primary-color);
-            border-radius: 4px;
-            padding: 16px 22px;
-            margin: 24px 0;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-        }
-
-        .formula-header {
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 8px;
-        }
-
-        .formula-body {
-            font-size: 16px;
-            text-align: center;
-            margin: 12px 0;
-            overflow-x: auto;
-        }
-
-        .formula-desc {
-            font-size: 12px;
-            color: var(--text-muted);
-            border-top: 1px dashed #e5e7eb;
-            padding-top: 8px;
-            margin-top: 8px;
-        }
-
-        /* Figuras Científicas */
-        .figure-card {
-            background: #ffffff;
-            border: 1px solid #d6d3d1;
-            border-radius: 6px;
-            padding: 16px;
-            margin: 30px 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            text-align: center;
-        }
-
-        .figure-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-            border: 1px solid #e7e5e4;
-        }
-
-        .figure-caption {
-            text-align: justify;
-            font-size: 12.5px;
-            line-height: 1.55;
-            color: #44403c;
-            margin-top: 12px;
-            padding-top: 10px;
-            border-top: 1px solid #f5f5f4;
-        }
-
-        .figure-caption strong {
-            color: #0f172a;
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 11.5px;
-        }
-
-        /* Tablas Empíricas */
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12.5px;
-            margin: 25px 0;
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-        }
-
-        table.data-table th {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            font-weight: 700;
-            text-align: left;
-            padding: 9px 12px;
-            border: 1px solid #cbd5e1;
-            font-size: 11.5px;
-        }
-
-        table.data-table td {
-            padding: 8px 12px;
-            border: 1px solid #e2e8f0;
-            vertical-align: top;
-        }
-
-        /* Botón de Impresión */
-        .print-bar {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #1e3a8a;
-            color: #ffffff;
-            padding: 12px 22px;
-            border-radius: 30px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 12.5px;
-            font-weight: 700;
-            cursor: pointer;
-            z-index: 1000;
+            background: var(--formula-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--formula-border);
+            border-radius: var(--card-inner-radius);
+            padding: 24px 26px;
+            margin: 28px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             transition: all 0.2s ease;
         }
 
-        .print-bar:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
+        .formula-card:hover {
+            border-left-width: 6px;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            font-family: "JetBrains Mono", monospace, sans-serif;
-            font-size: 12px;
-            color: #1e3a8a;
-            text-decoration: none;
-            font-weight: bold;
+        .formula-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
+        .formula-id {
+            font-family: var(--font-heading);
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--accent-teal);
+        }
+
+        .formula-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--card-secondary);
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .formula-body {
+            font-size: 1.15em;
+            text-align: center;
+            margin: 18px 0;
+            overflow-x: auto;
+            color: var(--text-main);
+        }
+
+        .formula-details {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: var(--text-muted);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-subtle);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           FIGURAS CIENTÍFICAS
+           ═══════════════════════════════════════════════════════════════════ */
+        .figure-card {
+            margin: 32px 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-inner-radius);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease;
+        }
+
+        .figure-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #ffffff;
+        }
+
+        .figure-caption {
+            padding: 16px 20px;
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: var(--text-muted);
+            background: var(--card-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .figure-caption strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           TABLAS EMPÍRICAS Y GLOSARIOS
+           ═══════════════════════════════════════════════════════════════════ */
+        table.data-table, .glossary-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 26px 0;
+            font-size: 13.5px;
+            border-radius: var(--card-inner-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        table.data-table th, .glossary-table th {
+            background-color: var(--table-header-bg);
+            color: var(--text-main);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            text-align: left;
+            padding: 13px 16px;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 12.5px;
+            letter-spacing: 0.02em;
+        }
+
+        table.data-table td, .glossary-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            vertical-align: top;
+            line-height: 1.55;
+        }
+
+        table.data-table tr:nth-child(even), .glossary-table tr:nth-child(even) {
+            background-color: var(--table-row-alt);
+        }
+
+        table.data-table tr:last-child td, .glossary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           REGLAS DE IMPRESIÓN Y EXPORTACIÓN A PDF (RESPIRACIÓN Y SIN CONDENSACIÓN)
+           ═══════════════════════════════════════════════════════════════════ */
         @media print {
-            body { background: white; padding: 0; font-size: 13.5px; }
-            .paper-container { max-width: 100%; box-shadow: none; border: none; padding: 0; }
-            .print-bar, .back-link { display: none !important; }
+            @page {
+                size: A4 portrait;
+                margin: 22mm 18mm 24mm 18mm;
+            }
+
+            body {
+                background: #FFFFFF !important;
+                color: #0F172A !important;
+                font-size: 11pt !important;
+                line-height: 1.68 !important;
+                padding: 0 !important;
+                font-family: "Inter", -apple-system, sans-serif !important;
+            }
+
+            .floating-toolbar, .print-bar, .back-link {
+                display: none !important;
+            }
+
+            .paper-container {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: transparent !important;
+            }
+
             .cover-page {
                 page-break-after: always;
-                min-height: 94vh;
+                min-height: 88vh;
+                border: 1.5px solid #CBD5E1 !important;
+                border-radius: 12px !important;
+                padding: 38px !important;
+                background: #F8FAFC !important;
+                box-shadow: none !important;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                box-shadow: none;
-                border: 2px solid #78350f;
             }
-            .figure-card { page-break-inside: avoid; }
-            h1.part-title { page-break-before: always; }
+
+            .cover-title {
+                font-size: 24pt !important;
+                line-height: 1.25 !important;
+                color: #0F172A !important;
+            }
+
+            .cover-metadata-item {
+                background: #FFFFFF !important;
+                border: 1px solid #E2E8F0 !important;
+            }
+
+            h1.part-title {
+                page-break-before: always;
+                margin-top: 24pt !important;
+                font-size: 18pt !important;
+                border-bottom: 2px solid #CBD5E1 !important;
+                color: #0F172A !important;
+            }
+
+            h2.section-title {
+                break-after: avoid;
+                page-break-after: avoid;
+                font-size: 14pt !important;
+                margin-top: 18pt !important;
+                color: #0F172A !important;
+            }
+
+            h3.section-subtitle {
+                break-after: avoid;
+                page-break-after: avoid;
+                font-size: 12pt !important;
+                color: #1E3A8A !important;
+            }
+
+            .formula-card, .figure-card, table.data-table, .glossary-table {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #CBD5E1 !important;
+            }
+
+            .figure-card img {
+                max-height: 380px;
+                object-fit: contain;
+            }
         }
     </style>
 </head>
 <body>
 
-    <a href="../index.html" class="back-link">← Volver al Vault AgriTwin</a>
-    <div class="print-bar" onclick="window.print()">
-        <span>🖨️ Imprimir / Guardar como PDF</span>
-    </div>
+    <!-- BARRA DE CONTROL FLOTANTE MODERNA -->
+    <nav class="floating-toolbar">
+        <div class="toolbar-brand">
+            <span class="toolbar-dot"></span>
+            <span>AgriTwin Canónico</span>
+            <span class="toolbar-pill">TRL 8</span>
+        </div>
+        
+        <div class="toolbar-actions">
+            <!-- Selector de Tema (Claro / Oscuro) -->
+            <button id="themeToggleBtn" class="toolbar-btn" onclick="toggleTheme()" title="Alternar Modo Claro / Oscuro">
+                <span id="themeIcon">🌙</span>
+                <span id="themeLabel">Oscuro</span>
+            </button>
+
+            <!-- Selector de Formato de Lectura / PDF -->
+            <div class="format-select-group">
+                <label for="formatSelect" class="toolbar-label">Formato:</label>
+                <select id="formatSelect" class="toolbar-select" onchange="changeFormat(this.value)">
+                    <option value="hombros" selected>🌿 Hombros Solarpunk</option>
+                    <option value="nature">🔬 Nature Editorial</option>
+                    <option value="tech">📄 Minimal Tech</option>
+                </select>
+            </div>
+
+            <!-- Botón de Exportar / Imprimir PDF -->
+            <button class="toolbar-btn btn-primary" onclick="window.print()" title="Imprimir o Exportar a PDF">
+                <span>🖨️ Imprimir / PDF</span>
+            </button>
+
+            <!-- Volver al Vault -->
+            <a href="../index.html" class="toolbar-btn" title="Volver al Vault">
+                <span>← Vault</span>
+            </a>
+        </div>
+    </nav>
 
     <div class="paper-container">
 
