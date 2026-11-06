@@ -36,6 +36,9 @@ def build_html():
         function initThemeAndFormat() {
             var savedTheme = localStorage.getItem('agritwin_theme') || 'light';
             var savedFormat = localStorage.getItem('agritwin_format') || 'hombros';
+            if (savedFormat !== 'hombros' && savedFormat !== 'nature') {
+                savedFormat = 'hombros';
+            }
             var savedAlign = localStorage.getItem('agritwin_align') || 'left';
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.documentElement.setAttribute('data-format', savedFormat);
@@ -238,17 +241,7 @@ def build_html():
             --max-text-width: 880px;
         }
 
-        /* FORMATO 3: MINIMAL TECH DOSSIER (OPENAI/DEEPMIND STYLE) */
-        [data-format="tech"] {
-            --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-heading: "Inter", sans-serif;
-            --font-mono: "JetBrains Mono", monospace;
-            --body-font-size: 15.5px;
-            --body-line-height: 1.76;
-            --card-radius: 16px;
-            --card-inner-radius: 10px;
-            --max-text-width: 920px;
-        }
+        
 
         /* ═══════════════════════════════════════════════════════════════════
            ESTILOS GENERALES
@@ -896,9 +889,8 @@ def build_html():
             <div class="format-select-group">
                 <label for="formatSelect" class="toolbar-label">Formato:</label>
                 <select id="formatSelect" class="toolbar-select" onchange="changeFormat(this.value)">
-                    <option value="hombros" selected>🌿 Hombros Solarpunk</option>
-                    <option value="nature">🔬 Nature Editorial</option>
-                    <option value="tech">📄 Minimal Tech</option>
+                    <option value="hombros" selected>Moderna</option>
+                    <option value="nature">Nature Editorial</option>
                 </select>
             </div>
 
