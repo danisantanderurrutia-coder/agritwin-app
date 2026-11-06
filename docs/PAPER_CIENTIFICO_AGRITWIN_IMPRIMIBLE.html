@@ -17,6 +17,26 @@
         function initThemeAndFormat() {
             var savedTheme = localStorage.getItem('agritwin_theme') || 'light';
             var savedFormat = localStorage.getItem('agritwin_format') || 'hombros';
+            var savedAlign = localStorage.getItem('agritwin_align') || 'left';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.documentElement.setAttribute('data-format', savedFormat);
+            document.documentElement.setAttribute('data-align', savedAlign);
+            updateControlsUI(savedTheme, savedFormat, savedAlign);
+        }
+
+        function toggleAlign() {
+            var current = document.documentElement.getAttribute('data-align') || 'left';
+            var next = (current === 'left') ? 'justify' : 'left';
+            document.documentElement.setAttribute('data-align', next);
+            localStorage.setItem('agritwin_align', next);
+            updateControlsUI(
+                document.documentElement.getAttribute('data-theme'),
+                document.documentElement.getAttribute('data-format'),
+                next
+            );
+        }
+            var savedTheme = localStorage.getItem('agritwin_theme') || 'light';
+            var savedFormat = localStorage.getItem('agritwin_format') || 'hombros';
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.documentElement.setAttribute('data-format', savedFormat);
             updateControlsUI(savedTheme, savedFormat);
@@ -36,7 +56,20 @@
             updateControlsUI(document.documentElement.getAttribute('data-theme'), formatKey);
         }
 
-        function updateControlsUI(theme, format) {
+        function updateControlsUI(theme, format, align) {
+            align = align || document.documentElement.getAttribute('data-align') || 'left';
+            var alignBtn = document.getElementById('alignToggleBtn');
+            var alignIcon = document.getElementById('alignIcon');
+            var alignLabel = document.getElementById('alignLabel');
+            if (alignIcon && alignLabel) {
+                if (align === 'justify') {
+                    alignIcon.textContent = '≡';
+                    alignLabel.textContent = 'Justificado';
+                } else {
+                    alignIcon.textContent = '≣';
+                    alignLabel.textContent = 'Izquierda';
+                }
+            }
             var btn = document.getElementById('themeToggleBtn');
             var icon = document.getElementById('themeIcon');
             var label = document.getElementById('themeLabel');
@@ -529,6 +562,26 @@
             margin: 28px 0 12px 0;
         }
 
+        
+        /* ═══════════════════════════════════════════════════════════════════
+           REGLAS DE ALINEACIÓN DE TEXTO UNIFORMES
+           ═══════════════════════════════════════════════════════════════════ */
+        p, li, .cover-subtitle {
+            text-align: left;
+            text-wrap: pretty;
+        }
+
+        [data-align="justify"] p, [data-align="justify"] li, [data-align="justify"] .cover-subtitle {
+            text-align: justify !important;
+            text-justify: inter-word;
+            hyphens: auto;
+        }
+
+        [data-align="left"] p, [data-align="left"] li, [data-align="left"] .cover-subtitle {
+            text-align: left !important;
+            text-wrap: pretty;
+        }
+    
         p {
             margin-bottom: 1.45rem;
             color: var(--text-main);
@@ -812,6 +865,12 @@
             <button id="themeToggleBtn" class="toolbar-btn" onclick="toggleTheme()" title="Alternar Modo Claro / Oscuro">
                 <span id="themeIcon">🌙</span>
                 <span id="themeLabel">Oscuro</span>
+            </button>
+
+            <!-- Selector de Alineación (Izquierda / Justificado) -->
+            <button id="alignToggleBtn" class="toolbar-btn" onclick="toggleAlign()" title="Alternar Alineación Izquierda / Justificado">
+                <span id="alignIcon">≣</span>
+                <span id="alignLabel">Izquierda</span>
             </button>
 
             <!-- Selector de Formato de Lectura / PDF -->
@@ -1190,23 +1249,23 @@
         <h2 class="section-title">2.2. Arquitectura de Motores Desacoplados y Modelo Agro-Hidrológico Semi-Distribuido SCS-CN con TWI y Balance SPAC</h2>
         
         <h3 style="font-size: 1.15rem; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.5rem;">2.2.1. Arquitectura de Motores Headless Isomórficos, Jerarquía de Tres Escalas y Ramificación Contrafáctica What-If</h3>
-        <p style="text-align: justify; margin-bottom: 12px;">
+        <p style="margin-bottom: 12px;">
             Para sortear las severas restricciones de conectividad y capacidad de cómputo del agro rural chileno sin sacrificar el rigor de la física continua, AgriTwin implementa un <strong>desacople estricto entre motores biofísicos headless y las interfaces de visualización</strong>. Toda la lógica determinista se codifica en funciones matemáticas puras (carentes de estado mutable o dependencias del DOM, Three.js o Leaflet) mediante JavaScript/Node.js isomórfico (<code>js/engines/soil-water-engine.js</code>, <code>basin-hydrology-engine.js</code> y <code>data-cube-engine.js</code>). Esta propiedad permite que los motores corran indistintamente en servidores backend, en nodos de borde o directamente en el navegador web del usuario a una velocidad inferior a 5 milisegundos por ciclo anual simulado.
         </p>
-        <p style="text-align: justify; margin-bottom: 12px;">
+        <p style="margin-bottom: 12px;">
             El gemelo opera a través de una <strong>jerarquía biofísica de tres escalas espaciales acopladas</strong> mediante transferencia direccional de condiciones de contorno:
         </p>
-        <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.55; text-align: justify;">
+        <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.55;">
             <li><strong>Macroescala de Cuenca (Forzamiento Sinóptico y Cordillera):</strong> El motor <code>basin-hydrology-engine.js</code> parametriza la cabecera andina del Río Longaví y el Embalse Bullileo ($110\,	ext{Hm}^3$) a partir de reanálisis ERA5-Land y precipitaciones satelitales GPM IMERG, modelando $1.220\,	ext{km}^2$ con un tiempo de concentración de 14 horas hacia los valles regados.</li>
             <li><strong>Mesoescala de Distribución y Vectores Multiamenaza:</strong> Modela las reglas institucionales de la Junta de Vigilancia del Río Longaví para los aforos de compuertas DGA (entrega al $100\%$ sobre $12\,	ext{m}^3/	ext{s}$, $75\%$ en estiaje y $45\%$ en estiaje severo), alimentando la contabilidad del Tranque Keyline de $18.500\,	ext{m}^3$, mientras que <code>js/hub/geo-layers.js</code> proyecta frentes de fuego acoplados al viento Puelche y drenajes catabáticos nocturnos de ladera.</li>
             <li><strong>Microescala Vadosa y Fisiológica ($SPAC$):</strong> El motor <code>soil-water-engine.js</code> simula la columna estratificada de suelo ($0	ext{--}100\,	ext{cm}$) resolviendo la tasa de transpiración, la ascensión capilar y el estrés hídrico de raíces celda a celda.</li>
         </ul>
-        <p style="text-align: justify; margin-bottom: 15px;">
+        <p style="margin-bottom: 15px;">
             Asimismo, el motor implementa nativamente la <strong>ramificación de escenarios contrafácticos What-If</strong> (función <code>simulateScenarios</code>): a partir de un snapshot inmutable en $T_0$, el gemelo clona el estado biofísico y genera múltiples trayectorias simultáneas (olas de calor con viento Puelche a $70\,	ext{km/h}$, paralización de pozos profundos o turnos restrictivos DGA al $45\%$) sin mutar la serie histórica observada, asistido por un cliente satelital de acceso directo STAC/COG (<code>stac-cog-client.js</code>) que extrae bandas Sentinel-2 mediante <em>HTTP Range Requests</em> sin requerir servidores intermedios de descarga.
         </p>
 
         <h3 style="font-size: 1.15rem; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.5rem;">2.2.2. Principio Fundamental de Conservación de Masa en la Columna Vadosa</h3>
-        <p style="text-align: justify; margin-bottom: 15px;">
+        <p style="margin-bottom: 15px;">
             El núcleo hidrológico de la microescala vadosa de AgriTwin opera como un modelo semi-distribuido basado en la ley fundamental de conservación de masa aplicada a la columna estratificada de suelo (Continuo Suelo-Planta-Atmósfera, $SPAC$). Esta formulación tiene una sólida genealogía teórica: deriva de la integración vertical de la ecuación diferencial general de flujo capilar en medios porosos de <strong>Richards (1931)</strong> sobre la profundidad radicular activa $[0, Z_r]$:
 $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\theta) \left( \frac{\partial \psi}{\partial z} + 1 \right) \right] - S(z, t)$$
             Su parametrización integral en reservorios multicapa discretizados (<em>bucket models</em>) fue formalizada en la física de suelos y la agrohidrología por <strong>Feddes, Kowalik y Neuman (1978)</strong> y por el modelo agrohidrológico de referencia SWAP (<em>Soil-Water-Atmosphere-Plant</em>; van Dam et al., 1997), consolidada a escala de cuenca por <strong>Brutsaert (2005)</strong> y estandarizada en la ingeniería de riego por las directrices de la <strong>FAO-56</strong> (Allen, Pereira, Raes y Smith, 1998). En AgriTwin, esta ley física governa la función pura <code>step(prevState, forcing, capacity)</code> en <code>js/engines/soil-water-engine.js</code>:
