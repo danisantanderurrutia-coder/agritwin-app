@@ -2186,6 +2186,64 @@
             if (chkSidebar) chkSidebar.checked = shouldAdd;
         };
 
+        // ═══════════════════════════════════════════════════════════════════
+        // PANEL FLOTANTE IZQUIERDO: CASO EXCEPCIONAL VIÑA DEL MAR 2024
+        // ═══════════════════════════════════════════════════════════════════
+        window.activeVinaMode = 'comparar'; // 'incendio' | 'riesgo' | 'comparar'
+
+        window.openVinaBenchmarkDrawer = function() {
+            const drawer = document.getElementById('vinaBenchmarkDrawer');
+            const btn = document.getElementById('btnToggleVinaDrawer');
+            if (drawer) drawer.classList.remove('hidden');
+            if (btn) btn.classList.add('hidden');
+        };
+
+        window.closeVinaBenchmarkDrawer = function() {
+            const drawer = document.getElementById('vinaBenchmarkDrawer');
+            const btn = document.getElementById('btnToggleVinaDrawer');
+            if (drawer) drawer.classList.add('hidden');
+            if (btn) btn.classList.remove('hidden');
+        };
+
+        window.setVinaDisplayMode = function(mode) {
+            window.activeVinaMode = mode;
+
+            // Actualizar botones en drawer
+            ['incendio', 'riesgo', 'comparar'].forEach(m => {
+                const b = document.getElementById(`btnVinaMode-${m}`);
+                if (b) {
+                    if (m === mode) {
+                        b.className = 'py-2 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-rose-600 text-white shadow-md border border-rose-400';
+                    } else {
+                        b.className = 'py-2 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-black/40 hover:bg-white/10 text-slate-300 border border-white/5';
+                    }
+                }
+            });
+
+            // Actualizar bloques informativos dentro del drawer
+            const infoIncendio = document.getElementById('vinaDrawerContent-incendio');
+            const infoRiesgo = document.getElementById('vinaDrawerContent-riesgo');
+            const infoComparar = document.getElementById('vinaDrawerContent-comparar');
+            if (infoIncendio) infoIncendio.className = (mode === 'incendio') ? 'space-y-3' : 'hidden space-y-3';
+            if (infoRiesgo) infoRiesgo.className = (mode === 'riesgo') ? 'space-y-3' : 'hidden space-y-3';
+            if (infoComparar) infoComparar.className = (mode === 'comparar') ? 'space-y-3' : 'hidden space-y-3';
+
+            // Control de Capas en el Mapa Leaflet
+            if (mode === 'incendio') {
+                // Solo cicatriz real observada (rojo)
+                if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
+                if (map.hasLayer(hindcastSimulationLayer)) map.removeLayer(hindcastSimulationLayer);
+            } else if (mode === 'riesgo') {
+                // Solo emulación táctica preventiva de AgriTwin (transectos, haces, faja, elipse)
+                if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
+                if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
+            } else {
+                // Modo 'comparar': AMBAS capas activas simultáneamente
+                if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
+                if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
+            }
+        };
+
         // Toggle de la elipse teórica
         window.toggleHindcastSimulationLayer = function(force) {
             const shouldAdd = (force !== undefined) ? force : !map.hasLayer(hindcastSimulationLayer);
@@ -2595,6 +2653,14 @@
                     }
                 }
             }, 300);
+
+            // Si es Viña del Mar, abrir automáticamente el drawer lateral izquierdo de comparación
+            if (isVina) {
+                window.openVinaBenchmarkDrawer();
+                window.setVinaDisplayMode('comparar');
+            } else {
+                window.closeVinaBenchmarkDrawer();
+            }
 
             // 7. Mostrar y actualizar HUD flotante en el mapa
             const hud = document.getElementById('hindcastMapHUD');
