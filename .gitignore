@@ -17,3 +17,5 @@ set_icon
 *.tmp
 *.swp
 data/cr2_dga/*.zip
+scripts/hindcast/.venv/
+scripts/hindcast/cache/

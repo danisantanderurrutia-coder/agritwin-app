@@ -10609,6 +10609,39 @@
                      ═══════════════════════════════════════════════════════════════════ -->
                 <div id="uq-content-hindcast" class="uq-subcontent hidden space-y-6">
 
+                    <!-- ESTADO REAL DE LA VALIDACIÓN (datos observados; modelo aún no ejecutado) -->
+                    <div class="p-5 rounded-2xl bg-amber-50 border border-amber-300 shadow-sm space-y-3 font-sans">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">🧪</span>
+                            <div class="space-y-1">
+                                <h4 class="text-sm sm:text-base font-bold text-amber-950 font-serif">Estado real: datos observados incorporados, simulación pendiente</h4>
+                                <p class="text-xs text-stone-700 leading-relaxed">
+                                    Las vistas de abajo (Modo A, Modo B y Contraste) son una <strong>maqueta ilustrativa</strong>: sus cifras vienen de constantes del benchmark original, no de comparar una simulación con un incendio real.
+                                    La validación real se hace con cicatrices observadas por satélite (dNBR Sentinel-2) y clima ERA5 de esos días. El motor de propagación todavía <strong>no se ha ejecutado</strong>, por lo que aún no hay IoU medido.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3 rounded-xl bg-white border border-amber-200 space-y-1">
+                                <div class="font-bold text-stone-900">🔥 Santa Juana, Biobío · feb 2023</div>
+                                <div class="text-stone-700">Mancha observada: <strong>42.599 ha</strong> · T máx 40,0 °C · HR mín 11 % · ráfaga 58 km/h (SE)</div>
+                                <div class="text-stone-500 text-[11px]">Lluvia 90 d previos: 96,8 mm · cobertura útil 96,7 %</div>
+                                <button onclick="openHindcastSiteInCuenca('santa_juana_2023')" class="mt-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-[11px] font-bold cursor-pointer">🗺️ Ver en modo Cuenca</button>
+                            </div>
+                            <div class="p-3 rounded-xl bg-white border border-amber-200 space-y-1">
+                                <div class="font-bold text-stone-900">🔥 Viña del Mar / Quilpué, Valparaíso · feb 2024</div>
+                                <div class="text-stone-700">Mancha observada: <strong>2.989 ha</strong> · T máx 34,4 °C · HR mín 21 % · ráfaga 65 km/h (S–SO)</div>
+                                <div class="text-stone-500 text-[11px]">Lluvia 90 d previos: 30,6 mm · cobertura útil 87,6 % (subestimada en zona urbana)</div>
+                                <button onclick="openHindcastSiteInCuenca('vina_2024')" class="mt-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-[11px] font-bold cursor-pointer">🗺️ Ver en modo Cuenca</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap text-[11px]">
+                            <a href="docs/INFORME_HINDCAST_REAL_SANTA_JUANA_VINA.md" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-mono font-bold">📄 Informe completo (.md)</a>
+                            <span class="text-stone-600">Polígonos = cicatriz dNBR, no perímetro oficial CONAF · Sitios solo modo Cuenca, sin gemelo predial.</span>
+                        </div>
+                    </div>
+
+
                     <!-- Header Principal del Módulo Hindcast -->
                     <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-stone-900 via-rose-950/80 to-stone-950 text-white border border-rose-900/60 shadow-xl space-y-3 font-sans">
                         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-white/10 pb-4">
@@ -10634,10 +10667,10 @@
                             </div>
                             <div class="flex items-center gap-2 font-mono text-xs shrink-0 flex-wrap">
                                 <span class="px-3 py-1.5 rounded-xl bg-black/50 border border-rose-500/30 text-rose-300 font-bold flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> IoU Jaccard: 74.3%
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> ILUSTRATIVO · sin validar
                                 </span>
-                                <span class="px-3 py-1.5 rounded-xl bg-black/50 border border-emerald-500/30 text-emerald-300 font-bold">
-                                    Dice F1: 85.2%
+                                <span class="px-3 py-1.5 rounded-xl bg-black/50 border border-amber-500/40 text-amber-300 font-bold">
+                                    Validación real en curso
                                 </span>
                             </div>
                         </div>
@@ -10685,7 +10718,7 @@
                                     <span>•</span>
                                     <span class="text-amber-300">DEM: Copernicus 30m</span>
                                     <span>•</span>
-                                    <span class="text-emerald-400 font-bold">IoU: 74.3%</span>
+                                    <span class="text-emerald-400 font-bold">IoU: n/d</span>
                                 </div>
                             </div>
 
@@ -10889,7 +10922,7 @@
                                                 <span>Faja Cortafuegos 45m</span>
                                             </span>
                                         </div>
-                                        <span class="font-bold text-amber-400">Coincidencia IoU: 74.3%</span>
+                                        <span class="font-bold text-amber-400">Coincidencia IoU: n/d</span>
                                     </div>
 
                                 </div>
@@ -11005,7 +11038,7 @@
                             <span class="text-xl">📊</span>
                             <div class="leading-relaxed">
                                 <strong class="text-purple-950 font-bold">Modo A: Auditoría Numérica Formal Ground-Truth:</strong>
-                                Diseñado para auditorías de ingeniería, fondos de I+D, aseguradoras agrícolas y acreditación TRL 7/8. Este modo prescinde de animaciones y presenta las matrices matemáticas rigurosas calculadas sobre el catastro oficial de incendios de <strong>CONAF (SICOF)</strong> y los sensores térmicos orbitales de la NASA.
+                                Diseñado para auditorías de ingeniería, fondos de I+D, aseguradoras agrícolas y acreditación TRL 7/8. Este modo prescinde de animaciones y presenta el formato de matriz de métricas. <strong>Las cifras de esta vista son constantes del benchmark original (no se calcularon contra un perímetro real)</strong>; la medición real está en el informe y en los sitios del mapa de Cuenca.
                             </div>
                         </div>
 
@@ -11046,7 +11079,7 @@
                                             <td class="py-3 px-3 font-mono text-center font-bold text-emerald-800">85.24%</td>
                                             <td class="py-3 px-3 font-mono text-stone-700">+0.8 m/min</td>
                                             <td class="py-3 px-3">
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">VALIDADO (TRL 8)</span>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">ILUSTRATIVO</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -11061,7 +11094,7 @@
                                             <td class="py-3 px-3 font-mono text-center font-bold text-emerald-800">83.54%</td>
                                             <td class="py-3 px-3 font-mono text-stone-700">+0.8 m/min</td>
                                             <td class="py-3 px-3">
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">VALIDADO</span>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">ILUSTRATIVO</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -11076,7 +11109,7 @@
                                             <td class="py-3 px-3 font-mono text-center font-bold text-emerald-800">85.10%</td>
                                             <td class="py-3 px-3 font-mono text-stone-700">+1.5 m/min</td>
                                             <td class="py-3 px-3">
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">VALIDADO</span>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">ILUSTRATIVO</span>
                                             </td>
                                         </tr>
                                     </tbody>

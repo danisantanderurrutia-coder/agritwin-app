@@ -2076,6 +2076,74 @@
         overlayLayers['vecinos'] = vecinosLayerGroup;
         overlayLayers['predios'] = vecinosLayerGroup; // Compatibilidad retroactiva
 
+        // ═══════════════════════════════════════════════════════════════════
+        // 2.2 SITIOS DE VALIDACIÓN RETROSPECTIVA (SOLO MODO CUENCA · SIN GEMELO PREDIAL)
+        // Cicatrices de incendios reales (Santa Juana 2023, Viña del Mar 2024) derivadas de
+        // Sentinel-2 dNBR. NO son predios con twin, NO son perímetro oficial CONAF y todavía
+        // NO tienen simulación ejecutada: se muestran como "no validado".
+        // Datos: data/hindcast_sites.json (generado por scripts/hindcast/03_export_sites.py)
+        // ═══════════════════════════════════════════════════════════════════
+        const hindcastSitesLayer = L.layerGroup();
+        const hindcastBoundsByEvent = {};
+        overlayLayers['hindcast_sites'] = hindcastSitesLayer;
+        window.hindcastSitesLayer = hindcastSitesLayer;
+
+        fetch('data/hindcast_sites.json')
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(fc => {
+                fc.features.forEach(f => {
+                    const p = f.properties;
+                    const principal = /principal/.test(p.name);
+                    const w = p.weather || {};
+                    const popupHtml = `
+                        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; min-width:260px; padding:2px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; border-bottom:1px solid #9f1239; padding-bottom:4px; margin-bottom:6px;">
+                                <strong style="color:#fb7185; font-size:12px;">🔥 ${p.name}</strong>
+                                <span style="background:rgba(244,63,94,0.2); color:#fda4af; padding:1px 5px; border-radius:4px; font-size:9px; font-weight:bold;">SOLO MODO CUENCA</span>
+                            </div>
+                            <div style="color:#94a3b8; font-size:10px; margin-bottom:4px;">${p.label}</div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                                <span style="color:#94a3b8;">Superficie observada:</span>
+                                <span style="color:#38bdf8; font-weight:bold;">${p.area_ha.toLocaleString('es-CL')} ha</span>
+                            </div>
+                            <div style="color:#64748b; font-size:9.5px; margin-bottom:5px;">${p.area_source}</div>
+                            ${principal ? `
+                            <div style="border-top:1px solid #1e293b; padding-top:4px; margin-top:2px;">
+                                <div style="color:#94a3b8; font-size:10px; margin-bottom:2px;">Clima ERA5 · ${(w.dias || []).join(', ')}</div>
+                                <div style="color:#e2e8f0; font-size:10.5px;">T máx ${w.temp_max_c} °C · HR mín ${w.hr_min_pct}% · racha ${w.racha_max_kmh} km/h</div>
+                                <div style="color:#e2e8f0; font-size:10.5px;">Lluvia 90 d previos: ${w.lluvia_90d_mm} mm</div>
+                            </div>` : ''}
+                            <div style="margin-top:6px; padding:4px 6px; border-radius:4px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.35); color:#fcd34d; font-size:9.5px; line-height:1.35;">
+                                ⚠️ Polígono = cicatriz dNBR Sentinel-2, no perímetro oficial CONAF. Sin simulación ejecutada: <b>no validado</b>. Sin gemelo digital predial.
+                            </div>
+                        </div>`;
+                    const layer = L.geoJSON(f, {
+                        style: { color: principal ? '#f43f5e' : '#fb923c', weight: principal ? 2.4 : 1.6,
+                                 fillColor: principal ? '#f43f5e' : '#fb923c', fillOpacity: principal ? 0.28 : 0.2,
+                                 dashArray: '5,3' }
+                    });
+                    layer.on('mouseover', function() { this.setStyle({ fillOpacity: 0.5 }); });
+                    layer.on('mouseout', function() { this.setStyle({ fillOpacity: principal ? 0.28 : 0.2 }); });
+                    layer.bindPopup(popupHtml, { maxWidth: 320 });
+                    layer.addTo(hindcastSitesLayer);
+                    const b = layer.getBounds();
+                    hindcastBoundsByEvent[p.event] = hindcastBoundsByEvent[p.event]
+                        ? hindcastBoundsByEvent[p.event].extend(b) : L.latLngBounds(b.getSouthWest(), b.getNorthEast());
+                });
+            })
+            .catch(err => console.warn('[Hindcast] No se pudo cargar data/hindcast_sites.json:', err));
+
+        // Navegación: abre el modo cuenca, activa la capa y vuela al evento
+        window.openHindcastSiteInCuenca = function(eventKey) {
+            if (typeof switchMasterView === 'function') switchMasterView('territory');
+            setTimeout(() => {
+                if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
+                map.invalidateSize();
+                const b = hindcastBoundsByEvent[eventKey];
+                if (b && b.isValid()) map.flyToBounds(b, { padding: [40, 40], duration: 1.2 });
+            }, 350);
+        };
+
         // Helper para crear Celdas Tácticas de Alerta (Rectángulos Orientados por Transecto)
         // Creador de Celdas de Alerta Táctica con escalado de Intensidad y Opacidad (Hue-Preserving)
         function createTacticalAlertCell(opts) {
@@ -5425,6 +5493,7 @@
         if (typeof mainLayersControl !== 'undefined' && mainLayersControl) {
             mainLayersControl.addOverlay(menielLayer, "🏡 Fundo Meniel (Twin Núcleo)");
             mainLayersControl.addOverlay(vecinosLayerGroup, "👥 Red Vecinal (9 Predios)");
+            mainLayersControl.addOverlay(hindcastSitesLayer, "🔥 Sitios de validación (Santa Juana · Viña) — solo cuenca");
             mainLayersControl.addOverlay(transectoFluvialGroup, "🌊 Transecto Fluvial (F-01..F-03)");
             mainLayersControl.addOverlay(transectoIncendioGroup, "🔥 Transecto Pirogénico (P-01..P-03)");
             mainLayersControl.addOverlay(transectoRemocionGroup, "⛰️ Transecto Remoción (M-01..M-02)");
