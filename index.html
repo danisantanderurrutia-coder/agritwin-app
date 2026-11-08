@@ -17955,16 +17955,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const presetParam = urlParams.get('preset'); // 'solo_poligono' | 'historica' | 'prediccion' | 'ciega_vs_real' | 'todas'
         
         if (hindcastParam) {
+            window.__bootPhase = false;
+            const splash = document.getElementById('alchemicalAppSplash');
+            if (splash) {
+                splash.style.display = 'none';
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+            }
+            if (typeof window.dismissAlchemicalSplash === 'function') {
+                window.dismissAlchemicalSplash();
+            }
+
             setTimeout(() => {
+                if (typeof switchMasterView === 'function') {
+                    switchMasterView('territory', 'cerro');
+                }
                 if (typeof window.loadHindcastBenchmarkInCuenca === 'function') {
                     window.loadHindcastBenchmarkInCuenca(hindcastParam);
+                    if (typeof window.openVinaBenchmarkDrawer === 'function') {
+                        window.openVinaBenchmarkDrawer();
+                    }
                     if (presetParam && typeof window.applyHindcastLayerPreset === 'function') {
                         setTimeout(() => {
                             window.applyHindcastLayerPreset(presetParam);
-                        }, 700);
+                        }, 500);
                     }
                 }
-            }, 1200);
+            }, 800);
         }
     } catch(e) {
         console.warn('Auto-init hindcast param error:', e);

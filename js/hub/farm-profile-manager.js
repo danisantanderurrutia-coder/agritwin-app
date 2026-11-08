@@ -506,7 +506,12 @@
     const urlParams = new URLSearchParams(window.location.search);
     const rawHash = window.location.hash.replace('#', '');
     const cleanHash = rawHash.split('?')[0].toLowerCase();
-    const targetMode = urlParams.get('mode') || urlParams.get('view') || null;
+    const targetMode = urlParams.get('mode') || urlParams.get('view') || (urlParams.get('hindcast') ? 'territory' : null);
+
+    if (urlParams.get('hindcast')) {
+      window.__bootPhase = false;
+      dismissSplash();
+    }
 
     if (!rawHash && !targetMode) {
       // Arranque en frío: el Árbol Alquímico es la consola de carga/selección de predio.

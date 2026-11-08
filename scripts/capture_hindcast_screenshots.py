@@ -92,13 +92,13 @@ def main():
             "--headless=new",
             f"--screenshot={out_path}",
             "--window-size=1600,1000",
-            "--virtual-time-budget=6500",
+            "--virtual-time-budget=7500",
             "--hide-scrollbars",
             target_url
         ]
 
         try:
-            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=25)
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=35)
             if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
                 sz_kb = os.path.getsize(out_path) / 1024
                 print(f"     ✔ OK ({sz_kb:.1f} KB)")

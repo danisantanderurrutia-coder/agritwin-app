@@ -2748,7 +2748,7 @@
         };
 
         // Controlador Maestro: Carga el Benchmark Hindcast en el mapa y la barra lateral
-        window.loadHindcastBenchmarkInCuenca = function(eventKey) {
+        window.loadHindcastBenchmarkInCuenca = function(eventKey, initialPreset) {
             const isVina = (eventKey === 'vina_2024');
             window.currentHindcastEvent = eventKey;
             const evSlug = isVina ? 'vina' : 'santajuana';
@@ -3369,7 +3369,11 @@
                 window.updateBenchmarkDrawerForEvent(eventKey);
             }
             window.openVinaBenchmarkDrawer();
-            window.setVinaDisplayMode('comparar');
+            if (initialPreset) {
+                window.applyHindcastLayerPreset(initialPreset);
+            } else {
+                window.applyHindcastLayerPreset('todas');
+            }
 
             // 8. Sincronizar el Visor Táctico Lateral (Barra Lateral Derecha)
             if (typeof window.updateHvrMatrix === 'function') {
