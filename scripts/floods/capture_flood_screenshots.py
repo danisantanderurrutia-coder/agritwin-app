@@ -112,7 +112,8 @@ def main():
     print("═══════════════════════════════════════════════════════════════════")
 
     for idx, t in enumerate(TASKS, 1):
-        target_url = f"{BASE_URL}/?flood={t['event']}&preset={t['preset']}&minimize=1"
+        # Abrimos con el drawer táctico y HUD visibles (sin minimize=1) para mostrar la riqueza técnica del gemelo
+        target_url = f"{BASE_URL}/?flood={t['event']}&preset={t['preset']}"
         out_path = os.path.join(OUTPUT_DIR, t['outfile'])
         print(f"[{idx}/{len(TASKS)}] Capturando: {t['desc']}...")
         print(f"     URL: {target_url}")

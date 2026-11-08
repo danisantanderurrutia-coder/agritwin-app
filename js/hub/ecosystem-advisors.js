@@ -1230,11 +1230,63 @@
             renderFloodWave(ctx) {
                 if (!this.toggles.floodWave) return;
 
+                // Determinar evento activo y configurar trayectorias hidrodinámicas dinámicas
+                const curEv = window.currentFloodEvent || 'longavi_2023';
+                let activeFloodPaths = this.floodPaths;
+                let emitterCoord = [-36.2420, -71.4500];
+                let emitterTitle = 'CABECERA RÍO LONGAVÍ';
+                let emitterSub = 'SPAWN Q = 1.280 m³/s • CAUCE MATRIZ';
+
+                if (curEv === 'licanten_2023') {
+                    emitterCoord = [-34.9650, -71.7600];
+                    emitterTitle = 'GARGANTA MAJADILLA / HUALAÑÉ';
+                    emitterSub = 'SPAWN Q = 5.120 m³/s • RÍO MATAQUITO';
+                    activeFloodPaths = [
+                        [
+                            [-34.9650, -71.7600],
+                            [-34.9690, -71.8200],
+                            [-34.9740, -71.9000],
+                            [-34.9810, -71.9700],
+                            [-34.9860, -72.0150], // Casco Licantén
+                            [-34.9980, -72.0750],
+                            [-35.0120, -72.1300],
+                            [-35.0250, -72.1700]  // Barra La Pesca
+                        ],
+                        [
+                            [-34.9740, -71.9000],
+                            [-34.9820, -71.9900],
+                            [-34.9835, -72.0090], // Hospital
+                            [-34.9920, -72.0400]
+                        ]
+                    ];
+                } else if (curEv === 'ancoa_2023') {
+                    emitterCoord = [-35.9220, -71.2500];
+                    emitterTitle = 'VERTEDERO EMBALSE ANCOA';
+                    emitterSub = 'REBALSE LIBRE Q = 860 m³/s • CAÑÓN LLEPO';
+                    activeFloodPaths = [
+                        [
+                            [-35.9220, -71.2500],
+                            [-35.9100, -71.3100],
+                            [-35.8980, -71.3700],
+                            [-35.8890, -71.4300],
+                            [-35.8805, -71.4880], // Puente Tres Arcos
+                            [-35.8720, -71.5300],
+                            [-35.8650, -71.5750]  // Valle Central Linares
+                        ],
+                        [
+                            [-35.8980, -71.3700],
+                            [-35.8920, -71.4150],
+                            [-35.8850, -71.4650],
+                            [-35.8805, -71.4880]
+                        ]
+                    ];
+                }
+
                 // 1. Radar Palpitante en Foco Emisor de Cuenca Alta
-                this.drawRtsRadarEmitter(ctx, [-36.2420, -71.4500], 'CABECERA RÍO LONGAVÍ', 'SPAWN Q = 142 m³/s • CAUCE MATRIZ', '#0284c7');
+                this.drawRtsRadarEmitter(ctx, emitterCoord, emitterTitle, emitterSub, '#0284c7');
 
                 // 2. Traza del cauce matriz y meandros de desborde
-                this.floodPaths.forEach((pts, idx) => {
+                activeFloodPaths.forEach((pts, idx) => {
                     ctx.save();
                     ctx.beginPath();
                     let first = true;
@@ -1254,7 +1306,7 @@
                 });
 
                 // 3. Macro Flechas Tácticas Chevrons RTS a lo largo de la curvatura del río y pendiente
-                const floodPts = this.floodPaths[0];
+                const floodPts = activeFloodPaths[0];
                 if (floodPts && floodPts.length >= 2) {
                     const chevronStations = [0.18, 0.42, 0.66, 0.88];
                     chevronStations.forEach((progress, cIdx) => {
@@ -1269,9 +1321,10 @@
                     });
                 }
 
-                // 4. Partículas y cabezas de onda viajando a lo largo del Río Longaví
+                // 4. Partículas y cabezas de onda viajando a lo largo del cauce activo
                 this.floodParticles.forEach(p => {
-                    const pts = this.floodPaths[p.pathIdx];
+                    const safeIdx = p.pathIdx % activeFloodPaths.length;
+                    const pts = activeFloodPaths[safeIdx];
                     const pt = this.getPointOnPolyline(pts, p.progress);
                     const prevPt = this.getPointOnPolyline(pts, Math.max(0, p.progress - 0.04));
                     if (!pt || !prevPt) return;
@@ -1315,8 +1368,14 @@
                     ctx.restore();
                 });
 
-                // 5. Línea Defensiva Keyline en Meniel (Absorción y retención activa)
-                this.drawRtsDefenseWall(ctx, [-36.2080, -71.6150], [-36.2190, -71.5920], 'DEFENSA KEYLINE ~18.5k m³ (ATENUACIÓN -3.2%)', '#06b6d4');
+                // 5. Línea Defensiva y Protección Específica
+                if (curEv === 'longavi_2023') {
+                    this.drawRtsDefenseWall(ctx, [-36.2080, -71.6150], [-36.2190, -71.5920], 'DEFENSA KEYLINE ~18.5k m³ (ATENUACIÓN -3.2%)', '#06b6d4');
+                } else if (curEv === 'licanten_2023') {
+                    this.drawRtsDefenseWall(ctx, [-34.9800, -71.9950], [-34.9850, -72.0150], 'DIQUE CONTENCIÓN CASCO URBANO LICANTÉN', '#38bdf8');
+                } else if (curEv === 'ancoa_2023') {
+                    this.drawRtsDefenseWall(ctx, [-35.8780, -71.4820], [-35.8850, -71.4950], 'ENROCADOS PROTECCIÓN ESTRIBO PUENTE TRES ARCOS', '#ef4444');
+                }
 
                 // 6. Rótulo de flujo fluvial de cuenca
                 const labelCoord = [-36.1830, -71.6540];

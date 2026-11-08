@@ -4534,6 +4534,33 @@
             floodTacticalLayer.clearLayers();
             floodPredictionLayer.clearLayers();
 
+            // Desactivar capas de incendio y vectores térmicos en modo inundación
+            if (typeof transectoIncendioGroup !== 'undefined' && map.hasLayer(transectoIncendioGroup)) {
+                map.removeLayer(transectoIncendioGroup);
+            }
+            if (typeof tacticalFireVectorsLayer !== 'undefined' && map.hasLayer(tacticalFireVectorsLayer)) {
+                map.removeLayer(tacticalFireVectorsLayer);
+            }
+            if (typeof hindcastTacticalLayer !== 'undefined' && map.hasLayer(hindcastTacticalLayer)) {
+                map.removeLayer(hindcastTacticalLayer);
+            }
+            if (typeof hindcastSimulationLayer !== 'undefined' && map.hasLayer(hindcastSimulationLayer)) {
+                map.removeLayer(hindcastSimulationLayer);
+            }
+            if (typeof hindcastSitesLayer !== 'undefined' && map.hasLayer(hindcastSitesLayer)) {
+                map.removeLayer(hindcastSitesLayer);
+            }
+            if (typeof hindcastUpwindThreatLayer !== 'undefined' && map.hasLayer(hindcastUpwindThreatLayer)) {
+                map.removeLayer(hindcastUpwindThreatLayer);
+            }
+
+            // Ocultar MacroCuenca de Longaví si el evento visualizado es Licantén o Ancoa
+            if (!isLongavi && typeof macroCuencaLayer !== 'undefined' && macroCuencaLayer && map.hasLayer(macroCuencaLayer)) {
+                map.removeLayer(macroCuencaLayer);
+            } else if (isLongavi && typeof macroCuencaLayer !== 'undefined' && macroCuencaLayer && !map.hasLayer(macroCuencaLayer)) {
+                map.addLayer(macroCuencaLayer);
+            }
+
             // Helper de marcador de infraestructura crítica
             function createInfraMarker(lat, lng, iconChar, label, details) {
                 const markerIcon = L.divIcon({
@@ -4649,9 +4676,46 @@
                 arrowLicEstuary.headMarker.addTo(floodTacticalLayer);
                 if (arrowLicEstuary.badgeMarker) arrowLicEstuary.badgeMarker.addTo(floodTacticalLayer);
 
+                // Casco Urbano Licantén y Zona Crítica Hospital (Zonificación Táctica)
+                const polyLicUrbano = L.polygon([
+                    [-34.9780, -71.9960], [-34.9740, -72.0120], [-34.9810, -72.0220],
+                    [-34.9920, -72.0180], [-34.9910, -72.0020], [-34.9840, -71.9940]
+                ], {
+                    color: '#f59e0b',
+                    weight: 1.8,
+                    dashArray: '4, 3',
+                    fillColor: '#f59e0b',
+                    fillOpacity: 0.18
+                }).bindTooltip('<b>Casco Urbano Licantén</b><br><span style="font-size:10px;">Zona Inundación h > 2.0m</span>', { sticky: true });
+                polyLicUrbano.addTo(floodTacticalLayer);
+
+                const polyLicHospital = L.polygon([
+                    [-34.9820, -72.0060], [-34.9810, -72.0120], [-34.9855, -72.0130], [-34.9860, -72.0070]
+                ], {
+                    color: '#ef4444',
+                    weight: 2.4,
+                    fillColor: '#ef4444',
+                    fillOpacity: 0.35
+                }).bindTooltip('<b>Recinto Hospital de Licantén</b><br><span style="font-size:10px; color:#fca5a5;">Sumergido 2.1m • Evacuado</span>', { sticky: true, permanent: true, direction: 'top', className: 'tactical-tooltip-clean' });
+                polyLicHospital.addTo(floodTacticalLayer);
+
+                // Batimetría Táctica: Nivel de Calado y Subcuencas Estuarinas
+                const polyLicBatiProfunda = L.polygon([
+                    [-34.9750, -71.9800], [-34.9720, -72.0200], [-34.9860, -72.0500],
+                    [-34.9950, -72.0300], [-34.9890, -71.9900]
+                ], {
+                    color: '#1d4ed8',
+                    weight: 1.5,
+                    fillColor: '#1e40af',
+                    fillOpacity: 0.38
+                }).bindTooltip('<b>Núcleo de Máximo Calado (h > 2.5m)</b>', { sticky: true });
+                polyLicBatiProfunda.addTo(floodTacticalLayer);
+
                 // Infraestructura Crítica
                 createInfraMarker(-34.9835, -72.0090, '🏥', 'HOSPITAL DE LICANTÉN', 'Sumergido bajo 2.1 m de agua y lodo. Evacuación aérea.').addTo(floodTacticalLayer);
                 createInfraMarker(-34.9870, -72.0040, '🌉', 'PUENTE LICANTÉN (RUTA J-60)', 'Corte total de conectividad vial. Socavación en estribos.').addTo(floodTacticalLayer);
+                createInfraMarker(-34.9730, -71.9500, '🌊', 'AFORO DGA MATAQUITO', 'Q_pico = 5.120 m³/s • Tr = 85 años').addTo(floodTacticalLayer);
+                createInfraMarker(-35.0180, -72.1550, '⚓', 'BARRA LA PESCA', 'Remanso estuarino y pleamar marina').addTo(floodTacticalLayer);
 
                 // Capa 3: Simulación Ciega HAND / Saint-Venant 2D
                 // Polígono HAND T-48h con buffer topográfico sobre DEM 30m
@@ -4897,9 +4961,47 @@
                 arrowAncoa.headMarker.addTo(floodTacticalLayer);
                 if (arrowAncoa.badgeMarker) arrowAncoa.badgeMarker.addTo(floodTacticalLayer);
 
+                // Embalse Ancoa (Polígono de Cabecera y Vertedero Libre)
+                const polyAncoaEmbalse = L.polygon([
+                    [-35.9180, -71.2280], [-35.9080, -71.2620], [-35.9250, -71.2950],
+                    [-35.9420, -71.2750], [-35.9320, -71.2350]
+                ], {
+                    color: '#0284c7',
+                    weight: 2.2,
+                    dashArray: '5, 4',
+                    fillColor: '#0369a1',
+                    fillOpacity: 0.32
+                }).bindTooltip('<b>Embalse Ancoa (Capacidad 80 Hm³)</b><br><span style="font-size:10px;">Vertedero Libre 860 m³/s</span>', { sticky: true, permanent: true, direction: 'top', className: 'tactical-tooltip-clean' });
+                polyAncoaEmbalse.addTo(floodTacticalLayer);
+
+                // Abanico Torrencial Cañón Llepo - Chupallar
+                const polyAncoaCanon = L.polygon([
+                    [-35.8980, -71.3200], [-35.8850, -71.3800], [-35.8750, -71.4450],
+                    [-35.8950, -71.4500], [-35.9150, -71.3900], [-35.9220, -71.3300]
+                ], {
+                    color: '#06b6d4',
+                    weight: 1.8,
+                    fillColor: '#0891b2',
+                    fillOpacity: 0.22
+                }).bindTooltip('<b>Cañón Torrencial Llepo-Chupallar</b><br><span style="font-size:10px;">Pendiente 4.2% • v=5.6 m/s</span>', { sticky: true });
+                polyAncoaCanon.addTo(floodTacticalLayer);
+
+                // Zona de Impacto Estructural Puente Tres Arcos
+                const polyAncoaPuenteZona = L.polygon([
+                    [-35.8760, -71.4780], [-35.8720, -71.4980], [-35.8880, -71.5020], [-35.8900, -71.4820]
+                ], {
+                    color: '#ef4444',
+                    weight: 2.4,
+                    fillColor: '#ef4444',
+                    fillOpacity: 0.36
+                }).bindTooltip('<b>Garganta Puente Tres Arcos</b><br><span style="font-size:10px; color:#fca5a5;">Socavación de Estribos • Colapso Total</span>', { sticky: true, permanent: true, direction: 'bottom', className: 'tactical-tooltip-clean' });
+                polyAncoaPuenteZona.addTo(floodTacticalLayer);
+
                 // Infraestructura Crítica
                 createInfraMarker(-35.8805, -71.4880, '💥', 'PUENTE TRES ARCOS', 'COLAPSO ESTRUCTURAL TOTAL. Estribo poniente destruido por socavación.').addTo(floodTacticalLayer);
                 createInfraMarker(-35.8900, -71.4200, '🚧', 'RUTA L-45 CORTADA', 'Socavón completo de calzada. Pérdida de conectividad.').addTo(floodTacticalLayer);
+                createInfraMarker(-35.9220, -71.2720, '💧', 'VERTEDERO EMBALSE ANCOA', 'Q = 860 m³/s • Lleno 100%').addTo(floodTacticalLayer);
+                createInfraMarker(-35.8650, -71.5550, '🏘️', 'VALLE DE LINARES', 'Cono deyección aluvial y desbordes rurales').addTo(floodTacticalLayer);
 
                 // Capa 3: Simulación Ciega HAND
                 const handAncCoords = [

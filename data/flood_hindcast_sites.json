@@ -388,6 +388,202 @@
         "usable_coverage_pct": 94.1,
         "validated": true
       }
+    },
+    {
+      "type": "Feature",
+      "id": "FL_LICANTEN_URB_HOSPITAL",
+      "properties": {
+        "id": "FL_LICANTEN_URB_HOSPITAL",
+        "kind": "zona_critica_afectacion",
+        "event": "licanten_2023",
+        "name": "Casco Urbano Licantén & Hospital (Sumergido h=2.1m)",
+        "label": "Casco Urbano Licantén & Hospital",
+        "setting": "Zona residencial y de salud sumergida bajo lodo fluvial",
+        "area_ha": 240,
+        "calado_m": 2.1,
+        "color": "#ef4444",
+        "fillColor": "#ef4444",
+        "fillOpacity": 0.35,
+        "dashArray": "4, 2"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.996,
+              -34.978
+            ],
+            [
+              -72.012,
+              -34.974
+            ],
+            [
+              -72.022,
+              -34.981
+            ],
+            [
+              -72.018,
+              -34.992
+            ],
+            [
+              -72.002,
+              -34.991
+            ],
+            [
+              -71.994,
+              -34.984
+            ],
+            [
+              -71.996,
+              -34.978
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FL_LICANTEN_ESTUARIO",
+      "properties": {
+        "id": "FL_LICANTEN_ESTUARIO",
+        "kind": "remanso_estuarino",
+        "event": "licanten_2023",
+        "name": "Llanura Estuarina & Barra Marina La Pesca",
+        "label": "Llanura Estuarina Mataquito",
+        "setting": "Desembocadura frenada por marea viva y barra de arena",
+        "area_ha": 1180,
+        "calado_m": 1.4,
+        "color": "#0891b2",
+        "fillColor": "#0891b2",
+        "fillOpacity": 0.25,
+        "dashArray": "5, 4"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -72.08,
+              -34.995
+            ],
+            [
+              -72.165,
+              -35.005
+            ],
+            [
+              -72.175,
+              -35.035
+            ],
+            [
+              -72.135,
+              -35.038
+            ],
+            [
+              -72.075,
+              -35.015
+            ],
+            [
+              -72.08,
+              -34.995
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FL_ANCOA_EMBALSE",
+      "properties": {
+        "id": "FL_ANCOA_EMBALSE",
+        "kind": "embalse_cabecera",
+        "event": "ancoa_2023",
+        "name": "Embalse Ancoa (Vertedero Libre 860 m³/s)",
+        "label": "Embalse Ancoa & Vertedero",
+        "setting": "Presa de cabecera con rebalse libre sin capacidad de retención",
+        "area_ha": 420,
+        "calado_m": 6.5,
+        "color": "#0284c7",
+        "fillColor": "#0369a1",
+        "fillOpacity": 0.35,
+        "dashArray": "6, 4"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.228,
+              -35.918
+            ],
+            [
+              -71.262,
+              -35.908
+            ],
+            [
+              -71.295,
+              -35.925
+            ],
+            [
+              -71.275,
+              -35.942
+            ],
+            [
+              -71.235,
+              -35.932
+            ],
+            [
+              -71.228,
+              -35.918
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FL_ANCOA_PUENTE_ZONA",
+      "properties": {
+        "id": "FL_ANCOA_PUENTE_ZONA",
+        "kind": "zona_colapso_infra",
+        "event": "ancoa_2023",
+        "name": "Garganta Salida Valle & Puente Tres Arcos (Colapso Total)",
+        "label": "Garganta Puente Tres Arcos",
+        "setting": "Socavón catastrófico de estribos y corte vial de 4.000 habitantes",
+        "area_ha": 310,
+        "calado_m": 4.15,
+        "color": "#dc2626",
+        "fillColor": "#ef4444",
+        "fillOpacity": 0.38,
+        "dashArray": "4, 2"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.478,
+              -35.876
+            ],
+            [
+              -71.498,
+              -35.872
+            ],
+            [
+              -71.502,
+              -35.888
+            ],
+            [
+              -71.482,
+              -35.89
+            ],
+            [
+              -71.478,
+              -35.876
+            ]
+          ]
+        ]
+      }
     }
   ]
 }
