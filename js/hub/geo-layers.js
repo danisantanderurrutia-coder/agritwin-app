@@ -8628,11 +8628,11 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             }
             if (elBadgeLevel) {
                 elBadgeLevel.innerText = data.levelClass;
-                elBadgeLevel.className = `inline-block mt-1 px-2.5 py-0.5 rounded-full text-[9.5px] font-bold ${data.badgeColor}`;
+                elBadgeLevel.className = 'inline-block px-2.5 py-0.5 rounded-md text-[9px] font-mono bg-white/5 text-slate-300 border border-white/10';
             }
             if (elScenarioTag) {
                 elScenarioTag.innerText = data.tag;
-                elScenarioTag.className = `px-2 py-0.5 rounded text-[9px] font-bold font-mono border ${data.tagColor}`;
+                elScenarioTag.className = 'px-2 py-0.5 rounded-md bg-white/5 text-slate-300 border border-white/10 text-[9px] font-mono';
             }
             if (elDescH) elDescH.innerText = data.descH;
             if (elDescV) elDescV.innerText = data.descV;
@@ -8780,8 +8780,8 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             cuencaForecastState.cachedData.daily.forEach((day, idx) => {
                 const pill = document.createElement('button');
                 pill.className = `windy-day-pill ${idx === cuencaForecastState.selectedDayIdx ? 'active' : ''}`;
-                pill.style.cssText = `padding: 2px 7px; border-radius: 9999px; font-size: 9.5px; font-weight: 700; font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.2s; ${idx === cuencaForecastState.selectedDayIdx ? 'background: rgba(56, 189, 248, 0.35); border: 1px solid #38bdf8; color: #bae6fd;' : 'background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1;'}`;
-                pill.innerHTML = `<span>${day.dayName}</span> <b style="color: #fde047;">${day.tempMax}°</b>`;
+                pill.style.cssText = `padding: 2px 7px; border-radius: 9999px; font-size: 9px; font-weight: 600; font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.2s; ${idx === cuencaForecastState.selectedDayIdx ? 'background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.28); color: #f8fafc;' : 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #94a3b8;'}`;
+                pill.innerHTML = `<span>${day.dayName}</span> <b style="color: #cbd5e1; font-weight: 600;">${day.tempMax}°</b>`;
                 pill.title = `Min ${day.tempMin}°C, Max ${day.tempMax}°C, Lluvia ${day.precipSum}mm, Viento ${day.windMax}km/h`;
                 pill.onclick = () => {
                     cuencaForecastState.selectedDayIdx = idx;
@@ -8800,17 +8800,17 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
 
             if (btnLive && btnSim) {
                 if (isLive) {
-                    btnLive.style.background = 'rgba(16, 185, 129, 0.35)';
-                    btnLive.style.borderColor = '#10b981';
-                    btnLive.style.color = '#6ee7b7';
+                    btnLive.style.background = 'rgba(255, 255, 255, 0.14)';
+                    btnLive.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+                    btnLive.style.color = '#ffffff';
                     btnSim.style.background = 'transparent';
                     btnSim.style.borderColor = 'transparent';
                     btnSim.style.color = '#94a3b8';
                     if (daysBar) daysBar.style.display = 'flex';
                 } else {
-                    btnSim.style.background = 'rgba(245, 158, 11, 0.35)';
-                    btnSim.style.borderColor = '#f59e0b';
-                    btnSim.style.color = '#fde047';
+                    btnSim.style.background = 'rgba(255, 255, 255, 0.14)';
+                    btnSim.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+                    btnSim.style.color = '#ffffff';
                     btnLive.style.background = 'transparent';
                     btnLive.style.borderColor = 'transparent';
                     btnLive.style.color = '#94a3b8';
@@ -8946,8 +8946,8 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
 
             if (btn) {
                 btn.innerText = cuencaForecastState.isPlaying ? '⏸' : '▶';
-                btn.style.background = cuencaForecastState.isPlaying ? 'rgba(245, 158, 11, 0.35)' : 'rgba(14, 165, 233, 0.25)';
-                btn.style.borderColor = cuencaForecastState.isPlaying ? '#f59e0b' : 'rgba(56, 189, 248, 0.5)';
+                btn.style.background = cuencaForecastState.isPlaying ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.06)';
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.20)';
             }
 
             if (cuencaForecastState.isPlaying) {
@@ -8985,18 +8985,16 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             if (!elBadge || !elCard) return;
 
             // Criterio HSLC (High-Shear, Low-CAPE) para el Centro-Sur de Chile (36°S)
+            elCard.className = 'p-2.5 rounded-lg bg-black/30 border border-white/5 space-y-1.5 font-sans transition-all';
             if (cape >= 350 && shear >= 20 && lcl <= 1050) {
-                elBadge.innerText = '🟠 POTENCIAL ROTACIONAL (MESOCICLÓN)';
-                elBadge.className = 'text-[8.5px] px-2 py-0.5 rounded bg-orange-950 text-orange-200 border border-orange-400/60 font-bold animate-pulse';
-                elCard.className = 'p-2.5 rounded-lg bg-orange-950/25 border border-orange-500/50 space-y-1.5 font-mono transition-all';
+                elBadge.innerText = 'Potencial Rotacional (Mesociclón)';
+                elBadge.className = 'text-[9px] px-2 py-0.5 rounded-md bg-orange-500/15 text-orange-300 border border-orange-500/30 font-mono font-medium';
             } else if (cape >= 180 || shear >= 15) {
-                elBadge.innerText = '🟡 FAVORABLE A CONVECCIÓN SEVERA';
-                elBadge.className = 'text-[8.5px] px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-bold';
-                elCard.className = 'p-2.5 rounded-lg bg-amber-950/20 border border-amber-500/40 space-y-1.5 font-mono transition-all';
+                elBadge.innerText = 'Favorable a Convección Severa';
+                elBadge.className = 'text-[9px] px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono font-medium';
             } else {
-                elBadge.innerText = '🟢 ESTABLE';
-                elBadge.className = 'text-[8.5px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold';
-                elCard.className = 'p-2.5 rounded-lg bg-black/50 border border-emerald-500/30 space-y-1.5 font-mono transition-all';
+                elBadge.innerText = 'Estable';
+                elBadge.className = 'text-[9px] px-2 py-0.5 rounded-md bg-white/5 text-slate-300 border border-white/10 font-mono font-medium';
             }
         };
 
