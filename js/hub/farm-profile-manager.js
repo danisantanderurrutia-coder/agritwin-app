@@ -483,13 +483,13 @@
       if (splashEl) {
         splashEl.style.opacity = '0';
         splashEl.style.pointerEvents = 'none';
-        setTimeout(() => {
-          splashEl.style.display = 'none';
-        }, 800);
+        splashEl.style.display = 'none';
       }
     }
 
     window.dismissAlchemicalSplash = dismissSplash;
+    // Descartar splash por defecto: entrada directa al Landing AOE Maestro
+    dismissSplash();
 
     window.openCuencaDirectFromSplash = function() {
       dismissSplash();
