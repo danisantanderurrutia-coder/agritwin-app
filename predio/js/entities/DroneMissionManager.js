@@ -226,6 +226,115 @@ export class DroneMissionManager {
     this.laserBeam = new THREE.Line(beamGeo, beamMat);
     this.laserBeam.computeLineDistances();
     this.droneGroup.add(this.laserBeam);
+
+    // Marcador 3D de destino en tierra (anillo pulsante donde se envía el dron)
+    this.targetBeaconGroup = new THREE.Group();
+    this.targetBeaconGroup.visible = false;
+    const ringGeo = new THREE.RingGeometry(1.8, 2.5, 32);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xef4444,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.85
+    });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.position.y = 0.25;
+    this.targetBeaconGroup.add(ringMesh);
+    this.droneGroup.add(this.targetBeaconGroup);
+
+    this.isClickToDispatchMode = false;
+  }
+
+  /**
+   * Activa/desactiva el modo interactivo para hacer clic en cualquier punto del terreno 3D y enviar el dron
+   */
+  toggleClickToDispatchMode(forceState) {
+    this.isClickToDispatchMode = typeof forceState === 'boolean' ? forceState : !this.isClickToDispatchMode;
+    const canvas = this.mapManager?.renderer?.domElement;
+    if (canvas) {
+      canvas.style.cursor = this.isClickToDispatchMode ? 'crosshair' : 'default';
+    }
+    const btn = document.getElementById('btn-drawer-drone-click-map');
+    if (btn) {
+      if (this.isClickToDispatchMode) {
+        btn.style.background = 'rgba(239, 68, 68, 0.35)';
+        btn.style.borderColor = '#ef4444';
+        btn.style.color = '#fecaca';
+        btn.innerHTML = '<span>🎯</span> Haz clic en cualquier punto del Mapa 3D... (Cancelar)';
+      } else {
+        btn.style.background = 'rgba(56, 189, 248, 0.14)';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+        btn.style.color = '#7dd3fc';
+        btn.innerHTML = '<span>🎯</span> Elegir Punto en Terreno 3D (Clic en Mapa)';
+      }
+    }
+    if (this.isClickToDispatchMode) {
+      this.showToast('🎯 Modo Destino Libre Activo: Haz clic sobre cualquier punto del terreno 3D para despachar el dron.');
+    }
+    return this.isClickToDispatchMode;
+  }
+
+  /**
+   * Procesa el clic sobre el terreno 3D cuando está activo el modo de despacho por clic
+   */
+  handleTerrainClickDispatch(worldPoint) {
+    if (!worldPoint) return;
+    this.toggleClickToDispatchMode(false);
+    const customTargetMeta = {
+      id: 'PUNTO-3D',
+      name: `Punto Terreno (${worldPoint.x.toFixed(1)}, ${worldPoint.z.toFixed(1)})`
+    };
+    this.dispatchIntercept(worldPoint, customTargetMeta);
+    if (window.visionManager) {
+      window.visionManager.setPipFeedSource('drone');
+    }
+  }
+
+  /**
+   * Envía el dron a una cámara o zona estratégica predefinida y activa la vista del gimbal del dron
+   */
+  dispatchToPresetZone(zoneId) {
+    const presets = {
+      'CAM-01-NORTE': { x: -16.0, z: -28.0, name: 'CAM-01 • Portería & Acceso Norte' },
+      'CAM-02-DGA':   { x: -34.0, z: 16.0,  name: 'CAM-02 • Compuerta Canal DGA' },
+      'CAM-03-FAUNA': { x: 28.0,  z: 24.0,  name: 'CAM-03 • Quebrada Boldos (Fauna)' },
+      'CAM-04-PRV':   { x: 16.0,  z: -6.0,  name: 'CAM-04 • Potrero PRV & Ganado' },
+      'ZONE-TRANQUE': { x: -22.0, z: -14.0, name: 'Tranque Acumulación (18.500 m³)' },
+      'ZONE-CEREZOS': { x: -18.0, z: 8.0,   name: 'Cuartel A • Huerto Cerezos' },
+      'ZONE-CASA':    { x: 0.0,   z: 0.0,   name: 'Casa Patronal Tudor & Galpón' }
+    };
+
+    // Si corresponde a una cámara real de VisionManager, usar sus coordenadas exactas
+    if (window.visionManager && window.visionManager.cameras) {
+      const cam = window.visionManager.cameras.find(c => c.id === zoneId);
+      if (cam) {
+        window.visionManager.activeCamera = cam;
+        const gy = this.mapManager?.getTerrainElevation ? this.mapManager.getTerrainElevation(cam.x, cam.z) : 0;
+        this.dispatchIntercept(new THREE.Vector3(cam.x, gy, cam.z), cam);
+        window.visionManager.setPipFeedSource('drone');
+        return;
+      }
+    }
+
+    const p = presets[zoneId];
+    if (p) {
+      const gy = this.mapManager?.getTerrainElevation ? this.mapManager.getTerrainElevation(p.x, p.z) : 0;
+      this.dispatchIntercept(new THREE.Vector3(p.x, gy, p.z), { id: zoneId, name: p.name });
+      if (window.visionManager) {
+        window.visionManager.setPipFeedSource('drone');
+      }
+    }
+  }
+
+  /**
+   * Vuela la cámara principal del mapa 3D para enfocar al Dron en el aire o su Hangar
+   */
+  flyCameraToDrone() {
+    if (!this.mapManager?.animateCamera || !this.droneMesh) return;
+    const pos = this.droneMesh.position.clone();
+    const camPos = pos.clone().add(new THREE.Vector3(14, 10, 16));
+    this.mapManager.animateCamera(camPos, pos, 1100);
   }
 
   /**
@@ -254,11 +363,19 @@ export class DroneMissionManager {
    * ORQUESTACIÓN REACTIVA: Despacha el dron inmediatamente a verificar una alerta de cámara fija
    */
   dispatchIntercept(targetPos, cameraData) {
-    this.interceptTarget = targetPos.clone();
+    const gy = (this.mapManager && this.mapManager.getTerrainElevation)
+      ? this.mapManager.getTerrainElevation(targetPos.x, targetPos.z)
+      : (targetPos.y || 0);
+    this.interceptTarget = new THREE.Vector3(targetPos.x, gy, targetPos.z);
     this.interceptSourceCamera = cameraData;
     this.missionType = 'intercept';
     this.orbitTimer = 0;
     this.orbitAngle = 0;
+
+    if (this.targetBeaconGroup) {
+      this.targetBeaconGroup.position.copy(this.interceptTarget);
+      this.targetBeaconGroup.visible = true;
+    }
 
     // Conectar el haz láser visual
     this.laserBeam.material.opacity = 0.85;
@@ -278,7 +395,7 @@ export class DroneMissionManager {
     this.updateDiegeticWidgetStatus();
 
     const camName = cameraData ? cameraData.name : 'Punto Objetivo';
-    this.showToast(`🚨 DISPACHO REACTIVO: DJI Dock 2 en ruta de intercepción directa hacia [${camName}].`);
+    this.showToast(`🚨 DESPACHO TÁCTICO: DJI Dock 2 en ruta directa hacia [${camName}].`);
   }
 
   /**
@@ -289,6 +406,11 @@ export class DroneMissionManager {
     if (this.state !== 'docked') {
       this.rotors.forEach(r => { r.rotation.y += delta * 48; });
       this.nadirScanMesh.material.opacity = 0.2 + 0.12 * Math.sin(time * 7.0);
+
+      if (this.targetBeaconGroup && this.targetBeaconGroup.visible) {
+        const s = 1.0 + 0.22 * Math.sin(time * 5.0);
+        this.targetBeaconGroup.scale.set(s, 1, s);
+      }
 
       // Si hay un haz táctico activo hacia un blanco
       if (this.interceptTarget && this.laserBeam.material.opacity > 0) {
@@ -302,6 +424,8 @@ export class DroneMissionManager {
         this.laserBeam.geometry.attributes.position.needsUpdate = true;
         this.laserBeam.computeLineDistances();
       }
+    } else if (this.targetBeaconGroup) {
+      this.targetBeaconGroup.visible = false;
     }
 
     // Máquina de estados
@@ -600,6 +724,11 @@ export class DroneMissionManager {
         const dockCamPos = this.dockPos.clone().add(new THREE.Vector3(10, 12, 14));
         const target = this.dockPos.clone().add(new THREE.Vector3(0, 1, 0));
         this.mapManager.animateCamera(dockCamPos, target, 1200);
+      }
+      if (window.uiController) {
+        window.uiController.activeHouseTab = 'cameras';
+        window.uiController.openDrawer();
+        window.uiController.renderMainHouseDashboard();
       }
     };
 

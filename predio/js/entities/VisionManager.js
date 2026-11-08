@@ -18,14 +18,15 @@ export class VisionManager {
     this.scene = mapManager.scene;
     this.visionGroup = new THREE.Group();
     this.visionGroup.name = 'visionCamerasGroup';
-    // Parten desactivadas por defecto según requerimiento de usuario
-    this.isEnabled = false;
-    this.visionGroup.visible = false;
+    // Activas por defecto para visibilidad inmediata en terreno y sincronizadas con el menú lateral "Cámaras"
+    this.isEnabled = true;
+    this.visionGroup.visible = true;
     this.scene.add(this.visionGroup);
 
     this.cameras = [];
     this.cameraMeshes = new Map();
     this.activeCamera = null;
+    this.pipFeedSource = 'ground';
     this.isPipOpen = false;
     this.alertPings = [];
     this.pipRenderer = null;
@@ -39,17 +40,17 @@ export class VisionManager {
       this.mapManager.addAnimated(this.visionGroup, (delta, time) => this.update(delta, time));
     }
 
-    // Inicializar cámaras (quedan ocultas hasta activación explícita)
+    // Inicializar cámaras activas en el terreno
     this.initCameras();
-    this.visionGroup.visible = false;
+    this.visionGroup.visible = this.isEnabled;
 
-    // Listen to selection bus events (only if vision cameras are enabled)
+    // Listen to selection bus events
     bus.on('entity:selected', (event) => {
-      if (!this.isEnabled) return;
       if (event && event.properties && event.properties.type === 'camera') {
         const cam = this.cameras.find(c => c.id === event.id);
         if (cam) {
-          this.openPip(cam);
+          this.activeCamera = cam;
+          this.pipFeedSource = 'ground';
         }
       }
     });
@@ -229,7 +230,98 @@ export class VisionManager {
     ];
 
     this.cameras = defaultCameras;
+    this.activeCamera = this.cameras[0];
     this.renderAllCameras();
+  }
+
+  /**
+   * Selecciona una cámara activa, sincroniza el feed y opcionalmente vuela hacia ella en 3D
+   */
+  selectCamera(cameraId, { openPipModal = false, flyTo = false, feedSource = 'ground' } = {}) {
+    if (!this.isEnabled) {
+      this.toggleVisionCameras(true);
+    }
+    const cam = this.cameras.find(c => c.id === cameraId) || this.cameras[0];
+    if (!cam) return null;
+    this.activeCamera = cam;
+    if (feedSource) {
+      this.setPipFeedSource(feedSource);
+    }
+    this.updatePipContent();
+    if (openPipModal) {
+      this.openPip(cam);
+    }
+    if (flyTo) {
+      this.flyToCamera(cam.id);
+    }
+    return cam;
+  }
+
+  /**
+   * Vuela la cámara principal del mapa 3D hacia el poste de una cámara específica
+   */
+  flyToCamera(cameraId) {
+    if (!this.isEnabled) {
+      this.toggleVisionCameras(true);
+    }
+    const cam = this.cameras.find(c => c.id === cameraId) || this.activeCamera || this.cameras[0];
+    if (!cam || !this.mapManager?.animateCamera) return;
+    const mesh = this.cameraMeshes.get(cam.id);
+    if (mesh) {
+      const camPos = mesh.position.clone().add(new THREE.Vector3(11, 9.5, 14));
+      const target = mesh.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+      this.mapManager.animateCamera(camPos, target, 1100);
+    }
+  }
+
+  /**
+   * Crea un cartel flotante 3D (Sprite) sobre el poste de la cámara para que nunca se pierda en el terreno
+   */
+  createCameraLabelSprite(cam) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 76;
+    const ctx = canvas.getContext('2d');
+
+    // Fondo píldora oscura con borde cian/ámbar
+    ctx.fillStyle = 'rgba(8, 15, 28, 0.92)';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(6, 6, 308, 64, 18);
+    } else {
+      ctx.rect(6, 6, 308, 64);
+    }
+    ctx.fill();
+    ctx.stroke();
+
+    // Punto verde online
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.arc(28, 38, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Texto principal
+    const shortLabel = cam.id.replace('CAM-01-NORTE', '📹 CAM-01 • Portería')
+      .replace('CAM-02-DGA', '📹 CAM-02 • Canal DGA')
+      .replace('CAM-03-FAUNA', '📹 CAM-03 • Fauna')
+      .replace('CAM-04-PRV', '📹 CAM-04 • Ganado PRV');
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 21px sans-serif';
+    ctx.fillText(shortLabel, 46, 34);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(`FOV ${cam.fov}° • Clic para ver feed`, 46, 56);
+
+    const tex = new THREE.CanvasTexture(canvas);
+    const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+    const sprite = new THREE.Sprite(mat);
+    sprite.scale.set(6.5, 1.55, 1);
+    sprite.position.set(0, cam.height + 1.85, 0);
+    sprite.renderOrder = 999;
+    return sprite;
   }
 
   /**
@@ -339,6 +431,10 @@ export class VisionManager {
     frustumGroup.position.set(0, cam.height - 0.15, 0.35);
     group.add(frustumGroup);
 
+    // 7. Cartel 3D Flotante (Sprite) para identificar la cámara en el terreno
+    const labelSprite = this.createCameraLabelSprite(cam);
+    group.add(labelSprite);
+
     // Metadata para Raycaster e interacción
     group.userData = {
       type: 'camera',
@@ -347,6 +443,7 @@ export class VisionManager {
       cameraData: cam,
       ptzGroup: ptzGroup,
       frustumGroup: frustumGroup,
+      labelSprite: labelSprite,
       ledMesh: led,
       ledMat: ledMat
     };
@@ -556,11 +653,62 @@ export class VisionManager {
       });
     }
 
-    // Renderizar perspectiva del gemelo digital en el visor PiP si está abierto
-    if (this.isPipOpen && this.activeCamera) {
-      this.renderPip3DView(time);
-      if (this.pipCanvasCtx) {
-        this.drawPipSyntheticVideo(time);
+    // Renderizar perspectiva del gemelo digital en el visor PiP o en el menú lateral derecho ("📹 Cámaras")
+    const drawerCanvas = document.getElementById('drawer-vision-canvas');
+    const shouldRenderVision = (this.isPipOpen || !!drawerCanvas);
+
+    if (shouldRenderVision) {
+      if (!this.activeCamera && this.cameras.length > 0) {
+        this.activeCamera = this.cameras[0];
+      }
+      if (this.activeCamera) {
+        this.renderPip3DView(time);
+        if (this.pipCanvasCtx) {
+          this.drawPipSyntheticVideo(time);
+        }
+
+        // Volcar el frame compuesto (WebGL 3D + Overlay HUD 2D) dentro del canvas del menú lateral derecho
+        if (drawerCanvas) {
+          const dCtx = drawerCanvas.getContext('2d');
+          const threeCanvas = document.getElementById('pip-three-canvas');
+          const hudCanvas = document.getElementById('pip-video-canvas');
+          if (dCtx) {
+            dCtx.clearRect(0, 0, drawerCanvas.width, drawerCanvas.height);
+            if (threeCanvas) {
+              dCtx.drawImage(threeCanvas, 0, 0, drawerCanvas.width, drawerCanvas.height);
+            }
+            if (hudCanvas) {
+              dCtx.drawImage(hudCanvas, 0, 0, drawerCanvas.width, drawerCanvas.height);
+            }
+          }
+          // Actualizar telemetría en vivo en el panel lateral
+          const ptzEl = document.getElementById('drawer-cam-ptz-val');
+          if (ptzEl) ptzEl.textContent = `${Math.round(this.activeCamera.yaw)}° / ${Math.round(this.activeCamera.pitch)}°`;
+          const droneStateEl = document.getElementById('drawer-drone-state-badge');
+          const droneAltEl = document.getElementById('drawer-drone-alt-val');
+          const droneBatEl = document.getElementById('drawer-drone-bat-val');
+          if (window.droneMissionManager) {
+            const dm = window.droneMissionManager;
+            if (droneStateEl) {
+              const mapLabels = {
+                docked: '🟢 En Hangar (Listo)',
+                takeoff: '🛫 Despegando RTK',
+                survey: `🛰️ Patrulla (${dm.photosCount}/240)`,
+                intercept: '🚨 En Ruta al Punto',
+                orbit: '🔄 Órbita 360° (Viendo Objetivo)',
+                rth: '↩️ Retornando (RTH)',
+                landing: '🛬 Aterrizando en Dock'
+              };
+              droneStateEl.textContent = mapLabels[dm.state] || dm.state.toUpperCase();
+            }
+            if (droneAltEl && dm.droneMesh) {
+              droneAltEl.textContent = `${dm.droneMesh.position.y.toFixed(1)} m AGL`;
+            }
+            if (droneBatEl) {
+              droneBatEl.textContent = `${Math.round(dm.battery)}%`;
+            }
+          }
+        }
       }
     }
   }
@@ -1205,21 +1353,38 @@ export class VisionManager {
 
     if (this.pipFeedSource === 'drone') {
       // Retícula de Gimbal de Dron
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.65)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.arc(w / 2, h / 2, 40, 0, Math.PI * 2);
-      ctx.arc(w / 2, h / 2, 72, 0, Math.PI * 2);
+      ctx.arc(w / 2, h / 2, 38, 0, Math.PI * 2);
+      ctx.arc(w / 2, h / 2, 68, 0, Math.PI * 2);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(w / 2 - 90, h / 2); ctx.lineTo(w / 2 + 90, h / 2);
-      ctx.moveTo(w / 2, h / 2 - 60); ctx.lineTo(w / 2, h / 2 + 60);
+      ctx.moveTo(w / 2 - 88, h / 2); ctx.lineTo(w / 2 + 88, h / 2);
+      ctx.moveTo(w / 2, h / 2 - 58); ctx.lineTo(w / 2, h / 2 + 58);
       ctx.stroke();
 
-      ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 9px monospace';
-      ctx.fillText('DJI DOCK 2 • GIMBAL TWIN STREAM', 15, 20);
-      ctx.fillText(`OBJETIVO EN TIERRA: [${cam.id}]`, 15, 33);
+      const dm = window.droneMissionManager;
+      const droneAlt = dm && dm.droneMesh ? dm.droneMesh.position.y.toFixed(1) : '28.0';
+      const droneState = dm ? dm.state.toUpperCase() : 'DOCKED';
+      const tgtName = (dm && dm.interceptSourceCamera && dm.interceptSourceCamera.name)
+        ? dm.interceptSourceCamera.name
+        : cam.name;
+
+      // Caja superior de telemetría de dron
+      ctx.fillStyle = 'rgba(8, 15, 28, 0.78)';
+      ctx.fillRect(10, 8, w - 20, 32);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 9.5px monospace';
+      ctx.fillText(`🚁 DJI DOCK 2 • GIMBAL EN VIVO [${droneState}] • ALT: ${droneAlt}m`, 16, 21);
+      ctx.fillStyle = '#fde047';
+      ctx.fillText(`🎯 OBJETIVO: ${tgtName.substring(0, 44)}`, 16, 34);
+
+      if (dm && (dm.state === 'orbit' || dm.state === 'intercept')) {
+        this.drawBBox(ctx, w / 2 - 48, h / 2 - 34, 96, 68, '🎯 BLANCO FIJADO RTK', '#ef4444');
+      } else if (dm && dm.state === 'survey') {
+        this.drawBBox(ctx, w / 2 - 55, h / 2 - 35, 110, 70, `📸 NDVI (${dm.photosCount}/240)`, '#10b981');
+      }
       return;
     }
 

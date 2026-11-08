@@ -490,6 +490,9 @@
             <button id="cam_sensors" class="dropdown-item-btn">
               <span>📡</span> Nodos IoT
             </button>
+            <button id="cam_vision_drawer" class="dropdown-item-btn" onclick="if(window.uiController){window.uiController.activeHouseTab='cameras';window.uiController.openDrawer();window.uiController.renderMainHouseDashboard();window.uiController.closeAllDropdowns?.();}">
+              <span>📹</span> Panel Cámaras & Drones
+            </button>
           </div>
         </div>
       </div>
@@ -1716,6 +1719,6 @@ SUITE AGRITWIN 1 (NIVEL PREDIAL) • MAULE SUR, CHILE
   <div id="modalsContainer"></div>
 
   <!-- Entry Script (ES6 Module) con Cache Buster -->
-  <script type="module" src="js/app.js?v=3.1.0"></script>
+  <script type="module" src="js/app.js?v=4.3.0"></script>
 </body>
 </html>

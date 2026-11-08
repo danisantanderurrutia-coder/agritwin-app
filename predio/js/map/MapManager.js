@@ -877,6 +877,15 @@ export class MapManager {
 
       this.raycaster.setFromCamera(this.mouse, this.camera);
 
+      // Si está activo el modo de despacho libre de dron por clic en el terreno
+      if (window.droneMissionManager?.isClickToDispatchMode && this.groundMesh) {
+        const groundHits = this.raycaster.intersectObject(this.groundMesh, true);
+        if (groundHits.length > 0) {
+          window.droneMissionManager.handleTerrainClickDispatch(groundHits[0].point);
+          return;
+        }
+      }
+
       // Filtrar solo objetos visibles (ignora cámaras o capas apagadas)
       const activePickables = (this.pickableObjects || []).filter(obj => {
         let cur = obj;
@@ -937,6 +946,11 @@ export class MapManager {
       this.mouse.y = -((event.clientY - rect.top)  / rect.height) * 2 + 1;
 
       this.raycaster.setFromCamera(this.mouse, this.camera);
+
+      if (window.droneMissionManager?.isClickToDispatchMode) {
+        canvas.style.cursor = 'crosshair';
+        return;
+      }
       const intersects = this.raycaster.intersectObjects(this.pickableObjects, true);
 
       if (intersects.length > 0) {

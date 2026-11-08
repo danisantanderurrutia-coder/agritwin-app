@@ -1617,7 +1617,7 @@
         };
 
         window.switchCerroDrawerTab = function(tabName) {
-            const tabs = ['satellite', 'telemetry', 'locations'];
+            const tabs = ['satellite', 'telemetry', 'locations', 'cameras'];
             tabs.forEach(t => {
                 const pane = document.getElementById('cerroDrawerTab-' + t);
                 const btn = document.getElementById('btnCerroDrawerTab-' + t);
@@ -1632,12 +1632,15 @@
                 }
                 if (btn) {
                     if (t === tabName) {
-                        btn.className = 'flex-1 py-2.5 text-center font-bold font-mono border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 cursor-pointer transition-all flex items-center justify-center gap-1.5';
+                        btn.className = 'flex-1 py-2.5 text-center font-bold font-mono border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 cursor-pointer transition-all flex items-center justify-center gap-1';
                     } else {
-                        btn.className = 'flex-1 py-2.5 text-center font-medium font-mono text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1.5';
+                        btn.className = 'flex-1 py-2.5 text-center font-medium font-mono text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1';
                     }
                 }
             });
+            if (tabName === 'cameras' && typeof window.initCerroCamerasAndDrone === 'function') {
+                window.initCerroCamerasAndDrone();
+            }
         };
 
         window.toggleCerroVector = function(type) {
@@ -2915,4 +2918,548 @@
             window.cuencaDrawingState.active = false;
             map.getContainer().style.cursor = '';
         };
+
+        // ═══════════════════════════════════════════════════════════════════
+        // RED DE CÁMARAS CENTINELA & DRON VTOL DE CUENCA (PESTAÑA 📹 CÁMARAS)
+        // ═══════════════════════════════════════════════════════════════════
+        window.cerroVisionSystem = {
+            initialized: false,
+            animFrameId: null,
+            source: 'camera', // 'camera' | 'drone'
+            spectral: 'rgb',  // 'rgb' | 'flir'
+            activeCamId: 'CAM-C1',
+            clickDispatchActive: false,
+            mapMarkers: [],
+            droneMarker: null,
+            droneRouteLine: null,
+            droneTargetCircle: null,
+            droneState: {
+                status: 'EN BASE • 98% BAT',
+                lat: -36.21156,
+                lon: -71.60530,
+                targetLat: -36.21156,
+                targetLon: -71.60530,
+                targetLabel: 'Base Predio Meniel',
+                altM: 120,
+                speedKmh: 0,
+                battery: 98,
+                flying: false
+            },
+            cameras: [
+                {
+                    id: 'CAM-C1',
+                    name: 'Cumbre Longaví 360° (Humo/FWI)',
+                    shortName: 'Cumbre Longaví 360°',
+                    sector: 'Alta Cordillera • Mirador Piro-Riesgo',
+                    lat: -36.2450,
+                    lon: -71.5100,
+                    zoom: 13,
+                    cota: '1.420 msnm',
+                    yaw: 140,
+                    pitch: -8,
+                    badge: 'RGB/FLIR • IA HUMO',
+                    aiStatus: 'YOLOv8 • 0 Plumas Humo',
+                    sceneType: 'mountain_fire',
+                    color: '#38bdf8'
+                },
+                {
+                    id: 'CAM-C2',
+                    name: 'Bocatoma Río Longaví (Quilaimo DGA)',
+                    shortName: 'Bocatoma Río DGA',
+                    sector: 'Cruce Fluvial • Regla Limnimétrica',
+                    lat: -36.1800,
+                    lon: -71.6400,
+                    zoom: 14,
+                    cota: '340 msnm',
+                    yaw: 215,
+                    pitch: -15,
+                    badge: 'LIMNÍMETRO ÓPTICO DGA',
+                    aiStatus: 'Caudal: 124.5 m³/s • Normal',
+                    sceneType: 'river_gauge',
+                    color: '#0ea5e9'
+                },
+                {
+                    id: 'CAM-C3',
+                    name: 'Cortina Embalse Bullileo (Aliviadero)',
+                    shortName: 'Embalse Bullileo',
+                    sector: 'Cabecera de Riego • Compuerta DOH',
+                    lat: -36.2800,
+                    lon: -71.4200,
+                    zoom: 13,
+                    cota: '540 msnm',
+                    yaw: 290,
+                    pitch: -12,
+                    badge: 'TELEMETRÍA EMBALSE',
+                    aiStatus: 'Cota 78.5% • Erogación 4.2 m³/s',
+                    sceneType: 'dam_wall',
+                    color: '#10b981'
+                },
+                {
+                    id: 'CAM-C4',
+                    name: 'Corredor Viento Puelche & Cortafuego',
+                    shortName: 'Corredor Puelche',
+                    sector: 'Borde Forestal • Fundo Meniel Este',
+                    lat: -36.21156,
+                    lon: -71.5950,
+                    zoom: 15,
+                    cota: '365 msnm',
+                    yaw: 95,
+                    pitch: -10,
+                    badge: 'TÉRMICA PERIMETRAL',
+                    aiStatus: 'Faja 45m Despejada • 38 km/h E',
+                    sceneType: 'firebreak_corridor',
+                    color: '#f59e0b'
+                }
+            ]
+        };
+
+        window.renderCerroCamerasList = function() {
+            const container = document.getElementById('cerroCamerasListContainer');
+            if (!container) return;
+            const sys = window.cerroVisionSystem;
+
+            container.innerHTML = sys.cameras.map(cam => {
+                const isSelected = (sys.activeCamId === cam.id && sys.source === 'camera');
+                return `
+                    <div class="p-2.5 rounded-xl bg-black/55 border ${isSelected ? 'border-sky-400 bg-sky-950/30 shadow-[0_0_12px_rgba(56,189,248,0.2)]' : 'border-white/10 hover:border-white/25'} transition-all space-y-2">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="font-bold text-xs text-white flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full" style="background:${cam.color}"></span>
+                                    <span>${cam.id} • ${cam.shortName}</span>
+                                </div>
+                                <div class="text-[10px] font-mono text-slate-400">${cam.sector} • ${cam.cota}</div>
+                            </div>
+                            <span class="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[9px] font-mono">ONLINE</span>
+                        </div>
+                        <div class="text-[10px] font-mono text-sky-300 bg-slate-900/80 px-2 py-1 rounded border border-white/5 truncate">
+                            🤖 ${cam.aiStatus}
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 pt-0.5 font-mono text-[10px]">
+                            <button onclick="selectCerroCamera('${cam.id}', false)" class="py-1.5 px-2 rounded-lg ${isSelected ? 'bg-sky-500 text-slate-950 font-bold' : 'bg-white/10 hover:bg-white/20 text-white'} transition-all cursor-pointer flex items-center justify-center gap-1">
+                                👁️ Ver Cámara
+                            </button>
+                            <button onclick="selectCerroCamera('${cam.id}', true)" class="py-1.5 px-2 rounded-lg bg-sky-500/15 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 transition-all cursor-pointer flex items-center justify-center gap-1">
+                                📍 Ubicar GIS
+                            </button>
+                            <button onclick="dispatchCerroDroneTo('${cam.id}')" class="py-1.5 px-2 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all cursor-pointer flex items-center justify-center gap-1">
+                                🚁 Enviar Dron
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.ensureCerroCameraMapMarkers = function() {
+            const targetMap = (typeof cerroLeafletMap !== 'undefined' && cerroLeafletMap) ? cerroLeafletMap : ((typeof map !== 'undefined' && map) ? map : null);
+            if (!targetMap || typeof L === 'undefined') return;
+            const sys = window.cerroVisionSystem;
+            if (sys.mapMarkers.length > 0) return;
+
+            sys.cameras.forEach(cam => {
+                // Cono FOV en el mapa GIS
+                const rad = (cam.yaw - 90) * Math.PI / 180;
+                const spread = 0.38;
+                const dist = 0.018;
+                const p1 = [cam.lat + Math.sin(rad - spread) * dist, cam.lon + Math.cos(rad - spread) * dist];
+                const p2 = [cam.lat + Math.sin(rad + spread) * dist, cam.lon + Math.cos(rad + spread) * dist];
+                const cone = L.polygon([[cam.lat, cam.lon], p1, p2], {
+                    color: cam.color,
+                    weight: 1,
+                    fillColor: cam.color,
+                    fillOpacity: 0.18,
+                    dashArray: '3,3'
+                }).addTo(targetMap);
+
+                const icon = L.divIcon({
+                    className: 'cerro-cam-marker',
+                    html: `<div style="background:rgba(2,6,23,0.9);border:1.5px solid ${cam.color};color:#fff;padding:2px 6px;border-radius:8px;font-family:monospace;font-size:10px;font-weight:bold;white-space:nowrap;box-shadow:0 0 10px ${cam.color}66;">📹 ${cam.id}</div>`,
+                    iconSize: [74, 22],
+                    iconAnchor: [37, 11]
+                });
+                const marker = L.marker([cam.lat, cam.lon], { icon }).addTo(targetMap);
+                marker.on('click', () => {
+                    if (typeof window.toggleCerroControlDrawer === 'function') window.toggleCerroControlDrawer(true);
+                    if (typeof window.switchCerroDrawerTab === 'function') window.switchCerroDrawerTab('cameras');
+                    window.selectCerroCamera(cam.id, false);
+                });
+                sys.mapMarkers.push(cone, marker);
+            });
+
+            // Marcador del Dron VTOL en la Cuenca
+            const droneIcon = L.divIcon({
+                className: 'cerro-vtol-drone-marker',
+                html: `<div style="background:rgba(245,158,11,0.95);border:2px solid #fff;color:#020617;padding:2px 7px;border-radius:999px;font-family:monospace;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 0 14px rgba(245,158,11,0.8);">🚁 VTOL RTK</div>`,
+                iconSize: [86, 22],
+                iconAnchor: [43, 11]
+            });
+            sys.droneMarker = L.marker([sys.droneState.lat, sys.droneState.lon], { icon: droneIcon, zIndexOffset: 900 }).addTo(targetMap);
+            sys.droneMarker.on('click', () => {
+                if (typeof window.toggleCerroControlDrawer === 'function') window.toggleCerroControlDrawer(true);
+                if (typeof window.switchCerroDrawerTab === 'function') window.switchCerroDrawerTab('cameras');
+                window.setCerroVisionSource('drone');
+            });
+        };
+
+        window.selectCerroCamera = function(camId, shouldFlyTo) {
+            const sys = window.cerroVisionSystem;
+            const cam = sys.cameras.find(c => c.id === camId) || sys.cameras[0];
+            sys.activeCamId = cam.id;
+            window.setCerroVisionSource('camera');
+
+            if (shouldFlyTo && typeof window.flyToCerroLocation === 'function') {
+                window.flyToCerroLocation(cam.lat, cam.lon, cam.zoom || 14, cam.name, 'tab-centinela');
+            }
+            window.ensureCerroCameraMapMarkers();
+            window.renderCerroCamerasList();
+        };
+
+        window.setCerroVisionSource = function(source) {
+            const sys = window.cerroVisionSystem;
+            sys.source = source === 'drone' ? 'drone' : 'camera';
+
+            const btnCam = document.getElementById('btnCerroFeedCam');
+            const btnDrone = document.getElementById('btnCerroFeedDrone');
+            if (btnCam && btnDrone) {
+                if (sys.source === 'camera') {
+                    btnCam.className = 'py-1.5 px-2 rounded-xl font-bold bg-sky-500/25 text-sky-200 border border-sky-400/60 cursor-pointer transition-all flex items-center justify-center gap-1';
+                    btnDrone.className = 'py-1.5 px-2 rounded-xl font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-amber-500/20 hover:text-amber-200 cursor-pointer transition-all flex items-center justify-center gap-1';
+                } else {
+                    btnDrone.className = 'py-1.5 px-2 rounded-xl font-bold bg-amber-500/25 text-amber-200 border border-amber-400/60 cursor-pointer transition-all flex items-center justify-center gap-1';
+                    btnCam.className = 'py-1.5 px-2 rounded-xl font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-sky-500/20 hover:text-sky-200 cursor-pointer transition-all flex items-center justify-center gap-1';
+                }
+            }
+            window.updateCerroVisionHeader();
+            window.renderCerroCamerasList();
+        };
+
+        window.setCerroVisionSpectral = function(mode) {
+            const sys = window.cerroVisionSystem;
+            sys.spectral = mode === 'flir' ? 'flir' : 'rgb';
+            const btnRgb = document.getElementById('btnCerroVisionRgb');
+            const btnFlir = document.getElementById('btnCerroVisionFlir');
+            if (btnRgb && btnFlir) {
+                if (sys.spectral === 'rgb') {
+                    btnRgb.className = 'px-2 py-1 rounded-lg bg-sky-500/25 text-sky-300 border border-sky-400/50 font-bold cursor-pointer';
+                    btnFlir.className = 'px-2 py-1 rounded-lg bg-white/5 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 cursor-pointer';
+                } else {
+                    btnFlir.className = 'px-2 py-1 rounded-lg bg-amber-500/30 text-amber-200 border border-amber-400 font-bold cursor-pointer';
+                    btnRgb.className = 'px-2 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10 hover:bg-sky-500/20 cursor-pointer';
+                }
+            }
+            window.updateCerroVisionHeader();
+        };
+
+        window.nudgeCerroCameraPtz = function(dYaw, dPitch) {
+            const sys = window.cerroVisionSystem;
+            const cam = sys.cameras.find(c => c.id === sys.activeCamId) || sys.cameras[0];
+            cam.yaw = (cam.yaw + dYaw + 360) % 360;
+            cam.pitch = Math.max(-45, Math.min(25, cam.pitch + dPitch));
+            window.updateCerroVisionHeader();
+        };
+
+        window.updateCerroVisionHeader = function() {
+            const sys = window.cerroVisionSystem;
+            const cam = sys.cameras.find(c => c.id === sys.activeCamId) || sys.cameras[0];
+            const titleEl = document.getElementById('cerroVisionFeedTitle');
+            const badgeEl = document.getElementById('cerroVisionLensBadge');
+            const subEl = document.getElementById('cerroVisionSubLabel');
+            const aiEl = document.getElementById('cerroVisionAiTag');
+            const droneBadge = document.getElementById('cerroDroneStatusBadge');
+
+            if (droneBadge) {
+                droneBadge.innerText = sys.droneState.status;
+            }
+
+            if (sys.source === 'drone') {
+                if (titleEl) titleEl.innerText = `🚁 DRON VTOL • ${sys.droneState.targetLabel}`;
+                if (badgeEl) badgeEl.innerText = sys.spectral === 'flir' ? 'FLIR TÉRMICO AÉREO' : 'GIMBAL 4K RTK';
+                if (subEl) subEl.innerText = `Alt: ${sys.droneState.altM}m • ${sys.droneState.lat.toFixed(4)}, ${sys.droneState.lon.toFixed(4)}`;
+                if (aiEl) aiEl.innerText = sys.droneState.flying ? `EN VUELO (${sys.droneState.speedKmh} km/h)` : 'HOVER ESTACIONARIO RTK';
+            } else {
+                if (titleEl) titleEl.innerText = `📹 ${cam.id} • ${cam.shortName}`;
+                if (badgeEl) badgeEl.innerText = sys.spectral === 'flir' ? 'FLIR RADIOMÉTRICO' : cam.badge;
+                if (subEl) subEl.innerText = `PTZ ${cam.yaw}° • Tilt ${cam.pitch}° • ${cam.cota}`;
+                if (aiEl) aiEl.innerText = cam.aiStatus;
+            }
+        };
+
+        window.dispatchCerroDroneTo = function(targetId, customLatLng, customLabel) {
+            const sys = window.cerroVisionSystem;
+            window.ensureCerroCameraMapMarkers();
+
+            let destLat = -36.21156;
+            let destLon = -71.60530;
+            let label = 'Fundo Meniel (Keyline)';
+
+            if (customLatLng) {
+                destLat = customLatLng.lat;
+                destLon = customLatLng.lng;
+                label = customLabel || `Punto GIS (${destLat.toFixed(3)}, ${destLon.toFixed(3)})`;
+            } else if (targetId === 'MENIEL') {
+                destLat = -36.21156;
+                destLon = -71.60530;
+                label = 'Predio Fundo Meniel';
+            } else {
+                const cam = sys.cameras.find(c => c.id === targetId);
+                if (cam) {
+                    destLat = cam.lat;
+                    destLon = cam.lon;
+                    label = `${cam.id} (${cam.shortName})`;
+                    sys.activeCamId = cam.id;
+                }
+            }
+
+            sys.droneState.targetLat = destLat;
+            sys.droneState.targetLon = destLon;
+            sys.droneState.targetLabel = label;
+            sys.droneState.flying = true;
+            sys.droneState.speedKmh = 68;
+            sys.droneState.status = `EN VUELO ➔ ${label.slice(0, 16)}`;
+
+            // Cambiar automáticamente a la vista "Lo que ve el Dron VTOL"
+            window.setCerroVisionSource('drone');
+
+            const targetMap = (typeof cerroLeafletMap !== 'undefined' && cerroLeafletMap) ? cerroLeafletMap : ((typeof map !== 'undefined' && map) ? map : null);
+            if (targetMap && typeof L !== 'undefined') {
+                if (sys.droneRouteLine) targetMap.removeLayer(sys.droneRouteLine);
+                if (sys.droneTargetCircle) targetMap.removeLayer(sys.droneTargetCircle);
+
+                sys.droneRouteLine = L.polyline([[sys.droneState.lat, sys.droneState.lon], [destLat, destLon]], {
+                    color: '#f59e0b',
+                    weight: 2.5,
+                    dashArray: '6,6'
+                }).addTo(targetMap);
+
+                sys.droneTargetCircle = L.circleMarker([destLat, destLon], {
+                    radius: 10,
+                    color: '#f59e0b',
+                    weight: 2,
+                    fillColor: '#fbbf24',
+                    fillOpacity: 0.35
+                }).addTo(targetMap);
+            }
+        };
+
+        window.toggleCerroClickToDispatchDrone = function() {
+            const sys = window.cerroVisionSystem;
+            const targetMap = (typeof cerroLeafletMap !== 'undefined' && cerroLeafletMap) ? cerroLeafletMap : ((typeof map !== 'undefined' && map) ? map : null);
+            const btn = document.getElementById('btnCerroMapClickDrone');
+
+            sys.clickDispatchActive = !sys.clickDispatchActive;
+            if (btn) {
+                if (sys.clickDispatchActive) {
+                    btn.className = 'w-full py-2 px-3 rounded-xl bg-amber-500 text-slate-950 text-[10px] font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-lg animate-pulse';
+                    btn.innerHTML = '<span>🎯</span> HAZ CLIC EN EL MAPA DE CUENCA PARA ENVIAR EL DRON (ESC cancelar)';
+                } else {
+                    btn.className = 'w-full py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/50 text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+                    btn.innerHTML = '<span>🎯</span> Elegir Punto en Mapa GIS (Clic en Cuenca)';
+                }
+            }
+
+            if (targetMap) {
+                targetMap.getContainer().style.cursor = sys.clickDispatchActive ? 'crosshair' : '';
+                if (sys.clickDispatchActive) {
+                    const onceClick = function(e) {
+                        if (!sys.clickDispatchActive) return;
+                        sys.clickDispatchActive = false;
+                        targetMap.getContainer().style.cursor = '';
+                        if (btn) {
+                            btn.className = 'w-full py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/50 text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+                            btn.innerHTML = '<span>🎯</span> Elegir Punto en Mapa GIS (Clic en Cuenca)';
+                        }
+                        window.dispatchCerroDroneTo(null, e.latlng, `Coord GIS (${e.latlng.lat.toFixed(3)}, ${e.latlng.lng.toFixed(3)})`);
+                        targetMap.off('click', onceClick);
+                    };
+                    targetMap.on('click', onceClick);
+                }
+            }
+        };
+
+        window.renderCerroVisionCanvasLoop = function(timestamp) {
+            const canvas = document.getElementById('cerroVisionCanvas');
+            const sys = window.cerroVisionSystem;
+
+            // Actualizar cinemática del Dron VTOL en la cuenca
+            if (sys.droneState.flying) {
+                const dLat = sys.droneState.targetLat - sys.droneState.lat;
+                const dLon = sys.droneState.targetLon - sys.droneState.lon;
+                const dist = Math.hypot(dLat, dLon);
+                if (dist < 0.0008) {
+                    sys.droneState.lat = sys.droneState.targetLat;
+                    sys.droneState.lon = sys.droneState.targetLon;
+                    sys.droneState.flying = false;
+                    sys.droneState.speedKmh = 0;
+                    sys.droneState.status = `EN OBJETIVO • ${sys.droneState.battery}% BAT`;
+                } else {
+                    sys.droneState.lat += dLat * 0.035;
+                    sys.droneState.lon += dLon * 0.035;
+                }
+                if (sys.droneMarker) {
+                    sys.droneMarker.setLatLng([sys.droneState.lat, sys.droneState.lon]);
+                }
+                window.updateCerroVisionHeader();
+            }
+
+            if (canvas && canvas.offsetParent !== null) {
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+                const t = (timestamp || performance.now()) * 0.001;
+                const isFlir = sys.spectral === 'flir';
+                const cam = sys.cameras.find(c => c.id === sys.activeCamId) || sys.cameras[0];
+                const hydro = (window.basinTwin && window.basinTwin.lastHydroData) ? window.basinTwin.lastHydroData : { peakMit: 124.5, damPct: 78.5, fwi: 24 };
+
+                // 1. Fondo atmosférico / terreno según modo RGB o FLIR Térmico
+                const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+                if (isFlir) {
+                    skyGrad.addColorStop(0, '#12072b');
+                    skyGrad.addColorStop(0.5, '#3b0f54');
+                    skyGrad.addColorStop(1, '#7c1d52');
+                } else if (sys.source === 'drone') {
+                    skyGrad.addColorStop(0, '#061a2e');
+                    skyGrad.addColorStop(0.45, '#0c2e3e');
+                    skyGrad.addColorStop(1, '#092218');
+                } else {
+                    skyGrad.addColorStop(0, '#0b192c');
+                    skyGrad.addColorStop(0.45, '#16324f');
+                    skyGrad.addColorStop(1, '#112a22');
+                }
+                ctx.fillStyle = skyGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                const panOffset = ((cam.yaw - 140) % 60) * 1.4;
+
+                if (sys.source === 'drone') {
+                    // Vista cenital oblicua desde Dron VTOL
+                    ctx.strokeStyle = isFlir ? 'rgba(251, 146, 60, 0.22)' : 'rgba(56, 189, 248, 0.18)';
+                    ctx.lineWidth = 1;
+                    const scroll = (t * (sys.droneState.flying ? 28 : 4)) % 24;
+                    for (let x = -24; x < w + 24; x += 24) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, 0);
+                        ctx.lineTo(x - 18, h);
+                        ctx.stroke();
+                    }
+                    for (let y = scroll; y < h; y += 24) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, y);
+                        ctx.lineTo(w, y);
+                        ctx.stroke();
+                    }
+
+                    // Cauce serpenteante y parches de vegetación vistos desde el aire
+                    ctx.beginPath();
+                    ctx.moveTo(w * 0.18, 0);
+                    ctx.bezierCurveTo(w * 0.35 + Math.sin(t) * 6, h * 0.4, w * 0.25, h * 0.7, w * 0.52, h);
+                    ctx.strokeStyle = isFlir ? '#38bdf8' : '#0ea5e9';
+                    ctx.lineWidth = 16;
+                    ctx.stroke();
+
+                    // Bounding box RTK de objetivo del Dron
+                    const bx = w * 0.5 + Math.sin(t * 1.7) * 8;
+                    const by = h * 0.48 + Math.cos(t * 1.3) * 6;
+                    ctx.strokeStyle = isFlir ? '#fbbf24' : '#34d399';
+                    ctx.lineWidth = 1.6;
+                    ctx.strokeRect(bx - 38, by - 26, 76, 52);
+                    ctx.fillStyle = isFlir ? '#fde047' : '#6ee7b7';
+                    ctx.font = 'bold 9px monospace';
+                    ctx.fillText(`🎯 ${sys.droneState.targetLabel.slice(0, 22)}`, bx - 36, by - 31);
+                    ctx.fillText(`NDVI 0.78 • LST 21.4°C`, bx - 34, by + 38);
+                } else {
+                    // Vista desde la Cámara Centinela seleccionada
+                    // Cordillera de los Andes al fondo
+                    ctx.beginPath();
+                    ctx.moveTo(0, h * 0.52);
+                    ctx.lineTo(w * 0.22 - panOffset * 0.3, h * 0.28);
+                    ctx.lineTo(w * 0.48 - panOffset * 0.3, h * 0.44);
+                    ctx.lineTo(w * 0.76 - panOffset * 0.3, h * 0.22);
+                    ctx.lineTo(w, h * 0.46);
+                    ctx.lineTo(w, h);
+                    ctx.lineTo(0, h);
+                    ctx.closePath();
+                    ctx.fillStyle = isFlir ? '#581c87' : '#1e293b';
+                    ctx.fill();
+
+                    if (cam.sceneType === 'river_gauge' || cam.sceneType === 'dam_wall') {
+                        // Lámina de agua dinámica del Río Longaví / Embalse Bullileo
+                        ctx.fillStyle = isFlir ? '#0284c7' : '#0369a1';
+                        ctx.fillRect(0, h * 0.56, w, h * 0.44);
+                        ctx.strokeStyle = isFlir ? '#38bdf8' : '#7dd3fc';
+                        ctx.lineWidth = 1.5;
+                        for (let i = 0; i < 5; i++) {
+                            const wy = h * 0.62 + i * 13 + Math.sin(t * 3 + i) * 2;
+                            ctx.beginPath();
+                            ctx.moveTo(20, wy);
+                            ctx.lineTo(w - 20, wy);
+                            ctx.stroke();
+                        }
+                        // Caja de detección IA sobre el nivel hidrométrico
+                        ctx.strokeStyle = '#38bdf8';
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(w * 0.28, h * 0.48, w * 0.44, h * 0.32);
+                        ctx.fillStyle = '#7dd3fc';
+                        ctx.font = 'bold 9px monospace';
+                        ctx.fillText(
+                            cam.sceneType === 'river_gauge'
+                                ? `🌊 Q = ${hydro.peakMit.toFixed(1)} m³/s • Nivel DGA OK`
+                                : `🏔️ Embalse ${hydro.damPct.toFixed(1)}% • Compuerta OK`,
+                            w * 0.30,
+                            h * 0.45
+                        );
+                    } else {
+                        // Vista forestal / Cumbre Longaví / Corredor Puelche
+                        ctx.strokeStyle = isFlir ? '#f97316' : '#10b981';
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(w * 0.22, h * 0.34, w * 0.56, h * 0.36);
+                        ctx.fillStyle = isFlir ? '#fdba74' : '#6ee7b7';
+                        ctx.font = 'bold 9px monospace';
+                        ctx.fillText(
+                            hydro.fwi >= 35
+                                ? `⚠️ ALERTA FWI ${hydro.fwi} • Monitoreo Térmico Activo`
+                                : `✅ FWI ${hydro.fwi} • 0 Focos Ígneos Detectados`,
+                            w * 0.24,
+                            h * 0.31
+                        );
+                    }
+                }
+
+                // Retícula HUD Militar / Telemetría en esquinas
+                ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(w * 0.5 - 12, h * 0.5);
+                ctx.lineTo(w * 0.5 + 12, h * 0.5);
+                ctx.moveTo(w * 0.5, h * 0.5 - 12);
+                ctx.lineTo(w * 0.5, h * 0.5 + 12);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(2, 6, 23, 0.75)';
+                ctx.fillRect(8, 8, 138, 18);
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = '9px monospace';
+                ctx.fillText(`REC ● ${new Date().toLocaleTimeString('es-CL')}`, 14, 20);
+            }
+
+            sys.animFrameId = requestAnimationFrame(window.renderCerroVisionCanvasLoop);
+        };
+
+        window.initCerroCamerasAndDrone = function() {
+            const sys = window.cerroVisionSystem;
+            window.ensureCerroCameraMapMarkers();
+            window.renderCerroCamerasList();
+            window.updateCerroVisionHeader();
+            if (!sys.animFrameId) {
+                sys.animFrameId = requestAnimationFrame(window.renderCerroVisionCanvasLoop);
+            }
+        };
+
+        // Inicializar marcadores de cámaras y dron en cuanto el mapa de cuenca esté listo
+        setTimeout(() => {
+            if (typeof window.initCerroCamerasAndDrone === 'function') {
+                window.initCerroCamerasAndDrone();
+            }
+        }, 1200);
+
 

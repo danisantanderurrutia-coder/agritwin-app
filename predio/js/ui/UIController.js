@@ -1765,6 +1765,7 @@ export class UIController {
         <button id="tab_btn_livestock" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'livestock') ? 'active' : ''}" title="Ganadería PRV & Rotación 8 Potreros">🐄 Ganadería</button>
         <button id="tab_btn_perma" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'permaculture') ? 'active' : ''}" title="Zonificación 0 a 5 & Keyline Yeomans">🌱 Permacultura</button>
         <button id="tab_btn_sens" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'sensors') ? 'active' : ''}" title="Red de 15 Sondas FDR IoT">📡 Sensores</button>
+        <button id="tab_btn_cams" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'cameras') ? 'active' : ''}" title="Cámaras Terrestres PTZ & Drones Autónomos">📹 Cámaras</button>
         <button id="tab_btn_weather" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'weather') ? 'active' : ''}" title="Estación Agroclimática & Pronóstico">🌦️ Clima</button>
         <button id="tab_btn_astro" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'astro') ? 'active' : ''}" title="Tracker Solar 3D & Mareas">🧭 Sol</button>
         <button id="tab_btn_feat" class="tab-btn ${(!hasEntity && this.activeHouseTab === 'features') ? 'active' : ''}" title="Features Prediales & WUI">⚡ Features</button>
@@ -1783,6 +1784,7 @@ export class UIController {
     const btnWeather = document.getElementById('tab_btn_weather');
     const btnAstro = document.getElementById('tab_btn_astro');
     const btnSens = document.getElementById('tab_btn_sens');
+    const btnCams = document.getElementById('tab_btn_cams');
     const btnFeat = document.getElementById('tab_btn_feat');
     const btnEntityDetail = document.getElementById('tab_btn_entity_detail');
 
@@ -1800,6 +1802,7 @@ export class UIController {
     if (btnWeather) btnWeather.addEventListener('click', () => switchToTab('weather'));
     if (btnAstro) btnAstro.addEventListener('click', () => switchToTab('astro'));
     if (btnSens) btnSens.addEventListener('click', () => switchToTab('sensors'));
+    if (btnCams) btnCams.addEventListener('click', () => switchToTab('cameras'));
     if (btnFeat) btnFeat.addEventListener('click', () => switchToTab('features'));
     if (btnEntityDetail && this.selectedEntityProps) {
       btnEntityDetail.addEventListener('click', () => {
@@ -1844,6 +1847,17 @@ export class UIController {
       this.activeHouseTab = 'sensors';
       this.selectedEntityProps = null;
       this.renderMainHouseDashboard();
+    } else if (props.type === 'camera' || props.type === 'drone_dock') {
+      if (window.visionManager) {
+        if (props.id) {
+          const cam = window.visionManager.cameras.find(c => c.id === props.id);
+          if (cam) window.visionManager.activeCamera = cam;
+        }
+        window.visionManager.setPipFeedSource(props.type === 'drone_dock' ? 'drone' : 'ground');
+      }
+      this.activeHouseTab = 'cameras';
+      this.selectedEntityProps = null;
+      this.renderMainHouseDashboard();
     } else if (props.type === 'parcel') {
       this.renderParcelPanel(props);
     } else if (props.type === 'territorial_hex') {
@@ -1873,6 +1887,8 @@ export class UIController {
       tabBody = this.renderAstroOrientationTab();
     } else if (this.activeHouseTab === 'sensors') {
       tabBody = this.renderSensorsTab();
+    } else if (this.activeHouseTab === 'cameras') {
+      tabBody = this.renderCamerasTab();
     } else if (this.activeHouseTab === 'features') {
       tabBody = this.renderFeaturesTab();
     }
@@ -1938,6 +1954,354 @@ export class UIController {
     if (this.activeHouseTab === 'sensors') {
       this.bindSensorTabClickHandlers();
     }
+    if (this.activeHouseTab === 'cameras') {
+      this.bindCamerasTabHandlers();
+    }
+  }
+
+  renderCamerasTab() {
+    const vm = window.visionManager;
+    const dm = window.droneMissionManager;
+    if (vm && !vm.isEnabled) {
+      vm.toggleVisionCameras(true);
+    }
+
+    const cameras = vm?.cameras || [];
+    const activeCam = vm?.activeCamera || cameras[0] || {
+      id: 'CAM-01-NORTE',
+      name: 'CAM-01 • PTZ Solar 4G - Portería & Acceso Norte',
+      role: 'Seguridad Perimetral & Prevención de Intrusión',
+      fov: 48,
+      yaw: 135,
+      pitch: -24,
+      battery: 98,
+      solarWatts: 18.4,
+      network: '4G LTE-M',
+      latencyMs: 195,
+      aiModel: 'YOLOv11-Edge',
+      lastEvent: 'Vigilancia perimetral activa.'
+    };
+    if (vm && !vm.activeCamera && cameras[0]) {
+      vm.activeCamera = cameras[0];
+    }
+
+    const feedMode = vm?.pipFeedSource || 'ground';
+    const isGroundFeed = feedMode === 'ground';
+    const conesVisible = vm ? vm.isEnabled : true;
+    const isClickMode = dm ? !!dm.isClickToDispatchMode : false;
+
+    const camCardsHtml = cameras.map(c => {
+      const isSelected = activeCam && activeCam.id === c.id;
+      const alertBadge = c.alertActive
+        ? `<span class="status-badge critical"><span class="status-dot"></span> ALERTA AI</span>`
+        : `<span class="status-badge optimal"><span class="status-dot"></span> EN LÍNEA</span>`;
+      return `
+        <div class="glass-card" style="padding: 10px 12px; border: 1px solid ${isSelected ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.08)'}; background: ${isSelected ? 'rgba(6,182,212,0.12)' : 'rgba(15,23,42,0.65)'}; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px;">
+            <div>
+              <div style="font-weight: 800; font-size: 12px; color: #fff; display: flex; align-items: center; gap: 6px;">
+                <span>📹</span> <span>${c.name}</span>
+              </div>
+              <div style="font-size: 10px; color: var(--accent-cyan); margin-top: 2px;">${c.role}</div>
+            </div>
+            ${alertBadge}
+          </div>
+
+          <div style="font-size: 10.5px; color: var(--text-secondary); margin-top: 6px; padding: 5px 8px; background: rgba(0,0,0,0.35); border-radius: 6px; border-left: 2px solid ${c.alertActive ? '#ef4444' : '#10b981'};">
+            <strong>🤖 ${c.aiModel}:</strong> ${c.lastEvent}
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px;">
+            <button class="btn-drawer-cam-view" data-cam-id="${c.id}" style="padding: 6px 6px; border-radius: 6px; border: 1px solid ${isSelected && isGroundFeed ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; background: ${isSelected && isGroundFeed ? 'rgba(14,165,233,0.3)' : 'rgba(255,255,255,0.05)'}; color: #fff; font-size: 10px; font-weight: 700; cursor: pointer;">
+              👁️ Ver Cámara
+            </button>
+            <button class="btn-drawer-cam-fly" data-cam-id="${c.id}" style="padding: 6px 6px; border-radius: 6px; border: 1px solid rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); color: #fde047; font-size: 10px; font-weight: 700; cursor: pointer;">
+              📍 Ubicar 3D
+            </button>
+            <button class="btn-drawer-cam-drone" data-cam-id="${c.id}" style="padding: 6px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.45); background: rgba(16,185,129,0.16); color: #6ee7b7; font-size: 10px; font-weight: 800; cursor: pointer;">
+              🚁 Enviar Dron
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <!-- 1. MONITOR EN VIVO DUAL: LO QUE VE LA CÁMARA vs LO QUE VE EL DRON -->
+      <div class="glass-card" style="padding: 10px; border: 1px solid rgba(56, 189, 248, 0.45); background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(8, 12, 22, 0.96));">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px #ef4444;"></span>
+            <span style="font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 0.3px;">MONITOR ÓPTICO 3D EN VIVO</span>
+          </div>
+          <button id="btn-drawer-open-pip" style="padding: 3px 8px; border-radius: 6px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde047; font-size: 9.5px; font-weight: 700; cursor: pointer;" title="Desacoplar en ventana flotante PiP">
+            🗗 Ventana Flotante
+          </button>
+        </div>
+
+        <!-- Selector de Fuente de Video: Cámara Terrestre vs Dron -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+          <button id="btn-drawer-feed-ground" style="padding: 7px 8px; border-radius: 8px; font-size: 10.5px; font-weight: 800; cursor: pointer; border: 1px solid ${isGroundFeed ? '#38bdf8' : 'rgba(255,255,255,0.12)'}; background: ${isGroundFeed ? 'rgba(14, 165, 233, 0.28)' : 'rgba(255,255,255,0.04)'}; color: ${isGroundFeed ? '#fff' : '#94a3b8'};">
+            📹 Lo que ve la Cámara
+          </button>
+          <button id="btn-drawer-feed-drone" style="padding: 7px 8px; border-radius: 8px; font-size: 10.5px; font-weight: 800; cursor: pointer; border: 1px solid ${!isGroundFeed ? '#10b981' : 'rgba(255,255,255,0.12)'}; background: ${!isGroundFeed ? 'rgba(16, 185, 129, 0.28)' : 'rgba(255,255,255,0.04)'}; color: ${!isGroundFeed ? '#fff' : '#94a3b8'};">
+            🚁 Lo que ve el Dron
+          </button>
+        </div>
+
+        <!-- Lienzo de Video Sintético + Render 3D en Tiempo Real -->
+        <div style="position: relative; width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid rgba(56, 189, 248, 0.35); background: #000;">
+          <canvas id="drawer-vision-canvas" width="380" height="215" style="width: 100%; height: auto; display: block;"></canvas>
+        </div>
+
+        <!-- Telemetría Rápida de Lente / Dron -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; font-size: 10px; text-align: center;">
+          <div style="background: rgba(255,255,255,0.04); padding: 5px; border-radius: 6px;">
+            <div style="color: var(--text-muted); font-size: 8.5px; text-transform: uppercase;">Cámara Activa</div>
+            <div style="color: #38bdf8; font-weight: 800; font-family: monospace;">${activeCam.id}</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 5px; border-radius: 6px;">
+            <div style="color: var(--text-muted); font-size: 8.5px; text-transform: uppercase;">Orientación PTZ</div>
+            <div id="drawer-cam-ptz-val" style="color: #fde047; font-weight: 800; font-family: monospace;">${Math.round(activeCam.yaw)}° / ${Math.round(activeCam.pitch)}°</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 5px; border-radius: 6px;">
+            <div style="color: var(--text-muted); font-size: 8.5px; text-transform: uppercase;">Batería / Red</div>
+            <div style="color: #10b981; font-weight: 800; font-family: monospace;">${activeCam.battery}% • 4G</div>
+          </div>
+        </div>
+
+        <!-- Controles PTZ para girar la cámara en vivo y botones de acción -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <span style="font-size: 9.5px; color: var(--text-muted); font-weight: 700; margin-right: 2px;">Mover PTZ:</span>
+            <button id="btn-drawer-ptz-left" style="padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #fff; cursor: pointer; font-size: 10px;" title="Girar Izquierda">◀</button>
+            <button id="btn-drawer-ptz-up" style="padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #fff; cursor: pointer; font-size: 10px;" title="Inclinar Arriba">▲</button>
+            <button id="btn-drawer-ptz-center" style="padding: 4px 8px; border-radius: 5px; background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.4); color: #fde047; cursor: pointer; font-size: 10px;" title="Centrar Lente">🎯</button>
+            <button id="btn-drawer-ptz-down" style="padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #fff; cursor: pointer; font-size: 10px;" title="Inclinar Abajo">▼</button>
+            <button id="btn-drawer-ptz-right" style="padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #fff; cursor: pointer; font-size: 10px;" title="Girar Derecha">▶</button>
+          </div>
+          <button id="btn-drawer-sim-alert" style="padding: 5px 8px; border-radius: 6px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.45); color: #fca5a5; font-size: 9.5px; font-weight: 700; cursor: pointer;">
+            🚨 Simular AI
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. CENTRO DE MANDO Y DESPACHO DE DRONES (¿DÓNDE ENVIAR EL DRON?) -->
+      <div class="glass-card" style="margin-top: 10px; padding: 12px; border-left: 3px solid #10b981;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-weight: 800; font-size: 12px; color: #6ee7b7; display: flex; align-items: center; gap: 6px;">
+            <span>🚁</span> <span>DJI Dock 2 • ¿A dónde enviar el Dron?</span>
+          </div>
+          <span id="drawer-drone-state-badge" style="font-size: 9.5px; font-family: monospace; color: #38bdf8; font-weight: 700;">🟢 En Hangar (Listo)</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; font-size: 10px;">
+          <div style="background: rgba(255,255,255,0.03); padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Altitud Dron:</span>
+            <strong id="drawer-drone-alt-val" style="color: #fde047; font-family: monospace;">0.9 m AGL</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Batería RTK:</span>
+            <strong id="drawer-drone-bat-val" style="color: #10b981; font-family: monospace;">98%</strong>
+          </div>
+        </div>
+
+        <div style="font-size: 10px; color: var(--text-secondary); margin-top: 8px; margin-bottom: 6px; font-weight: 600;">
+          📍 Enviar Dron en Vuelo Directo (y ver su cámara aérea):
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <button class="btn-drawer-drone-preset" data-zone="CAM-01-NORTE" style="padding: 6px 8px; border-radius: 6px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #d1fae5; font-size: 10px; font-weight: 700; cursor: pointer; text-align: left;">
+            🚁 A Portería Norte
+          </button>
+          <button class="btn-drawer-drone-preset" data-zone="CAM-02-DGA" style="padding: 6px 8px; border-radius: 6px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #d1fae5; font-size: 10px; font-weight: 700; cursor: pointer; text-align: left;">
+            🚁 A Compuerta DGA
+          </button>
+          <button class="btn-drawer-drone-preset" data-zone="CAM-03-FAUNA" style="padding: 6px 8px; border-radius: 6px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #d1fae5; font-size: 10px; font-weight: 700; cursor: pointer; text-align: left;">
+            🚁 A Quebrada Fauna
+          </button>
+          <button class="btn-drawer-drone-preset" data-zone="CAM-04-PRV" style="padding: 6px 8px; border-radius: 6px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #d1fae5; font-size: 10px; font-weight: 700; cursor: pointer; text-align: left;">
+            🚁 A Potrero Ganado
+          </button>
+          <button class="btn-drawer-drone-preset" data-zone="ZONE-TRANQUE" style="padding: 6px 8px; border-radius: 6px; background: rgba(14,165,233,0.14); border: 1px solid rgba(56,189,248,0.35); color: #bae6fd; font-size: 10px; font-weight: 700; cursor: pointer; text-align: left;">
+            🌊 A Tranque 18.5k m³
+          </button>
+          <button class="btn-drawer-drone-preset" data-zone="ZONE-CEREZOS" style="padding: 6px 8px; border-radius: 6px; background: rgba(245,158,11,0.14); border: 1px solid rgba(245,158,11,0.35); color: #fde68a; font-size: 10px; font-weight: 700; cursor: pointer; text-align: left;">
+            🍒 A Cerezos Cuartel A
+          </button>
+        </div>
+
+        <!-- Botón para hacer clic en cualquier punto del terreno 3D -->
+        <button id="btn-drawer-drone-click-map" style="width: 100%; margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: ${isClickMode ? 'rgba(239, 68, 68, 0.35)' : 'rgba(56, 189, 248, 0.14)'}; border: 1px solid ${isClickMode ? '#ef4444' : 'rgba(56, 189, 248, 0.45)'}; color: ${isClickMode ? '#fecaca' : '#7dd3fc'}; font-size: 10.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <span>🎯</span> ${isClickMode ? 'Haz clic en cualquier punto del Mapa 3D... (Cancelar)' : 'Elegir Punto en Terreno 3D (Clic en Mapa)'}
+        </button>
+
+        <!-- Acciones Globales de Misión -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px;">
+          <button id="btn-drawer-drone-survey" style="padding: 6px; border-radius: 6px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.45); color: #6ee7b7; font-size: 9.5px; font-weight: 800; cursor: pointer;">
+            🛰️ Ortomosaico
+          </button>
+          <button id="btn-drawer-drone-follow" style="padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18); color: #e2e8f0; font-size: 9.5px; font-weight: 700; cursor: pointer;">
+            🎥 Ir al Dron 3D
+          </button>
+          <button id="btn-drawer-drone-rth" style="padding: 6px; border-radius: 6px; background: rgba(245,158,11,0.16); border: 1px solid rgba(245,158,11,0.4); color: #fde047; font-size: 9.5px; font-weight: 800; cursor: pointer;">
+            ↩️ Volver Base
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. INVENTARIO DE LAS 4 CÁMARAS EN EL TERRENO -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 6px;">
+        <div class="future-title" style="color: var(--accent-cyan); margin: 0;">📹 Cámaras Instaladas en el Terreno (4)</div>
+        <button id="btn-drawer-toggle-cones" style="padding: 4px 8px; border-radius: 6px; background: ${conesVisible ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.06)'}; border: 1px solid ${conesVisible ? '#10b981' : 'rgba(255,255,255,0.2)'}; color: ${conesVisible ? '#6ee7b7' : '#94a3b8'}; font-size: 9.5px; font-weight: 700; cursor: pointer;">
+          ${conesVisible ? '🟢 Conos 3D Visibles' : '👁️ Mostrar Conos 3D'}
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        ${camCardsHtml}
+      </div>
+    `;
+  }
+
+  bindCamerasTabHandlers() {
+    const vm = window.visionManager;
+    const dm = window.droneMissionManager;
+
+    const btnFeedGround = document.getElementById('btn-drawer-feed-ground');
+    const btnFeedDrone = document.getElementById('btn-drawer-feed-drone');
+    if (btnFeedGround && vm) {
+      btnFeedGround.addEventListener('click', () => {
+        vm.setPipFeedSource('ground');
+        this.renderMainHouseDashboard();
+      });
+    }
+    if (btnFeedDrone && vm) {
+      btnFeedDrone.addEventListener('click', () => {
+        vm.setPipFeedSource('drone');
+        this.renderMainHouseDashboard();
+      });
+    }
+
+    const btnOpenPip = document.getElementById('btn-drawer-open-pip');
+    if (btnOpenPip && vm) {
+      btnOpenPip.addEventListener('click', () => {
+        vm.openPip(vm.activeCamera || vm.cameras[0]);
+      });
+    }
+
+    // Controles PTZ en vivo
+    const stepPtz = (dyaw, dpitch, reset = false) => {
+      if (!vm) return;
+      const cam = vm.activeCamera || vm.cameras[0];
+      if (!cam) return;
+      if (reset) {
+        vm.updateCameraPTZ(cam.id, 180, -25);
+      } else {
+        vm.updateCameraPTZ(
+          cam.id,
+          cam.yaw + dyaw,
+          Math.max(-60, Math.min(10, cam.pitch + dpitch))
+        );
+      }
+      vm.updatePipContent();
+    };
+
+    document.getElementById('btn-drawer-ptz-left')?.addEventListener('click', () => stepPtz(-10, 0));
+    document.getElementById('btn-drawer-ptz-right')?.addEventListener('click', () => stepPtz(10, 0));
+    document.getElementById('btn-drawer-ptz-up')?.addEventListener('click', () => stepPtz(0, 6));
+    document.getElementById('btn-drawer-ptz-down')?.addEventListener('click', () => stepPtz(0, -6));
+    document.getElementById('btn-drawer-ptz-center')?.addEventListener('click', () => stepPtz(0, 0, true));
+
+    document.getElementById('btn-drawer-sim-alert')?.addEventListener('click', () => {
+      if (!vm) return;
+      const cam = vm.activeCamera || vm.cameras[0];
+      if (!cam) return;
+      if (cam.alertActive) {
+        vm.clearEdgeAiAlert(cam.id);
+      } else {
+        vm.triggerEdgeAiAlert(cam.id);
+      }
+      this.renderMainHouseDashboard();
+    });
+
+    // Toggle conos 3D en mapa
+    document.getElementById('btn-drawer-toggle-cones')?.addEventListener('click', () => {
+      if (!vm) return;
+      vm.toggleVisionCameras();
+      this.renderMainHouseDashboard();
+    });
+
+    // Tarjetas de las 4 cámaras: Ver / Ubicar 3D / Enviar Dron
+    document.querySelectorAll('.btn-drawer-cam-view').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const camId = btn.getAttribute('data-cam-id');
+        if (vm && camId) {
+          vm.selectCamera(camId, { feedSource: 'ground', flyTo: false });
+          this.renderMainHouseDashboard();
+        }
+      });
+    });
+
+    document.querySelectorAll('.btn-drawer-cam-fly').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const camId = btn.getAttribute('data-cam-id');
+        if (vm && camId) {
+          vm.selectCamera(camId, { feedSource: 'ground', flyTo: true });
+          this.renderMainHouseDashboard();
+        }
+      });
+    });
+
+    document.querySelectorAll('.btn-drawer-cam-drone').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const camId = btn.getAttribute('data-cam-id');
+        if (dm && camId) {
+          dm.dispatchToPresetZone(camId);
+          this.renderMainHouseDashboard();
+        }
+      });
+    });
+
+    // Botones de envío rápido de dron a zonas/cámaras
+    document.querySelectorAll('.btn-drawer-drone-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const zone = btn.getAttribute('data-zone');
+        if (dm && zone) {
+          dm.dispatchToPresetZone(zone);
+          this.renderMainHouseDashboard();
+        }
+      });
+    });
+
+    // Elegir punto en terreno 3D con un clic
+    document.getElementById('btn-drawer-drone-click-map')?.addEventListener('click', () => {
+      if (dm) {
+        dm.toggleClickToDispatchMode();
+      }
+    });
+
+    // Ortomosaico / Seguir Dron / RTH
+    document.getElementById('btn-drawer-drone-survey')?.addEventListener('click', () => {
+      if (dm) {
+        dm.startMission();
+        if (vm) vm.setPipFeedSource('drone');
+        this.renderMainHouseDashboard();
+      }
+    });
+
+    document.getElementById('btn-drawer-drone-follow')?.addEventListener('click', () => {
+      if (dm) {
+        dm.flyCameraToDrone();
+      }
+    });
+
+    document.getElementById('btn-drawer-drone-rth')?.addEventListener('click', () => {
+      if (dm && dm.state !== 'docked') {
+        dm.state = 'rth';
+        dm.showToast('↩️ Dron iniciando Retorno Autónomo al Hangar DJI Dock 2 (RTH).');
+      }
+    });
   }
 
   renderMetabolismTab() {

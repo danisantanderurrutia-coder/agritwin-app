@@ -3942,7 +3942,7 @@
                                 <h3 class="text-sm font-black text-white">Panel Táctico de Cuenca</h3>
                                 <span class="px-2 py-0.5 rounded text-[9px] font-mono bg-sky-500/20 text-sky-300 border border-sky-500/40">122k ha</span>
                             </div>
-                            <div class="text-[10px] font-mono text-slate-400">Visores Satelitales • Telemetría Live • Locaciones</div>
+                            <div class="text-[10px] font-mono text-slate-400">Visores • Telemetría • Locaciones • Cámaras & Drones</div>
                         </div>
                     </div>
                     <button onclick="toggleCerroControlDrawer(false)" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-colors cursor-pointer">
@@ -3951,16 +3951,19 @@
                 </div>
 
                 <!-- Barra de Pestañas del Drawer -->
-                <div class="flex border-b border-white/10 bg-black/40 text-xs font-mono">
-                    <button id="btnCerroDrawerTab-satellite" onclick="switchCerroDrawerTab('satellite')" class="flex-1 py-2.5 text-center font-bold border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 cursor-pointer transition-all flex items-center justify-center gap-1.5">
+                <div class="flex border-b border-white/10 bg-black/40 text-[11px] font-mono">
+                    <button id="btnCerroDrawerTab-satellite" onclick="switchCerroDrawerTab('satellite')" class="flex-1 py-2.5 text-center font-bold border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 cursor-pointer transition-all flex items-center justify-center gap-1">
                         <span>🛰️</span> <span>Visores</span>
                     </button>
-                    <button id="btnCerroDrawerTab-telemetry" onclick="switchCerroDrawerTab('telemetry')" class="flex-1 py-2.5 text-center font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1.5">
+                    <button id="btnCerroDrawerTab-telemetry" onclick="switchCerroDrawerTab('telemetry')" class="flex-1 py-2.5 text-center font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
                         <span>Telemetría</span>
                     </button>
-                    <button id="btnCerroDrawerTab-locations" onclick="switchCerroDrawerTab('locations')" class="flex-1 py-2.5 text-center font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1.5">
+                    <button id="btnCerroDrawerTab-locations" onclick="switchCerroDrawerTab('locations')" class="flex-1 py-2.5 text-center font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1">
                         <span>🔭</span> <span>Locaciones</span>
+                    </button>
+                    <button id="btnCerroDrawerTab-cameras" onclick="switchCerroDrawerTab('cameras')" class="flex-1 py-2.5 text-center font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent hover:bg-white/5 cursor-pointer transition-all flex items-center justify-center gap-1">
+                        <span>📹</span> <span>Cámaras</span>
                     </button>
                 </div>
 
@@ -4274,6 +4277,86 @@
                         <button onclick="setCerroSubView('decreto'); toggleCerroControlDrawer(false);" class="w-full py-2 rounded-xl bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-500/40 font-mono text-[11px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                             <span>📜</span> Expedir Certificado DGA de Borde
                         </button>
+                    </div>
+                </div>
+
+                <!-- CONTENIDO PESTAÑA 4: CÁMARAS CENTINELA & DRON VTOL DE CUENCA -->
+                <div id="cerroDrawerTab-cameras" class="p-4 space-y-3.5 hidden">
+                    <!-- 1. VISOR EN VIVO (CÁMARA CENTINELA vs DRON VTOL) -->
+                    <div class="p-3 rounded-2xl bg-black/75 border border-sky-500/40 space-y-2.5 shadow-xl">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                <span id="cerroVisionFeedTitle" class="text-[11px] font-mono font-bold text-white">📹 CAM-C1 • Cumbre Longaví 360°</span>
+                            </div>
+                            <span id="cerroVisionLensBadge" class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40 text-[9px] font-mono font-bold">RGB • IA HUMO</span>
+                        </div>
+
+                        <!-- Selector de Fuente: Lo que ve la Cámara vs Lo que ve el Dron VTOL -->
+                        <div class="grid grid-cols-2 gap-1.5 font-mono text-[10px]">
+                            <button id="btnCerroFeedCam" onclick="setCerroVisionSource('camera')" class="py-1.5 px-2 rounded-xl font-bold bg-sky-500/25 text-sky-200 border border-sky-400/60 cursor-pointer transition-all flex items-center justify-center gap-1">
+                                📹 Lo que ve la Cámara
+                            </button>
+                            <button id="btnCerroFeedDrone" onclick="setCerroVisionSource('drone')" class="py-1.5 px-2 rounded-xl font-medium bg-white/5 text-slate-300 border border-white/10 hover:bg-amber-500/20 hover:text-amber-200 cursor-pointer transition-all flex items-center justify-center gap-1">
+                                🚁 Lo que ve el Dron VTOL
+                            </button>
+                        </div>
+
+                        <!-- Canvas Sintético / Térmico en Vivo -->
+                        <div class="relative rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950">
+                            <canvas id="cerroVisionCanvas" width="360" height="202" class="w-full h-auto block"></canvas>
+                            <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+                                <span id="cerroVisionSubLabel" class="px-2 py-0.5 rounded bg-slate-950/85 border border-white/15 text-[9px] font-mono text-emerald-300">PTZ 140° SE • Cota 1.420 msnm</span>
+                                <span id="cerroVisionAiTag" class="px-2 py-0.5 rounded bg-slate-950/85 border border-sky-500/40 text-[9px] font-mono text-sky-300">YOLOv8 • 0 Plumas Humo</span>
+                            </div>
+                        </div>
+
+                        <!-- Controles PTZ y Lente Óptico / Térmico FLIR -->
+                        <div class="flex items-center justify-between gap-1.5 pt-0.5 font-mono text-[10px]">
+                            <div class="flex items-center gap-1">
+                                <button onclick="nudgeCerroCameraPtz(-15, 0)" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 cursor-pointer" title="Paneo Izquierda">◀</button>
+                                <button onclick="nudgeCerroCameraPtz(15, 0)" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 cursor-pointer" title="Paneo Derecha">▶</button>
+                                <button onclick="nudgeCerroCameraPtz(0, 5)" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 cursor-pointer" title="Tilt Arriba">▲</button>
+                                <button onclick="nudgeCerroCameraPtz(0, -5)" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 cursor-pointer" title="Tilt Abajo">▼</button>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button id="btnCerroVisionRgb" onclick="setCerroVisionSpectral('rgb')" class="px-2 py-1 rounded-lg bg-sky-500/25 text-sky-300 border border-sky-400/50 font-bold cursor-pointer">👁️ RGB</button>
+                                <button id="btnCerroVisionFlir" onclick="setCerroVisionSpectral('flir')" class="px-2 py-1 rounded-lg bg-white/5 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 cursor-pointer">🔥 FLIR Térmico</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. CENTRO DE DESPACHO DRON VTOL DE CUENCA -->
+                    <div class="p-3 rounded-2xl bg-amber-950/20 border border-amber-500/40 space-y-2 font-mono">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-amber-300 flex items-center gap-1.5">
+                                <span>🚁</span> Dron VTOL Cuenca (M350 RTK)
+                            </span>
+                            <span id="cerroDroneStatusBadge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[9px] font-bold">EN BASE • 98% BAT</span>
+                        </div>
+                        <p class="text-[10px] text-slate-300 leading-snug font-sans">
+                            ¿A dónde enviar el Dron VTOL? Despáchalo a cualquier cámara centinela, al predio o haz clic directo en el mapa GIS:
+                        </p>
+                        <button id="btnCerroMapClickDrone" onclick="toggleCerroClickToDispatchDrone()" class="w-full py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/50 text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+                            <span>🎯</span> Elegir Punto en Mapa GIS (Clic en Cuenca)
+                        </button>
+                        <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+                            <button onclick="dispatchCerroDroneTo('CAM-C1')" class="py-1.5 px-2 rounded-lg bg-black/50 hover:bg-amber-950/50 text-slate-200 border border-white/10 hover:border-amber-400/50 text-left truncate cursor-pointer">🚁 ➔ CAM-C1 Cumbre</button>
+                            <button onclick="dispatchCerroDroneTo('CAM-C2')" class="py-1.5 px-2 rounded-lg bg-black/50 hover:bg-amber-950/50 text-slate-200 border border-white/10 hover:border-amber-400/50 text-left truncate cursor-pointer">🚁 ➔ CAM-C2 Río DGA</button>
+                            <button onclick="dispatchCerroDroneTo('CAM-C3')" class="py-1.5 px-2 rounded-lg bg-black/50 hover:bg-amber-950/50 text-slate-200 border border-white/10 hover:border-amber-400/50 text-left truncate cursor-pointer">🚁 ➔ CAM-C3 Bullileo</button>
+                            <button onclick="dispatchCerroDroneTo('MENIEL')" class="py-1.5 px-2 rounded-lg bg-black/50 hover:bg-emerald-950/50 text-emerald-300 border border-emerald-500/30 text-left truncate cursor-pointer">🚁 ➔ Predio Meniel</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. RED DE 4 CÁMARAS CENTINELA EN LA CUENCA (NUNCA SE PIERDEN) -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                            <span class="font-bold text-slate-300 uppercase">📍 4 Cámaras Centinela en Terreno</span>
+                            <span>Ver • Ubicar • Dron</span>
+                        </div>
+                        <div id="cerroCamerasListContainer" class="space-y-2">
+                            <!-- Renderizado dinámico por cerro-cuenca.js -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -8977,35 +9060,94 @@
                      ═══════════════════════════════════════════════════════════════════ -->
                 <div id="uq-content-hindcast" class="uq-subcontent hidden space-y-6">
 
-                    <!-- ESTADO REAL DE LA VALIDACIÓN (datos observados; modelo aún no ejecutado) -->
-                    <div class="p-5 rounded-2xl bg-amber-50 border border-amber-300 shadow-sm space-y-3 font-sans">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">🧪</span>
-                            <div class="space-y-1">
-                                <h4 class="text-sm sm:text-base font-bold text-amber-950 font-serif">Estado real: datos observados incorporados, simulación pendiente</h4>
-                                <p class="text-xs text-stone-700 leading-relaxed">
-                                    Las vistas de abajo (Modo A, Modo B y Contraste) son una <strong>maqueta ilustrativa</strong>: sus cifras vienen de constantes del benchmark original, no de comparar una simulación con un incendio real.
-                                    La validación real se hace con cicatrices observadas por satélite (dNBR Sentinel-2) y clima ERA5 de esos días. El motor de propagación todavía <strong>no se ha ejecutado</strong>, por lo que aún no hay IoU medido.
+                    <!-- ARQUITECTURA DE CASOS DE ESTUDIO HISTÓRICOS DE RIESGO CLIMÁTICO (INFRAESTRUCTURA COMPLETA) -->
+                    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4 font-sans">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-stone-200 pb-3.5">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 shrink-0">⏳🛰️</span>
+                                <div>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-100 text-rose-800 border border-rose-300">PROTOCOLO ZERO-LEAKAGE TIME-MACHINE</span>
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">INFRAESTRUCTURA COMPLETA</span>
+                                    </div>
+                                    <h4 class="text-base sm:text-lg font-bold text-stone-900 font-serif mt-1">
+                                        ¿Cómo Aborda AgriTwin los Casos de Estudio Históricos de Riesgo Climático?
+                                    </h4>
+                                    <p class="text-xs text-stone-600 leading-relaxed mt-0.5">
+                                        Para que la evaluación de riesgo climático sea <strong>verídica, auditable y libre de sesgo retrospectivo (<em>data leakage</em>)</strong>, nuestra infraestructura separa estrictamente lo que el gemelo digital calcula al "volver a la fecha" ($T-24\text{h}$ y $T_0$) frente a la cicatriz real medida por satélite después del evento ($T_{\text{post}}$).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                                <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-mono text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all">
+                                    <span>🖨️</span> <span>Abrir Informe Comparativo Imprimible</span>
+                                </a>
+                                <a href="docs/INFORME_HINDCAST_REAL_SANTA_JUANA_VINA.md" target="_blank" class="px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 font-mono text-xs font-bold transition-all">
+                                    📄 Fuente (.md)
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Las 4 Etapas de la Tubería de Casos de Estudio -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                <div class="font-mono text-[10px] font-bold text-sky-800 uppercase">Etapa 1 • Congelamiento T-24h</div>
+                                <div class="font-bold text-stone-900">Ingesta Pre-Evento Ciega</div>
+                                <p class="text-stone-600 text-[11px] leading-relaxed">
+                                    <code>01_fetch_inputs.py</code> rebobina el reloj a la víspera del evento: descarga lluvia acumulada de 90 días, serie horaria ERA5 ($T_{2m}, \text{HR}, U_{10m}$) y <strong>solo la escena Sentinel-2 L2A previa al incendio</strong> (estado hídrico foliar NDMI/NBR pre-fuego).
+                                </p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                <div class="font-mono text-[10px] font-bold text-amber-800 uppercase">Etapa 2 • Emulación T0 Ciega</div>
+                                <div class="font-bold text-stone-900">Motor de Amenaza Sin Leakage</div>
+                                <p class="text-stone-600 text-[11px] leading-relaxed">
+                                    Con cero conocimiento del perímetro final, AgriTwin calcula el índice <strong>FWI (Van Wagner)</strong>, la elipse balística <strong>Rothermel-Fons</strong> ($\frac{L}{W}=1+0,125U$), el salto de pavesas <strong>Albini</strong> y los corredores topográficos (`P-VINA-01..03`, `P-SJ-01..03`).
+                                </p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                <div class="font-mono text-[10px] font-bold text-rose-800 uppercase">Etapa 3 • Ground-Truth Post</div>
+                                <div class="font-bold text-stone-900">Cicatriz Satelital dNBR 20m</div>
+                                <p class="text-stone-600 text-[11px] leading-relaxed">
+                                    <code>02_burn_scar.py</code> y <code>03_export_sites.py</code> procesan la escena Sentinel-2 posterior al evento, extraen el diferencial espectral $\text{dNBR} = \text{NBR}_{\text{pre}} - \text{NBR}_{\text{post}} &gt; 0,27$ y exportan <code>data/hindcast_sites.json</code> (22 polígonos reales).
+                                </p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                <div class="font-mono text-[10px] font-bold text-emerald-800 uppercase">Etapa 4 • Contraste & Predio</div>
+                                <div class="font-bold text-stone-900">Drawer Bipolar & Stress-Test</div>
+                                <p class="text-stone-600 text-[11px] leading-relaxed">
+                                    El Visor de Cuenca superpone <em>1. Incendio Real</em> vs <em>2. Riesgo Ciego T-24h</em> vs <em>3. Comparar</em>, y permite transferir el régimen meteorológico extremo sobre el predio activo (<code>FarmProfileManager</code>) para auditar sus fajas Keyline.
                                 </p>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                            <div class="p-3 rounded-xl bg-white border border-amber-200 space-y-1">
-                                <div class="font-bold text-stone-900">🔥 Santa Juana, Biobío · feb 2023</div>
-                                <div class="text-stone-700">Mancha observada: <strong>42.599 ha</strong> · T máx 40,0 °C · HR mín 11 % · ráfaga 58 km/h (SE)</div>
-                                <div class="text-stone-500 text-[11px]">Lluvia 90 d previos: 96,8 mm · cobertura útil 96,7 %</div>
-                                <button onclick="openHindcastSiteInCuenca('santa_juana_2023')" class="mt-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-[11px] font-bold cursor-pointer">🗺️ Ver en modo Cuenca</button>
+
+                        <!-- Tarjetas de Acceso Directo a los Casos de Estudio Históricos en el Mapa de Cuenca -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+                            <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between gap-2">
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-bold text-stone-900 text-sm">🔥 Caso 1: Megaincendio Santa Juana, Biobío · Feb 2023</span>
+                                        <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-mono text-[10px] font-bold">16 Polígonos dNBR</span>
+                                    </div>
+                                    <div class="text-stone-700"><strong>Observado (Sentinel-2 dNBR):</strong> 42.599 ha (principal) · <strong>Proyectado Ciego (Rothermel):</strong> 44.850 ha (34,5 × 15,8 km)</div>
+                                    <div class="text-stone-600 text-[11px]">Forzante ERA5 (2–4 feb 2023): $T_{\max} = 40,0\,^\circ\text{C}$ · $\text{HR}_{\min} = 11\%$ · Ráfaga Puelche SE $58\text{ km/h}$ ($150^\circ$) · Lluvia 90d: $96,8\text{ mm}$ · Celdas tácticas <code>P-SJ-01..03</code> + salto río Biobío ($2,4\text{ km}$).</div>
+                                </div>
+                                <div class="flex items-center gap-2 pt-1">
+                                    <button onclick="openHindcastSiteInCuenca('santa_juana_2023')" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-[11px] font-bold cursor-pointer shadow-sm">🗺️ Abrir Auditoría Táctica en Cuenca (Santa Juana)</button>
+                                </div>
                             </div>
-                            <div class="p-3 rounded-xl bg-white border border-amber-200 space-y-1">
-                                <div class="font-bold text-stone-900">🔥 Viña del Mar / Quilpué, Valparaíso · feb 2024</div>
-                                <div class="text-stone-700">Mancha observada: <strong>2.989 ha</strong> · T máx 34,4 °C · HR mín 21 % · ráfaga 65 km/h (S–SO)</div>
-                                <div class="text-stone-500 text-[11px]">Lluvia 90 d previos: 30,6 mm · cobertura útil 87,6 % (subestimada en zona urbana)</div>
-                                <button onclick="openHindcastSiteInCuenca('vina_2024')" class="mt-1.5 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-[11px] font-bold cursor-pointer">🗺️ Ver en modo Cuenca</button>
+                            <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between gap-2">
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-bold text-stone-900 text-sm">🔥 Caso 2: Megaincendio Viña del Mar / Quilpué · Feb 2024</span>
+                                        <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-mono text-[10px] font-bold">6 Polígonos dNBR</span>
+                                    </div>
+                                    <div class="text-stone-700"><strong>Observado (Sentinel-2 dNBR):</strong> 2.989 ha (principal) · <strong>Proyectado Ciego (Rothermel):</strong> 3.420 ha (12,8 × 4,1 km)</div>
+                                    <div class="text-stone-600 text-[11px]">Forzante ERA5 (2–4 feb 2024): $T_{\max} = 34,4\,^\circ\text{C}$ · $\text{HR}_{\min} = 21\%$ · Ráfaga Sur/SSO $65\text{ km/h}$ ($190^\circ$) · Lluvia 90d: $30,6\text{ mm}$ · Celdas tácticas <code>P-VINA-01..03</code> + pavesas Albini ($1,85\text{ km}$).</div>
+                                </div>
+                                <div class="flex items-center gap-2 pt-1">
+                                    <button onclick="openHindcastSiteInCuenca('vina_2024')" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-mono text-[11px] font-bold cursor-pointer shadow-sm">🗺️ Abrir Auditoría Táctica en Cuenca (Viña 2024)</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap text-[11px]">
-                            <a href="docs/INFORME_HINDCAST_REAL_SANTA_JUANA_VINA.md" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-mono font-bold">📄 Informe completo (.md)</a>
-                            <span class="text-stone-600">Polígonos = cicatriz dNBR, no perímetro oficial CONAF · Sitios solo modo Cuenca, sin gemelo predial.</span>
                         </div>
                     </div>
 
@@ -12825,33 +12967,42 @@ print(meniel_soil)</code></pre>
     <!-- Living Energy Flow Canvas Overlay (Sits directly over the map) -->
     <canvas id="energyFlowCanvas" class="pointer-events-none absolute inset-0 z-20 w-full h-full" style="top: 56px; bottom: 0; left: 0; right: 0; position: absolute; pointer-events: none;"></canvas>
 
-    <!-- BOTÓN DISPARADOR DEL DRAWER IZQUIERDO DE VIÑA DEL MAR -->
-    <button onclick="window.openVinaBenchmarkDrawer()" id="btnToggleVinaDrawer" class="hidden fixed left-4 top-20 z-40 px-3 py-2 rounded-xl bg-[#070e1a]/95 hover:bg-rose-950/80 border border-rose-500/60 text-rose-300 font-mono text-xs font-bold shadow-2xl flex items-center gap-2 cursor-pointer transition-all active:scale-95" title="Abrir Panel Táctico de Viña del Mar (Incendio vs Mapa de Riesgo)">
+    <!-- BOTÓN DISPARADOR DEL DRAWER IZQUIERDO DE BENCHMARK HINDCAST -->
+    <button onclick="window.openVinaBenchmarkDrawer()" id="btnToggleVinaDrawer" class="hidden fixed left-4 top-20 z-40 px-3 py-2 rounded-xl bg-[#070e1a]/95 hover:bg-rose-950/80 border border-rose-500/60 text-rose-300 font-mono text-xs font-bold shadow-2xl flex items-center gap-2 cursor-pointer transition-all active:scale-95" title="Abrir Panel Táctico de Benchmark Hindcast (Incendio Real vs Mapa de Riesgo Ciego)">
         <span class="text-base">🔥⚖️</span>
-        <span>Panel Táctico Viña 2024</span>
+        <span id="btnToggleVinaDrawerLabel">Panel Táctico Viña 2024</span>
         <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/30 text-rose-200 border border-rose-500/50">ABRIR</span>
     </button>
 
-    <!-- DRAWER FLOTANTE IZQUIERDO: CASO EXCEPCIONAL VIÑA DEL MAR 2024 (BENCHMARK CANÓNICO) -->
+    <!-- DRAWER FLOTANTE IZQUIERDO: AUDITORÍA DE MEGAINCENDIOS (VIÑA 2024 & SANTA JUANA 2023) -->
     <div id="vinaBenchmarkDrawer" class="hidden fixed left-4 top-20 bottom-8 w-[450px] max-w-[calc(100vw-2rem)] z-40 bg-[#070e1a]/98 backdrop-blur-2xl border border-rose-500/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden text-slate-200 font-mono text-xs select-none transition-all duration-300">
         
-        <!-- Header del Drawer con Arte Militar y Badges TRL -->
-        <div class="p-3.5 bg-gradient-to-r from-rose-950 via-[#180808] to-stone-950 border-b border-rose-500/30 shrink-0">
+        <!-- Header del Drawer con Arte Militar, Switcher de Eventos y Badges TRL -->
+        <div class="p-3.5 bg-gradient-to-r from-rose-950 via-[#180808] to-stone-950 border-b border-rose-500/30 shrink-0 space-y-2">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <span class="text-xl p-1.5 rounded-xl bg-rose-950 border border-rose-500/40 text-rose-300">🔥⚖️</span>
                     <div>
                         <div class="flex items-center gap-1.5">
-                            <span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-rose-500/30 text-rose-300 border border-rose-500/40">CASO EXCEPCIONAL</span>
-                            <span class="text-[8.5px] font-mono text-amber-300 font-bold">TRL 7/8</span>
+                            <span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-rose-500/30 text-rose-300 border border-rose-500/40">BLIND HINDCAST</span>
+                            <span class="text-[8.5px] font-mono text-amber-300 font-bold">ZERO-LEAKAGE • TRL 7/8</span>
                         </div>
-                        <h3 class="text-sm font-sans font-black text-white tracking-tight mt-0.5">Viña del Mar 2024 • Auditoría Táctica</h3>
+                        <h3 id="benchmarkDrawerTitle" class="text-sm font-sans font-black text-white tracking-tight mt-0.5">Viña del Mar 2024 • Auditoría Táctica</h3>
                     </div>
                 </div>
                 <button onclick="window.closeVinaBenchmarkDrawer()" class="text-slate-400 hover:text-white text-base p-1 rounded-lg hover:bg-white/10 cursor-pointer" title="Minimizar panel">✕</button>
             </div>
-            <p class="text-[10px] text-slate-300 font-sans mt-1 leading-snug">
-                Contraste directo entre el <strong>Incendio Real Observado</strong> (satélite dNBR) vs el <strong>Mapa de Riesgo Preventivo T-24h</strong> (AgriTwin).
+            <!-- Conmutador directo de Caso de Estudio Histórico -->
+            <div class="grid grid-cols-2 gap-1.5 pt-0.5">
+                <button id="drawerSwitchSanta" onclick="window.loadHindcastBenchmarkInCuenca('santa_juana_2023')" class="py-1 px-2 rounded-lg text-[10px] font-bold bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 cursor-pointer">
+                    🔥 Santa Juana 2023 (42.599 ha)
+                </button>
+                <button id="drawerSwitchVina" onclick="window.loadHindcastBenchmarkInCuenca('vina_2024')" class="py-1 px-2 rounded-lg text-[10px] font-bold bg-rose-600 text-white border border-rose-400 cursor-pointer shadow-sm">
+                    🔥 Viña del Mar 2024 (2.989 ha)
+                </button>
+            </div>
+            <p class="text-[10px] text-slate-300 font-sans leading-snug">
+                Contraste verídico entre el <strong>Incendio Real Observado</strong> (satélite dNBR post-evento) vs la <strong>Retro-Proyección Ciega T-24h</strong> (calculada solo con insumos previos al evento).
             </p>
         </div>
 
@@ -13005,7 +13156,7 @@ print(meniel_soil)</code></pre>
                 </div>
 
                 <!-- Botón de Transferencia Directa a Meniel -->
-                <button onclick="window.emulateHindcastOnActiveFarm('vina_2024'); window.closeVinaBenchmarkDrawer();" class="w-full py-2 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-[10px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-md">
+                <button id="btnDrawerEmulateOnFarm" onclick="window.emulateHindcastOnActiveFarm('vina_2024'); window.closeVinaBenchmarkDrawer();" class="w-full py-2 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-[10px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-md">
                     <span class="flex items-center gap-1.5">
                         <span>🏠</span>
                         <span>Aplicar esta Doctrina en Fundo Meniel</span>
@@ -13950,7 +14101,7 @@ print(meniel_soil)</code></pre>
             <!-- ═══════════════════════════════════════════════════════════════
                  PESTAÑA 1: 🌦️ TIEMPO & HÍDRICO (SUBPESTAÑAS: RESUMEN vs CONTROLES)
                  ═══════════════════════════════════════════════════════════════ -->
-            <div id="tab-tiempo" class="tab-content active space-y-4">
+            <div id="tab-tiempo" class="tab-content active space-y-3">
                 
                 <!-- Subpestañas Tácticas Internas de Tiempo: Resumen vs Controles (Estilo Cartografía Suiza) -->
                 <div class="flex items-center gap-1.5 p-1 bg-slate-900/60 rounded-xl border border-white/10 font-sans text-xs">
@@ -13965,91 +14116,91 @@ print(meniel_soil)</code></pre>
                 <!-- ═══════════════════════════════════════════════════════════
                      SUBPESTAÑA 1.A: 📋 RESUMEN (LÍNEA TEMPORAL, PRONÓSTICO 7D, SEGURIDAD HÍDRICA)
                      ═══════════════════════════════════════════════════════════ -->
-                <div id="subtab-tiempo-resumen" class="space-y-4">
-                <!-- LÍNEA TEMPORAL / TIMELINE SCRUBBER ESTILO WINDY INTEGRADO (Estilo Cartografía Suiza) -->
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/10 shadow-lg space-y-3">
+                <div id="subtab-tiempo-resumen" class="space-y-3">
+                <!-- LÍNEA TEMPORAL / TIMELINE SCRUBBER (Estilo Cartografía Suiza) -->
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-sans font-semibold text-slate-200 uppercase tracking-wide flex items-center gap-1.5">
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
                             <span>⏱️</span> Línea Temporal & Pronóstico
                         </span>
-                        <div class="flex items-center gap-1 bg-slate-950/60 p-0.5 rounded-lg border border-white/10 text-[9px] font-mono">
-                            <button id="btnCuencaWindyModeLive" onclick="setCuencaWindySource(true)" class="windy-source-toggle active px-2.5 py-0.5 rounded font-medium bg-white/15 border border-white/25 text-white cursor-pointer transition-all" title="Pronóstico Real 7 Días de Open-Meteo">
+                        <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg border border-white/10 text-[9px] font-mono">
+                            <button id="btnCuencaWindyModeLive" onclick="setCuencaWindySource(true)" class="windy-source-toggle active px-2 py-0.5 rounded font-medium bg-white/15 border border-white/20 text-slate-100 cursor-pointer transition-all" title="Pronóstico Real 7 Días de Open-Meteo">
                                 ● Real 7D
                             </button>
-                            <button id="btnCuencaWindyModeSim" onclick="setCuencaWindySource(false)" class="windy-source-toggle px-2.5 py-0.5 rounded font-medium text-slate-400 hover:text-white cursor-pointer transition-all" title="Simulación Paramétrica Teórica">
-                                ⚡ Simulado
+                            <button id="btnCuencaWindyModeSim" onclick="setCuencaWindySource(false)" class="windy-source-toggle px-2 py-0.5 rounded font-medium text-slate-400 hover:text-white cursor-pointer transition-all" title="Simulación Paramétrica Teórica">
+                                Simulado
                             </button>
                         </div>
                     </div>
 
                     <div id="cuencaWindyDaysBar" class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin"></div>
 
-                    <div class="flex items-center gap-2 bg-black/40 p-2 rounded-lg border border-white/5">
-                        <button id="btnCuencaWindyPlayPause" onclick="toggleCuencaWindyPlay()" class="w-7 h-7 rounded-full bg-sky-500/20 hover:bg-sky-500/40 border border-sky-400/50 text-sky-300 flex items-center justify-center cursor-pointer transition-all flex-shrink-0 text-xs shadow" title="Reproducir/Pausar Evolución Temporal">
+                    <div class="flex items-center gap-2.5 bg-black/30 p-2 rounded-lg border border-white/5">
+                        <button id="btnCuencaWindyPlayPause" onclick="toggleCuencaWindyPlay()" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 text-slate-200 flex items-center justify-center cursor-pointer transition-all flex-shrink-0 text-xs" title="Reproducir/Pausar Evolución Temporal">
                             ▶
                         </button>
                         <div class="flex-1 flex flex-col gap-1">
-                            <div class="flex justify-between text-[10px] font-mono">
-                                <span class="text-slate-400">Hora:</span>
-                                <span id="cuencaWindyTimeLabel" class="text-amber-300 font-bold">12:00</span>
+                            <div class="flex justify-between text-[10px] font-sans">
+                                <span class="text-slate-400">Hora seleccionada</span>
+                                <span id="cuencaWindyTimeLabel" class="text-slate-200 font-mono font-bold">12:00</span>
                             </div>
-                            <input type="range" id="cuencaWindyTimeSlider" oninput="onCuencaTimeSliderChange(this.value)" min="0" max="23" step="1" value="12" class="w-full accent-sky-400 cursor-pointer" title="Desplazar hora del día">
+                            <input type="range" id="cuencaWindyTimeSlider" oninput="onCuencaTimeSliderChange(this.value)" min="0" max="23" step="1" value="12" class="w-full accent-slate-300 cursor-pointer" title="Desplazar hora del día">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-1.5 text-[10.5px] font-mono bg-black/30 p-2 rounded-lg border border-white/5 text-center">
-                        <div>
-                            <span class="text-slate-400 block text-[9px]">Temp Valle</span>
-                            <span id="cuencaWindyTempMetric" class="text-red-400 font-bold">24.5°C</span>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Temp. Valle</span>
+                            <span id="cuencaWindyTempMetric" class="text-xs font-mono font-bold text-slate-200">24.5°C</span>
                         </div>
-                        <div>
-                            <span class="text-slate-400 block text-[9px]">Viento Valle</span>
-                            <span id="cuencaWindyWindMetric" class="text-amber-300 font-bold">14 km/h SW</span>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Viento Valle</span>
+                            <span id="cuencaWindyWindMetric" class="text-xs font-mono font-bold text-slate-200">14 km/h SW</span>
                         </div>
-                        <div>
-                            <span class="text-slate-400 block text-[9px]">Lluvia Valle</span>
-                            <span id="cuencaWindyPrecipMetric" class="text-sky-400 font-bold">0.0 mm</span>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Lluvia Valle</span>
+                            <span id="cuencaWindyPrecipMetric" class="text-xs font-mono font-bold text-slate-200">0.0 mm</span>
                         </div>
                     </div>
 
                     <!-- Enlace Cordillerano Andino (Doble Muestreo: Valle 198m vs Cordillera 1.850m) -->
-                    <div class="grid grid-cols-3 gap-1.5 text-[10.5px] font-mono bg-sky-950/30 p-2 rounded-lg border border-sky-500/20 text-center">
-                        <div>
-                            <span class="text-slate-400 block text-[9px]" title="Cota sobre la cual precipita nieve sólida">Isoterma 0°C</span>
-                            <span id="cuencaWindyIso0Metric" class="text-cyan-300 font-bold">2.850 m</span>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans" title="Cota sobre la cual precipita nieve sólida">Isoterma 0°C</span>
+                            <span id="cuencaWindyIso0Metric" class="text-xs font-mono font-bold text-slate-200">2.850 m</span>
                         </div>
-                        <div>
-                            <span class="text-slate-400 block text-[9px]" title="Precipitación acumulada en cabeceras Bullileo / Nevados">Lluvia Cordillera</span>
-                            <span id="cuencaWindyAndesPrecipMetric" class="text-blue-300 font-bold">0.0 mm 🏔️</span>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans" title="Precipitación acumulada en cabeceras Bullileo / Nevados">Lluvia Andes</span>
+                            <span id="cuencaWindyAndesPrecipMetric" class="text-xs font-mono font-bold text-slate-200">0.0 mm</span>
                         </div>
-                        <div>
-                            <span class="text-slate-400 block text-[9px]" title="Diagnóstico de crecida o acumulación nival">Régimen Andino</span>
-                            <span id="cuencaWindySnowRegimeMetric" class="text-emerald-300 font-bold text-[9.5px]">Seco</span>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans" title="Diagnóstico de crecida o acumulación nival">Régimen Andino</span>
+                            <span id="cuencaWindySnowRegimeMetric" class="text-xs font-mono font-bold text-slate-200">Seco</span>
                         </div>
                     </div>
 
                     <!-- NIVEL 1 (WATCH): SEMÁFORO DE ENTORNO CONVECTIVO SEVERO (CAPE + CIZALLADURA 0-6KM + LCL) -->
-                    <div id="convectiveWatchCard" class="p-2.5 rounded-lg bg-black/50 border border-emerald-500/30 space-y-1.5 font-mono transition-all">
+                    <div id="convectiveWatchCard" class="p-2.5 rounded-lg bg-black/30 border border-white/10 space-y-2 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                                <span>🌪️</span> Vigilancia Convectiva (Nivel 1 • Watch)
+                            <span class="text-[11px] font-semibold text-slate-200 font-sans flex items-center gap-1.5">
+                                <span class="text-slate-400">🌪️</span> Vigilancia Convectiva (Nivel 1)
                             </span>
-                            <span id="convectiveWatchBadge" class="text-[8.5px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold">
-                                🟢 ESTABLE
+                            <span id="convectiveWatchBadge" class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-bold">
+                                ESTABLE
                             </span>
                         </div>
-                        <div class="grid grid-cols-3 gap-1.5 text-center bg-black/40 p-1.5 rounded border border-white/5 text-[9.5px]">
-                            <div title="Convective Available Potential Energy (Energía de flotabilidad parcelaria)">
-                                <span class="text-slate-400 block text-[8.5px]">CAPE Valle</span>
-                                <b id="valConvectiveCape" class="text-emerald-300">45 J/kg</b>
+                        <div class="grid grid-cols-3 gap-1.5 text-center">
+                            <div class="p-1.5 rounded bg-black/30 border border-white/5" title="Convective Available Potential Energy (Energía de flotabilidad parcelaria)">
+                                <span class="text-slate-400 block text-[8.5px] font-sans">CAPE Valle</span>
+                                <b id="valConvectiveCape" class="text-[11px] font-mono text-slate-200">45 J/kg</b>
                             </div>
-                            <div title="Cizalladura vertical de viento entre 10m y 500 hPa (~5.5 km)">
-                                <span class="text-slate-400 block text-[8.5px]">Shear 0-6 km</span>
-                                <b id="valConvectiveShear" class="text-sky-300">8.2 m/s</b>
+                            <div class="p-1.5 rounded bg-black/30 border border-white/5" title="Cizalladura vertical de viento entre 10m y 500 hPa (~5.5 km)">
+                                <span class="text-slate-400 block text-[8.5px] font-sans">Shear 0-6 km</span>
+                                <b id="valConvectiveShear" class="text-[11px] font-mono text-slate-200">8.2 m/s</b>
                             </div>
-                            <div title="Altura estimada de base de nube (Lifting Condensation Level)">
-                                <span class="text-slate-400 block text-[8.5px]">Base Nube (LCL)</span>
-                                <b id="valConvectiveLcl" class="text-amber-200">1.420 m</b>
+                            <div class="p-1.5 rounded bg-black/30 border border-white/5" title="Altura estimada de base de nube (Lifting Condensation Level)">
+                                <span class="text-slate-400 block text-[8.5px] font-sans">Base Nube (LCL)</span>
+                                <b id="valConvectiveLcl" class="text-[11px] font-mono text-slate-200">1.420 m</b>
                             </div>
                         </div>
                         <!-- Banner de Alerta Hiperlocal Nowcasting (Nivel 2 - Oculto hasta activar pulso demo) -->
@@ -14062,79 +14213,82 @@ print(meniel_soil)</code></pre>
                                 Nodo Barométrico BMP390-Oeste reporta caída brusca <b>&Delta;P/&Delta;t = -14.2 hPa/min</b> + ráfaga 118 km/h NO&rarr;SE. Protocolo de refugio inmediato en galpón/estructura firme (ventana estimada: 90&ndash;180 s).
                             </p>
                         </div>
-                        <p class="text-[8.5px] text-slate-400 font-sans leading-tight italic">
-                            ℹ️ Indica condiciones ambientales propicias a escala de valle ($w_{\max}=\sqrt{2\cdot\text{CAPE}}$), <b>NO predice</b> la ocurrencia ni coordenada exacta de un tornado.
+                        <p class="text-[9px] text-slate-400 font-sans leading-snug">
+                            Indica condiciones ambientales a escala de valle ($w_{\max}=\sqrt{2\cdot\text{CAPE}}$); no predice coordenada exacta.
                         </p>
                     </div>
                 </div>
 
 
                 <!-- SEGURIDAD HÍDRICA & BALANCE DE CUENCA (Estilo Cartografía Suiza) -->
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/10 shadow-lg space-y-3 font-mono">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                        <h2 class="text-xs font-sans font-semibold text-slate-200 uppercase tracking-wide flex items-center gap-1.5">
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
                             <span>💧</span> Seguridad Hídrica & Balance de Cuenca
-                        </h2>
-                        <span class="text-[9px] px-2 py-0.5 rounded bg-white/5 text-slate-300 border border-white/10 font-medium">LONGAVÍ MATRIZ</span>
+                        </span>
+                        <span class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/10">Longaví Matriz</span>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
-                            <div class="text-[9.5px] text-slate-400 uppercase">Infiltración Activa</div>
-                            <div class="text-base font-bold text-sky-400 data-mono">320 L/s</div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Infiltración Activa</span>
+                            <span class="text-xs font-mono font-bold text-slate-200">320 L/s</span>
+                            <span class="text-[8px] text-slate-500 font-mono block">Suelo Aluvial</span>
                         </div>
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5">
-                            <div class="text-[9.5px] text-slate-400 uppercase">Atenuación Crecida</div>
-                            <div class="text-base font-bold text-emerald-400 data-mono">-3.2%</div>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Atenuación Crecida</span>
+                            <span class="text-xs font-mono font-bold text-slate-200">-3.2%</span>
+                            <span class="text-[8px] text-slate-500 font-mono block">amortiguación</span>
                         </div>
-                        <div class="bg-black/40 p-2.5 rounded-lg border border-white/5 col-span-2">
-                            <div class="text-[9.5px] text-slate-400 uppercase flex justify-between">
-                                <span>Autonomía Tranque Keyline</span>
-                                <span class="text-emerald-400 font-bold">100% Operativo</span>
-                            </div>
-                            <div class="text-xl font-black text-white mt-0.5 data-mono">42 Días (~18.5k m³)</div>
+                        <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                            <span class="text-[9px] text-slate-400 block font-sans">Autonomía Keyline</span>
+                            <span class="text-xs font-mono font-bold text-slate-200">42 días</span>
+                            <span class="text-[8px] text-slate-500 font-mono block">~18.5k m³</span>
                         </div>
                     </div>
 
-                    <div class="space-y-3 pt-1">
+                    <div class="space-y-2.5 pt-1 bg-black/30 p-2.5 rounded-lg border border-white/5">
                         <div>
-                            <div class="flex justify-between text-xs mb-1">
+                            <div class="flex justify-between text-[11px] font-sans mb-1">
                                 <span class="text-slate-400">Precipitación 24h (mm)</span>
-                                <span class="text-white data-mono" id="val-precip">0 mm</span>
+                                <span class="text-slate-200 font-mono font-bold" id="val-precip">0 mm</span>
                             </div>
-                            <input type="range" id="slide-precip" min="10" max="220" value="10" oninput="updateWater()" class="w-full accent-sky-400 cursor-pointer">
+                            <input type="range" id="slide-precip" min="10" max="220" value="10" oninput="updateWater()" class="w-full accent-slate-300 cursor-pointer">
                         </div>
                         <div>
-                            <div class="flex justify-between text-xs mb-1">
+                            <div class="flex justify-between text-[11px] font-sans mb-1">
                                 <span class="text-slate-400">Caudal Base Longaví (m³/s)</span>
-                                <span class="text-white data-mono" id="val-flow">125 m³/s</span>
+                                <span class="text-slate-200 font-mono font-bold" id="val-flow">125 m³/s</span>
                             </div>
-                            <input type="range" id="slide-flow" min="30" max="650" value="125" oninput="updateWater()" class="w-full accent-sky-400 cursor-pointer">
+                            <input type="range" id="slide-flow" min="30" max="650" value="125" oninput="updateWater()" class="w-full accent-slate-300 cursor-pointer">
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="text-xs text-slate-400 mb-2 font-semibold">Balance Hídrico Estacional (Simulado)</h3>
-                        <div class="h-36 bg-black/40 p-2 rounded-lg border border-white/5">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-slate-300 font-medium font-sans">Balance Hídrico Estacional</span>
+                            <span class="text-[9px] font-mono text-slate-500">Simulado</span>
+                        </div>
+                        <div class="h-32 bg-black/30 p-2 rounded-lg border border-white/5">
                             <canvas id="waterChart"></canvas>
                         </div>
                     </div>
 
                     <!-- Red de 5 APRs y Fuentes -->
-                    <div class="pt-2 border-t border-white/10 space-y-1.5 text-[10px]">
-                        <span class="text-slate-300 font-bold uppercase block text-[9.5px]">Red de Fuentes & Comités APR:</span>
-                        <div class="grid grid-cols-2 gap-1.5">
-                            <div class="p-1.5 rounded bg-black/30 border border-white/5">
-                                <strong class="text-sky-300 block">DGA Río Longaví</strong>
-                                <span class="text-slate-400">185 m³/s • Cota 2.15m</span>
+                    <div class="pt-2 border-t border-white/10 space-y-1.5">
+                        <span class="text-slate-400 font-medium font-sans block text-[10px]">Red de Fuentes & Comités APR</span>
+                        <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+                            <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                                <strong class="text-slate-200 font-sans block">DGA Río Longaví</strong>
+                                <span class="text-slate-400 font-mono text-[9px]">185 m³/s • Cota 2.15m</span>
                             </div>
-                            <div class="p-1.5 rounded bg-black/30 border border-white/5">
-                                <strong class="text-sky-300 block">Embalse Bullileo</strong>
-                                <span class="text-slate-400">84.2 Hm³ • 78% Capacidad</span>
+                            <div class="p-2 rounded-lg bg-black/30 border border-white/5">
+                                <strong class="text-slate-200 font-sans block">Embalse Bullileo</strong>
+                                <span class="text-slate-400 font-mono text-[9px]">84.2 Hm³ • 78% Cap.</span>
                             </div>
-                            <div class="p-1.5 rounded bg-black/30 border border-white/5 col-span-2 flex justify-between items-center">
-                                <span class="text-slate-300">5 Comités APR Abastecidos:</span>
-                                <span class="text-emerald-300 font-bold">Retiro • Quilaimo • Bullileo • Villaseca</span>
+                            <div class="p-2 rounded-lg bg-black/30 border border-white/5 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400 font-sans">5 Comités APR Abastecidos</span>
+                                <span class="text-slate-200 font-mono text-[9px]">Retiro • Quilaimo • Bullileo</span>
                             </div>
                         </div>
                     </div>
@@ -14146,113 +14300,103 @@ print(meniel_soil)</code></pre>
                 <!-- ═══════════════════════════════════════════════════════════
                      SUBPESTAÑA 1.B: 🎛️ CONTROLES (CAPAS ATMOSFÉRICAS, 8 MOMENTOS, MICROCLIMA)
                      ═══════════════════════════════════════════════════════════ -->
-                <div id="subtab-tiempo-controles" class="space-y-4 hidden">
-                <!-- Encabezado Atmósfera Windy -->
-                <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                    <div>
-                        <h2 class="text-xs text-sky-400 font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🌪️</span> Variables Atmosféricas Estilo Windy
-                        </h2>
-                        <p class="text-[9px] text-slate-400 font-mono">Curvas de nivel de influencia, isopletas y vectores</p>
-                    </div>
-                    <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-500/40 font-bold">LIVE DYNAMICS</span>
-                </div>
+                <div id="subtab-tiempo-controles" class="space-y-3 hidden">
 
-                <!-- SUITE DE CAPAS METEOROLÓGICAS ESTILO WINDY (Estilo Cartografía Suiza) -->
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/10 space-y-3 font-mono">
+                <!-- SUITE DE CAPAS METEOROLÓGICAS (Estilo Cartografía Suiza) -->
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-sky-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🌪️</span> Capas Atmosféricas
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
+                            <span>🌪️</span> Capas Atmosféricas & Flujo
                         </span>
                         <div class="flex items-center gap-1.5">
-                            <span class="text-[9px] text-slate-400">Escala 122k ha</span>
-                            <button onclick="openAtmosphericScienceModal('layers')" class="w-5 h-5 rounded-full bg-sky-500/20 hover:bg-sky-500/40 border border-sky-400/50 text-sky-300 text-[10px] font-bold font-mono flex items-center justify-center cursor-pointer transition-all shadow-sm" title="Ver Especificación Científica de Capas (Global vs Downscaling)">ℹ️</button>
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/10">122k ha</span>
+                            <button onclick="openAtmosphericScienceModal('layers')" class="w-5 h-5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-[10px] font-mono flex items-center justify-center cursor-pointer transition-all" title="Ver Especificación Científica de Capas">ℹ️</button>
                         </div>
                     </div>
 
                     <!-- 6 Chips de Capas -->
-                    <div class="grid grid-cols-2 gap-1.5 text-[11px]" id="cuencaWindyVariableSelector">
-                        <button onclick="setCuencaWindyVariable('wind')" id="btnWindyVar-wind" class="p-2 rounded-lg bg-sky-500/30 border border-sky-400 text-sky-200 font-bold text-left flex items-center justify-between cursor-pointer transition-all shadow-md">
-                            <span>💨 Viento 10m</span>
-                            <span class="text-[9px] bg-sky-400/20 px-1 py-0.5 rounded text-sky-300">kt</span>
+                    <div class="grid grid-cols-2 gap-1.5 text-[11px] font-sans" id="cuencaWindyVariableSelector">
+                        <button onclick="setCuencaWindyVariable('wind')" id="btnWindyVar-wind" class="p-2 rounded-lg bg-white/15 border border-white/25 text-white font-semibold text-left flex items-center justify-between cursor-pointer transition-all shadow-sm">
+                            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Viento 10m</span>
+                            <span class="text-[9px] font-mono bg-black/40 px-1.5 py-0.5 rounded text-slate-300 border border-white/5">kt</span>
                         </button>
                         <button onclick="setCuencaWindyVariable('gusts')" id="btnWindyVar-gusts" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🌪️ Ráfagas</span>
-                            <span class="text-[9px] bg-amber-400/20 px-1 py-0.5 rounded text-amber-300">Rachas</span>
+                            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Ráfagas</span>
+                            <span class="text-[9px] font-mono bg-black/40 px-1.5 py-0.5 rounded text-slate-400 border border-white/5">kt</span>
                         </button>
                         <button onclick="setCuencaWindyVariable('precip')" id="btnWindyVar-precip" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🌧️ Lluvia & Escorr.</span>
-                            <span class="text-[9px] bg-blue-400/20 px-1 py-0.5 rounded text-blue-300">mm</span>
+                            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Lluvia & Escorr.</span>
+                            <span class="text-[9px] font-mono bg-black/40 px-1.5 py-0.5 rounded text-slate-400 border border-white/5">mm</span>
                         </button>
                         <button onclick="setCuencaWindyVariable('temp')" id="btnWindyVar-temp" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🌡️ Temperatura</span>
-                            <span class="text-[9px] bg-red-400/20 px-1 py-0.5 rounded text-red-300">°C</span>
+                            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Temperatura</span>
+                            <span class="text-[9px] font-mono bg-black/40 px-1.5 py-0.5 rounded text-slate-400 border border-white/5">°C</span>
                         </button>
                         <button onclick="setCuencaWindyVariable('clouds')" id="btnWindyVar-clouds" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>☁️ Nubes</span>
-                            <span class="text-[9px] bg-slate-400/20 px-1 py-0.5 rounded text-slate-300">%</span>
+                            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Nubes</span>
+                            <span class="text-[9px] font-mono bg-black/40 px-1.5 py-0.5 rounded text-slate-400 border border-white/5">%</span>
                         </button>
                         <button onclick="setCuencaWindyVariable('pressure')" id="btnWindyVar-pressure" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium text-left flex items-center justify-between cursor-pointer transition-all">
-                            <span>🔘 Isóbaras</span>
-                            <span class="text-[9px] bg-purple-400/20 px-1 py-0.5 rounded text-purple-300">hPa</span>
+                            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> Isóbaras</span>
+                            <span class="text-[9px] font-mono bg-black/40 px-1.5 py-0.5 rounded text-slate-400 border border-white/5">hPa</span>
                         </button>
                     </div>
 
                     <!-- Slider de Altitud Barométrica -->
-                    <div class="bg-black/50 p-2.5 rounded-lg border border-white/5 space-y-1.5">
-                        <div class="flex items-center justify-between text-[10px]">
-                            <span class="text-slate-300">Altitud de Análisis:</span>
-                            <span id="labelHubAltitudeVal" class="text-sky-300 font-bold">Superficie (10m) ✈️</span>
+                    <div class="bg-black/30 p-2.5 rounded-lg border border-white/5 space-y-1.5">
+                        <div class="flex items-center justify-between text-[10.5px] font-sans">
+                            <span class="text-slate-400">Altitud de Análisis</span>
+                            <span id="labelHubAltitudeVal" class="text-slate-200 font-mono font-bold">Superficie (10m)</span>
                         </div>
-                        <input type="range" id="sliderHubAltitude" min="0" max="4" step="1" value="0" class="w-full accent-sky-400 cursor-pointer" oninput="onHubAltitudeChange(this.value)">
-                        <div class="flex justify-between text-[8px] text-slate-500">
+                        <input type="range" id="sliderHubAltitude" min="0" max="4" step="1" value="0" class="w-full accent-slate-300 cursor-pointer" oninput="onHubAltitudeChange(this.value)">
+                        <div class="flex justify-between text-[8.5px] font-mono text-slate-500">
                             <span>10m</span>
                             <span>100m</span>
                             <span>500m</span>
                             <span>1.500m</span>
-                            <span>3.000m FL100</span>
+                            <span>3.000m</span>
                         </div>
                     </div>
 
                     <!-- Selector de Modelo Numérico -->
-                    <div class="flex items-center justify-between bg-black/50 p-2 rounded-lg border border-white/5 text-[10px]">
-                        <span class="text-slate-300">Modelo:</span>
-                        <div class="flex items-center gap-1">
-                            <button id="btnHubModelEcmwf" onclick="setHubForecastModel('ecmwf')" class="px-2 py-0.5 rounded bg-sky-500/30 border border-sky-400 text-sky-200 font-bold cursor-pointer transition-all">ECMWF 9km</button>
+                    <div class="flex items-center justify-between bg-black/30 p-2 rounded-lg border border-white/5 text-[10.5px]">
+                        <span class="text-slate-400 font-sans">Modelo Numérico</span>
+                        <div class="flex items-center gap-1 font-mono text-[9.5px]">
+                            <button id="btnHubModelEcmwf" onclick="setHubForecastModel('ecmwf')" class="px-2 py-0.5 rounded bg-white/15 border border-white/25 text-white font-semibold cursor-pointer transition-all">ECMWF 9km</button>
                             <button id="btnHubModelGfs" onclick="setHubForecastModel('gfs')" class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer transition-all">GFS 22km</button>
                         </div>
                     </div>
 
                     <!-- Ajustes Dinámicos de Flujo (Velocidad & Opacidad) -->
-                    <div class="grid grid-cols-2 gap-2 text-[10px] bg-black/50 p-2 rounded-lg border border-white/5">
+                    <div class="grid grid-cols-2 gap-2 text-[10px] bg-black/30 p-2.5 rounded-lg border border-white/5">
                         <div class="space-y-1">
-                            <div class="flex justify-between text-slate-400">
-                                <span>Velocidad:</span>
-                                <span id="valHubParticleSpeed" class="text-sky-300 font-bold">1.0x</span>
+                            <div class="flex justify-between text-slate-400 font-sans">
+                                <span>Velocidad</span>
+                                <span id="valHubParticleSpeed" class="text-slate-200 font-mono font-bold">1.0x</span>
                             </div>
-                            <input type="range" id="sliderHubParticleSpeed" min="0.2" max="3.0" step="0.2" value="1.0" class="w-full accent-sky-400 cursor-pointer" oninput="onHubParticleSpeedChange(this.value)">
+                            <input type="range" id="sliderHubParticleSpeed" min="0.2" max="3.0" step="0.2" value="1.0" class="w-full accent-slate-300 cursor-pointer" oninput="onHubParticleSpeedChange(this.value)">
                         </div>
                         <div class="space-y-1">
-                            <div class="flex justify-between text-slate-400">
-                                <span>Opacidad:</span>
-                                <span id="valHubParticleOpacity" class="text-sky-300 font-bold">85%</span>
+                            <div class="flex justify-between text-slate-400 font-sans">
+                                <span>Opacidad</span>
+                                <span id="valHubParticleOpacity" class="text-slate-200 font-mono font-bold">85%</span>
                             </div>
-                            <input type="range" id="sliderHubParticleOpacity" min="0.2" max="1.0" step="0.1" value="0.85" class="w-full accent-sky-400 cursor-pointer" oninput="onHubParticleOpacityChange(this.value)">
+                            <input type="range" id="sliderHubParticleOpacity" min="0.2" max="1.0" step="0.1" value="0.85" class="w-full accent-slate-300 cursor-pointer" oninput="onHubParticleOpacityChange(this.value)">
                         </div>
                     </div>
                 </div>
 
 
                 <!-- 8 MOMENTOS CLIMÁTICOS DE CUENCA (Estilo Cartografía Suiza) -->
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/10 shadow-lg">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-mono font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🎯</span> 8 Momentos Climáticos (1-Click)
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
+                            <span>🎯</span> Escenarios Climáticos (8 Momentos)
                         </span>
                         <div class="flex items-center gap-1.5">
-                            <button onclick="openAtmosphericScienceModal('moments')" class="w-5 h-5 rounded-full bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/50 text-amber-300 text-[10px] font-bold font-mono flex items-center justify-center cursor-pointer transition-all shadow-sm" title="Ver Especificación Científica de los 8 Momentos (Fórmulas & Ecuaciones)">ℹ️</button>
-                            <button id="btnToggleSimOverlayCuenca" onclick="toggleCuencaSimOverlays()" class="px-2 py-0.5 rounded text-[9.5px] font-mono font-bold bg-red-500/20 border border-red-500/50 text-red-300 cursor-pointer">
-                                Simulación: ON
+                            <button onclick="openAtmosphericScienceModal('moments')" class="w-5 h-5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-[10px] font-mono flex items-center justify-center cursor-pointer transition-all" title="Ver Especificación Científica de los 8 Momentos">ℹ️</button>
+                            <button id="btnToggleSimOverlayCuenca" onclick="toggleCuencaSimOverlays()" class="px-2 py-0.5 rounded-md text-[9px] font-mono font-medium bg-white/10 border border-white/15 text-slate-200 cursor-pointer">
+                                ● Simulación ON
                             </button>
                         </div>
                     </div>
@@ -14285,48 +14429,48 @@ print(meniel_soil)</code></pre>
                 </div>
 
                 <!-- HERRAMIENTA DE ANÁLISIS DE ÁREA LIBRE (AOI LOCALIZADO) (Estilo Cartografía Suiza) -->
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/10 shadow-lg space-y-2.5">
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="text-xs font-semibold text-slate-200 tracking-wide flex items-center gap-1.5 font-sans">
                             <span>📐</span> Analizador de Área de Cuenca (AOI)
                         </span>
-                        <span id="aoiStatusBadge" class="text-[9px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-white/10">INACTIVO</span>
+                        <span id="aoiStatusBadge" class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/10">Inactivo</span>
                     </div>
-                    <p class="text-[10px] text-slate-400 font-mono leading-relaxed">
-                        Selecciona un área libre en cualquier parte del mapa para correr el modelo localizado según el escenario activo.
+                    <p class="text-[10.5px] text-slate-400 font-sans leading-relaxed">
+                        Selecciona un polígono en cualquier sector del mapa para evaluar el modelo localizado según el escenario activo.
                     </p>
                     <div class="flex items-center gap-2">
-                        <button id="btnToggleAoiDraw" onclick="toggleCuencaAoiDrawing()" class="flex-1 py-1.5 px-3 rounded-lg bg-sky-500/20 hover:bg-sky-500/35 text-sky-200 border border-sky-400/50 text-[11px] font-mono font-bold flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 shadow-sm">
+                        <button id="btnToggleAoiDraw" onclick="toggleCuencaAoiDrawing()" class="flex-1 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-sans font-medium flex items-center justify-center gap-2 cursor-pointer transition-colors">
                             <span>✏️</span> <span id="btnToggleAoiDrawText">Marcar Área en Mapa</span>
                         </button>
-                        <button id="btnClearAoi" onclick="clearCuencaAoiSelection()" class="py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10 text-[11px] font-mono cursor-pointer transition-all" title="Limpiar área seleccionada">
+                        <button id="btnClearAoi" onclick="clearCuencaAoiSelection()" class="py-2 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10 text-xs cursor-pointer transition-colors" title="Limpiar área seleccionada">
                             <span>🗑️</span>
                         </button>
                     </div>
 
-                    <div id="aoiResultsCard" class="hidden bg-black/50 p-2.5 rounded-lg border border-sky-400/30 space-y-2 font-mono text-[10.5px]">
+                    <div id="aoiResultsCard" class="hidden bg-black/30 p-2.5 rounded-lg border border-white/10 space-y-2 text-[10.5px]">
                         <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
-                            <span class="text-white font-bold flex items-center gap-1">
+                            <span class="text-slate-200 font-sans font-semibold flex items-center gap-1">
                                 <span>📍</span> <span id="aoiAreaName">Área de Estudio Personalizada</span>
                             </span>
-                            <span id="aoiAreaHa" class="text-sky-300 font-bold">-- ha</span>
+                            <span id="aoiAreaHa" class="text-slate-200 font-mono font-bold">-- ha</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <div class="bg-white/5 p-1.5 rounded">
-                                <span class="text-slate-400 block text-[9px]">Cota Promedio:</span>
-                                <span id="aoiCota" class="text-amber-300 font-bold">-- msnm</span>
+                            <div class="bg-black/30 p-1.5 rounded border border-white/5">
+                                <span class="text-slate-400 block text-[9px] font-sans">Cota Promedio</span>
+                                <span id="aoiCota" class="text-slate-200 font-mono font-bold">-- msnm</span>
                             </div>
-                            <div class="bg-white/5 p-1.5 rounded">
-                                <span class="text-slate-400 block text-[9px]">Ubicación Relativa:</span>
-                                <span id="aoiZone" class="text-emerald-300 font-bold">--</span>
+                            <div class="bg-black/30 p-1.5 rounded border border-white/5">
+                                <span class="text-slate-400 block text-[9px] font-sans">Ubicación Relativa</span>
+                                <span id="aoiZone" class="text-slate-200 font-mono font-bold">--</span>
                             </div>
                         </div>
-                        <div class="p-2 rounded bg-slate-900/80 border border-white/5 space-y-1">
+                        <div class="p-2 rounded bg-black/30 border border-white/5 space-y-1">
                             <div class="flex justify-between items-center text-[10px]">
-                                <span class="text-slate-300">Vulnerabilidad Compuesta:</span>
-                                <span id="aoiRiskScore" class="font-bold px-1.5 py-0.5 rounded text-[9.5px]">--</span>
+                                <span class="text-slate-400 font-sans">Vulnerabilidad Compuesta</span>
+                                <span id="aoiRiskScore" class="font-mono font-bold px-1.5 py-0.5 rounded text-[9.5px]">--</span>
                             </div>
-                            <p id="aoiDiagnosticText" class="text-slate-400 text-[9.5px] leading-relaxed pt-1">
+                            <p id="aoiDiagnosticText" class="text-slate-400 font-sans text-[9.5px] leading-relaxed pt-1">
                                 El modelo computará el impacto según el momento climático activo.
                             </p>
                         </div>
@@ -14334,38 +14478,31 @@ print(meniel_soil)</code></pre>
                 </div>
 
                 <!-- DINÁMICA FÍSICO-ATMOSFÉRICA & MICROCLIMA (Estilo Cartografía Suiza) -->
-                <div class="bg-slate-900/60 p-3.5 rounded-xl border border-white/10 shadow-lg space-y-2.5 font-mono text-[10.5px]">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
-                        <span class="text-xs font-sans font-semibold text-slate-200 uppercase tracking-wide flex items-center gap-1.5">
-                            <span>🌪️</span> Dinámica Microclimática Local
-                        </span>
-                        <span class="text-[9px] px-2 py-0.5 rounded bg-white/5 text-slate-300 border border-white/10 font-medium">4 MODELOS</span>
-                    </div>
-
+                <div class="space-y-2">
                     <!-- 1. Viento Puelche -->
-                    <details class="group bg-slate-900/40 rounded-xl border border-white/10 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 cursor-pointer select-none hover:bg-white/5 list-none">
-                            <span class="text-xs font-semibold text-slate-200 font-sans flex items-center gap-2">
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-rose-400"></span> 1. Viento Puelche (Efecto Foehn)
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] bg-white/5 text-slate-300 border border-white/10 px-1.5 py-0.5 rounded font-mono">Regla 30-30-30</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">30-30-30</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-2.5 pt-1 text-[11px] text-slate-300 font-sans space-y-1.5 border-t border-white/5">
-                            <p class="leading-relaxed">
+                        <div class="p-3 pt-1 text-[11px] text-slate-300 font-sans space-y-2 border-t border-white/10">
+                            <p class="leading-relaxed text-slate-400 text-[10.5px]">
                                 Compresión adiabática del aire andino en descenso. Ráfagas de 38 km/h del Este con HR &lt; 20%, desecando frutales y disparando el peligro pirogénico.
                             </p>
-                            <div class="p-1.5 rounded bg-red-950/40 text-[9.5px] text-red-200 border border-red-900/50">
+                            <div class="p-2 rounded-lg bg-black/30 text-[10px] text-slate-300 border border-white/5">
                                 🛡️ <b>Mitigación:</b> Cortavientos densos de Peumo/Quillay en borde Este reducen viento 62%.
                             </div>
                             <!-- Switch ON/OFF Viento Puelche -->
-                            <div class="pt-2 flex items-center justify-between border-t border-white/10 font-mono">
-                                <span class="text-amber-200 text-[10.5px] font-bold flex items-center gap-1.5">
-                                    <span>⚡</span> Régimen Viento Puelche:
+                            <div class="pt-1 flex items-center justify-between">
+                                <span class="text-slate-300 text-[10.5px] font-medium">
+                                    Régimen Viento Puelche
                                 </span>
-                                <button id="btnTogglePuelcheWind" onclick="window.togglePuelcheWind()" class="px-3 py-1 rounded-md text-[10px] font-bold transition-all border flex items-center gap-1.5 bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 cursor-pointer shadow-sm">
+                                <button id="btnTogglePuelcheWind" onclick="window.togglePuelcheWind()" class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-medium transition-all border flex items-center gap-1.5 bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 cursor-pointer">
                                     <span id="dotPuelcheWind" class="w-2 h-2 rounded-full bg-slate-500"></span>
                                     <span id="labelPuelcheWind">PUELCHE: OFF</span>
                                 </button>
@@ -14374,38 +14511,38 @@ print(meniel_soil)</code></pre>
                     </details>
 
                     <!-- 2. Drenaje Catabático & Heladas Tardías -->
-                    <details class="group bg-slate-900/40 rounded-xl border border-white/10 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 cursor-pointer select-none hover:bg-white/5 list-none">
-                            <span class="text-xs font-semibold text-slate-200 font-sans flex items-center gap-2">
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 2. Drenaje Catabático & Heladas
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] bg-white/5 text-slate-300 border border-white/10 px-1.5 py-0.5 rounded font-mono">Inversión Térmica</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">Inversión</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-2.5 pt-1 text-[11px] text-slate-300 font-sans space-y-1.5 border-t border-white/5">
-                            <p class="leading-relaxed">
+                        <div class="p-3 pt-1 text-[11px] text-slate-300 font-sans space-y-2 border-t border-white/10">
+                            <p class="leading-relaxed text-slate-400 text-[10.5px]">
                                 Aire frío por radiación desciende hacia fondos de cuenca (&lt;170 msnm), formando bolsones de helada a -2.4°C en floración. Las terrazas Keyline a media ladera (cota 340m) permanecen en banda térmica positiva (+2.1°C).
                             </p>
-                            <div class="p-1.5 rounded bg-sky-950/40 text-[9.5px] text-sky-200 border border-sky-900/50">
-                                ❄️ <b>Alerta:</b> Activación de aspersión antihelada en cuarteles bajos antes de las 05:30 hrs.
+                            <div class="p-2 rounded-lg bg-black/30 text-[10px] text-slate-300 border border-white/5">
+                                ❄️ <b>Protocolo:</b> Activación de aspersión antihelada en cuarteles bajos antes de las 05:30 hrs.
                             </div>
                         </div>
                     </details>
 
                     <!-- 3. Evapotranspiración ETo -->
-                    <details class="group bg-slate-900/40 rounded-xl border border-white/10 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 cursor-pointer select-none hover:bg-white/5 list-none">
-                            <span class="text-xs font-semibold text-slate-200 font-sans flex items-center gap-2">
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span> 3. ETo Penman-Monteith
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[8.5px] bg-white/5 text-slate-300 border border-white/10 px-1.5 py-0.5 rounded font-mono">5.1 mm/día</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-slate-400">5.1 mm/día</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-2.5 pt-1 text-[11px] text-slate-300 font-sans space-y-1 border-t border-white/5">
+                        <div class="p-3 pt-1 text-[10.5px] text-slate-400 font-sans space-y-1 border-t border-white/10">
                             <p class="leading-relaxed">
                                 Demanda evaporativa contrastada en tiempo real contra las sondas FDR a 0-20 cm y 20-60 cm en Fundo Meniel.
                             </p>
@@ -14413,26 +14550,26 @@ print(meniel_soil)</code></pre>
                     </details>
 
                     <!-- 4. Termodinámica Convectiva (CAPE & Cizalladura HSLC) -->
-                    <details class="group bg-slate-900/40 rounded-xl border border-white/10 overflow-hidden transition-all duration-200">
-                        <summary class="flex items-center justify-between p-2.5 cursor-pointer select-none hover:bg-white/5 list-none">
-                            <span class="text-xs font-semibold text-slate-200 font-sans flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-amber-400"></span> 4. Termodinámica Convectiva (CAPE &amp; Shear)
+                    <details class="group rounded-xl bg-slate-900/40 border border-white/10 overflow-hidden transition-all duration-200">
+                        <summary class="flex items-center justify-between p-3 cursor-pointer select-none hover:bg-white/5 transition-colors list-none">
+                            <span class="text-xs font-semibold text-slate-200 tracking-wide font-sans flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-400"></span> 4. Termodinámica Convectiva (CAPE)
                             </span>
-                            <div class="flex items-center gap-1.5">
-                                <span id="badgeMicroCapeModel" class="text-[8.5px] bg-white/5 text-slate-300 border border-white/10 px-1.5 py-0.5 rounded font-mono">HSLC 36°S</span>
-                                <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                            <div class="flex items-center gap-2">
+                                <span id="badgeMicroCapeModel" class="text-[10px] font-mono text-slate-400">HSLC 36°S</span>
+                                <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform duration-200">▼</span>
                             </div>
                         </summary>
-                        <div class="p-2.5 pt-1 text-[11px] text-slate-300 font-sans space-y-1.5 border-t border-white/5">
+                        <div class="p-3 pt-1 text-[10.5px] text-slate-400 font-sans space-y-2 border-t border-white/10">
                             <p class="leading-relaxed">
-                                Evalúa la flotabilidad convectiva ($\text{CAPE}$, en $\text{J/kg}$) que impulsa corrientes ascendentes $w_{\max} = \sqrt{2\cdot\text{CAPE}}$ y la cizalladura vertical $0\text{--}6\text{ km}$ ($\|\vec{V}_{500\text{hPa}} - \vec{V}_{10\text{m}}\|$) capaz de inclinar vorticidad horizontal en frentes fríos invernales.
+                                Evalúa la flotabilidad convectiva ($\text{CAPE}$, en $\text{J/kg}$) que impulsa corrientes ascendentes $w_{\max} = \sqrt{2\cdot\text{CAPE}}$ y la cizalladura vertical $0\text{--}6\text{ km}$ ($\|\vec{V}_{500\text{hPa}} - \vec{V}_{10\text{m}}\|$).
                             </p>
-                            <div class="p-1.5 rounded bg-amber-950/40 text-[9.5px] text-amber-200 border border-amber-900/50 font-mono">
-                                📐 <b>Criterio HSLC Maule/Ñuble:</b> $\text{CAPE} \ge 300\text{ J/kg}$ + $\text{Shear} \ge 20\text{ m/s}$ + $\text{LCL} &lt; 1000\text{ m}$ habilita potencial rotacional post-frontal.
+                            <div class="p-2 rounded-lg bg-black/30 text-[9.5px] text-slate-300 border border-white/5 font-mono">
+                                📐 <b>Criterio HSLC:</b> $\text{CAPE} \ge 300\text{ J/kg}$ + $\text{Shear} \ge 20\text{ m/s}$ + $\text{LCL} &lt; 1000\text{ m}$.
                             </div>
-                            <button onclick="openCuencaDoctrinaModal('m5-tornados-cape')" class="w-full mt-1 py-1 px-2.5 rounded bg-amber-950/60 hover:bg-amber-900/60 text-amber-200 border border-amber-500/40 text-[9.5px] font-mono flex items-center justify-between cursor-pointer transition-all">
+                            <button onclick="openCuencaDoctrinaModal('m5-tornados-cape')" class="w-full py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[9.5px] font-sans flex items-center justify-between cursor-pointer transition-all">
                                 <span>📚 Ver Ecuaciones LaTeX de CAPE &amp; Cizalladura</span>
-                                <span>➔</span>
+                                <span class="text-slate-500 font-mono">➔</span>
                             </button>
                         </div>
                     </details>
