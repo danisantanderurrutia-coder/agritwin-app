@@ -13,20 +13,6 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Si el usuario entra con un deep-link (#hash), ocultar el splash negro inmediatamente
-        if (window.location.hash && window.location.hash.length > 1) {
-            document.write('<style>#alchemicalAppSplash { display: none !important; opacity: 0 !important; pointer-events: none !important; }</style>');
-        }
-        window.dismissAlchemicalSplash = function() {
-            const splash = document.getElementById('alchemicalAppSplash');
-            if (splash) {
-                splash.style.opacity = '0';
-                splash.style.pointerEvents = 'none';
-                splash.style.display = 'none';
-            }
-        };
-    </script>
-    <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -1517,15 +1503,6 @@
             100% { opacity: 1.0; transform: scale(1.03); }
         }
 
-        @keyframes tacticalVectorFlow {
-            0% { stroke-dashoffset: 24; }
-            100% { stroke-dashoffset: 0; }
-        }
-        .tactical-fire-vector-shaft {
-            stroke-dasharray: 12, 6 !important;
-            animation: tacticalVectorFlow 1.2s linear infinite !important;
-        }
-
         #cerroUnifiedTabsBar::-webkit-scrollbar {
             height: 4px;
         }
@@ -1644,355 +1621,240 @@
         <iframe id="iframePredio" src="predio/" class="w-full border-0 select-none block" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%;" allow="accelerometer; camera; gyroscope; vr"></iframe>
     </div>
 
-    <div id="view-landing" class="master-view active-view p-6 sm:p-10 bg-[#FAF7F2] text-[#1C1917]">
-        <div class="max-w-7xl mx-auto space-y-8">
-            <!-- Header Landing Minimalista & Cálido -->
-            <div class="text-center space-y-2 max-w-3xl mx-auto">
-                <span class="text-xs font-mono font-bold tracking-widest text-emerald-900 uppercase bg-emerald-100/70 px-3.5 py-1 rounded-full border border-emerald-300 shadow-sm">
-                    🌾 Plataforma Unificada AgroTech • Modelo Tridimensional Anidado
-                </span>
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-stone-900 tracking-tight font-serif">
-                    AgroTwin: Del Suelo Biofísico a la Cuenca Territorial
-                </h1>
-                <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                    Micro-gestión regenerativa de predio, gobernanza vecinal comunitaria y balance hidrológico macro de cuenca integrados en un solo gemelo biofísico.
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         VISTA 1: LANDING AOE MAESTRO • EL TALLER CENTRAL DEL DISEÑADOR TERRITORIAL
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="view-landing" class="master-view active-view !p-0 overflow-hidden bg-black select-none relative w-full h-[calc(100vh-3.5rem)] min-h-[560px] flex items-center justify-center">
+        <!-- Fullscreen Background Image: El Taller Maestro -->
+        <img src="assets/ui/workshop_bg.png" alt="Taller Central de Diseño Territorial" class="w-full h-full object-cover filter contrast-105 brightness-95 pointer-events-none" draggable="false">
+        <div class="diegetic-vignette"></div>
+
+        <!-- Barra flotante informativa superior del Taller -->
+        <div class="absolute top-4 left-6 z-30 flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-xl text-xs font-mono text-slate-300 pointer-events-none">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-amber-400 font-bold">TALLER CENTRAL AOE</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-slate-300">Puesto de Mando Multiescala</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-sky-300">9 Estaciones Diegéticas</span>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             LAS 9 ESTACIONES DIEGÉTICAS DEL TALLER MAESTRO
+             ═══════════════════════════════════════════════════════════════════ -->
+
+        <!-- 1. TWIN DIGITAL 3D DE PREDIO (Monitor CRT sobre escritorio izquierdo) -->
+        <div class="diegetic-sprite-anchor" style="top: 54%; left: 15%; width: 140px; color: #fbbf24;" onclick="openPredioMode()" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_c_monitor.png" alt="Twin Digital 3D" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-amber-400"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openPredioMode();">
+                <div class="aoe-badge-title">🏡 Twin 3D Predio</div>
+                <div class="aoe-badge-metric">WebGL Three.js • 12.8 ha</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-amber-400 border-b border-amber-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 01 • MICRO-TWIN</span>
+                    <span class="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300">VUELO 3D</span>
+                </div>
+                <h4 class="font-extrabold text-sm text-white">Gemelo Digital 3D de Predio</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Vuelo libre WebGL, curvas de nivel Keyline, mallas procedurales y simulación solar estacional en terreno vivo.
                 </p>
-            </div>
-
-            <!-- HERO 6-PORTAL SUITE AGROECOLÓGICA & TERRITORIAL -->
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-900 border border-amber-500/40 text-xs font-mono font-bold">🌱 PRODUCCIÓN & BIOFÍSICA PREDIAL</span>
-                    <span class="text-xs text-stone-500 font-sans">• Fundo Meniel</span>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-amber-300">
+                    <span>▶ Clic para entrar (3s perritos)</span>
+                    <span class="text-slate-400">Escala 1:500</span>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <!-- MODO 1: 🟡 EL GALPÓN (PREDIO 3D) -->
-                <div class="galpon-wood-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all group">
-                    <div class="relative h-44 overflow-hidden bg-stone-100">
-                        <img src="assets/ui/workshop_bg.png" alt="El Galpón Predial" class="w-full h-full object-cover filter brightness-95 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent pointer-events-none"></div>
-                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="px-2.5 py-0.5 rounded-md bg-amber-500 text-stone-950 text-[10px] font-black font-mono uppercase shadow-sm">MODO 1 • GALPÓN</span>
-                            <span class="px-2 py-0.5 rounded bg-white/90 text-stone-800 text-[10px] font-mono border border-stone-200 font-bold">12.8 ha</span>
-                        </div>
-                    </div>
-                    <div class="p-5 flex flex-col justify-between flex-1 space-y-3">
-                        <div>
-                            <h3 class="text-base font-black text-stone-900 flex items-center justify-between font-serif">
-                                <span class="flex items-center gap-1.5">🏡 El Galpón (Fundo 3D)</span>
-                                <span class="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Keyline & IoT</span>
-                            </h3>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed font-sans">
-                                Visor 3D WebGL con mallas procedurales, tranques Keyline, curvas de nivel y red de 15 sondas FDR.
-                            </p>
-                        </div>
-                        <div class="pt-2 border-t border-stone-100 flex items-center">
-                            <button onclick="openPredioMode();" class="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs font-mono flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer" title="Entrar al Fundo en Modo Predio 3D">
-                                <span>🌾</span> Entrar en Modo Predio 3D
-                            </button>
-                        </div>
-                    </div>
+        <!-- 2. PANEL MAESTRO PREDIAL AMPLIADO (Clipboard / Libreta sobre estante izquierdo) -->
+        <div class="diegetic-sprite-anchor" style="top: 22%; left: 8%; width: 110px; color: #f59e0b;" onclick="openPredioMasterPanel()" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_a_clipboard.png" alt="Panel Maestro Predial" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-amber-500"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openPredioMasterPanel();">
+                <div class="aoe-badge-title">📋 Panel Maestro Predial</div>
+                <div class="aoe-badge-metric">Permacultura • Telemetría</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-amber-400 border-b border-amber-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 02 • CONSOLA PREDIAL</span>
+                    <span class="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300">ZONAS 0-5</span>
                 </div>
-
-                <!-- MODO 2: 🌿 INVERNADERO & CULTIVOS -->
-                <div class="galpon-wood-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all group">
-                    <div class="relative h-44 overflow-hidden bg-stone-100">
-                        <img src="assets/ui/invernadero_landing_bg.jpg" alt="Invernadero y Cultivos" class="w-full h-full object-cover filter brightness-95 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent pointer-events-none"></div>
-                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="px-2.5 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-black font-mono uppercase shadow-sm">NUEVO • CULTIVOS</span>
-                            <span class="px-2 py-0.5 rounded bg-white/90 text-stone-800 text-[10px] font-mono border border-stone-200 font-bold">Intercropping</span>
-                        </div>
-                    </div>
-                    <div class="p-5 flex flex-col justify-between flex-1 space-y-3">
-                        <div>
-                            <h3 class="text-base font-black text-stone-900 flex items-center justify-between font-serif">
-                                <span class="flex items-center gap-1.5">🌿 Invernadero & Exteriores</span>
-                                <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Biopreparados</span>
-                            </h3>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed font-sans">
-                                Ficha botánica planta a planta, huertos frutales exteriores, viñedos, calendario biodinámico y recetas limpias.
-                            </p>
-                        </div>
-                        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-                            <button onclick="openInvernaderoMode()" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
-                                <span>🌱</span> Explorar Cultivos
-                            </button>
-                            <button onclick="openInvernaderoAdvisorsModal()" class="py-2.5 px-3 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA de Invernadero">
-                                <span>🧠</span> 3 Asesores
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODO 3: 🐂 ESTABLO & GANADERÍA -->
-                <div class="galpon-wood-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all group">
-                    <div class="relative h-44 overflow-hidden bg-stone-100">
-                        <img src="assets/ui/establo_landing_bg.jpg" alt="Establo y Sanidad Ganadera" class="w-full h-full object-cover filter brightness-95 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent pointer-events-none"></div>
-                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="px-2.5 py-0.5 rounded-md bg-amber-700 text-white text-[10px] font-black font-mono uppercase shadow-sm">NUEVO • ESTABLO</span>
-                            <span class="px-2 py-0.5 rounded bg-white/90 text-stone-800 text-[10px] font-mono border border-stone-200 font-bold">PRV 8 Potreros</span>
-                        </div>
-                    </div>
-                    <div class="p-5 flex flex-col justify-between flex-1 space-y-3">
-                        <div>
-                            <h3 class="text-base font-black text-stone-900 flex items-center justify-between font-serif">
-                                <span class="flex items-center gap-1.5">🐂 Establo & Pastoreo Voisin</span>
-                                <span class="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">RFID & SAG</span>
-                            </h3>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed font-sans">
-                                Manejo ganadero multiespecie, pesaje, curvas de forraje MS, ciclado de bosteo y botiquín preventivo.
-                            </p>
-                        </div>
-                        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-                            <button onclick="openEstabloMode()" class="flex-1 py-2.5 px-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
-                                <span>🐂</span> Entrar al Establo
-                            </button>
-                            <button onclick="openEstabloAdvisorsModal()" class="py-2.5 px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA del Establo">
-                                <span>🧠</span> 3 Asesores
-                            </button>
-                        </div>
-                    </div>
+                <h4 class="font-extrabold text-sm text-white">Plan Maestro & Permacultura</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Consola unificada: Zonas de Mollison, balance de agua del tranque, telemetría viva y deslindes legales del predio.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-amber-300">
+                    <span>▶ Clic para abrir consola</span>
+                    <span class="text-slate-400">5 Pestañas</span>
                 </div>
             </div>
+        </div>
 
-            <!-- SECCIÓN 2: PAISAJE, ECOSISTEMA & COMUNIDAD -->
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-900 border border-sky-500/40 text-xs font-mono font-bold">🌲 ECOSISTEMA, CUENCA & COMUNIDAD</span>
-                    <span class="text-xs text-stone-500 font-sans">• Territorio Maule Sur</span>
+        <!-- 3. CATALEJO DE VENTANA (Tablero Biofísico de Cuenca • Mirador Cordillerano) -->
+        <div class="diegetic-sprite-anchor" style="top: 26%; left: 45%; width: 115px; color: #38bdf8;" onclick="openCerroHotspotModal('drone')" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_cerro_telescope.png" alt="Tablero Biofísico de Cuenca" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-sky-400"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openCerroHotspotModal('drone');">
+                <div class="aoe-badge-title">🏔️ Tablero Cuenca</div>
+                <div class="aoe-badge-metric">Longaví • Rothermel • FWI</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-sky-400 border-b border-sky-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 03 • MACRO-CUENCA</span>
+                    <span class="bg-sky-500/20 px-1.5 py-0.5 rounded text-sky-300">122.070 HA</span>
+                </div>
+                <h4 class="font-extrabold text-sm text-white">Tablero Maestro Biofísico</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Curvas de crecida duales Río Longaví (T=10/50/100), propagación Rothermel, atenuación cortafuegos 92% y transecto dinámico SVG.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-sky-300">
+                    <span>▶ Clic para abrir tablero</span>
+                    <span class="text-slate-400">7 Módulos</span>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- MODO 4: 🧭 INCURSIÓN A CAMPO -->
-                <div class="galpon-wood-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all group">
-                    <div class="relative h-44 overflow-hidden bg-stone-100">
-                        <img src="assets/ui/incursion_landing_bg.jpg" alt="Incursión a Campo" class="w-full h-full object-cover filter brightness-95 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent pointer-events-none"></div>
-                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="px-2.5 py-0.5 rounded-md bg-teal-700 text-white text-[10px] font-black font-mono uppercase shadow-sm">NUEVO • INCURSIÓN</span>
-                            <span class="px-2 py-0.5 rounded bg-white/90 text-stone-800 text-[10px] font-mono border border-stone-200 font-bold">Rewilding Suite</span>
-                        </div>
-                    </div>
-                    <div class="p-5 flex flex-col justify-between flex-1 space-y-3">
-                        <div>
-                            <h3 class="text-base font-black text-stone-900 flex items-center justify-between font-serif">
-                                <span class="flex items-center gap-1.5">🧭 Incursión a Campo</span>
-                                <span class="text-[10px] font-mono font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">9 Protocolos</span>
-                            </h3>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed font-sans">
-                                Visor dentro del bosque: pruebas VESS de suelo, cámaras trampa, transectos de canopia y biofonía.
-                            </p>
-                        </div>
-                        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-                            <button onclick="openIncursionMode()" class="flex-1 py-2.5 px-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
-                                <span>🧭</span> Salir a Incursión
-                            </button>
-                            <button onclick="openExcursionAdvisorsModal()" class="py-2.5 px-3 rounded-xl bg-teal-100 hover:bg-teal-200 text-teal-900 border border-teal-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA de Excursión">
-                                <span>🧠</span> 3 Asesores
-                            </button>
-                        </div>
-                    </div>
+        <!-- 4. MESA DE PLANOS (Visor Cartográfico Satelital Leaflet 122k ha) -->
+        <div class="diegetic-sprite-anchor" style="top: 58%; left: 45%; width: 145px; color: #0284c7;" onclick="triggerCinematicTransition('cerro', () => { openCerroMap(); })" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_cerro_blueprints.png" alt="Visor Cartográfico Satelital" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-sky-500"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); triggerCinematicTransition('cerro', () => { openCerroMap(); });">
+                <div class="aoe-badge-title">🛰️ Visor Satelital</div>
+                <div class="aoe-badge-metric">122.070 ha • Leaflet en Vivo</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-sky-400 border-b border-sky-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 04 • MAPA SATELITAL</span>
+                    <span class="bg-sky-500/20 px-1.5 py-0.5 rounded text-sky-300">SENTINEL-2B</span>
                 </div>
-
-                <!-- MODO 5: 🏔️ CUMBRE DEL CERRO (CUENCA) -->
-                <div class="galpon-wood-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all group">
-                    <div class="relative h-44 overflow-hidden bg-stone-100">
-                        <img src="assets/ui/cerro_landing_bg.jpg" alt="Cuenca (Cumbre del Cerro)" class="w-full h-full object-cover filter brightness-95 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent pointer-events-none"></div>
-                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="px-2.5 py-0.5 rounded-md bg-sky-600 text-white text-[10px] font-black font-mono uppercase shadow-sm">MODO 5 • CUENCA</span>
-                            <span class="px-2 py-0.5 rounded bg-white/90 text-stone-800 text-[10px] font-mono border border-stone-200 font-bold">122.070 ha</span>
-                        </div>
-                    </div>
-                    <div class="p-5 flex flex-col justify-between flex-1 space-y-3">
-                        <div>
-                            <h3 class="text-base font-black text-stone-900 flex items-center justify-between font-serif">
-                                <span class="flex items-center gap-1.5">🏔️ Cumbre del Cerro</span>
-                                <span class="text-[10px] font-mono font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">Río Longaví</span>
-                            </h3>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed font-sans">
-                                Mirador panorámico, dinámica de crecidas T=10/50/100, estrés evaporativo TWI y alertas FWI.
-                            </p>
-                        </div>
-                        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-                            <button onclick="openCerroMap()" class="flex-1 py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Abrir Gemelo GIS de Cuenca (122.070 ha): Satélite Sentinel-2, DEM, Hidrología Río Longaví">
-                                <span>🗺️</span> Gemelo GIS
-                            </button>
-                            <button onclick="switchMasterView('cerro'); setCerroSubView('sim');" class="py-2.5 px-3 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 border border-sky-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Simulador de Crecidas y Piro-Riesgo">
-                                <span>⚡</span> Simulador
-                            </button>
-                            <button onclick="openCuencaAdvisorsModal()" class="py-2.5 px-2.5 rounded-xl bg-white hover:bg-sky-50 text-stone-800 border border-stone-300 font-bold text-xs font-mono flex items-center justify-center gap-1 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA de Cuenca">
-                                <span>🧠</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODO 6: 🤝 MESA VECINAL -->
-                <div class="galpon-wood-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all group">
-                    <div class="relative h-44 overflow-hidden bg-stone-100">
-                        <img src="assets/ui/vecinal_meeting_landing.jpg" alt="La Mesa de Vecinos" class="w-full h-full object-cover filter brightness-95 group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent pointer-events-none"></div>
-                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="px-2.5 py-0.5 rounded-md bg-emerald-700 text-white text-[10px] font-black font-mono uppercase shadow-sm">MODO 6 • COMUNIDAD</span>
-                            <span class="px-2 py-0.5 rounded bg-white/90 text-stone-800 text-[10px] font-mono border border-stone-200 font-bold">10 Predios</span>
-                        </div>
-                    </div>
-                    <div class="p-5 flex flex-col justify-between flex-1 space-y-3">
-                        <div>
-                            <h3 class="text-base font-black text-stone-900 flex items-center justify-between font-serif">
-                                <span class="flex items-center gap-1.5">🤝 Mesa Vecinal DAO</span>
-                                <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">508 ha</span>
-                            </h3>
-                            <p class="text-xs text-stone-600 mt-1 leading-relaxed font-sans">
-                                Espacio de diálogo y gobernanza: faja cortafuegos de 45m, tranque amortiguador de 18.500 m³ y votaciones.
-                            </p>
-                        </div>
-                        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-                            <button onclick="openMesaMode()" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
-                                <span>🤝</span> Entrar a la Mesa
-                            </button>
-                            <button onclick="openMesaAdvisorsModal()" class="py-2.5 px-3 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 font-bold text-xs font-mono flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer" title="Consultar a los 3 Asesores IA de la Mesa Vecinal">
-                                <span>🧠</span> 3 Asesores
-                            </button>
-                        </div>
-                    </div>
+                <h4 class="font-extrabold text-sm text-white">Visor Cartográfico Satelital</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Gemelo GIS de macro-cuenca: ortofoto multiespectral, radar Windy de viento Puelche, estaciones fluviométricas DGA y capas hídricas.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-sky-300">
+                    <span>▶ Clic para volar al mapa</span>
+                    <span class="text-slate-400">Pantalla Completa</span>
                 </div>
             </div>
+        </div>
 
-
-            <!-- BANNER DEL PANAL APPROACH (ESTILO CATÁN DE MADERA Y LUZ) -->
-            <div class="galpon-wood-card rounded-3xl p-5 sm:p-6 border-2 border-amber-400/80 shadow-sm bg-gradient-to-r from-[#FFFDF9] via-[#FAF4EA] to-[#F5ECE0] flex flex-col lg:flex-row items-center justify-between gap-5 group">
-                <div class="flex items-center gap-4 flex-1">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/20 border-2 border-amber-600/40 flex items-center justify-center text-3xl shrink-0 shadow-sm">
-                        🐝
-                    </div>
-                    <div class="space-y-1">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="px-2 py-0.5 rounded-md bg-amber-600 text-white font-mono font-bold text-[10px] uppercase shadow-sm">
-                                PANAL CATÁN
-                            </span>
-                            <span class="px-2 py-0.5 rounded bg-white text-stone-700 font-mono text-[10px] border border-amber-300">
-                                11 Hexágonos • Núcleo Meniel al Centro
-                            </span>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-black text-stone-900 font-serif">
-                            El Panal de Intercambio Vecinal & Cuenca
-                        </h3>
-                        <p class="text-xs text-stone-600 max-w-2xl leading-relaxed">
-                            Visualización de flujos biofísicos de agua, biomasa, energía solar y forraje entre Fundo Meniel y la corona de 7 vecinos contiguos.
-                        </p>
-                    </div>
+        <!-- 5. BANCO DE SENSORES IOT (Placa de circuitos y banco de trabajo izquierdo) -->
+        <div class="diegetic-sprite-anchor" style="top: 24%; left: 22%; width: 110px; color: #10b981;" onclick="switchMasterView('telemetry')" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_b_iot_board.png" alt="Red de Sensores Maule" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-emerald-400"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); switchMasterView('telemetry');">
+                <div class="aoe-badge-title">📡 Red de Sensores</div>
+                <div class="aoe-badge-metric">15 Nodos FDR • Heladas • DGA</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-emerald-400 border-b border-emerald-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 05 • TELEMETRÍA IOT</span>
+                    <span class="bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300">MAULE LIVE</span>
                 </div>
-
-                <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-                    <button onclick="switchMasterView('panal')" class="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
-                        <span>🏰</span>
-                        <span>Entrar a Visión del Panal</span>
-                        <span>▶</span>
-                    </button>
-                    <button onclick="openPanalFromMesa()" class="px-4 py-3 rounded-xl bg-white hover:bg-amber-50 text-stone-800 border border-amber-300 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer" title="Ver Panal de Intercambio Vecinal (11 Hexágonos)">
-                        <span>🤝</span> Red Vecinal (11 Hex)
-                    </button>
+                <h4 class="font-extrabold text-sm text-white">Red de Monitoreo Agroclimático</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Lecturas de humedad de suelo a 10/30/60 cm, riesgo de heladas en floración, modelo Mills de botrytis y estado de baterías solares.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-emerald-300">
+                    <span>▶ Clic para ver telemetría</span>
+                    <span class="text-slate-400">Tiempo Real</span>
                 </div>
             </div>
+        </div>
 
-            <!-- PANEL DE HERRAMIENTAS DEL HUB CON MENÚS DESPLEGABLES MINIMALISTAS -->
-            <div class="galpon-wood-card rounded-3xl p-5 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200/80 pb-3">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h4 class="font-serif font-black text-stone-900 text-base flex items-center gap-2">
-                                <span>🎛️</span> Centro de Control del Hub: Módulos & Herramientas Unificadas
-                            </h4>
-                        </div>
-                        <p class="text-xs text-stone-500 font-sans mt-0.5">
-                            Selecciona una herramienta por categoría o utiliza los accesos rápidos ejecutivos.
-                        </p>
-                    </div>
-                    <span class="text-[10px] font-mono text-stone-500 bg-stone-100 px-2.5 py-1 rounded-full border border-stone-200 self-start sm:self-auto">
-                        6 Módulos Transversales
-                    </span>
+        <!-- 6. SEMILLERO / MODO AGRÍCOLA 🌱 (Brote en maceta en estantería derecha) -->
+        <div class="diegetic-sprite-anchor" style="top: 20%; left: 71%; width: 105px; color: #22c55e;" onclick="openInvernaderoMode()" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_cultivos_1.png" alt="Modo Agrícola" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-emerald-500"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openInvernaderoMode();">
+                <div class="aoe-badge-title">🌱 Modo Agrícola</div>
+                <div class="aoe-badge-metric">Fenología • Riego • Cultivos</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-emerald-400 border-b border-emerald-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 06 • AGROECOLOGÍA</span>
+                    <span class="bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300">CULTIVOS</span>
                 </div>
-
-                <!-- 3 MENÚS DESPLEGABLES TEMÁTICOS -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Desplegable 1: Analítica & Decisión -->
-                    <div class="p-3.5 rounded-2xl bg-stone-50/70 border border-stone-200/80 space-y-2">
-                        <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                            <span>📊</span> 1. Analítica & Decisión
-                        </label>
-                        <select onchange="handleHubAction(this.value); this.selectedIndex=0;" class="w-full px-3 py-2 rounded-xl bg-white border border-stone-300 text-xs text-stone-800 font-mono font-medium focus:outline-none focus:border-amber-500 shadow-sm cursor-pointer">
-                            <option value="">-- Abrir Módulo de Analítica --</option>
-                            <option value="cockpit">🏛️ Cockpit del Decisor (Cuadro de Mando)</option>
-                            <option value="telemetry">📈 Telemetría Red Centinela (9 Nodos)</option>
-                            <option value="territory">🗺️ Gemelo GIS Vivo (Mapa Cuenca)</option>
-                        </select>
-                        <p class="text-[11px] text-stone-500">Monitor multi-predial, sondas FDR y mapas de cuenca.</p>
-                    </div>
-
-                    <!-- Desplegable 2: Informes & Catastro -->
-                    <div class="p-3.5 rounded-2xl bg-stone-50/70 border border-stone-200/80 space-y-2">
-                        <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                            <span>📑</span> 2. Informes & Catastro
-                        </label>
-                        <select onchange="handleHubAction(this.value); this.selectedIndex=0;" class="w-full px-3 py-2 rounded-xl bg-white border border-stone-300 text-xs text-stone-800 font-mono font-medium focus:outline-none focus:border-amber-500 shadow-sm cursor-pointer">
-                            <option value="">-- Abrir Módulo de Informes --</option>
-                            <option value="dossier_satelital">🛰️ Dossier Competencia & Benchmarking (18 Láminas)</option>
-                            <option value="canva">🎨 Canva Report Studio (Constructor)</option>
-                            <option value="vault">📚 Bóveda de Fórmulas Biofísicas</option>
-                            <option value="dossier">📄 Dossier Ejecutivo (2 Páginas)</option>
-                            <option value="download_txt">📥 Descargar Informe Completo (.txt)</option>
-                            <option value="export_csv">📊 Exportar Catastro de Predios (.csv)</option>
-                        </select>
-                        <p class="text-[11px] text-stone-500">Generación de informes de dos páginas y catastro legal.</p>
-                    </div>
-
-                    <!-- Desplegable 3: Sabios IA & Dinámica Lúdica -->
-                    <div class="p-3.5 rounded-2xl bg-stone-50/70 border border-stone-200/80 space-y-2">
-                        <label class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                            <span>🌿</span> 3. Sabios IA & Juegos
-                        </label>
-                        <select onchange="handleHubAction(this.value); this.selectedIndex=0;" class="w-full px-3 py-2 rounded-xl bg-white border border-stone-300 text-xs text-stone-800 font-mono font-medium focus:outline-none focus:border-amber-500 shadow-sm cursor-pointer">
-                            <option value="">-- Abrir Módulo de Sabios o Juegos --</option>
-                            <option value="advisors">👥 Consejo Consultivo General (18 Asesores IA • 6 Twins)</option>
-                            <option value="juegos">🎮 Juegos Didácticos: Dinámica de la Plataforma</option>
-                            <option value="panal">🐝 El Panal Approach (11 Hexágonos)</option>
-                        </select>
-                        <p class="text-[11px] text-stone-500">Debate de 18 expertos y simuladores interactivos de aprendizaje.</p>
-                    </div>
+                <h4 class="font-extrabold text-sm text-white">Producción Agrícola & Riego</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Catálogo botánico, almácigos criollos, cuarteles de secano, matrices de gremios milpa, biopreparados y grados día GDD.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-emerald-300">
+                    <span>▶ Clic para entrar (3s perritos)</span>
+                    <span class="text-slate-400">Fondo Invernadero</span>
                 </div>
+            </div>
+        </div>
 
-                <!-- ACCESOS RÁPIDOS MINIMALISTAS (PILLS EJECUTIVOS) -->
-                <div class="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-stone-500 font-mono text-[11px]">Accesos Rápidos:</span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <button onclick="handleHubAction('dossier_satelital')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700 font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer font-bold shadow-sm">
-                            <span>🛰️</span> Dossier Competencia (18 Láminas)
-                        </button>
-                        <button onclick="handleHubAction('cockpit')" class="px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300/80 font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
-                            <span>🏛️</span> Cockpit
-                        </button>
-                        <button onclick="handleHubAction('advisors')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer font-bold">
-                            <span>👥</span> Consejo Consultivo General (18 Asesores IA • 6 Twins)
-                        </button>
-                        <button onclick="handleHubAction('juegos')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer font-bold">
-                            <span>🎮</span> Juegos AgroTwin
-                        </button>
-                        <button onclick="handleHubAction('telemetry')" class="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-900 border border-sky-300 font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
-                            <span>📊</span> Telemetría
-                        </button>
-                        <button onclick="handleHubAction('dossier')" class="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-900 text-white font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer font-bold">
-                            <span>📄</span> Dossier 2 Páginas
-                        </button>
-                    </div>
+        <!-- 7. CORRAL / MODO PECUARIO 🐄 (Bovino y arete RFID en estantería derecha) -->
+        <div class="diegetic-sprite-anchor" style="top: 20%; left: 86%; width: 110px; color: #b45309;" onclick="openEstabloMode()" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_establo_1.png" alt="Modo Pecuario" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-amber-600"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openEstabloMode();">
+                <div class="aoe-badge-title">🐄 Modo Pecuario</div>
+                <div class="aoe-badge-metric">PRV 8 Potreros • Pesaje</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-amber-400 border-b border-amber-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 07 • GANADERÍA</span>
+                    <span class="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300">VOISIN PRV</span>
+                </div>
+                <h4 class="font-extrabold text-sm text-white">Manejo Pecuario & Establo</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Rotación Voisin en 8 potreros, trazabilidad individual RFID SAG, báscula ganadera, aforo forrajero y ciclado de bosteo.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-amber-300">
+                    <span>▶ Clic para entrar (3s perritos)</span>
+                    <span class="text-slate-400">Fondo Establo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. MESA COMUNITARIA / RAMA VECINAL 🤝 (Pactos y actas sobre mesa baja derecha) -->
+        <div class="diegetic-sprite-anchor" style="top: 56%; left: 72%; width: 115px; color: #a855f7;" onclick="openMesaMode()" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_mesa_pacts.png" alt="Modo Vecinal" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-purple-400"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openMesaMode();">
+                <div class="aoe-badge-title">🤝 Rama Vecinal</div>
+                <div class="aoe-badge-metric">Pactos • Fajas Cortafuego</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-purple-400 border-b border-purple-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 08 • COMUNIDAD</span>
+                    <span class="bg-purple-500/20 px-1.5 py-0.5 rounded text-purple-300">GOBERNANZA</span>
+                </div>
+                <h4 class="font-extrabold text-sm text-white">Gobernanza Vecinal & Pactos</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Convenios de colindancia, comités de agua APR, protocolos de fajas cortafuegos coordinadas y asamblea rural comunitaria.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-purple-300">
+                    <span>▶ Clic para entrar (3s perritos)</span>
+                    <span class="text-slate-400">Fondo Reunión</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. BARRENO / RAMA EXPLORACIÓN 🧭 (Brújula y barreno de suelo en mesa baja derecha) -->
+        <div class="diegetic-sprite-anchor" style="top: 56%; left: 86%; width: 110px; color: #06b6d4;" onclick="openIncursionMode()" onmouseenter="playDiegeticAudio('wood')">
+            <img src="assets/ui/sprite_incursion_1.png" alt="Modo Exploración" class="diegetic-sprite-img" style="filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));">
+            <span class="diegetic-sprite-ping bg-cyan-400"></span>
+            <div class="aoe-unified-station-badge" onclick="event.stopPropagation(); openIncursionMode();">
+                <div class="aoe-badge-title">🧭 Rama Exploración</div>
+                <div class="aoe-badge-metric">Calicatas SOC • Rewilding</div>
+            </div>
+            <div class="diegetic-tooltip">
+                <div class="flex items-center justify-between text-[10px] font-mono text-cyan-400 border-b border-cyan-500/20 pb-1 mb-1.5">
+                    <span>ESTACIÓN 09 • BIODIVERSIDAD</span>
+                    <span class="bg-cyan-500/20 px-1.5 py-0.5 rounded text-cyan-300">SUELO VIVO</span>
+                </div>
+                <h4 class="font-extrabold text-sm text-white">Exploración & Rewilding</h4>
+                <p class="text-xs text-slate-300 mt-1 leading-snug">
+                    Estratigrafía de calicatas (horizontes A-B-C), carbono orgánico SOC, micorrizas, cámaras trampa y transectos de bosque nativo.
+                </p>
+                <div class="mt-2 pt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-cyan-300">
+                    <span>▶ Clic para entrar (3s perritos)</span>
+                    <span class="text-slate-400">Fondo Incursión</span>
                 </div>
             </div>
         </div>
@@ -5927,6 +5789,54 @@
         </div> <!-- Fin Etapa Diegética Cuenca (cierre del contenedor de línea 4849) -->
 <!-- SECCIÓN DE DETALLE / VISTAS PREDEFINIDAS DE LA CUENCA (SCROLLABLE DEBAJO DEL LANDING) -->
         <div id="cerroDetailSection" class="max-w-7xl mx-auto p-4 sm:p-8 space-y-6">
+            <!-- TABLERO MAESTRO PREDIAL AMPLIADO (ESTACIÓN 2 DEL LANDING AOE) -->
+            <div id="predioMasterPanelModal" class="diegetic-modal-backdrop" onclick="if(event.target === this) closePredioMasterPanel()">
+                <div class="diegetic-modal-card p-6 space-y-4 border-amber-500/40 relative max-w-4xl w-[94vw]">
+                    <!-- Cabecera del Tablero -->
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl text-amber-300 shadow">
+                                📋
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
+                                    CONSOLA MAESTRA PREDIAL • FUNDO MENIEL (12.8 HA)
+                                </span>
+                                <h3 id="predioMasterModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2 mt-0.5">
+                                    Panel Maestro Predial Ampliado & Permacultura
+                                </h3>
+                            </div>
+                        </div>
+                        <button onclick="closePredioMasterPanel()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-colors cursor-pointer" title="Cerrar panel (Esc)">
+                            &times;
+                        </button>
+                    </div>
+
+                    <!-- BARRA PERSISTENTE DE 5 SUBPESTAÑAS -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-white/10 text-xs font-mono select-none" id="predioMasterTabsBar">
+                        <button onclick="switchPredioMasterTab('permacultura')" id="tabPredio-permacultura" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-amber-500/25 text-amber-200 border-amber-400/60 font-bold shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                            <span>📜</span> <span>1. Permacultura Zonas 0-5</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('telemetria')" id="tabPredio-telemetria" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>💧</span> <span>2. Telemetría & Tranque</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('limites')" id="tabPredio-limites" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>🗺️</span> <span>3. Límites & Deslindes (CBR)</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('esg')" id="tabPredio-esg" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>📚</span> <span>4. Huella ESG & EUDR</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('radio')" id="tabPredio-radio" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>📻</span> <span>5. Enlace Comunal & APR</span>
+                        </button>
+                    </div>
+
+                    <!-- Contenido Dinámico de las Subpestañas -->
+                    <div id="predioMasterModalBody" class="space-y-4 text-xs font-mono">
+                    </div>
+                </div>
+            </div>
+
             <!-- TABLERO MAESTRO UNIFICADO DE CUENCA AOE II (DECK UNIFICADO DE SPRITES) -->
             <div id="cerroHotspotModal" class="diegetic-modal-backdrop" onclick="if(event.target === this) closeCerroHotspotModal()">
                 <div class="diegetic-modal-card p-6 space-y-4 border-sky-500/40 relative max-w-4xl w-[94vw]">
@@ -7417,10 +7327,6 @@
                     </p>
                 </div>
                 <div class="flex items-center gap-2 font-mono text-xs shrink-0 flex-wrap">
-                    <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-bold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer" title="Abrir Informe Técnico Hindcast Imprimible (Santa Juana & Viña del Mar)">
-                        <span>🔥</span> <span>Informe Hindcast (HTML)</span>
-                        <span class="text-rose-200">↗</span>
-                    </a>
                     <a href="docs/PAPER_CIENTIFICO_AGRITWIN_IMPRIMIBLE.html" target="_blank" class="px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer" title="Abrir Monografía Científica Canónica Imprimible (KaTeX • IMRAD • 7 Figuras 300 DPI)">
                         <span>📄</span> <span>Monografía Imprimible (Paper)</span>
                         <span class="text-blue-200">↗</span>
@@ -7525,39 +7431,6 @@
                             <span>→</span>
                         </a>
                         <a href="docs/PAPER_CIENTIFICO_AGRITWIN_MARCO_TEORICO_UQ.md" target="_blank" class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center justify-center gap-1.5 transition-all">
-                            <span>📄</span> <span>Ver Markdown</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Banner Destacado: Auditoría Retrospectiva de Incendios (Hindcast) -->
-                <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-stone-900 via-rose-950 to-stone-900 border border-rose-500/40 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white">
-                    <div class="flex items-start sm:items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-2xl bg-rose-600/30 border border-rose-400/40 flex items-center justify-center text-2xl shadow-inner shrink-0">
-                            🔥
-                        </div>
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">AUDITORÍA RETROSPECTIVA HINDCAST</span>
-                                <span class="text-xs text-rose-300/60">•</span>
-                                <span class="text-xs font-mono text-emerald-300 font-bold">Sentinel-2 dNBR (20m) &bull; ERA5 Horario</span>
-                                <span class="text-xs text-rose-300/60">•</span>
-                                <span class="text-xs font-mono text-amber-300">Santa Juana 2023 &bull; Viña del Mar 2024</span>
-                            </div>
-                            <h3 class="text-base sm:text-lg font-bold text-white font-serif">
-                                Auditoría Retrospectiva de Incendios: Santa Juana 2023 &amp; Viña del Mar 2024
-                            </h3>
-                            <p class="text-xs text-slate-300 max-w-3xl leading-relaxed">
-                                Reconstrucción observacional reproducible de cicatrices satelitales (42.599 ha y 2.989 ha), ráfagas ERA5 (58–65 km/h), corrección de métricas sintéticas y marco de calibración inter-cuencas sin sobreajuste. Disponible como banco de prueba público en modo Cuenca para todos los usuarios.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 font-mono text-xs shrink-0 w-full md:w-auto flex-wrap sm:flex-nowrap">
-                        <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer" title="Abrir Informe Técnico Imprimible e Interactivo (KaTeX • Figuras • Tablas)">
-                            <span>🖨️</span> <span>Abrir Informe Imprimible</span>
-                            <span>→</span>
-                        </a>
-                        <a href="docs/INFORME_HINDCAST_REAL_SANTA_JUANA_VINA.md" target="_blank" class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center justify-center gap-1.5 transition-all">
                             <span>📄</span> <span>Ver Markdown</span>
                         </a>
                     </div>
@@ -10718,10 +10591,6 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap text-[11px]">
-                            <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-mono font-bold flex items-center gap-1.5 shadow-sm">
-                                <span>🖨️</span> <span>Abrir Informe Imprimible (HTML)</span>
-                                <span class="text-rose-200">↗</span>
-                            </a>
                             <a href="docs/INFORME_HINDCAST_REAL_SANTA_JUANA_VINA.md" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-mono font-bold">📄 Informe completo (.md)</a>
                             <span class="text-stone-600">Polígonos = cicatriz dNBR, no perímetro oficial CONAF · Sitios solo modo Cuenca, sin gemelo predial.</span>
                         </div>
@@ -14389,271 +14258,6 @@ print(meniel_soil)</code></pre>
     <!-- Living Energy Flow Canvas Overlay (Sits directly over the map) -->
     <canvas id="energyFlowCanvas" class="pointer-events-none absolute inset-0 z-20 w-full h-full" style="top: 56px; bottom: 0; left: 0; right: 0; position: absolute; pointer-events: none;"></canvas>
 
-    <!-- BOTÓN DISPARADOR DEL DRAWER IZQUIERDO DE VIÑA DEL MAR -->
-    <button onclick="window.openVinaBenchmarkDrawer()" id="btnToggleVinaDrawer" class="hidden fixed left-4 top-20 z-40 px-3 py-2 rounded-xl bg-[#070e1a]/95 hover:bg-rose-950/80 border border-rose-500/60 text-rose-300 font-mono text-xs font-bold shadow-2xl flex items-center gap-2 cursor-pointer transition-all active:scale-95" title="Abrir Panel Táctico de Viña del Mar (Incendio vs Mapa de Riesgo)">
-        <span class="text-base">🔥⚖️</span>
-        <span>Panel Táctico Viña 2024</span>
-        <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/30 text-rose-200 border border-rose-500/50">ABRIR</span>
-    </button>
-
-    <!-- DRAWER FLOTANTE IZQUIERDO: CASO EXCEPCIONAL VIÑA DEL MAR 2024 (BENCHMARK CANÓNICO) -->
-    <div id="vinaBenchmarkDrawer" class="hidden fixed left-4 top-20 bottom-8 w-[450px] max-w-[calc(100vw-2rem)] z-40 bg-[#070e1a]/98 backdrop-blur-2xl border border-rose-500/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden text-slate-200 font-mono text-xs select-none transition-all duration-300">
-        
-        <!-- Header del Drawer con Arte Militar y Badges TRL -->
-        <div class="p-3.5 bg-gradient-to-r from-rose-950 via-[#180808] to-stone-950 border-b border-rose-500/30 shrink-0">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <span class="text-xl p-1.5 rounded-xl bg-rose-950 border border-rose-500/40 text-rose-300">🔥⚖️</span>
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-rose-500/30 text-rose-300 border border-rose-500/40">CASO EXCEPCIONAL</span>
-                            <span class="text-[8.5px] font-mono text-amber-300 font-bold">TRL 7/8</span>
-                        </div>
-                        <h3 class="text-sm font-sans font-black text-white tracking-tight mt-0.5">Viña del Mar 2024 • Auditoría Táctica</h3>
-                    </div>
-                </div>
-                <button onclick="window.closeVinaBenchmarkDrawer()" class="text-slate-400 hover:text-white text-base p-1 rounded-lg hover:bg-white/10 cursor-pointer" title="Minimizar panel">✕</button>
-            </div>
-            <p class="text-[10px] text-slate-300 font-sans mt-1 leading-snug">
-                Contraste directo entre el <strong>Incendio Real Observado</strong> (satélite dNBR) vs el <strong>Mapa de Riesgo Preventivo T-24h</strong> (AgriTwin).
-            </p>
-        </div>
-
-        <!-- SELECTOR MAESTRO GLOBAL TRIPARTITO (EL NÚCLEO DE LA COMPARACIÓN) -->
-        <div class="p-2.5 bg-black/60 border-b border-white/10 shrink-0 space-y-1.5">
-            <span class="text-[9.5px] text-slate-400 font-mono block uppercase tracking-wider">Modo de Visualización en Pantalla:</span>
-            <div class="grid grid-cols-3 gap-1 bg-black/80 p-1 rounded-xl border border-white/10 text-[10px]">
-                <button onclick="window.setVinaDisplayMode('incendio')" id="btnVinaMode-incendio" class="py-1.5 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-black/40 hover:bg-white/10 text-slate-300 border border-white/5">
-                    🔥 1. Incendio
-                </button>
-                <button onclick="window.setVinaDisplayMode('riesgo')" id="btnVinaMode-riesgo" class="py-1.5 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-black/40 hover:bg-white/10 text-slate-300 border border-white/5">
-                    🛡️ 2. Riesgo
-                </button>
-                <button onclick="window.setVinaDisplayMode('comparar')" id="btnVinaMode-comparar" class="py-1.5 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-rose-600 text-white shadow-md border border-rose-400">
-                    ⚖️ 3. Comparar
-                </button>
-            </div>
-        </div>
-
-        <!-- CUERPO SCROLLABLE CON CONTENIDO CONTEXTUAL -->
-        <div class="flex-1 overflow-y-auto p-3 space-y-3 font-sans text-xs custom-scrollbar">
-
-            <!-- ── VISTA 1: INCENDIO REAL OBSERVADO ── -->
-            <div id="vinaDrawerContent-incendio" class="hidden space-y-3 font-mono">
-                <div class="p-2.5 rounded-xl bg-black/50 border border-rose-500/30 space-y-1.5">
-                    <span class="text-xs text-rose-400 font-bold flex items-center gap-1.5">
-                        <span>🛰️</span> Ground-Truth Satelital Observado
-                    </span>
-                    <div class="grid grid-cols-2 gap-1.5 text-[10.5px]">
-                        <div class="p-1.5 rounded bg-black/40 border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">Cicatriz dNBR:</span>
-                            <b class="text-rose-300 text-xs">2.989 ha (ROI 5.707 ha)</b>
-                        </div>
-                        <div class="p-1.5 rounded bg-black/40 border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">Sensor & Malla:</span>
-                            <b class="text-white text-xs">Sentinel-2 (20m)</b>
-                        </div>
-                    </div>
-                    <div class="text-[10px] text-slate-300 space-y-1 pt-1 border-t border-white/10">
-                        <div>• <b>Pre/Post:</b> 18-ene-2024 &bull; 12-feb-2024 (Órbita 96)</div>
-                        <div>• <b>Clima ERA5:</b> T máx 34,4 °C &bull; HR mín 21% &bull; Ráfaga 65 km/h S–SSO</div>
-                        <div>• <b>Sequía Crítica:</b> 30,6 mm lluvia previa en 90 días</div>
-                    </div>
-                </div>
-
-                <div class="p-2.5 rounded-xl bg-rose-950/30 border border-rose-500/20 text-[10px] space-y-1 leading-snug">
-                    <strong class="text-rose-300 block">Cronología Real de Destrucción:</strong>
-                    <div>• <b>13:45:</b> Foco inicial en Reserva Lago Peñuelas.</div>
-                    <div>• <b>15:30:</b> Efecto chimenea en Quebrada Las Pataguas.</div>
-                    <div>• <b>17:15:</b> Salto masivo de pavesas sobre Achupallas y Canal Chacao.</div>
-                    <div>• <b>18:30:</b> Ingreso al Jardín Botánico y zonas consolidadas.</div>
-                </div>
-            </div>
-
-            <!-- ── VISTA 2: MAPA DE RIESGO PREVENTIVO T-24H (AGRITWIN) ── -->
-            <div id="vinaDrawerContent-riesgo" class="hidden space-y-3 font-mono">
-                <div class="p-2.5 rounded-xl bg-gradient-to-b from-[#0a1526] to-black/60 border border-sky-500/40 space-y-1.5">
-                    <div class="flex items-center justify-between border-b border-sky-500/20 pb-1">
-                        <span class="text-xs text-sky-300 font-bold flex items-center gap-1.5">
-                            <span>🛡️</span> Perspectiva Predial T-24h (1-feb-2024)
-                        </span>
-                        <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-950 text-sky-200 border border-sky-500/30 font-bold">PREVENTIVO</span>
-                    </div>
-                    <p class="text-[10px] text-slate-300 leading-snug font-sans">
-                        Modelación calculada <strong>un día antes</strong> sin saber dónde habría fuego, solo con satélite y pronóstico meteorológico.
-                    </p>
-                    <div class="grid grid-cols-2 gap-1.5 text-[10px]">
-                        <div class="p-1.5 rounded bg-black/40 border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">Alerta Predial:</span>
-                            <b class="text-red-400 text-xs">ROJO (FWI = 72)</b>
-                        </div>
-                        <div class="p-1.5 rounded bg-black/40 border border-white/5">
-                            <span class="text-slate-400 block text-[9px]">Salto Pavesas:</span>
-                            <b class="text-amber-300 text-xs">1.85 km (Albini)</b>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-2.5 rounded-xl bg-black/50 border border-amber-500/30 text-[10px] space-y-1 leading-snug">
-                    <strong class="text-amber-300 block">Diagnóstico de Fajas Cortafuego:</strong>
-                    <div>• Faja tradicional 45m: Retiene llama de suelo (<b class="text-emerald-400">85%</b>).</div>
-                    <div>• Pavesas aéreas: Penetración estimada del <b class="text-red-400">94%</b> por viento de 65 km/h.</div>
-                    <div class="text-amber-200 pt-1 border-t border-white/10 font-sans">
-                        ⚠️ <b>Orden Táctica:</b> "Despeje de quebradas, activación de aspersión en techos y precarga de tranques".
-                    </div>
-                </div>
-            </div>
-
-            <!-- ── VISTA 3: COMPARAR AMBOS (BENCHMARK CIENTÍFICO) ── -->
-            <div id="vinaDrawerContent-comparar" class="space-y-3 font-mono">
-                <div class="p-2.5 rounded-xl bg-black/60 border border-amber-500/40 space-y-2">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-1">
-                        <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                            <span>⚖️</span> Matriz de Contraste Bipolar
-                        </span>
-                        <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/40 font-bold">IOU &bull; TRASLAPE</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2 text-[10.5px]">
-                        <div class="p-2 rounded-lg bg-black/50 border border-rose-500/30">
-                            <span class="text-[9px] text-slate-400 block flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-sm bg-rose-500"></span> Observado Satelital:
-                            </span>
-                            <b class="text-rose-300 text-xs">2.989 ha</b>
-                            <span class="text-[8.5px] text-slate-500 block mt-0.5">Sentinel-2 dNBR</span>
-                        </div>
-                        <div class="p-2 rounded-lg bg-black/50 border border-amber-500/30">
-                            <span class="text-[9px] text-slate-400 block flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-sm bg-amber-500"></span> Proyectado AgriTwin:
-                            </span>
-                            <b class="text-amber-300 text-xs">3.420 ha</b>
-                            <span class="text-[8.5px] text-slate-500 block mt-0.5">Rothermel + Huygens</span>
-                        </div>
-                    </div>
-
-                    <div class="p-1.5 rounded bg-slate-900/80 border border-white/5 text-[9.5px] space-y-0.5">
-                        <div class="flex justify-between"><span>Concordancia Eje Sur-Norte:</span><b class="text-emerald-400">88.5% (Alta precisión)</b></div>
-                        <div class="flex justify-between"><span>Acierto Salto de Quebradas:</span><b class="text-emerald-400">92.0% (Albini)</b></div>
-                        <div class="flex justify-between"><span>Punto Ciego Físico:</span><b class="text-rose-400">Combustión Estructural Casas</b></div>
-                    </div>
-                </div>
-
-                <!-- Análisis de Puntos Ciegos del Modelo -->
-                <div class="p-2 rounded-lg bg-rose-950/20 border border-rose-500/20 text-[9.5px] font-sans text-slate-300 leading-relaxed space-y-1">
-                    <strong class="text-rose-300 font-mono text-[10px] block">🔍 ¿Dónde acertó y dónde falló el modelo?</strong>
-                    <div>✔ <b>Acierto:</b> La elipse y los haces capturaron con exactitud el avance violento ladera arriba por el cañón de Las Pataguas.</div>
-                    <div>✖ <b>Límite Físico:</b> El modelo Rothermel asume vegetación forestal homogénea; no predijo que las casas urbanas arderían como combustible secundario ni el corte de agua en la red civil.</div>
-                </div>
-            </div>
-
-            <!-- ── SECCIÓN CRÍTICA: LECCIONES TRANSFERIBLES A CLIENTES (FUNDO MENIEL) ── -->
-            <div class="p-3 rounded-xl bg-gradient-to-b from-[#0d1f14] to-black/80 border border-emerald-500/40 space-y-2 font-mono">
-                <div class="flex items-center justify-between border-b border-emerald-500/20 pb-1.5">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-base text-emerald-400">💡</span>
-                        <strong class="text-xs text-emerald-300 font-sans">Lecciones Transferibles a Predio Meniel &amp; Clientes</strong>
-                    </div>
-                    <span class="text-[8.5px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold">ESTÁNDAR</span>
-                </div>
-
-                <div class="text-[10px] font-sans text-slate-300 space-y-1.5 leading-snug">
-                    <div class="p-1.5 rounded bg-black/40 border border-white/5">
-                        <b class="text-amber-300 font-mono">1. Fajas Cortafuego Secas son Insuficientes:</b>
-                        <p class="text-[9.5px] text-slate-400 mt-0.5">Una faja de 45m limpia en tierra no detiene un viento $>50	ext{ km/h}$. En Fundo Meniel es imperativo implementar <strong>Fajas Húmedas Keyline</strong> con aspersores alimentados por el Tranque de 18.5k m³.</p>
-                    </div>
-
-                    <div class="p-1.5 rounded bg-black/40 border border-white/5">
-                        <b class="text-sky-300 font-mono">2. Alerta Temprana T-24h Salva el Predio:</b>
-                        <p class="text-[9.5px] text-slate-400 mt-0.5">La sequía acumulada (NDMI crítico) y el pronóstico de ráfagas Puelche permiten activar el protocolo de defensa 24 horas antes, no cuando el fuego ya está encima.</p>
-                    </div>
-                </div>
-
-                <!-- Botón de Transferencia Directa a Meniel -->
-                <button onclick="window.emulateHindcastOnActiveFarm('vina_2024'); window.closeVinaBenchmarkDrawer();" class="w-full py-2 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-[10px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-md">
-                    <span class="flex items-center gap-1.5">
-                        <span>🏠</span>
-                        <span>Aplicar esta Doctrina en Fundo Meniel</span>
-                    </span>
-                    <span>➔</span>
-                </button>
-            </div>
-
-            <!-- Botones de Acción Secundaria -->
-            <div class="flex items-center gap-2 pt-1 font-mono text-[10px]">
-                <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="flex-1 py-1.5 px-2 rounded-lg bg-rose-700/80 hover:bg-rose-700 text-white text-center font-bold transition-all shadow-sm">
-                    📄 Ver Informe Técnico HTML
-                </a>
-                <button onclick="window.returnToActiveFarmFromHindcast(); window.closeVinaBenchmarkDrawer();" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 font-bold cursor-pointer">
-                    🏠 Volver a Meniel
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- FLOATING BENCHMARK HINDCAST MAP HUD (Overlay interactivo en Mirador Cuenca) -->
-    <div id="hindcastMapHUD" class="hidden absolute bottom-36 left-6 z-30 w-96 max-w-[calc(100vw-3rem)] bg-[#070e1a]/95 backdrop-blur-2xl border border-rose-500/60 p-3.5 rounded-2xl shadow-2xl space-y-2.5 text-slate-200 font-mono text-xs select-none">
-        <div class="flex items-center justify-between border-b border-rose-500/30 pb-2">
-            <div class="flex items-center gap-2">
-                <span class="text-base p-1 rounded-lg bg-rose-950/80 border border-rose-500/40 text-rose-300">🔥🛰️</span>
-                <div>
-                    <span class="text-[9px] font-bold text-rose-400 uppercase tracking-wider block">BENCHMARK HINDCAST CANÓNICO</span>
-                    <strong id="hindcastHudTitle" class="text-xs text-white font-bold font-sans">Santa Juana 2023</strong>
-                </div>
-            </div>
-            <button onclick="document.getElementById('hindcastMapHUD').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer" title="Cerrar HUD">✕</button>
-        </div>
-
-        <!-- Métricas comparativas lado a lado -->
-        <div class="grid grid-cols-2 gap-2 text-[10.5px]">
-            <div class="p-2 rounded-xl bg-black/60 border border-rose-500/30 space-y-0.5">
-                <span class="text-slate-400 text-[9px] block flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-sm bg-rose-500"></span> Observado (Sentinel-2 dNBR):
-                </span>
-                <b id="hindcastHudObsArea" class="text-rose-300 text-xs font-black">42.599 ha</b>
-            </div>
-            <div class="p-2 rounded-xl bg-black/60 border border-amber-500/30 space-y-0.5">
-                <span class="text-slate-400 text-[9px] block flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-sm bg-amber-500"></span> Simulado (Rothermel-Fons):
-                </span>
-                <b id="hindcastHudSimArea" class="text-amber-300 text-xs font-black">44.850 ha</b>
-            </div>
-        </div>
-
-        <!-- Clima y Viento ERA5 de esa semana -->
-        <div class="p-2 rounded-xl bg-slate-900/80 border border-white/5 space-y-1 text-[10px]">
-            <div class="flex justify-between items-center text-slate-300">
-                <span>🌪️ Viento Sinóptico ERA5:</span>
-                <b id="hindcastHudWind" class="text-sky-300 font-bold">SE 58 km/h</b>
-            </div>
-            <div class="flex justify-between items-center text-slate-300">
-                <span>🌡️ Temperatura & HR:</span>
-                <b id="hindcastHudTemp" class="text-amber-200">40,0 °C · HR 11%</b>
-            </div>
-            <div class="flex justify-between items-center text-slate-300">
-                <span>🌧️ Lluvia 90d previa:</span>
-                <b id="hindcastHudRain" class="text-emerald-300">96,8 mm</b>
-            </div>
-            <div class="flex justify-between items-center pt-1 border-t border-white/10 text-[9.5px] text-purple-300">
-                <span>📍 Distancia a tu predio:</span>
-                <b id="hindcastHudFarmDist" class="text-purple-200">135 km desde Fundo Meniel</b>
-            </div>
-        </div>
-
-        <!-- Botones de Acción Rápida -->
-        <div class="flex items-center gap-1.5 pt-0.5">
-            <button onclick="window.toggleHindcastSimulationLayer()" id="btnToggleHindcastEllipse" class="flex-1 py-1.5 px-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-amber-200 hover:text-white text-[10px] font-bold text-center transition-all cursor-pointer">
-                🎯 Capa Táctica AgriTwin (ON/OFF)
-            </button>
-            <button onclick="window.returnToActiveFarmFromHindcast()" class="py-1.5 px-2.5 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 border border-sky-400/50 text-sky-200 hover:text-white text-[10px] font-bold transition-all cursor-pointer" title="Volver a centrar el mapa en tu predio activo">
-                🏠 Mi Predio
-            </button>
-            <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="py-1.5 px-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold transition-all flex items-center justify-center cursor-pointer shadow-sm" title="Abrir Informe Técnico Imprimible">
-                📄 Informe
-            </a>
-        </div>
-    </div>
-
     <!-- CUENCA SATELLITE VIEWER TOP BAR (Rediseñado: Tipografía nítida, alto contraste, ultra-compacto) -->
     <div id="cerroSatelliteSubdeckNav" class="absolute top-14 left-0 right-0 z-40 bg-[#060a14]/95 backdrop-blur-xl border-b border-sky-400/30 px-3 sm:px-5 py-1.5 flex flex-wrap items-center justify-between gap-2 shadow-2xl transition-all font-sans" style="display: none; height: 42px;">
         <div class="flex items-center gap-1.5 sm:gap-2">
@@ -14767,15 +14371,6 @@ print(meniel_soil)</code></pre>
                         <span>Red Vecinal (9 Predios)</span>
                     </span>
                     <span id="badgeDockVecinos" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
-                </button>
-
-                <!-- Sitios Hindcast Reales: Santa Juana 2023 & Viña del Mar 2024 -->
-                <button onclick="toggleHindcastSitesLayer();" id="btnDockHindcast" class="w-full text-left p-2 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/5 hover:border-rose-500/30 flex items-center justify-between text-xs text-rose-200 transition-all cursor-pointer" title="Cicatrices Satelitales Observadas Sentinel-2 dNBR (Santa Juana 2023 & Viña 2024)">
-                    <span class="flex items-center gap-2">
-                        <span>🔥</span>
-                        <span>Sitios Hindcast Reales</span>
-                    </span>
-                    <span id="badgeDockHindcast" class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-white/5">OFF</span>
                 </button>
 
                 <!-- Capa Territorial Edafológica: ISRIC SoilGrids 2.0 (250m) - Carbono en Suelo -->
@@ -16636,52 +16231,6 @@ print(meniel_soil)</code></pre>
                                 </div>
                             </div>
 
-                            <!-- SUBMÓDULO 2.C: BANCO DE VALIDACIÓN HINDCAST (SANTA JUANA 2023 · VIÑA 2024) -->
-                            <div class="p-3 rounded-xl bg-gradient-to-b from-[#200b0b] to-black/85 border border-rose-500/50 space-y-2.5 font-sans">
-                                <div class="flex items-center justify-between border-b border-rose-500/20 pb-2">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-base p-1 rounded-lg bg-rose-950/80 border border-rose-500/30 text-rose-400">🔥🛰️</span>
-                                        <div>
-                                            <h3 class="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
-                                                Validación Hindcast Real
-                                            </h3>
-                                            <p class="text-[9px] text-slate-400 font-mono">Sentinel-2 dNBR (20m) &bull; ERA5 Horario vs Rothermel</p>
-                                        </div>
-                                    </div>
-                                    <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="py-1 px-2 rounded-lg bg-rose-600/30 hover:bg-rose-600/50 text-rose-200 border border-rose-500/50 text-[9.5px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer" title="Ver informe imprimible completo con KaTeX">
-                                        <span>🖨️</span> <span>Informe</span>
-                                    </a>
-                                </div>
-
-                                <p class="text-[10px] text-slate-300 leading-snug font-sans">
-                                    Compara directamente la <strong>cicatriz satelital real observada</strong> (rojo) frente a la <strong>elipse teórica del modelo</strong> (naranja) proyectada con el clima exacto de esa semana.
-                                </p>
-
-                                <!-- Selector de Eventos Históricos -->
-                                <div class="space-y-1 font-mono">
-                                    <span class="text-[9.5px] text-slate-400 block">Seleccionar Evento de Validación:</span>
-                                    <div class="grid grid-cols-2 gap-1.5">
-                                        <button onclick="window.loadHindcastBenchmarkInCuenca('santa_juana_2023');" id="btnSidebarHindcastSanta" class="py-1.5 px-2 rounded-lg bg-rose-600 text-white font-mono text-[10px] font-bold border border-rose-400 cursor-pointer shadow-md transition-all flex flex-col items-center">
-                                            <span>🔥 Santa Juana 2023</span>
-                                            <span class="text-[8.5px] text-rose-200 font-normal">42.599 ha · Biobío</span>
-                                        </button>
-                                        <button onclick="window.loadHindcastBenchmarkInCuenca('vina_2024');" id="btnSidebarHindcastVina" class="py-1.5 px-2 rounded-lg bg-black/40 hover:bg-white/10 text-slate-300 font-mono text-[10px] border border-white/5 cursor-pointer transition-all flex flex-col items-center">
-                                            <span>🔥 Viña del Mar 2024</span>
-                                            <span class="text-[8.5px] text-slate-400 font-normal">2.989 ha · Valparaíso</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Botón de Emulación sobre Predio Activo -->
-                                <button onclick="window.emulateHindcastOnActiveFarm(document.getElementById('btnSidebarHindcastVina').classList.contains('bg-rose-600') ? 'vina_2024' : 'santa_juana_2023');" class="w-full py-1.5 px-2.5 rounded-lg bg-purple-950/50 hover:bg-purple-900/60 border border-purple-500/40 text-purple-200 hover:text-white font-mono text-[10px] font-bold flex items-center justify-between transition-all cursor-pointer shadow-sm">
-                                    <span class="flex items-center gap-1.5">
-                                        <span>🌪️</span>
-                                        <span>Emular este régimen sobre mi predio</span>
-                                    </span>
-                                    <span>➔</span>
-                                </button>
-                            </div>
-
                             <!-- Botón para inspeccionar física in-situ con KaTeX sin abandonar el mapa -->
                             <button onclick="openCuencaDoctrinaModal('m2-fuego')" class="w-full py-1.5 px-3 rounded-lg bg-sky-950/40 hover:bg-sky-900/40 text-sky-200 hover:text-white border border-sky-400/40 text-[9.5px] font-mono flex items-center justify-between transition-all cursor-pointer shadow-sm">
                                 <span class="flex items-center gap-1.5">
@@ -16697,14 +16246,6 @@ print(meniel_soil)</code></pre>
                                 <span>Capas Complementarias:</span>
                                 <span class="text-slate-500">Zonificación & Macro-Flujo</span>
                             </div>
-
-                            <label class="flex items-center justify-between p-2 rounded-lg bg-black/40 hover:bg-white/5 border border-rose-500/30 cursor-pointer">
-                                <span class="text-rose-300 flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-sm bg-rose-500"></span>
-                                    <span>Sitios Hindcast Reales (Santa Juana · Viña)</span>
-                                </span>
-                                <input type="checkbox" id="chkSidebarHindcastSites" onchange="window.toggleHindcastSitesLayer(this.checked)" class="accent-rose-500 cursor-pointer">
-                            </label>
 
                             <label class="flex items-center justify-between p-2 rounded-lg bg-black/40 hover:bg-white/5 border border-white/5 cursor-pointer">
                                 <span class="text-rose-300 flex items-center gap-2">
@@ -17593,13 +17134,13 @@ print(meniel_soil)</code></pre>
     <script src="js/engines/basin-hydrology-engine.js"></script>
     <script src="js/engines/stac-cog-client.js"></script>
     <script src="js/engines/data-cube-engine.js"></script>
-    <script src="js/hub/geo-layers.js?v=4.2.8-animated-flow-chevrons"></script>
-    <script src="js/hub/hub-navigation.js?v=4.2.8-animated-flow-chevrons"></script>
-    <script src="js/hub/mesa-vecinos.js?v=4.2.8-animated-flow-chevrons"></script>
-    <script src="js/hub/vault-cockpit.js?v=4.2.8-animated-flow-chevrons"></script>
-    <script src="js/hub/cerro-cuenca.js?v=4.2.8-animated-flow-chevrons"></script>
-    <script src="js/hub/ecosystem-advisors.js?v=4.2.8-animated-flow-chevrons"></script>
-    <script src="js/hub/mesa-hotspots-lenses.js?v=4.2.8-animated-flow-chevrons"></script>
+    <script src="js/hub/geo-layers.js?v=4.1.0-windy-cuenca"></script>
+    <script src="js/hub/hub-navigation.js?v=4.1.0-windy-cuenca"></script>
+    <script src="js/hub/mesa-vecinos.js"></script>
+    <script src="js/hub/vault-cockpit.js"></script>
+    <script src="js/hub/cerro-cuenca.js"></script>
+    <script src="js/hub/ecosystem-advisors.js?v=4.1.0-windy-cuenca"></script>
+    <script src="js/hub/mesa-hotspots-lenses.js"></script>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          DRAWER LATERAL: FICHA TERRITORIAL VECINAL & CUADERNO DE CAMPO
@@ -18738,8 +18279,7 @@ print(meniel_soil)</code></pre>
 <script src="js/hub/pitch-deck-viewer.js"></script>
 <script src="js/hub/hub-diegetic-modals.js"></script>
 <script src="js/hub/hub-report-generator.js"></script>
-<script src="js/hub/farm-profile-manager.js?v=4.2.8-animated-flow-chevrons"></script>
-<script>
+<script src="js/hub/farm-profile-manager.js">
     function runInteractiveSoilGridsCalc() {
         const soc = parseFloat(document.getElementById('sg-soc')?.value || 38.5);
         const bdod = parseFloat(document.getElementById('sg-bdod')?.value || 1.28);

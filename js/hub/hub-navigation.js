@@ -213,12 +213,6 @@
                 viewId = 'territory';
                 if (!mode) mode = 'cerro';
             }
-            // Guardia de seguridad: no ocultar la interfaz si la vista recibida no es válida
-            const validViews = ['landing', 'dashboard', 'panal', 'telemetry', 'docs', 'cuaderno', 'juegos', 'galpon', 'invernadero', 'establo', 'incursion', 'cerro', 'mesa', 'territory', 'cuenca'];
-            if (!validViews.includes(viewId)) {
-                console.warn('[Navigation] switchMasterView ignoró vista no reconocida para evitar pantalla negra:', viewId);
-                return;
-            }
             currentMasterView = viewId;
             if (mode) currentTerritorialMode = mode;
             window.scrollTo(0, 0);
@@ -298,11 +292,10 @@
                     if (sidebar) sidebar.style.top = '3.5rem';
                 }
 
-                const lMap = (window.map && typeof window.map.invalidateSize === 'function') ? window.map : ((typeof map !== 'undefined' && map && typeof map.invalidateSize === 'function') ? map : null);
-                if (lMap) {
+                if (map) {
                     initObrasGisMarkers();
                     setTimeout(() => {
-                        lMap.invalidateSize(true);
+                        map.invalidateSize(true);
                         if (window.energyFlowEngine) {
                             window.energyFlowEngine.resize();
                             window.energyFlowEngine.resume();
@@ -310,7 +303,7 @@
                         }
                     }, 60);
                     setTimeout(() => {
-                        lMap.invalidateSize(true);
+                        map.invalidateSize(true);
                         if (window.energyFlowEngine) {
                             window.energyFlowEngine.resize();
                             window.energyFlowEngine.resume();
@@ -2859,3 +2852,269 @@ window.addEventListener('keydown', function(e) {
 });
 
 
+
+
+// ═══════════════════════════════════════════════════════════════════
+// CONTROLADOR DEL PANEL MAESTRO PREDIAL AMPLIADO (ESTACIÓN 2 LANDING AOE)
+// ═══════════════════════════════════════════════════════════════════
+window.openPredioMasterPanel = function(tabId) {
+    if (typeof playDiegeticAudio === 'function') playDiegeticAudio('wood');
+    const modal = document.getElementById('predioMasterPanelModal');
+    if (!modal) return;
+    modal.classList.add('active');
+    switchPredioMasterTab(tabId || 'permacultura');
+};
+
+window.closePredioMasterPanel = function() {
+    const modal = document.getElementById('predioMasterPanelModal');
+    if (modal) modal.classList.remove('active');
+};
+
+window.switchPredioMasterTab = function(tabKey) {
+    const allTabs = ['permacultura', 'telemetria', 'limites', 'esg', 'radio'];
+    allTabs.forEach(t => {
+        const btn = document.getElementById('tabPredio-' + t);
+        if (btn) {
+            if (t === tabKey) {
+                btn.className = 'px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-amber-500/25 text-amber-200 border-amber-400/60 font-bold shadow-[0_0_15px_rgba(245,158,11,0.3)] scale-[1.02]';
+            } else {
+                btn.className = 'px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200 hover:bg-white/10 font-medium';
+            }
+        }
+    });
+
+    const bodyEl = document.getElementById('predioMasterModalBody');
+    if (!bodyEl) return;
+
+    if (tabKey === 'permacultura') {
+        bodyEl.innerHTML = `
+            <div class="space-y-4">
+                <div class="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/30 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="text-amber-300 font-bold">OBJ-A • PLAN MAESTRO DE PERMACULTURA ESTRATÉGICA</span>
+                        <span class="text-emerald-400">Bill Mollison Zonas 0-5</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed font-sans text-xs">
+                        Fundo Meniel (12.8 ha) diseñado bajo el principio de menor esfuerzo y máximo retorno termodinámico. Organización concéntrica de energía, captación pasiva de escorrentía Keyline y ciclado cerrado de biomasa.
+                    </p>
+                </div>
+
+                <!-- 4 KPIs Estratégicos -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-center">
+                    <div class="p-3 rounded-xl bg-black/60 border border-emerald-500/40">
+                        <span class="text-[10px] text-slate-400 block">Suelo Vivo Acumulado</span>
+                        <b class="text-emerald-400 text-sm sm:text-base">+340%</b>
+                        <div class="text-[9px] text-slate-500 mt-0.5">MO & Hongos micorrícicos</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-black/60 border border-amber-500/40">
+                        <span class="text-[10px] text-slate-400 block">Autonomía Hídrica</span>
+                        <b class="text-amber-400 text-sm sm:text-base">18.500 m³</b>
+                        <div class="text-[9px] text-slate-500 mt-0.5">Tranque Keyline + Zanjas</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-black/60 border border-sky-500/40">
+                        <span class="text-[10px] text-slate-400 block">Eficiencia Insumos</span>
+                        <b class="text-sky-400 text-sm sm:text-base">92% Libre</b>
+                        <div class="text-[9px] text-slate-500 mt-0.5">Bokashi & Biopreparados</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-black/60 border border-purple-500/40">
+                        <span class="text-[10px] text-slate-400 block">Policultivo LER</span>
+                        <b class="text-purple-400 text-sm sm:text-base">1.34</b>
+                        <div class="text-[9px] text-slate-500 mt-0.5">Equivalencia de Suelo</div>
+                    </div>
+                </div>
+
+                <!-- Desglose de las 6 Zonas de Mollison -->
+                <div class="space-y-2">
+                    <span class="text-[11px] font-mono text-amber-300 font-bold block">Distribución de Faenas en Zonas Mollison:</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                            <div class="flex justify-between items-center"><b class="text-amber-200">🏠 Zona 0: Núcleo Habitacional & Taller</b><span class="text-[10px] text-slate-400">Alta frecuencia</span></div>
+                            <p class="text-[11px] text-slate-300 font-sans">Vivienda rural, galpón de herramientas, secador solar y banco de germoplasma.</p>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                            <div class="flex justify-between items-center"><b class="text-emerald-300">🌱 Zona 1: Huerta Intensiva & Espirales</b><span class="text-[10px] text-slate-400">Diario</span></div>
+                            <p class="text-[11px] text-slate-300 font-sans">Hierbas culinarias, almácigos en bancales elevados y composteras calientes a 15m.</p>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                            <div class="flex justify-between items-center"><b class="text-sky-300">🍇 Zona 2: Huerto Frutal & Aves Menores</b><span class="text-[10px] text-slate-400">Semi-intensivo</span></div>
+                            <p class="text-[11px] text-slate-300 font-sans">Cerezos, avellanos, viñedos de secano, gallinero móvil con forrajeo rastrero.</p>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                            <div class="flex justify-between items-center"><b class="text-yellow-300">🐂 Zona 3: Cultivos Principales & Pasturas PRV</b><span class="text-[10px] text-slate-400">Rotativo</span></div>
+                            <p class="text-[11px] text-slate-300 font-sans">8 potreros de pastoreo Voisin, milpa maíz-poroto, avena/vicia forrajera.</p>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                            <div class="flex justify-between items-center"><b class="text-lime-300">🪵 Zona 4: Bosque de Leña & Cortaviento</b><span class="text-[10px] text-slate-400">Manejo mínimo</span></div>
+                            <p class="text-[11px] text-slate-300 font-sans">Fajas perimetrales amortiguadoras de radiación térmica y biomasa leñosa.</p>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-black/40 border border-white/10 space-y-1">
+                            <div class="flex justify-between items-center"><b class="text-teal-300">🦉 Zona 5: Reserva Silvestre & Rewilding</b><span class="text-[10px] text-slate-400">Cero intervención</span></div>
+                            <p class="text-[11px] text-slate-300 font-sans">Bosque esclerófilo nativo en quebrada, refugio de depredadores biológicos y polinizadores.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between border-t border-white/10">
+                    <button onclick="closePredioMasterPanel(); openPredioMode();" class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black text-xs transition-all cursor-pointer flex items-center gap-1.5 shadow-md">
+                        <span>🌾</span> Entrar al Gemelo 3D para Proyectar Obras
+                    </button>
+                    <button onclick="closePredioMasterPanel()" class="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs cursor-pointer">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        `;
+    } else if (tabKey === 'telemetria') {
+        bodyEl.innerHTML = `
+            <div class="space-y-4">
+                <div class="p-4 rounded-2xl bg-sky-950/40 border border-sky-500/30 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="text-sky-300 font-bold">TELEMETRÍA EN VIVO • BALANCE HÍDRICO & SENSORES FDR</span>
+                        <span class="text-emerald-400">15 Nodos Activos</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed font-sans text-xs">
+                        Monitoreo continuo de humedad volumétrica de suelo, volumen de embalse en tranque Keyline y curva de agotamiento hídrico diario.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="p-3 rounded-2xl bg-black/50 border border-sky-500/30 space-y-2">
+                        <span class="text-xs text-sky-300 font-bold flex items-center gap-1.5">💧 Tranque Keyline Principal</span>
+                        <div class="text-2xl font-black text-white font-mono">18.500 m³</div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-sky-400 h-full" style="width: 86%;"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <span>Nivel: 86% Capacidad</span>
+                            <span class="text-emerald-400">+1.2 m³/h</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-2">
+                        <span class="text-xs text-emerald-300 font-bold flex items-center gap-1.5">🌱 Humedad Volumétrica (FDR)</span>
+                        <div class="text-2xl font-black text-white font-mono">37.2% VWC</div>
+                        <div class="space-y-1 text-[10px] text-slate-300 font-mono">
+                            <div class="flex justify-between"><span>Sonda 10cm (Raíz activa):</span><b class="text-emerald-400">38.4%</b></div>
+                            <div class="flex justify-between"><span>Sonda 30cm (Estratigráfico):</span><b class="text-sky-400">37.1%</b></div>
+                            <div class="flex justify-between"><span>Sonda 60cm (Subsuperficie):</span><b class="text-amber-400">36.0%</b></div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-2xl bg-black/50 border border-amber-500/30 space-y-2">
+                        <span class="text-xs text-amber-300 font-bold flex items-center gap-1.5">☀️ Bomba Solar & Aforo</span>
+                        <div class="text-2xl font-black text-white font-mono">28.0 L/s</div>
+                        <div class="space-y-1 text-[10px] text-slate-300 font-mono">
+                            <div class="flex justify-between"><span>Generación Solar:</span><b class="text-amber-400">4.2 kW</b></div>
+                            <div class="flex justify-between"><span>Presión Matriz:</span><b class="text-white">2.8 bar</b></div>
+                            <div class="flex justify-between"><span>Salinidad EC:</span><b class="text-emerald-400">0.42 dS/m</b></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between border-t border-white/10">
+                    <button onclick="closePredioMasterPanel(); switchMasterView('telemetry');" class="py-2 px-3 rounded-xl bg-sky-600/30 hover:bg-sky-600/50 text-sky-200 border border-sky-500/40 text-xs font-mono transition-all cursor-pointer">
+                        📊 Abrir Consola Telemetría Completa
+                    </button>
+                    <button onclick="closePredioMasterPanel()" class="py-2 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs cursor-pointer">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        `;
+    } else if (tabKey === 'limites') {
+        bodyEl.innerHTML = `
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 p-4 rounded-2xl bg-black/50 border border-amber-500/30">
+                    <img src="assets/ui/sprite_map_vecinal.png" alt="Límites Prediales" class="w-24 h-24 object-contain rounded-xl border border-white/10 p-1 bg-amber-950/20 shadow-md">
+                    <div class="space-y-2 flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-300">EXPEDIENTE DE LÍMITES & DESLINDES RURALES</span>
+                            <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">CBR LINARES AL DÍA</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
+                            <div>• Rol SII: <b class="text-white">142-08 Retiro</b></div>
+                            <div>• Superficie Total: <b class="text-amber-300">12.80 ha</b></div>
+                            <div>• Régimen: <b class="text-white">DL 3516 Rústico</b></div>
+                            <div>• Fojas / N°: <b class="text-white">Fs. 342 N° 418 (2018)</b></div>
+                        </div>
+                        <p class="text-slate-400 text-xs font-sans">
+                            Deslindes georreferenciados en datum WGS84 / Huso 19S. Borde norte con Estero Colliguay, faja cortafuego de 15m coordinada con predio Retiro Poniente.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between border-t border-white/10">
+                    <button onclick="closePredioMasterPanel(); switchMasterView('expediente');" class="py-2 px-3 rounded-xl bg-amber-600/30 hover:bg-amber-600/50 text-amber-200 border border-amber-500/40 text-xs font-mono transition-all cursor-pointer">
+                        📁 Ver Expediente Legal Completo
+                    </button>
+                    <button onclick="closePredioMasterPanel()" class="py-2 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs cursor-pointer">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        `;
+    } else if (tabKey === 'esg') {
+        bodyEl.innerHTML = `
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 p-4 rounded-2xl bg-black/50 border border-emerald-500/30">
+                    <img src="assets/ui/sprite_d_esg_book.png" alt="Libro ESG" class="w-24 h-24 object-contain rounded-xl border border-white/10 p-1 bg-emerald-950/20 shadow-md">
+                    <div class="space-y-2 flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-300">HISTÓRICO ESG, HUELLA DE CARBONO & TRAZABILIDAD EUDR</span>
+                            <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">CERO DEFORESTACIÓN</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono text-slate-300">
+                            <div>• Balance GEI: <b class="text-emerald-400">-18.4 t CO2e/año</b></div>
+                            <div>• Captura en Suelo: <b class="text-emerald-300">2.4 t C/ha/año</b></div>
+                            <div>• Índice Hídrico: <b class="text-sky-300">A+ Óptimo</b></div>
+                        </div>
+                        <p class="text-slate-400 text-xs font-sans">
+                            Auditoría de no deforestación bajo estándar Satelital Sentinel-2 (Línea base Diciembre 2020) exigida para exportación europea de avellanos y cerezas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between border-t border-white/10">
+                    <button onclick="closePredioMasterPanel(); switchMasterView('docs');" class="py-2 px-3 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 border border-emerald-500/40 text-xs font-mono transition-all cursor-pointer">
+                        📚 Ver Metodología en Vault Científico
+                    </button>
+                    <button onclick="closePredioMasterPanel()" class="py-2 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs cursor-pointer">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        `;
+    } else if (tabKey === 'radio') {
+        bodyEl.innerHTML = `
+            <div class="space-y-4">
+                <div class="flex items-start gap-4 p-4 rounded-2xl bg-black/50 border border-purple-500/30">
+                    <img src="assets/ui/sprite_e_radio.png" alt="Radio VHF" class="w-24 h-24 object-contain rounded-xl border border-white/10 p-1 bg-purple-950/20 shadow-md">
+                    <div class="space-y-2 flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-300">ENLACE COMUNAL VHF & COMITÉS DE AGUA APR</span>
+                            <span class="text-[10px] text-purple-400 font-mono bg-purple-950/60 px-2 py-0.5 rounded border border-purple-500/30">CANAL 14 MAULE SUR</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
+                            <div>• Frecuencia: <b class="text-white">146.520 MHz FM</b></div>
+                            <div>• Enlace APR: <b class="text-emerald-400">Pozo APR Colliguay (Normal)</b></div>
+                            <div>• Nivel Freático: <b class="text-sky-300">-14.2 m (Estable)</b></div>
+                            <div>• Semáforo Sequía: <b class="text-emerald-400">Verde (Sin racionamiento)</b></div>
+                        </div>
+                        <p class="text-slate-400 text-xs font-sans">
+                            Red comunitaria de alerta temprana ante crecidas del Río Longaví y foco de incendios con viento Puelche. Enlace radial directo con Bomberos de Retiro y Parral.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex items-center justify-between border-t border-white/10">
+                    <button onclick="closePredioMasterPanel(); openMesaMode();" class="py-2 px-3 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 text-xs font-mono transition-all cursor-pointer">
+                        🤝 Ir a la Mesa Vecinal
+                    </button>
+                    <button onclick="closePredioMasterPanel()" class="py-2 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs cursor-pointer">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+};
