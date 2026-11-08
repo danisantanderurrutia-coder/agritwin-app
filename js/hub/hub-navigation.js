@@ -1588,9 +1588,9 @@
     <text x="560" y="49" fill="#4338CA" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold" text-anchor="middle">Node.js</text>
 
     <rect x="354" y="75" width="232" height="66" rx="10" fill="#F5F3FF" stroke="#C7D2FE" stroke-width="1"/>
-    <text x="366" y="94" fill="#3730A3" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11">Servidor Local server.cjs</text>
-    <text x="366" y="112" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">Puerto 7773 (Zero External Deps)</text>
-    <text x="366" y="128" fill="#4F46E5" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">HTTP Router + Static Assets</text>
+    <text x="366" y="94" fill="#3730A3" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11">Servidor Unificado server.cjs</text>
+    <text x="366" y="112" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">Puerto 7777 (Zero External Deps)</text>
+    <text x="366" y="128" fill="#4F46E5" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Hub + /predio/ 3D + REST APIs</text>
 
     <rect x="354" y="150" width="232" height="66" rx="10" fill="#F5F3FF" stroke="#C7D2FE" stroke-width="1"/>
     <text x="366" y="169" fill="#3730A3" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11">API Telemetría &amp; Enclosure</text>
@@ -1598,10 +1598,10 @@
     <text x="366" y="203" fill="#4F46E5" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">Buffer Circular &amp; Persistencia</text>
 
     <rect x="354" y="225" width="232" height="77" rx="10" fill="#F5F3FF" stroke="#C7D2FE" stroke-width="1"/>
-    <text x="366" y="244" fill="#3730A3" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11">Sincronizador Cuenca</text>
-    <text x="366" y="262" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">Bridge Regional Puerto 7774</text>
+    <text x="366" y="244" fill="#3730A3" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11">Sincronizador Cuenca &amp; DAO</text>
+    <text x="366" y="262" fill="#4B5563" font-family="'JetBrains Mono', monospace" font-size="9">Motores Headless en js/engines/</text>
     <text x="366" y="278" fill="#6B7280" font-family="'JetBrains Mono', monospace" font-size="8.5">Balance Hídrico Macro Longaví</text>
-    <text x="366" y="291" fill="#4F46E5" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="bold">/api/basin-sync</text>
+    <text x="366" y="291" fill="#4F46E5" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="bold">/api/basin-sync • /api/dao/vote</text>
   </g>
 
   <!-- Flecha 2 -> 3 -->
@@ -1813,11 +1813,11 @@
     <rect x="755" y="130" width="165" height="32" rx="12" fill="#EEF2FF"/>
     <text x="837" y="151" fill="#3730A3" font-family="'Plus Jakarta Sans', sans-serif" font-size="10.5" font-weight="bold" text-anchor="middle">⚡ Servidor &amp; OS</text>
 
-    <text x="767" y="180" fill="#1C1917" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="bold">• Node.js Nativo</text>
-    <text x="767" y="195" fill="#6B7280" font-family="'JetBrains Mono', monospace" font-size="8.5">server.cjs (:7773)</text>
+    <text x="767" y="180" fill="#1C1917" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="bold">• Node.js Unificado</text>
+    <text x="767" y="195" fill="#6B7280" font-family="'JetBrains Mono', monospace" font-size="8.5">server.cjs (:7777)</text>
 
-    <text x="767" y="220" fill="#1C1917" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="bold">• Sync Cuenca</text>
-    <text x="767" y="235" fill="#6B7280" font-family="'JetBrains Mono', monospace" font-size="8.5">Acople Regional (:7774)</text>
+    <text x="767" y="220" fill="#1C1917" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="bold">• Identidad Predio</text>
+    <text x="767" y="235" fill="#6B7280" font-family="'JetBrains Mono', monospace" font-size="8.5">FarmProfileManager</text>
 
     <text x="767" y="260" fill="#1C1917" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="bold">• App Desktop</text>
     <text x="767" y="275" fill="#6B7280" font-family="'JetBrains Mono', monospace" font-size="8.5">Electron Wrapper</text>

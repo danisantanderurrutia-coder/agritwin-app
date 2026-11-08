@@ -110,12 +110,14 @@ agritwin/
 │   │   ├── stac-cog-client.js          # Lector STAC Sentinel-2 con cálculo radiométrico (NDVI, NDRE, NDWI, NDMI, SAVI)
 │   │   └── data-cube-engine.js         # Tensor 4D espaciotemporal y cortador geométrico estilo Polytope (O(1))
 │   │
-│   ├── hub/                   # 🖥️ Módulos de Interfaz y Lógica del Hub Maestro (Puerto 7777)
-│   │   ├── geo-layers.js               # Capas SIG Leaflet, viento Windy y sincronización de Scrubber temporal 7D
-│   │   ├── vault-cockpit.js            # Telemetry Studio, gráficos interactivos studioSoilChart y catálogo Vault
+│   ├── hub/                   # 🖥️ Módulos de Interfaz y Lógica del Hub Maestro — Núcleo Continuo (Puerto 7777)
+│   │   ├── branch-master-boards.js     # Tableros Maestros de Rama unificados (#view-ramas: Agrícola, Pecuario, Vecinal/Panal, Exploración)
+│   │   ├── farm-profile-manager.js     # Gestor de identidad por predio activo (Árbol Alquímico, Meniel 24.8 ha, Modo Semilla)
+│   │   ├── geo-layers.js               # Capas SIG Leaflet, pin 🏡 de descenso al 3D, Hindcast Viña/Santa Juana y Scrubber 7D
+│   │   ├── vault-cockpit.js            # Telemetry Studio, gráficos interactivos studioSoilChart, enrutador hash y catálogo Vault
 │   │   ├── cerro-cuenca.js             # Modelación de cuenca, sombras orográficas y visualización territorial
 │   │   ├── ecosystem-advisors.js       # Asesores IA consultivos y escenarios de debate biofísico
-│   │   └── hub-navigation.js           # Navegación entre vistas (Predio, Cuenca, Mesa, Telemetría, Bóveda)
+│   │   └── hub-navigation.js           # Navegación Núcleo Continuo (Landing AOE 9 Estaciones, Zoom Cuenca ⇄ Predio 3D, Panel Predial)
 │   │
 │   ├── core/                  # Bus de eventos y gestores transversales
 │   │   ├── EventBus.js        # Desacoplamiento Pub/Sub reactivo
