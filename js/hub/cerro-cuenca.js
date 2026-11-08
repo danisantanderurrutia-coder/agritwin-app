@@ -19,7 +19,7 @@
             if (!modal || !titleEl || !bodyEl) return;
 
             // Actualizar estado visual de las pestañas en la barra unificada
-            const allTabs = ['drone', 'clima', 'mirador', 'obras', 'hidro', 'lora', 'resumen'];
+            const allTabs = ['drone', 'clima', 'mirador', 'obras', 'hidro', 'lora', 'resumen', 'sim'];
             allTabs.forEach(tKey => {
                 const btn = document.getElementById('tabHotspot-' + tKey);
                 if (btn) {
@@ -620,6 +620,122 @@
                         </div>
                     </div>
                 `;
+            } else if (id === 'sim') {
+                if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-08 • SIMULADOR DUAL-CURVE';
+                titleEl.innerHTML = '<span>⚡</span> Simulador Táctico de Crecidas & Piro-Meteorología Dual';
+                bodyEl.innerHTML = `
+                    <div class="space-y-4 text-xs font-mono">
+                        <!-- Botonera 1-Click (8 Momentos Climáticos) -->
+                        <div class="p-3.5 rounded-2xl bg-[#091122] border border-amber-500/30 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-amber-300 font-bold flex items-center gap-1.5"><span>🎯</span> 8 Momentos Climáticos 1-Click:</span>
+                                <span class="text-[10px] text-slate-400">Alternar escenario instantáneamente</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="simulateBasinPreset('normal')" class="px-2.5 py-1 rounded bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-500/40 text-[11px] cursor-pointer">🌱 Base Actual</button>
+                                <button onclick="simulateBasinPreset('summer_normal')" class="px-2.5 py-1 rounded bg-sky-950/80 hover:bg-sky-900 text-sky-200 border border-sky-500/40 text-[11px] cursor-pointer">☀️ Verano Normal</button>
+                                <button onclick="simulateBasinPreset('heatwave')" class="px-2.5 py-1 rounded bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-500/40 text-[11px] cursor-pointer">🔥 Ola Calor (>37°C)</button>
+                                <button onclick="simulateBasinPreset('drought')" class="px-2.5 py-1 rounded bg-orange-950/80 hover:bg-orange-900 text-orange-200 border border-orange-500/40 text-[11px] cursor-pointer">🏜️ Megasequía</button>
+                                <button onclick="simulateBasinPreset('puelche_fire')" class="px-2.5 py-1 rounded bg-red-950/90 hover:bg-red-900 text-red-200 border border-red-500/50 text-[11px] cursor-pointer animate-pulse">🌪️ Puelche FWI 52</button>
+                                <button onclick="simulateBasinPreset('winter_dry')" class="px-2.5 py-1 rounded bg-indigo-950/80 hover:bg-indigo-900 text-indigo-200 border border-indigo-500/40 text-[11px] cursor-pointer">❄️ Invierno Seco</button>
+                                <button onclick="simulateBasinPreset('storm_t10')" class="px-2.5 py-1 rounded bg-blue-950/80 hover:bg-blue-900 text-blue-200 border border-blue-500/40 text-[11px] cursor-pointer">🌧️ Lluvia T=10 (65mm)</button>
+                                <button onclick="simulateBasinPreset('storm_t100')" class="px-2.5 py-1 rounded bg-cyan-950/90 hover:bg-cyan-900 text-cyan-200 border border-cyan-500/50 text-[11px] cursor-pointer font-bold">🌊 Río Atmosférico T=100 (140mm)</button>
+                                <button onclick="simulateBasinPreset('keyline_opt')" class="px-2.5 py-1 rounded bg-teal-950/80 hover:bg-teal-900 text-teal-200 border border-teal-500/40 text-[11px] cursor-pointer font-bold">🛡️ Keyline (-22.4%)</button>
+                            </div>
+                        </div>
+
+                        <!-- 4 Gauges Tácticos -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-[11px]">
+                            <div class="p-3 rounded-xl bg-black/50 border border-sky-500/30">
+                                <span class="text-slate-400 block text-[10px]">Caudal Río Longaví:</span>
+                                <div class="flex items-baseline gap-1 mt-0.5">
+                                    <span id="simGaugeQPeak" class="text-xl font-black text-sky-400">124.5</span>
+                                    <span class="text-sky-300 text-[10px]">m³/s</span>
+                                </div>
+                                <span id="simGaugeQMitigado" class="text-emerald-400 text-[10px] block mt-1">Mitigado: 124.5 m³/s</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-black/50 border border-cyan-500/30">
+                                <span class="text-slate-400 block text-[10px]">Embalse Bullileo:</span>
+                                <div class="flex items-baseline gap-1 mt-0.5">
+                                    <span id="simGaugeDamVol" class="text-xl font-black text-cyan-300">47.1</span>
+                                    <span class="text-cyan-200 text-[10px]">M m³</span>
+                                    <span id="simGaugeDamPct" class="text-sky-300 text-[10px] ml-auto font-bold">78.5%</span>
+                                </div>
+                                <span id="simGaugeDamOutflow" class="text-cyan-300 text-[10px] block mt-1">Gasto: 32.0 m³/s</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-black/50 border border-amber-500/30">
+                                <span class="text-slate-400 block text-[10px]">Piro-Riesgo FWI:</span>
+                                <div class="flex items-baseline gap-1 mt-0.5">
+                                    <span id="simGaugeFWI" class="text-xl font-black text-amber-400">24</span>
+                                    <span class="text-amber-300 text-[10px]">/ 100</span>
+                                </div>
+                                <span id="simGaugeFlameSpread" class="text-orange-300 text-[10px] block mt-1">Avance: 8.5 m/min</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-black/50 border border-emerald-500/30">
+                                <span class="text-slate-400 block text-[10px]">Amortiguación Keyline:</span>
+                                <div class="flex items-baseline gap-1 mt-0.5">
+                                    <span id="simGaugeKeylineInfil" class="text-xl font-black text-emerald-400">18.500</span>
+                                    <span class="text-emerald-300 text-[10px]">m³</span>
+                                    <span id="simGaugeKeylineRedPct" class="text-emerald-300 text-[10px] ml-auto font-bold">-22.4%</span>
+                                </div>
+                                <span id="simGaugeKeylineSed" class="text-lime-300 text-[10px] block mt-1">Sedimento: 142 ton</span>
+                            </div>
+                        </div>
+
+                        <!-- Sliders de Control Paramétrico -->
+                        <div class="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2.5">
+                            <div class="text-slate-300 font-bold text-[11px] pb-1 border-b border-white/10 flex justify-between">
+                                <span>🎛️ Parámetros Biofísicos en Vivo:</span>
+                                <label class="flex items-center gap-1.5 cursor-pointer text-emerald-400 font-mono text-[10px]">
+                                    <input type="checkbox" id="simCheckKeyline" checked onchange="updateBasinSimFromSliders()" class="accent-emerald-500">
+                                    Keyline Activo
+                                </label>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <div class="flex justify-between text-slate-300 text-[10px]"><span>Precipitación 24h:</span><b id="sliderValPrecip" class="text-sky-300">14.5 mm</b></div>
+                                    <input type="range" id="simSlidePrecip" min="0" max="250" step="1" value="14" oninput="updateBasinSimFromSliders()" class="w-full accent-sky-400">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-slate-300 text-[10px]"><span>Isoterma 0°C:</span><b id="sliderValIsotherm" class="text-indigo-300">2.850 m</b></div>
+                                    <input type="range" id="simSlideIsotherm" min="800" max="4200" step="50" value="2850" oninput="updateBasinSimFromSliders()" class="w-full accent-indigo-400">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-slate-300 text-[10px]"><span>Compuerta Bullileo:</span><b id="sliderValDamGate" class="text-cyan-300">25%</b></div>
+                                    <input type="range" id="simSlideDamGate" min="0" max="100" step="5" value="25" oninput="updateBasinSimFromSliders()" class="w-full accent-cyan-400">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-slate-300 text-[10px]"><span>Viento Puelche:</span><b id="sliderValWind" class="text-amber-300">38 km/h</b></div>
+                                    <input type="range" id="simSlideWind" min="0" max="100" step="2" value="38" oninput="updateBasinSimFromSliders()" class="w-full accent-amber-400">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Hidrograma -->
+                        <div class="p-3.5 rounded-2xl bg-[#040813] border border-sky-500/30 space-y-2">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-sky-300 flex items-center gap-1.5"><span>📈</span> Hidrograma Río Longaví (T = 0 a 48h):</span>
+                                <span class="text-slate-400 text-[10px]">Onda Mitigada con Tranques Keyline (-22.4%)</span>
+                            </div>
+                            <div class="relative w-full h-[180px] bg-black/60 rounded-xl border border-white/5 overflow-hidden">
+                                <canvas id="cerroHydrographCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+                                <div id="hydrographTooltip" class="absolute hidden pointer-events-none bg-black/90 backdrop-blur-md border border-sky-400 text-[10px] font-mono p-1.5 rounded shadow-xl text-white z-20"></div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-3">
+                            <button onclick="closeCerroHotspotModal(); openCerroMapWithTab('tab-water');" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black font-mono text-xs shadow-lg transition-all cursor-pointer">
+                                🗺️ Ver Onda de Crecida en Mapa Satelital GIS
+                            </button>
+                            <button onclick="closeCerroHotspotModal()" class="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-xs font-mono cursor-pointer">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    if (typeof updateBasinSimFromSliders === 'function') updateBasinSimFromSliders();
+                }, 60);
             }
 
             modal.classList.add('active');
@@ -2462,6 +2578,12 @@
         function printBasinDecree() {
             window.print();
         }
+
+        window.generateBasinDecree = generateBasinDecree;
+        window.copyBasinDecreeText = copyBasinDecreeText;
+        window.printBasinDecree = printBasinDecree;
+        window.simulateBasinPreset = simulateBasinPreset;
+        window.updateBasinSimFromSliders = updateBasinSimFromSliders;
 
         // ═══════════════════════════════════════════════════════════════════
         // EJE HERRAMIENTA-VISOR: RENDERIZADOR TÁCTICO DE MODELOS VECTORIALES (EXPANDIDO & ENRIQUECIDO)
