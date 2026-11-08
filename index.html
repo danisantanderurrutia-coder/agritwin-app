@@ -306,7 +306,7 @@
             if (!el) return;
             const isHidden = el.classList.toggle('hidden');
             if (icon) icon.innerText = isHidden ? '👁️' : '🙈';
-            if (lbl) lbl.innerText = isHidden ? 'Mostrar Galería' : 'Colapsar Galería';
+            if (lbl) lbl.innerText = isHidden ? 'Desplegar Galería (83 Activos)' : 'Colapsar Galería';
         };
 
         window.switchUqTab = function(tabId) {
@@ -5891,27 +5891,28 @@
                 <!-- ============================================================== -->
 
                 <!-- Catálogo de Recursos Gráficos & Sprites (Asset Vault 100x100) -->
-                <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4 font-sans">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
+                <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                         <div class="flex items-center gap-2.5">
                             <span class="text-xl p-1.5 rounded-lg bg-amber-50 border border-amber-200">🎨</span>
                             <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Catálogo de Recursos Gráficos, Fondos &amp; Sprites</h3>
-                                <p class="text-[11px] text-stone-500">Mosaico visual canónico del gemelo digital (tamaño ≤ 100×100 px). Preservación organizada de fondos, panal territorial y sprites.</p>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Catálogo Canónico de Recursos Gráficos, Fondos &amp; Sprites</h3>
+                                <p class="text-[11px] text-stone-500">Mosaico completo de activos visuales del gemelo digital (≤ 100×100 px). 83 recursos preservados (fondos, panal Catan, sprites e identidad).</p>
                             </div>
                         </div>
-                        <button onclick="toggleAssetVaultVisibility()" id="btnToggleAssetVault" class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer">
-                            <span id="iconToggleAssetVault">👁️</span> <span id="lblToggleAssetVault">Colapsar / Mostrar Galería</span>
+                        <button onclick="toggleAssetVaultVisibility()" id="btnToggleAssetVault" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs">
+                            <span id="iconToggleAssetVault">👁️</span> <span id="lblToggleAssetVault">Desplegar Galería (83 Activos)</span>
                         </button>
                     </div>
 
-                    <div id="assetVaultContainer" class="space-y-5">
-                        <!-- Grupo 1: Fondos Territoriales & Panoramas -->
+                    <!-- Contenedor siempre colapsado por defecto -->
+                    <div id="assetVaultContainer" class="hidden space-y-5 pt-3 border-t border-[#E7DAC6]">
+                        <!-- Grupo: Fondos Territoriales & Panoramas (Incluye Mirador de Cuenca) -->
                         <div class="space-y-2">
                             <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
-                                <span>🏔️</span> <span>Fondos Territoriales &amp; Panoramas (Incluye Mirador de Cuenca)</span>
+                                <span>🏔️</span> <span>Fondos Territoriales & Panoramas (Incluye Mirador de Cuenca)</span>
                             </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2.5">
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
                                         <img src="assets/ui/cerro_landing_bg.jpg" alt="Mirador de Cuenca • Maule Sur" class="max-w-full max-h-full object-cover" loading="lazy">
@@ -5938,6 +5939,18 @@
                                 </div>
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/vecinal_meeting_landing.jpg" alt="Fondo Asamblea Vecinal" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Fondo Asamblea Vecinal</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/workshop_bg.png" alt="Taller de Terreno & Hardware" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Taller de Terreno & Hardware</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
                                         <img src="assets/ui/arbol_alquimico_splash.jpg" alt="Árbol Alquímico de Gobernanza" class="max-w-full max-h-full object-cover" loading="lazy">
                                     </div>
                                     <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Árbol Alquímico de Gobernanza</span>
@@ -5945,10 +5958,10 @@
                             </div>
                         </div>
 
-                        <!-- Grupo 2: Mosaicos del Panal Ecosistémico (Catan) -->
+                        <!-- Grupo: Dibujos del Panal Ecosistémico (Tablero & Mosaicos Catan) -->
                         <div class="space-y-2">
                             <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
-                                <span>⬡</span> <span>Dibujos del Panal Ecosistémico (Tablero &amp; Mosaicos Catan)</span>
+                                <span>⬡</span> <span>Dibujos del Panal Ecosistémico (Tablero & Mosaicos Catan)</span>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2.5">
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
@@ -6008,12 +6021,12 @@
                             </div>
                         </div>
 
-                        <!-- Grupo 3: Sprites Isométricos de Cerro & Telemetría -->
+                        <!-- Grupo: Sprites Isométricos de Cerro & Telemetría -->
                         <div class="space-y-2">
                             <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
-                                <span>📡</span> <span>Sprites Isométricos de Cerro &amp; Telemetría</span>
+                                <span>📡</span> <span>Sprites Isométricos de Cerro & Telemetría</span>
                             </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2.5">
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
                                         <img src="assets/ui/sprite_cerro_antenna.png" alt="Antena y Repetidor LoRaWAN" class="max-w-full max-h-full object-contain" loading="lazy">
@@ -6065,10 +6078,10 @@
                             </div>
                         </div>
 
-                        <!-- Grupo 4: Sprites de Mesa & Gobernanza -->
+                        <!-- Grupo: Sprites de Mesa & Gobernanza Comunitaria -->
                         <div class="space-y-2">
                             <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
-                                <span>🤝</span> <span>Sprites de Mesa &amp; Gobernanza Comunitaria</span>
+                                <span>🤝</span> <span>Sprites de Mesa & Gobernanza Comunitaria</span>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
@@ -6110,12 +6123,12 @@
                             </div>
                         </div>
 
-                        <!-- Grupo 5: Herramientas de Campo, Monitoreo & Identidad -->
+                        <!-- Grupo: Sprites de Gestión Predial & Herramientas -->
                         <div class="space-y-2">
                             <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
-                                <span>🛠️</span> <span>Herramientas de Campo, Monitoreo &amp; Logotipos</span>
+                                <span>🛠️</span> <span>Sprites de Gestión Predial & Herramientas</span>
                             </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
                                         <img src="assets/ui/sprite_a_clipboard.png" alt="Planilla Pastoreo PRV" class="max-w-full max-h-full object-contain" loading="lazy">
@@ -6130,9 +6143,9 @@
                                 </div>
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
-                                        <img src="assets/ui/sprite_d_esg_book.png" alt="Libro Contabilidad Ecológica" class="max-w-full max-h-full object-contain" loading="lazy">
+                                        <img src="assets/ui/sprite_d_esg_book.png" alt="Libro Contabilidad ESG" class="max-w-full max-h-full object-contain" loading="lazy">
                                     </div>
-                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Libro Contabilidad Ecológica</span>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Libro Contabilidad ESG</span>
                                 </div>
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
@@ -6146,6 +6159,312 @@
                                     </div>
                                     <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Caja Herramientas de Terreno</span>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo: Sprites Especializados de Cultivos (6) -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🌱</span> <span>Sprites Especializados de Cultivos (6)</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cultivos_1.png" alt="Sprite Cultivos 1" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Cultivos 1</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cultivos_2.png" alt="Sprite Cultivos 2" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Cultivos 2</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cultivos_3.png" alt="Sprite Cultivos 3" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Cultivos 3</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cultivos_4.png" alt="Sprite Cultivos 4" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Cultivos 4</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cultivos_5.png" alt="Sprite Cultivos 5" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Cultivos 5</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cultivos_6.png" alt="Sprite Cultivos 6" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Cultivos 6</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo: Sprites Especializados de Establo & Ganadería (6) -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🐄</span> <span>Sprites Especializados de Establo & Ganadería (6)</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_establo_1.png" alt="Sprite Establo 1" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Establo 1</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_establo_2.png" alt="Sprite Establo 2" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Establo 2</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_establo_3.png" alt="Sprite Establo 3" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Establo 3</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_establo_4.png" alt="Sprite Establo 4" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Establo 4</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_establo_5.png" alt="Sprite Establo 5" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Establo 5</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_establo_6.png" alt="Sprite Establo 6" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Establo 6</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo: Sprites Especializados de Incursión & Rewilding (6) -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🥾</span> <span>Sprites Especializados de Incursión & Rewilding (6)</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_incursion_1.png" alt="Sprite Incursión 1" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Incursión 1</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_incursion_2.png" alt="Sprite Incursión 2" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Incursión 2</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_incursion_3.png" alt="Sprite Incursión 3" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Incursión 3</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_incursion_4.png" alt="Sprite Incursión 4" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Incursión 4</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_incursion_5.png" alt="Sprite Incursión 5" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Incursión 5</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_incursion_6.png" alt="Sprite Incursión 6" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Sprite Incursión 6</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo: Escenas de Transición Territorial (Estilo Tíbet / Pepita) -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🌄</span> <span>Escenas de Transición Territorial (Estilo Tíbet / Pepita)</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/trans_cerro_tibet_pepita_1790989864303.jpg" alt="Transición Cerro" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transición Cerro</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/trans_cultivos_tibet_pepita_1790989795731.jpg" alt="Transición Cultivos" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transición Cultivos</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/trans_establo_tibet_pepita_1790989811912.jpg" alt="Transición Establo" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transición Establo</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/trans_galpon_tibet_pepita_1790989846786.jpg" alt="Transición Galpón" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transición Galpón</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/trans_incursion_tibet_pepita_1790989829077.jpg" alt="Transición Incursión" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transición Incursión</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/trans_mesa_tibet_pepita_1790989882756.jpg" alt="Transición Mesa" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transición Mesa</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo: Retratos de la Cámara de Asesores Científicos -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>👥</span> <span>Retratos de la Cámara de Asesores Científicos</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_predio_rodrigo.jpg" alt="Rodrigo (Predio)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Rodrigo (Predio)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_predio_laura.jpg" alt="Laura (Predio)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Laura (Predio)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_predio_efrain.jpg" alt="Efraín (Predio)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Efraín (Predio)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_vecinal_patricia.jpg" alt="Patricia (Vecinal)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Patricia (Vecinal)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_vecinal_camila.jpg" alt="Camila (Vecinal)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Camila (Vecinal)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_vecinal_silvestre.jpg" alt="Silvestre (Vecinal)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Silvestre (Vecinal)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_cuenca_fernando.jpg" alt="Fernando (Cuenca)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Fernando (Cuenca)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_cuenca_natalia.jpg" alt="Natalia (Cuenca)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Natalia (Cuenca)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_cuenca_marcelo.jpg" alt="Marcelo (Cuenca)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Marcelo (Cuenca)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_establo_gaston.jpg" alt="Gastón (Establo)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Gastón (Establo)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_establo_javiera.jpg" alt="Javiera (Establo)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Javiera (Establo)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_invernadero_carmen.jpg" alt="Carmen (Invernadero)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Carmen (Invernadero)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_invernadero_soledad.jpg" alt="Soledad (Invernadero)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Soledad (Invernadero)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_excursion_gonzalo.jpg" alt="Gonzalo (Excursión)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Gonzalo (Excursión)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatar_fauna_ignacio.jpg" alt="Ignacio (Fauna)" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Ignacio (Fauna)</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatars_predio_trio.jpg" alt="Trío Predio" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Trío Predio</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatars_vecinal_trio.jpg" alt="Trío Vecinal" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Trío Vecinal</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/advisors/avatars_cuenca_trio.jpg" alt="Trío Cuenca" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Trío Cuenca</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo: Logotipos e Identidad Visual de Marca -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>💎</span> <span>Logotipos e Identidad Visual de Marca</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
                                 <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
                                     <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
                                         <img src="assets/agritwin_isotype_clean.png" alt="Isotipo AgriTwin Limpio" class="max-w-full max-h-full object-contain" loading="lazy">
@@ -6163,6 +6482,24 @@
                                         <img src="assets/favicon-192.png" alt="Favicon Oficial 192" class="max-w-full max-h-full object-contain" loading="lazy">
                                     </div>
                                     <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Favicon Oficial 192</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/favicon.svg" alt="Favicon SVG" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Favicon SVG</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/logo-agrotwin-isotype.png" alt="Isotipo Clásico" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Isotipo Clásico</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/logo_official.jpg" alt="Logo Oficial JPG" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Logo Oficial JPG</span>
                                 </div>
                             </div>
                         </div>
