@@ -2250,17 +2250,26 @@
         overlayLayers['hindcast_prediction'] = hindcastPredictionLayer;
         window.hindcastPredictionLayer = hindcastPredictionLayer;
 
+        // Capa 4: Cono de Amenaza Inversa Aguas Arriba (Receptor Centinela Inverso)
+        const hindcastUpwindThreatLayer = L.layerGroup();
+        overlayLayers['hindcast_upwind_threat'] = hindcastUpwindThreatLayer;
+        window.hindcastUpwindThreatLayer = hindcastUpwindThreatLayer;
+
         // Capa combinada para compatibilidad retroactiva
         const hindcastSimulationLayer = L.layerGroup();
         overlayLayers['hindcast_simulation'] = hindcastSimulationLayer;
         window.hindcastSimulationLayer = hindcastSimulationLayer;
 
-        // Estado trilateral independiente
+        // Estado trilateral y multi-escala independiente
         window.hindcastLayersState = {
             poligono: true,
             historica: true,
             prediccion: true
         };
+        window.hindcastCurrentHorizon = 'max';
+        window.isUpwindThreatActive = false;
+        window.hindcastEventParams = null;
+        window.hindcastActiveEllipsePoly = null;
 
         // Generador geodésico de elipse de fuego orientada (Rothermel-Fons)
         function generateFireEllipseCoords(originLat, originLng, lengthKm, widthKm, bearingDeg, numPoints = 48) {
@@ -2641,6 +2650,9 @@
 
             // Actualizar vistas del drawer según la combinación activa
             const distBadge = document.getElementById('drawerFarmDistanceBadge');
+            const activeFarmName = (window.farmProfileManager && window.farmProfileManager.getActiveProfile)
+                ? (window.farmProfileManager.getActiveProfile()?.farmName || 'Fundo Meniel')
+                : 'Fundo Meniel';
             if (distBadge) {
                 const originPt = isVina ? L.latLng(-33.1380, -71.4980) : L.latLng(-37.3820, -72.7850);
                 const prof = (window.farmProfileManager && window.farmProfileManager.getActiveProfile)
@@ -2729,6 +2741,265 @@
             }
         };
 
+        // ── CONTROLADOR DE HORIZONTE TEMPORAL E ISÓCRONAS MULTI-ESCALA (T+2h A T+24h) ──
+        window.setHindcastTimeHorizon = function(horizon) {
+            window.hindcastCurrentHorizon = horizon;
+            const isVina = (window.currentHindcastEvent !== 'santa_juana_2023');
+
+            // Actualizar botones visuales
+            const btn2h = document.getElementById('btnIsochrone_2h');
+            const btn6h = document.getElementById('btnIsochrone_6h');
+            const btnMax = document.getElementById('btnIsochrone_max');
+            const btn24h = document.getElementById('btnIsochrone_24h');
+
+            const inactiveClass = 'py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer';
+            const activeClass = 'py-1.5 px-1 rounded-lg bg-sky-600 text-white font-bold border border-sky-400 transition-all cursor-pointer shadow-md';
+
+            if (btn2h) btn2h.className = (horizon === 2) ? activeClass : inactiveClass;
+            if (btn6h) btn6h.className = (horizon === 6) ? activeClass : inactiveClass;
+            if (btnMax) btnMax.className = (horizon === 'max') ? activeClass : inactiveClass;
+            if (btn24h) btn24h.className = (horizon === 24) ? activeClass : inactiveClass;
+
+            const labelEl = document.getElementById('hindcastIsochroneLabel');
+            const areaBadgeEl = document.getElementById('hindcastIsochroneAreaBadge');
+
+            let lenKm, widthKm, areaHaText, labelText, descText;
+            const params = window.hindcastEventParams || {
+                originLat: isVina ? -33.1380 : -37.3820,
+                originLng: isVina ? -71.4980 : -72.7850,
+                bearingDeg: isVina ? 10 : 330,
+                titleEvent: isVina ? 'Viña del Mar 2024' : 'Santa Juana 2023',
+                windLabel: isVina ? 'S–SSO (190°)' : 'SE (150°) Puelche',
+                windSpeed: isVina ? '32 km/h' : '38 km/h'
+            };
+
+            if (isVina) {
+                if (horizon === 2) {
+                    labelText = 'T+2h (Ignición)';
+                    lenKm = 2.7;
+                    widthKm = 0.54;
+                    areaHaText = '115 ha (teór)';
+                    descText = 'Ignición inicial en sotobosque de Peñuelas bajo viento de 32 km/h.';
+                } else if (horizon === 6) {
+                    labelText = 'T+6h (Chimenea Pataguas)';
+                    lenKm = 8.1;
+                    widthKm = 1.62;
+                    areaHaText = '1.030 ha (teór)';
+                    descText = 'Aceleración convectiva en quebrada previa al cruce de fajas periurbanas.';
+                } else if (horizon === 24) {
+                    labelText = 'T+24h (Extinción Nocturna 🌙)';
+                    lenKm = 13.5;
+                    widthKm = 4.8;
+                    areaHaText = '3.850 ha (estabilizado)';
+                    descText = 'Colapso nocturno del frente por vaguada marina (HR > 85%, DFMC > 16%); ensanchamiento de flancos sin avance hacia el norte.';
+                } else { // 'max'
+                    labelText = 'Pico Calibrado (9.5h)';
+                    lenKm = 12.8;
+                    widthKm = 4.1;
+                    areaHaText = '3.420 ha (teór)';
+                    descText = 'Envolvente a máxima tasa de expansión diurna antes del freno térmico.';
+                }
+            } else {
+                // Santa Juana 2023
+                if (horizon === 2) {
+                    labelText = 'T+2h (Disparo Nacimiento)';
+                    lenKm = 3.45;
+                    widthKm = 1.58;
+                    areaHaText = '428 ha (teór)';
+                    descText = 'Disparo en plantaciones continuas de pino bajo viento Puelche 58 km/h.';
+                } else if (horizon === 6) {
+                    labelText = 'T+6h (Avance Río Lía)';
+                    lenKm = 10.3;
+                    widthKm = 4.72;
+                    areaHaText = '3.820 ha (teór)';
+                    descText = 'Desarrollo de pirocúmulos y frente continuo hacia Santa Juana.';
+                } else if (horizon === 24) {
+                    labelText = 'T+24h (Cruce Biobío & Día 2)';
+                    lenKm = 36.0;
+                    widthKm = 17.5;
+                    areaHaText = '49.500 ha (teór)';
+                    descText = 'Fuego activo multidiurno con salto trans-ribera del río Biobío (2.4 km) previo al giro eólico del 4-feb.';
+                } else { // 'max'
+                    labelText = 'Pico Calibrado (20h)';
+                    lenKm = 34.5;
+                    widthKm = 15.8;
+                    areaHaText = '44.850 ha (teór)';
+                    descText = 'Carrera convectiva de 34 km paralela al cauce del río Biobío.';
+                }
+            }
+
+            if (labelEl) labelEl.innerText = labelText;
+            if (areaBadgeEl) areaBadgeEl.innerText = areaHaText;
+
+            // Actualizar coordenadas del polígono elíptico en Leaflet
+            if (window.hindcastActiveEllipsePoly && typeof map !== 'undefined' && map) {
+                const newCoords = generateFireEllipseCoords(params.originLat, params.originLng, lenKm, widthKm, params.bearingDeg);
+                window.hindcastActiveEllipsePoly.setLatLngs(newCoords);
+                window.hindcastActiveEllipsePoly.setPopupContent(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px; min-width:260px;">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ea580c; padding-bottom:3px; margin-bottom:5px;">
+                            <strong style="color:#ea580c; font-size:12px;">📐 Isócrona Rothermel-Fons [${labelText}]</strong>
+                            <span style="background:rgba(234,88,12,0.2); color:#fdba74; padding:1px 5px; border-radius:4px; font-size:9px;">HORIZONTE DINÁMICO</span>
+                        </div>
+                        <div style="color:#94a3b8; font-size:10px; margin-bottom:4px;">${params.titleEvent}</div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Superficie Proyectada:</span>
+                            <b style="color:#f97316;">${areaHaText}</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Eje Mayor / Menor:</span>
+                            <span style="color:#cbd5e1;">${lenKm.toFixed(1)} km &times; ${widthKm.toFixed(1)} km</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Viento Sinóptico ERA5:</span>
+                            <b style="color:#38bdf8;">${params.windLabel} &bull; ${params.windSpeed}</b>
+                        </div>
+                        <div style="margin-top:6px; padding:3px 5px; border-radius:4px; background:rgba(234,88,12,0.1); border:1px solid rgba(234,88,12,0.3); font-size:9.5px; color:#fed7aa;">
+                            ${descText}
+                        </div>
+                    </div>
+                `);
+            }
+        };
+
+        // ── CONTROLADOR DE CONO DE AMENAZA INVERSA AGUAS ARRIBA (RECEPTOR DOCTRINA CENTINELA) ──
+        window.toggleUpwindThreatCorridor = function(force) {
+            const shouldAdd = (force !== undefined) ? !!force : !window.isUpwindThreatActive;
+            window.isUpwindThreatActive = shouldAdd;
+
+            const badge = document.getElementById('badgeUpwindThreatState');
+            if (badge) {
+                badge.innerText = shouldAdd ? 'ON 🛡️' : 'OFF';
+                badge.className = shouldAdd 
+                    ? 'text-[8px] px-1.5 py-0.5 rounded bg-purple-500 text-white font-bold animate-pulse'
+                    : 'text-[8px] px-1 py-0.2 rounded bg-purple-500/30 text-purple-300';
+            }
+
+            hindcastUpwindThreatLayer.clearLayers();
+
+            if (shouldAdd) {
+                const isVina = (window.currentHindcastEvent !== 'santa_juana_2023');
+                
+                // Coordenadas del Receptor Predial o Infraestructura Crítica
+                let recLat, recLng, recName, windDirDeg, bufferKm, etaForwardH, spotKm;
+                if (isVina) {
+                    recLat = -33.0500;
+                    recLng = -71.4900; // Interfaz Urbana Canal Chacao / Jardín Botánico
+                    recName = 'Receptor WUI Canal Chacao / Jardín Botánico';
+                    windDirDeg = 190; // Viento Sur hacia el Norte
+                    bufferKm = 15;
+                    etaForwardH = '9.5h';
+                    spotKm = 1.85;
+                } else {
+                    recLat = -37.1750;
+                    recLng = -72.9400; // Santa Juana Centro Urbano
+                    recName = 'Receptor Santa Juana Centro / Infraestructura Rural';
+                    windDirDeg = 150; // Viento Puelche SE
+                    bufferKm = 25;
+                    etaForwardH = '14.5h';
+                    spotKm = 2.40;
+                }
+
+                // Generar cuña angular mirando hacia aguas arriba del viento (hacia donde viene el viento)
+                // Dirección de procedencia del viento: windDirDeg
+                // Semi-ángulo de apertura: ±26° (52° total)
+                const halfAngleDeg = 26;
+                const wedgeCoords = [[recLat, recLng]];
+                const numArcSteps = 16;
+                const startAngle = windDirDeg - halfAngleDeg;
+                const endAngle = windDirDeg + halfAngleDeg;
+
+                for (let i = 0; i <= numArcSteps; i++) {
+                    const currentAngle = startAngle + (i / numArcSteps) * (endAngle - startAngle);
+                    wedgeCoords.push(destLatLng(recLat, recLng, bufferKm, currentAngle));
+                }
+                wedgeCoords.push([recLat, recLng]);
+
+                // Polígono del Cono Inverso de Amenaza Aguas Arriba
+                const threatConePoly = L.polygon(wedgeCoords, {
+                    color: '#a855f7',
+                    weight: 2.5,
+                    dashArray: '5, 5',
+                    fillColor: '#9333ea',
+                    fillOpacity: 0.16,
+                    className: 'upwind-threat-cone'
+                });
+
+                threatConePoly.bindPopup(`
+                    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:4px; min-width:270px;">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #a855f7; padding-bottom:3px; margin-bottom:5px;">
+                            <strong style="color:#d8b4fe; font-size:12px;">🛡️ Cono de Amenaza Inversa (Upwind)</strong>
+                            <span style="background:rgba(168,85,247,0.25); color:#e9d5ff; padding:1px 5px; border-radius:4px; font-size:9px;">DOCTRINA RECEPTOR</span>
+                        </div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-bottom:4px;"><b>${recName}</b></div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Alcance Corredor:</span>
+                            <b style="color:#c084fc;">${bufferKm} km aguas arriba (${windDirDeg}°)</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Apertura Angular:</span>
+                            <b style="color:#e9d5ff;">&plusmn;26&deg; (52&deg; cuña biofísica)</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Ventana Táctica ETA:</span>
+                            <b style="color:#fca5a5;">${etaForwardH} (frente terrestre)</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                            <span style="color:#94a3b8;">Adelanto Pavesas Albini:</span>
+                            <b style="color:#fde047;">${spotKm} km / ~1.5h antes del fuego</b>
+                        </div>
+                        <div style="margin-top:6px; padding:4px 6px; border-radius:5px; background:rgba(88,28,135,0.4); border:1px solid rgba(168,85,247,0.4); font-size:9.5px; color:#e9d5ff; line-height:1.4;">
+                            ⚠️ <b>Regla Operativa:</b> Cualquier ignición ocurrida dentro de esta cuña alcanzará inexorablemente el predio receptor. Las pavesas aéreas impactarán techumbres hasta 90 minutos antes que la llama de suelo.
+                        </div>
+                    </div>
+                `, { maxWidth: 320 });
+                threatConePoly.addTo(hindcastUpwindThreatLayer);
+
+                // Arco de peligro por pavesas aéreas de Albini (a corta distancia ~2 km)
+                const spotArcCoords = [[recLat, recLng]];
+                for (let i = 0; i <= numArcSteps; i++) {
+                    const currentAngle = startAngle + (i / numArcSteps) * (endAngle - startAngle);
+                    spotArcCoords.push(destLatLng(recLat, recLng, spotKm, currentAngle));
+                }
+                spotArcCoords.push([recLat, recLng]);
+
+                const spotArcPoly = L.polygon(spotArcCoords, {
+                    color: '#facc15',
+                    weight: 2,
+                    dashArray: '3, 3',
+                    fillColor: '#eab308',
+                    fillOpacity: 0.28
+                });
+                spotArcPoly.bindTooltip(`<b>⚡ Zona Crítica de Salto de Pavesas (${spotKm} km)</b>`, { direction: 'top' });
+                spotArcPoly.addTo(hindcastUpwindThreatLayer);
+
+                // Marcador del Receptor
+                const receptorIcon = L.divIcon({
+                    className: 'hindcast-receptor-marker',
+                    html: `
+                        <div style="width:34px; height:34px; position:relative; display:flex; align-items:center; justify-content:center;">
+                            <div style="position:absolute; width:30px; height:30px; border-radius:50%; background:rgba(168,85,247,0.4); animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
+                            <div style="width:24px; height:24px; border-radius:50%; background:#7e22ce; border:2px solid #ffffff; box-shadow:0 0 10px #c084fc; display:flex; align-items:center; justify-content:center; font-size:12px;">
+                                🛡️
+                            </div>
+                        </div>`,
+                    iconSize: [34, 34],
+                    iconAnchor: [17, 17]
+                });
+                const recMarker = L.marker([recLat, recLng], { icon: receptorIcon });
+                recMarker.bindTooltip(`<b>🛡️ ${recName}</b><br><span style="font-size:9px; color:#cbd5e1;">Punto de Vigilancia y Mando Táctico</span>`, { permanent: false, direction: 'top' });
+                recMarker.addTo(hindcastUpwindThreatLayer);
+
+                if (typeof map !== 'undefined' && map && !map.hasLayer(hindcastUpwindThreatLayer)) {
+                    hindcastUpwindThreatLayer.addTo(map);
+                }
+            } else {
+                if (typeof map !== 'undefined' && map && map.hasLayer(hindcastUpwindThreatLayer)) {
+                    map.removeLayer(hindcastUpwindThreatLayer);
+                }
+            }
+        };
+
         // Toggle de la elipse teórica
         window.toggleHindcastSimulationLayer = function(force) {
             const shouldAdd = (force !== undefined) ? force : !map.hasLayer(hindcastSimulationLayer);
@@ -2768,6 +3039,7 @@
             if (map.hasLayer(hindcastTacticalLayer)) map.removeLayer(hindcastTacticalLayer);
             if (map.hasLayer(hindcastPredictionLayer)) map.removeLayer(hindcastPredictionLayer);
             if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
+            if (map.hasLayer(hindcastUpwindThreatLayer)) map.removeLayer(hindcastUpwindThreatLayer);
             if (history && history.replaceState) {
                 history.replaceState(null, null, '#cuenca');
             }
@@ -3316,6 +3588,26 @@
                 </div>
             `, { maxWidth: 300 });
             simPoly.addTo(hindcastPredictionLayer);
+            window.hindcastActiveEllipsePoly = simPoly;
+            window.hindcastEventParams = {
+                originLat,
+                originLng,
+                bearingDeg,
+                windLabel,
+                windSpeed,
+                windGust,
+                isVina,
+                titleEvent,
+                lenKm,
+                widthKm,
+                simAreaHa
+            };
+            if (typeof window.setHindcastTimeHorizon === 'function') {
+                window.setHindcastTimeHorizon('max');
+            }
+            if (window.isUpwindThreatActive && typeof window.toggleUpwindThreatCorridor === 'function') {
+                window.toggleUpwindThreatCorridor(true);
+            }
 
             // Marcador de Foco de Ignición
             const ignitionIcon = L.divIcon({
