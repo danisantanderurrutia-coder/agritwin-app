@@ -1336,6 +1336,12 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         </div>
 
         <p>
+            <strong>Dinamización y Acoplamiento Espectral con Sentinel-2:</strong> A diferencia de la tabla estática tradicional, en AgriTwin el $CN$ varía paso a paso según la condición de humedad antecedente de 120 horas ($AMC\text{-}I, AMC\text{-}II, AMC\text{-}III$) acoplada a la fracción de cobertura vegetal ($f_c$) derivada de Sentinel-2:
+            $$CN_{\text{dinámico}}(t) = CN_{\text{base}} \cdot \left[ 1 - \kappa_v \cdot \left(\frac{NDVI(t) - NDVI_{\text{suelo}}}{NDVI_{\text{dosel}} - NDVI_{\text{suelo}}}\right) \right] \cdot \Phi(AMC)$$
+            donde $\kappa_v \in [0.15, 0.25]$ pondera la interceptación del dosel vivo y la infiltración biológica por manejo Keyline, reduciendo el escurrimiento $Q_{\text{sup}}$.
+        </p>
+
+        <p>
             <strong>Justificación de la Dinamización del $CN$:</strong> En modelos hidrológicos estáticos clásicos, el $CN$ es una constante tabulada fija. En AgriTwin, el $CN$ se actualiza en cada paso de tiempo en función del contenido de humedad antecedente del suelo simulado en las 120 horas previas ($AMC\text{-}I$ seco, $AMC\text{-}II$ promedio, $AMC\text{-}III$ saturado), resolviendo la no-linealidad de la respuesta hidrológica frente a tormentas sucesivas.
         </p>
 
@@ -1518,6 +1524,10 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
                 <strong>Donde:</strong> $\sigma = 5.67 \times 10^{-8}\,\text{W}\cdot\text{m}^{-2}\cdot\text{K}^{-4}$ es la constante de Stefan-Boltzmann; $\varepsilon_{\text{suelo}} \approx 0.95\text{--}0.98$ es la emisividad espectral infrarroja del suelo; $T_{\text{suelo}}$ y $T_{\text{aire}}$ son las temperaturas termodinámicas absolutas [$\text{K}$]; y $\varepsilon_{\text{atm}}$ es la emisividad aparente de la atmósfera calculada en función de la presión parcial de vapor $e_a$ [$\text{hPa}$] según Brutsaert (1975): $\varepsilon_{\text{atm}} = 1.24 \cdot (e_a / T_a)^{1/7}$.
             </div>
         </div>
+
+        <p>
+            <strong>Desagregación Térmica (Downscaling) sin Sensor Infrarrojo Térmico Directo:</strong> Dado que Sentinel-2 opera en el espectro óptico/SWIR sin canal térmico (TIR), la temperatura de suelo $T_{\text{suelo}}$ se deriva desagregando el campo $T_{\text{skin}}$ de ERA5-Land (9 km) acoplado al DEM de 30 m mediante el gradiente adiabático vertical ($\Gamma = -6.5\,^\circ\text{C}/\text{km}$) y modulado por la cobertura vegetal ($f_c$) y albedo de Sentinel-2, permitiendo resolver el balance radiativo predial a 30 metros de resolución continua.
+        </p>
 
         <p>
             <strong>Justificación de la Cobertura Vegetal Viva:</strong> En suelos desnudos o desprovistos de vegetación, la radiación neta de onda larga escapa libremente hacia el espacio exterior ($R_{nl} > 80\,\text{W}\cdot\text{m}^{-2}$), causando caídas térmicas abruptas en superficie. Bajo cubiertas mulch o doseles agroforestales densos promovidos por el diseño regenerativo, el factor de vista de cielo se reduce drásticamente, atrapando la radiación infrarroja y manteniendo la temperatura foliar entre $2^\circ\text{C}$ y $3^\circ\text{C}$ por encima del umbral letal de congelación.

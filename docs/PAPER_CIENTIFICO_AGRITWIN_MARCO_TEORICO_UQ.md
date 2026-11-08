@@ -179,7 +179,9 @@ La partición entre el agua infiltrada y el volumen de escorrentía superficial 
 $$Q_{\text{sup}} = \begin{cases} \dfrac{(P - I_a)^2}{(P - I_a) + S_{\text{max}}}, & P > I_a \\[8pt] 0, & P \le I_a \end{cases}, \qquad S_{\text{max}} = \frac{25400}{CN} - 254, \qquad I_a = \lambda \cdot S_{\text{max}} \quad (3)$$
 
 * **Exégesis de Variables:** $Q_{\text{sup}}$ es la lámina de escorrentía superficial [$\text{mm}$]; $P$ es la precipitación total acumulada [$\text{mm}$]; $I_a$ es la abstracción inicial [$\text{mm}$] ($\lambda = 0.05\text{--}0.20$); $S_{\text{max}}$ es la retención potencial máxima del suelo [$\text{mm}$]; y $CN$ es el Número de Curva adimensional ($30 \le CN \le 100$).
-* **Dinamización:** A diferencia de la tabla estática tradicional, en AgriTwin el $CN$ varía paso a paso según la humedad antecedente de 120 horas simulada ($AMC\text{-}I, AMC\text{-}II, AMC\text{-}III$).
+* **Dinamización y Acoplamiento Espectral:** A diferencia de la tabla estática tradicional, en AgriTwin el $CN$ varía paso a paso según la condición de humedad antecedente de 120 horas ($AMC\text{-}I, AMC\text{-}II, AMC\text{-}III$) acoplada a la fracción de cobertura vegetal ($f_c$) derivada de Sentinel-2:
+$$CN_{\text{dinámico}}(t) = CN_{\text{base}} \cdot \left[ 1 - \kappa_v \cdot \left(\frac{NDVI(t) - NDVI_{\text{suelo}}}{NDVI_{\text{dosel}} - NDVI_{\text{suelo}}}\right) \right] \cdot \Phi(AMC)$$
+donde $\kappa_v \in [0.15, 0.25]$ pondera la interceptación del dosel y la infiltración biológica por manejo Keyline, reduciendo el escurrimiento $Q_{\text{sup}}$.
 
 #### 2.2.5. Redistribución Topográfica Subsuperficial e Índice Topográfico de Humedad TWI
 Para modelar la convergencia gravitacional del agua subsuperficial a partir del relieve, se integra la formulación de Beven y Kirkby (1979):
@@ -247,6 +249,7 @@ $$\frac{L}{W} = 1 + 0.125 \cdot U_{10}, \qquad A_{\text{elipse}}(t) = \frac{\pi}
      reemplazando el mapa binario determinista por una gradiente de riesgo táctico auditable.
   4. **Doctrina del Receptor Predial y Centinela Inverso Aguas Arriba:** Explicada en la subsección 2.3.4, orienta la predicción desde la vulnerabilidad del predio receptor hacia el origen del peligro.
 
+* **Transición a Fuego de Copas y Modalidades Operativas:** Rothermel modela la propagación en superficie; cuando la intensidad de Byram supera el umbral crítico de Van Wagner (1977), $I_B > I_{\text{crítico}} = (0.010 \cdot h_{\text{base}} \cdot FMC)^{1.5}$, el fuego escala a copas activas (*active crown fire*), multiplicando la tasa de avance ($R_{\text{copas}} \approx 3.3 \cdot R_{\text{suelo}}$) y acelerando el salto de pavesas de Albini. A nivel operacional, AgriTwin distingue tres modos de despliegue: (i) *Modo Hindcast / Forense:* con foco $X_0$ conocido experimentalmente; (ii) *Modo Centinela Inverso:* proyectado desde el predio aguas arriba sin requerir predecir la ignición; y (iii) *Modo Preventivo Territorial:* mediante grilla de igniciones sintéticas Monte Carlo sobre corredores de riesgo antrópico (WUI y vialidad).
 * **Otros Mecanismos No Lineales Contemplados:** Aceleración por efecto chimenea orográfica ($\phi_s \propto \tan^2 \theta_s$), franqueamiento aéreo de barreras fluviales mayores mediante salto de pavesas (Albini, $D_{\text{spot}} > 2.0\text{ km}$ sobre el río Biobío de $1.5\text{ km}$), desacople convectivo por pirocúmulos locales cuando $I_B > 10,\!000\text{ kW}\cdot\text{m}^{-1}$, y delimitación explícita del límite físico en la combustión estructural no vegetal de interfase urbano-forestal (WUI).
 
 #### 2.3.4. Doctrina del Receptor Predial: Análisis de Cono de Amenaza Inversa Aguas Arriba (*Upwind Danger Corridor*)
@@ -279,6 +282,7 @@ La tasa de pérdida energética hacia el espacio exterior se formula mediante St
 $$R_{nl} = \sigma \cdot \left( \varepsilon_{\text{suelo}} \cdot T_{\text{suelo}}^4 - \varepsilon_{\text{atm}}(e_a, T_a) \cdot T_{\text{aire}}^4 \right) \quad (10)$$
 
 * **Exégesis de Variables:** $\sigma = 5.67 \times 10^{-8}\,\text{W}\cdot\text{m}^{-2}\cdot\text{K}^{-4}$; $\varepsilon_{\text{suelo}} \approx 0.96$; $T$ son temperaturas absolutas [$\text{K}$]; y $\varepsilon_{\text{atm}} = 1.24 \cdot (e_a / T_a)^{1/7}$ según Brutsaert (1975).
+* **Desagregación Térmica sin Sensor Infrarrojo Térmico Directo:** Dado que Sentinel-2 opera en el espectro óptico/SWIR sin canal térmico (TIR), la temperatura de suelo $T_{\text{suelo}}$ se deriva desagregando el campo $T_{\text{skin}}$ de ERA5-Land (9 km) acoplado al DEM de 30 m mediante el gradiente adiabático vertical ($\Gamma = -6.5\,^\circ\text{C}/\text{km}$) y modulado por la cobertura vegetal ($f_c$) y albedo de Sentinel-2.
 * **Mitigación Regenerativa:** Demuestra el rol térmico del mulch orgánico y el dosel vivo para reducir la pérdida radiativa directa y mantener el calor latente en el suelo.
 
 ---

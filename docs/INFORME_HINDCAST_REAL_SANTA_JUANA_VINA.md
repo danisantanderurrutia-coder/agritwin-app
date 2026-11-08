@@ -22,6 +22,16 @@ Para que la comparación entre **lo que AgriTwin es capaz de mostrar al volver a
 > *"Para garantizar rigor científico y evitar el sesgo retrospectivo (hindsight bias), la retro-proyección ciega de AgriTwin no debe interpretarse como una adivinación mágica del punto de inicio accidental o criminal, sino como un **Hindcast Condicionado por Escenario (Scenario-Conditioned Hindcast)**:  
 > Dado un foco térmico $X_0$ detectado a las $13:45\text{ h}$ (o simulado preventivamente en el deslinde de una cuenca) y bajo el forzamiento meteorológico ERA5 sincrónico ($T-24\text{h}$), el motor biofísico de AgriTwin proyectó una envolvente teórica con una concordancia azimutal $>88.5\%$ e Índice de Jaccard/IoU de 0.68 respecto a la cicatriz satelital dNBR final. Esta proyección captura con exactitud el vector macroscópico de avance orográfico, al tiempo que declara con transparencia sus límites físicos: la elipse unifocal convexa subestima los saltos balísticos de pavesas a larga distancia (Albini, $>1.85\text{ km}$) y no modela la combustión estructural de viviendas urbanas consolidada."*
 
+### 2.1. Matriz de Supuestos Biofísicos y Modalidades de Despliegue
+
+| Eje Metodológico | ⚙️ Tratamiento en AgriTwin | 🛰️ Fundamento y Árbitro Empírico |
+| :--- | :--- | :--- |
+| **Foco Inicial de Ignición** | Distingue 3 modalidades: (i) *Hindcast:* foco histórico reportado; (ii) *Centinela Inverso:* escaneo aguas arriba desde el predio receptor; (iii) *Preventivo:* grilla Monte Carlo sobre áreas de riesgo antrópico. | En alertas preventivas no se adivina el foco; el receptor predial evalúa el cono de amenaza $\Omega_{\text{amenaza}}$. |
+| **Combustibles Forestales Chilenos** | Calibración de parámetros de Rothermel para *Pinus radiata* / *Eucalyptus globulus* (aceites volátiles y pavesas) vs. matorral esclerófilo desecado. | FMC modulado por reflectancias SWIR (B11/B12) de Sentinel-2 L2A previa. |
+| **Transición Superficie $\to$ Copas** | Umbral crítico de Van Wagner ($I_B > I_{\text{crítico}}$) que acelera el avance ($R_{\text{copas}} \approx 3.3 \cdot R_{\text{suelo}}$) y maximiza pavesas de Albini. | Concuerda con la severidad observada en copas en el dNBR satelital post-fuego ($>0.27$). |
+| **Microclima sin Sensor Térmico** | Desagregación (downscaling) de ERA5-Land $T_{\text{skin}}$ (9 km) con DEM de 30 m y $NDVI$ de Sentinel-2. | Resuelve la variabilidad topográfica y la humedad antecedente sin dependencia de bandas térmicas quincenales. |
+| **Árbitro Final de Validación** | Contraste ciego frente a la máscara Sentinel-2 dNBR post-evento ($T_{\text{post}}$). | Evidencia física y espectral libre de interpretaciones subjetivas. |
+
 ---
 
 ## 3. Determinación del Horizonte Temporal de Simulación: ¿Cómo se Define la Duración a Priori?
