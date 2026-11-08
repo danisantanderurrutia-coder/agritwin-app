@@ -2042,7 +2042,7 @@
         // 1.1 MARCADOR DIEGÉTICO '🏡 CASITA PREDIAL' EN FUNDO MENIEL (ANCLA DE DESCENSO 3D)
         // ═══════════════════════════════════════════════════════════════════
         const menielCenter = [-36.21156, -71.60530];
-        const menielHomeIcon = L.divIcon({
+        const buildHomeIcon = (farmName, areaHa) => L.divIcon({
             className: 'meniel-home-pin-wrapper',
             html: `
                 <div class="meniel-home-badge group cursor-pointer" style="position: relative; display: inline-flex; align-items: center; justify-content: center; transform: translate(-50%, -50%); cursor: pointer;">
@@ -2050,8 +2050,8 @@
                     <div style="position: relative; display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 9999px; background: rgba(6, 10, 20, 0.95); border: 2px solid #34d399; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 18px rgba(52, 211, 153, 0.6); font-family: 'Plus Jakarta Sans', sans-serif;">
                         <span style="font-size: 20px; line-height: 1; filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));">🏡</span>
                         <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.15;">
-                            <span style="font-size: 11.5px; font-weight: 800; color: #6ee7b7; letter-spacing: -0.01em;">Fundo Meniel</span>
-                            <span style="font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #cbd5e1; font-weight: 600;">PREDIO DE ESTUDIO • 24.8 HA</span>
+                            <span style="font-size: 11.5px; font-weight: 800; color: #6ee7b7; letter-spacing: -0.01em;">${farmName}</span>
+                            <span style="font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #cbd5e1; font-weight: 600;">PREDIO ACTIVO • ${areaHa} HA</span>
                         </div>
                     </div>
                 </div>
@@ -2061,19 +2061,19 @@
         });
 
         const menielHomeMarker = L.marker(menielCenter, {
-            icon: menielHomeIcon,
+            icon: buildHomeIcon('Fundo Meniel', '24.8'),
             zIndexOffset: 1500,
             title: 'Fundo Meniel (Predio de Estudio) • Clic para descender al Gemelo 3D'
         });
 
-        const menielPromptPopupHtml = `
+        const buildHomePopup = (farmName) => `
             <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 270px; max-width: 300px; padding: 4px; color: #f8fafc;">
                 <div style="display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(52, 211, 153, 0.4); padding-bottom: 7px; margin-bottom: 8px;">
                     <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.25); border: 1.5px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 20px;">
                         🏡
                     </div>
                     <div>
-                        <div style="font-weight: 800; font-size: 13.5px; color: #ffffff; letter-spacing: -0.01em;">Fundo Meniel</div>
+                        <div style="font-weight: 800; font-size: 13.5px; color: #ffffff; letter-spacing: -0.01em;">${farmName}</div>
                         <div style="font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #34d399; font-weight: 700;">PREDIO DE ESTUDIO • KEYLINE ACTIVO</div>
                     </div>
                 </div>
@@ -2091,12 +2091,30 @@
             </div>
         `;
 
-        menielHomeMarker.bindPopup(menielPromptPopupHtml, {
+        menielHomeMarker.bindPopup(buildHomePopup('Fundo Meniel'), {
             maxWidth: 320,
             className: 'meniel-descent-leaflet-popup'
         });
 
+        // El pin sigue la identidad del predio activo (FarmProfileManager); sin coordenadas, no se muestra
+        const refreshHomePin = function() {
+            const prof = window.farmProfileManager && window.farmProfileManager.getActiveProfile();
+            if (!prof) return;
+            const lat = prof.coordinates && prof.coordinates.lat, lon = prof.coordinates && prof.coordinates.lon;
+            if (isFinite(lat) && isFinite(lon)) {
+                menielCenter[0] = lat; menielCenter[1] = lon;
+                menielHomeMarker.setLatLng(menielCenter);
+                menielHomeMarker.setIcon(buildHomeIcon(prof.farmName, prof.areaHa));
+                menielHomeMarker.setPopupContent(buildHomePopup(prof.farmName));
+                if (!map.hasLayer(menielHomeMarker)) menielHomeMarker.addTo(map);
+            } else if (map.hasLayer(menielHomeMarker)) {
+                map.removeLayer(menielHomeMarker);
+            }
+        };
+        window.addEventListener('agritwin:profileChanged', refreshHomePin);
+
         menielHomeMarker.addTo(map);
+        refreshHomePin();
         overlayLayers['meniel_home_marker'] = menielHomeMarker;
         window.menielHomeMarker = menielHomeMarker;
 

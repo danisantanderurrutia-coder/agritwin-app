@@ -755,6 +755,10 @@ FIN DEL INFORME TÉCNICO • AGROTWIN DIGITAL TWIN PLATFORM (HTTP://LOCALHOST:77
             else if (hash === 'invernadero') openInvernaderoModeDirect();
             else if (hash === 'incursion') openIncursionModeDirect();
             else if (hash === 'dashboard' || hash === 'cockpit') switchMasterView('dashboard');
+            else if (hash === 'panal') {
+                if (typeof openPanalFromMesa === 'function') openPanalFromMesa();
+                else switchMasterView('panal', 'mesa');
+            }
             else if (hash === 'telemetry') switchMasterView('telemetry');
             else if (hash === 'docs' || hash.startsWith('docs-')) {
                 switchMasterView('docs');

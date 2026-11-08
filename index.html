@@ -6710,7 +6710,7 @@
                 </span>
 
                 <!-- Botones de Acción -->
-                <button onclick="switchMasterView('mesa')" class="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer" title="Volver a la Mesa de Vecinos (Momento 3)">
+                <button onclick="openMesaMode()" class="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer" title="Volver a la Mesa de Vecinos (Momento 3)">
                     <span>🤝</span> Volver a Vecinos
                 </button>
                 <button onclick="transferPanalToCanva()" class="px-2.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-stone-800 border border-stone-300 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer" title="Transferir Ficha del Panal a Canva Report Studio">
@@ -7316,6 +7316,22 @@
                                 <!-- ============================================================== -->
                 <!-- PILARES ESTRATÉGICOS CONSOLIDADOS: PAPER, PITCH & DOSSIER      -->
                 <!-- ============================================================== -->
+
+                <!-- Mirador de Cuenca: escena limpia (sin sprites ni tablero) -->
+                <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 font-sans">
+                    <div class="flex items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xl p-1.5 rounded-lg bg-sky-50 border border-sky-200">🏔️</span>
+                            <div>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Mirador de Cuenca • Maule Sur</h3>
+                                <p class="text-[11px] text-stone-500">Escena panorámica del valle del Río Longaví. Clic para verla a tamaño completo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="assets/ui/cerro_landing_bg.jpg" target="_blank" rel="noopener" class="block rounded-xl overflow-hidden border border-[#E7DAC6] shadow-sm group">
+                        <img src="assets/ui/cerro_landing_bg.jpg" alt="Mirador de Cuenca Maule Sur" class="w-full h-auto group-hover:scale-[1.01] transition-transform duration-500" loading="lazy">
+                    </a>
+                </div>
 
                 <!-- 1. Paper Científico Canónico Consolidado (Hero Banner) -->
                 <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white border border-blue-500/30 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 font-sans">
@@ -17516,6 +17532,7 @@ print(meniel_soil)</code></pre>
     <script src="js/hub/cerro-cuenca.js"></script>
     <script src="js/hub/ecosystem-advisors.js?v=4.1.0-windy-cuenca"></script>
     <script src="js/hub/mesa-hotspots-lenses.js"></script>
+    <script src="js/hub/branch-master-boards.js"></script>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          DRAWER LATERAL: FICHA TERRITORIAL VECINAL & CUADERNO DE CAMPO

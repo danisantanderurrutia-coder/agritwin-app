@@ -2292,18 +2292,17 @@ function toggleHubWorkshop3D() {
 }
 window.toggleHubWorkshop3D = toggleHubWorkshop3D;
 
+// Las 4 ramas operativas entran ahora a su Tablero Maestro unificado (js/hub/branch-master-boards.js)
 function openInvernaderoModeDirect() {
-    switchMasterView('invernadero');
-    toggleInvernaderoCampaignBoard(true);
+    window.openBranchBoard('agricola');
 }
 
 function openEstabloModeDirect() {
-    switchMasterView('establo');
+    window.openBranchBoard('pecuario');
 }
 
 function openIncursionModeDirect() {
-    switchMasterView('incursion');
-    toggleIncursionCampaignBoard(true);
+    window.openBranchBoard('exploracion');
 }
 
 function openCerroModeDirect() {
@@ -2311,9 +2310,9 @@ function openCerroModeDirect() {
 }
 
 function openMesaModeDirect() {
-    switchMasterView('mesa');
+    // Los modales vecinales leen datos preparados por initMesaSuite
     if (typeof initMesaSuite === 'function') initMesaSuite();
-    if (typeof openMesaCampaignBoard === 'function') openMesaCampaignBoard();
+    window.openBranchBoard('vecinal');
 }
 
 function toggleInvernaderoCampaignBoard(show) {
