@@ -209,7 +209,8 @@
             if (typeof window.dismissAlchemicalSplash === 'function') {
                 window.dismissAlchemicalSplash();
             }
-            if (viewId === 'cuenca') {
+            // 'cuenca' y 'cerro' son alias del Visor Satelital (el mirador estático #view-cerro quedó obsoleto)
+            if (viewId === 'cuenca' || viewId === 'cerro') {
                 viewId = 'territory';
                 if (!mode) mode = 'cerro';
             }

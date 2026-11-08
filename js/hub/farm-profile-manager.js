@@ -453,13 +453,7 @@
     }
 
     openProfileSelectorDirect() {
-      const splash = document.getElementById('alchemicalAppSplash');
-      if (splash) {
-        splash.style.display = 'flex';
-        splash.style.opacity = '1';
-        splash.style.pointerEvents = 'auto';
-        this.renderSplashConsole();
-      }
+      if (typeof window.openAlchemicalSplash === 'function') window.openAlchemicalSplash();
     }
   }
 
@@ -468,7 +462,7 @@
 
   // Inicializador del Portal de Acceso Alquímico & Deep-Linking por URL del Hub
   window.initAlchemicalSplashAndRouting = function() {
-    let splashDismissed = false;
+    let splashOpen = false;
     const splashEl = document.getElementById('alchemicalAppSplash');
     if (!splashEl) return;
 
@@ -477,19 +471,26 @@
       window.farmProfileManager.updateHeaderUI(window.farmProfileManager.getActiveProfile());
     }
 
+    // Cierre/apertura reutilizables (sin cerrojo de un solo uso: el splash puede reabrirse sin quedar pegado)
     function dismissSplash() {
-      if (splashDismissed) return;
-      splashDismissed = true;
-      if (splashEl) {
-        splashEl.style.opacity = '0';
-        splashEl.style.pointerEvents = 'none';
-        splashEl.style.display = 'none';
-      }
+      if (!splashEl) return;
+      splashEl.style.opacity = '0';
+      splashEl.style.pointerEvents = 'none';
+      splashEl.style.display = 'none';
+      splashOpen = false;
+    }
+
+    function openSplash() {
+      if (!splashEl) return;
+      if (window.farmProfileManager) window.farmProfileManager.renderSplashConsole();
+      splashEl.style.display = 'flex';
+      splashEl.style.pointerEvents = 'auto';
+      splashEl.style.opacity = '1';
+      splashOpen = true;
     }
 
     window.dismissAlchemicalSplash = dismissSplash;
-    // Descartar splash por defecto: entrada directa al Landing AOE Maestro
-    dismissSplash();
+    window.openAlchemicalSplash = openSplash;
 
     window.openCuencaDirectFromSplash = function() {
       dismissSplash();
@@ -507,7 +508,10 @@
     const cleanHash = rawHash.split('?')[0].toLowerCase();
     const targetMode = urlParams.get('mode') || urlParams.get('view') || null;
 
-    if (rawHash) {
+    if (!rawHash && !targetMode) {
+      // Arranque en frío: el Árbol Alquímico es la consola de carga/selección de predio
+      openSplash();
+    } else if (rawHash) {
       dismissSplash();
       setTimeout(() => {
         if (typeof handleRouteHash === 'function') {
@@ -521,8 +525,7 @@
           if (typeof openCerroMap === 'function') openCerroMap();
           else if (typeof switchMasterView === 'function') switchMasterView('territory', 'cerro');
         } else if (targetMode === 'sim' || targetMode === 'cuenca-sim' || targetMode === 'cerro-sim') {
-          if (typeof switchMasterView === 'function') switchMasterView('cerro');
-          if (typeof setCerroSubView === 'function') setCerroSubView('sim');
+          if (typeof switchMasterView === 'function')          if (typeof setCerroSubView === 'function') setCerroSubView('sim');
         } else if (targetMode === 'cerro') {
           if (typeof openCerroMap === 'function') openCerroMap();
         } else if (typeof switchMasterView === 'function' && ['landing', 'dashboard', 'panal', 'telemetry', 'docs', 'cuaderno', 'juegos', 'galpon', 'invernadero', 'establo', 'incursion', 'cerro', 'mesa', 'territory'].includes(targetMode)) {
@@ -538,7 +541,7 @@
 
     window.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' || e.key === ' ' || e.code === 'Space') {
-        if (splashEl && splashEl.style.display !== 'none' && !splashDismissed) {
+        if (splashOpen) {
           dismissSplash();
         }
       }

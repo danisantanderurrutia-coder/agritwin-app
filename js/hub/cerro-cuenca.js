@@ -799,57 +799,18 @@
         // MOMENTO 2: CUENCA MAULE SUR • DIGITAL TWIN & SIMULADOR TÁCTICO
         // ═══════════════════════════════════════════════════════════════════
         
+        // Shim de compatibilidad: el mirador estático #view-cerro (panorama / sim / decreto) fue retirado.
+        // panorama -> Visor Satelital | sim -> Simulador en el Tablero de Cuenca | decreto -> Expediente B2B
         function setCerroSubView(subviewId) {
             playDiegeticAudio('wood');
-            if (subviewId === 'panorama') {
-                if (typeof openCerroMap === 'function') {
-                    openCerroMap();
-                    return;
-                }
+            if (subviewId === 'decreto') {
+                if (typeof switchMasterView === 'function') switchMasterView('expediente');
+                if (typeof switchExpedienteTab === 'function') switchExpedienteTab('exp-b2b');
+                return;
             }
-            const subdeckNav = document.getElementById('cerroSubdeckNav');
-            if (subdeckNav) {
-                if (subviewId === 'panorama') {
-                    subdeckNav.style.display = 'none';
-                } else {
-                    subdeckNav.style.display = 'flex';
-                }
-            }
-            const views = ['panorama', 'sim', 'decreto'];
-            views.forEach(v => {
-                const el = document.getElementById('cerroSubView-' + v);
-                const nav = document.getElementById('cerroNav-' + v);
-                if (el) {
-                    if (v === subviewId) {
-                        el.classList.remove('hidden');
-                        el.classList.add('block');
-                    } else {
-                        el.classList.add('hidden');
-                        el.classList.remove('block');
-                    }
-                }
-                if (nav) {
-                    if (v === subviewId) nav.classList.add('active');
-                    else nav.classList.remove('active');
-                }
-            });
-
+            if (typeof openCerroMap === 'function') openCerroMap();
             if (subviewId === 'sim') {
-                setTimeout(() => {
-                    if (window.basinTwin) {
-                        window.basinTwin.drawHydrograph();
-                    }
-                }, 80);
-            } else if (subviewId === 'decreto') {
-                setTimeout(() => {
-                    generateBasinDecree(window.currentDecreeType || 'DOH_TURNO');
-                }, 40);
-            } else if (subviewId === 'panorama') {
-                setTimeout(() => {
-                    if (window.cerroVectorEngine) {
-                        window.cerroVectorEngine.resize();
-                    }
-                }, 60);
+                setTimeout(() => { if (typeof openCerroHotspotModal === 'function') openCerroHotspotModal('sim'); }, 250);
             }
         }
         window.setCerroSubView = setCerroSubView;

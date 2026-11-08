@@ -723,11 +723,9 @@ FIN DEL INFORME TÉCNICO • AGROTWIN DIGITAL TWIN PLATFORM (HTTP://LOCALHOST:77
                 openCerroMap();
             }
             else if (hash === 'cuenca-sim') {
-                switchMasterView('cerro');
                 if (typeof setCerroSubView === 'function') setCerroSubView('sim');
             }
             else if (hash === 'cuenca-decreto') {
-                switchMasterView('cerro');
                 if (typeof setCerroSubView === 'function') setCerroSubView('decreto');
             }
             else if (hash === 'mesa' || hash.startsWith('mesa-')) {
@@ -741,10 +739,8 @@ FIN DEL INFORME TÉCNICO • AGROTWIN DIGITAL TWIN PLATFORM (HTTP://LOCALHOST:77
                 if (hash === 'cerro') {
                     openCerroMap();
                 } else if (hash === 'cerro-sim') {
-                    switchMasterView('cerro');
                     if (typeof setCerroSubView === 'function') setCerroSubView('sim');
                 } else if (hash === 'cerro-decreto') {
-                    switchMasterView('cerro');
                     if (typeof setCerroSubView === 'function') setCerroSubView('decreto');
                 } else if (hash === 'cerro-panorama') {
                     openCerroMode();
