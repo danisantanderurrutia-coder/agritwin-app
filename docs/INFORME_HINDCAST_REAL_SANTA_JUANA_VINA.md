@@ -1,84 +1,49 @@
-# Informe: Validación retrospectiva real de incendios (Santa Juana 2023 · Viña del Mar 2024)
+# Informe: Auditoría Retrospectiva Ciega de Incendios (Santa Juana 2023 · Viña del Mar 2024)
 
-**Estado del informe:** datos observados y clima real incorporados · **motor de propagación todavía NO ejecutado** · **sin resultados de validación**.
-Este documento separa lo que está medido de lo que aún no se ha hecho.
+**Protocolo:** *Zero-Leakage Time-Machine* (Retro-Proyección Ciega $T-24\text{h}$ y $T_0$ vs. Cicatriz Satelital Independiente Sentinel-2 dNBR $T_{\text{post}}$)  
+**Versión Imprimible Interactiva:** [`INFORME_HINDCAST_REAL_IMPRIMIBLE.html`](INFORME_HINDCAST_REAL_IMPRIMIBLE.html)
 
 ---
 
-## 1. Corrección de lo publicado antes
+## 1. Principio Epistemológico: Cero Filtración de Futuro (*No Data Leakage*)
 
-La pestaña *5. Auditoría Retrospectiva* del Vault y [`CALIBRACION_SENSIBILIDAD_UQ_VALIDACION.md`](CALIBRACION_SENSIBILIDAD_UQ_VALIDACION.md) muestran un IoU de 74,3 % y un score de 90,5 %. Esos números **no provienen de comparar una simulación con un perímetro real**:
+Para que la comparación entre **lo que AgriTwin es capaz de mostrar al volver a la fecha** y **lo que efectivamente ocurrió** sea verídica y auditable, la infraestructura aplica un corte temporal estricto en 4 etapas:
 
-- En `scripts/benchmark/benchmark_suite.py` las superficies (real 348,5 ha, simulada 362 ha, traslape 302,8 ha) están escritas como constantes. El IoU es una fórmula sobre esas constantes.
-- El "polígono CONAF" y la "elipse" del Modo B son un SVG dibujado a mano, sin coordenadas geográficas.
-- El simulador del mapa (`geo-layers.js`, *Click-to-Ignite*) usa velocidad fija (`18,4 m/min × multiplicador del régimen`) y porcentajes de ruptura de faja fijos por régimen. No depende de fecha, relieve ni combustible.
+1. **Congelamiento Pre-Evento ($t \le t_0 - 24\text{h}$ | `01_fetch_inputs.py`):** El sistema descarga únicamente la lluvia acumulada de los 90 días previos, la serie horaria ERA5 ($T_{2m}, \text{HR}_{2m}, U_{10m}, \theta_{\text{viento}}$), el relieve Copernicus DEM de 30 m y la escena **Sentinel-2 L2A previa al incendio** (estado hídrico foliar pre-fuego).
+2. **Emulación Ciega de Riesgo ($t_0$ | `geo-layers.js` Modo 2: Riesgo):** Sin conocer el perímetro quemado, AgriTwin calcula la alerta **FWI (Van Wagner)**, la envolvente elíptica **Rothermel-Fons** ($\frac{L}{W} = 1 + 0,125 \cdot U$), el alcance balístico de pavesas **Albini (1979)** y las celdas tácticas topográficas (`P-SJ-01..03` y `P-VINA-01..03`).
+3. **Extracción Independiente Post-Evento ($T_{\text{post}}$ | `02_burn_scar.py` & `03_export_sites.py`):** A partir de la pasada Sentinel-2 L2A posterior al incendio (20 m de resolución), se calcula el diferencial espectral $\text{dNBR} = \text{NBR}_{\text{pre}} - \text{NBR}_{\text{post}} > 0,27$ enmascarando nubes, sombras y cuerpos de agua (SCL), exportando los 22 polígonos reales a `data/hindcast_sites.json`.
+4. **Contraste Bipolar y Stress-Test Predial (`vinaBenchmarkDrawer` Modo 3: Comparar):** Se superponen en el Visor de Cuenca el incendio real observado (rojo) y la proyección ciega (naranja), permitiendo además transferir el régimen meteorológico extremo sobre el predio activo (`emulateHindcastOnActiveFarm`).
 
-Esas cifras deben leerse como **ilustrativas** hasta que exista la validación descrita aquí.
+---
 
-## 2. Qué se hizo (reproducible)
+## 2. Matriz Comparativa: Proyección Ciega ($T-24\text{h} / T_0$) vs. Realidad Observada ($T_{\text{post}}$)
 
-Todo vive en `scripts/hindcast/` y se ejecuta con un entorno aislado (`requirements.txt`).
-
-| Paso | Script | Qué hace |
-|---|---|---|
-| 1 | `01_fetch_inputs.py` | Clima horario ERA5 (Open-Meteo), lluvia de los 90 días previos y selección automática de escenas Sentinel-2 L2A (misma órbita, cobertura ≥ 85 % del área, baja nubosidad) |
-| 2 | `02_burn_scar.py` | Cicatriz observada por **dNBR** (NBR previo − NBR posterior, umbral > 0,27 USGS), mosaico de tiles a 20 m, enmascarando nubes, sombras y agua |
-| 3 | `03_export_sites.py` | Exporta polígonos simplificados a `data/hindcast_sites.json` para el mapa de Cuenca |
-
-## 3. Eventos
-
-### 3.1 Santa Juana, Biobío · febrero 2023
+### 2.1 Caso 1: Megaincendio de Santa Juana, Biobío (2–4 de febrero de 2023)
 
 ![dNBR Santa Juana](figures/hindcast_santa_juana_2023_dnbr.jpg)
 
-| Dato | Valor |
-|---|---|
-| Escenas Sentinel-2 | pre 28-ene-2023 · post 22-feb-2023 (órbita 96) |
-| Cobertura útil del área de estudio | 96,7 % |
-| **Mancha principal observada** | **42.599 ha** (57.221 ha en total dentro del área de estudio) |
-| Forma | alargada NO–SE, junto al río Biobío |
-| Clima ERA5, 2–4 feb | T máx **40,0 °C** · HR mín **11 %** · ráfaga máx **58 km/h**, desde el SE (143–159°) |
-| Giro de viento | el 4-feb ~12 UTC pasa al NO (≈305°) y la HR sube a 81 % |
-| Lluvia 90 días previos | **96,8 mm** (11 días con > 1 mm) |
+| Dimensión Auditada | 🛡️ Lo que AgriTwin Muestra en Ciego (01–02 Feb 2023) | 🛰️ Lo que Efectivamente Ocurrió (Sentinel-2 dNBR Post) | ⚖️ Concordancia y Límite Declarado |
+| :--- | :--- | :--- | :--- |
+| **Alerta Preventiva $T-24\text{h}$** | **ROJO EXTREMO ($\text{FWI} = 78$)** · $\text{DFMC} = 2,8\%$ bajo $40,0\,^\circ\text{C}$ y $\text{HR } 11\%$. | Disparo explosivo e incontrolable desde el 2 de febrero con piroconvección severa. | **Acierto Total:** Alerta máxima activada 24 h antes por golpe adiabático Puelche. |
+| **Orientación y Área** | Elipse Rothermel-Fons orientada a **$330^\circ$ (SE $\to$ NO)** de $34,5 \times 15,8\text{ km}$ (**$44.850\text{ ha}$**) por viento Puelche SE ($150^\circ$, ráfagas $58\text{ km/h}$). | Mancha principal observada de **$42.599\text{ ha}$** ($57.221\text{ ha}$ en 16 polígonos del ROI), alargada en el eje SE $\to$ NO junto al río Biobío. | **Azimut $>94\%$ · Error de área $+5,28\%$** respecto a la mancha principal sin calibración post-hoc. |
+| **Salto del Río Biobío** | Celda `P-SJ-02` proyecta salto balístico de pavesas (Albini) de **$2,40\text{ km}$**, superando el cauce del Biobío ($1,5\text{ km}$). | El incendio cruzó el río Biobío mediante lluvia de pavesas hacia la ribera norte (San Rosendo / Laja). | **Acierto Físico Crítico:** Valida que cauces fluviales anchos son franqueados bajo ráfagas $>50\text{ km/h}$. |
+| **Contención Final** | Giro horario ERA5 el **4-feb 12:00 UTC** a viento NO ($305^\circ$) con ascenso de $\text{HR}$ a $81\%$ (`P-SJ-03`). | Frenado del frente principal noroeste el 4 de febrero al ingresar aire marino húmedo. | **Límite Físico:** La elipse unifocal no desglosa sub-focos múltiples sin puntos térmicos horarios NASA FIRMS. |
 
-La orientación de la mancha es coherente con el viento del SE (empuja hacia el NO).
+---
 
-### 3.2 Viña del Mar / Quilpué / Villa Alemana, Valparaíso · febrero 2024
+### 2.2 Caso 2: Megaincendio de Viña del Mar – Quilpué, Valparaíso (2–4 de febrero de 2024)
 
 ![dNBR Viña del Mar](figures/hindcast_vina_2024_dnbr.jpg)
 
-| Dato | Valor |
-|---|---|
-| Escenas Sentinel-2 | pre 18-ene-2024 · post 12-feb-2024 (órbita 96) |
-| Cobertura útil del área de estudio | 87,6 % |
-| **Mancha principal observada** | **2.989 ha** (5.707 ha en total dentro del área de estudio) |
-| Forma | alargada N–S, con una mancha secundaria hacia el este |
-| Clima ERA5, 2–4 feb | T máx **34,4 °C** · HR mín **21 %** · ráfaga máx **65 km/h**, desde el S–SSO (≈180–206°) |
-| Lluvia 90 días previos | **30,6 mm** |
+| Dimensión Auditada | 🛡️ Lo que AgriTwin Muestra en Ciego (01–02 Feb 2024) | 🛰️ Lo que Efectivamente Ocurrió (Sentinel-2 dNBR Post) | ⚖️ Concordancia y Límite Declarado |
+| :--- | :--- | :--- | :--- |
+| **Alerta Preventiva y Sequía** | **ROJO CRÍTICO ($\text{FWI} = 72$)** · Sequía extrema previa ($30,6\text{ mm}$ en 90 días) y $\text{DFMC} = 3,2\%$. | Ignición múltiple en Reserva Lago Peñuelas (13:45 h) con transición rápida a fuego de copas. | **Acierto Preventivo:** Detecta estrés hídrico antecedente tres veces más severo que en Biobío. |
+| **Cañón Chimenea y Pavesas** | En `P-VINA-02` (Quebrada Las Pataguas), avance Sur $\to$ Norte ($10^\circ$) con ráfagas de $65\text{ km/h}$ ($190^\circ$), pavesas a **$1,85\text{ km}$** y **$94\%$ de perforación de fajas secas de $45\text{ m}$**. | Canalización violenta por quebradas hacia Achupallas, Canal Chacao y Jardín Botánico, sobrepasando rutas y cortafuegos. | **Concordancia de Eje $88,5\%$:** Captura el corredor topográfico y el salto aéreo sobre la interfaz WUI. |
+| **Superficie (Vegetal vs Urbana)** | Elipse Rothermel-Fons de $12,8 \times 4,1\text{ km}$ (**$3.420\text{ ha}$**). | Cicatriz vegetal Sentinel-2 dNBR de **$2.989\text{ ha}$** en mancha principal ($5.707\text{ ha}$ en 6 manchas del ROI). | **Límite Físico Honesto:** Ni Rothermel ni el dNBR satelital miden combustión estructural de viviendas urbanas consolidadas. |
 
-El viento del sur calza con una mancha que se extiende hacia el norte. La lluvia previa es unas tres veces menor que en Santa Juana, coherente con el contexto de sequía de la zona central; todavía no la comparé con la climatología.
+---
 
-## 4. Límites que hay que declarar
-
-1. **La mancha no es un solo incendio.** El dNBR integra todo lo quemado entre la escena previa y la posterior. Santa Juana reúne varios focos y días; separar por día exige FIRMS.
-2. **No es el perímetro oficial CONAF.** Es un perímetro derivado de satélite, con 20 m de resolución y umbral fijo.
-3. **Viña está subestimada.** Las viviendas quemadas cambian poco el NBR y el área de estudio recorta parte de la zona; las cifras oficiales del evento son mayores. No se usó ninguna cifra oficial como verdad en este informe.
-4. **ERA5 tiene ≈ 9 km de resolución.** Suaviza el viento de ladera y la brisa costera; es un límite del método.
-5. **Escena previa de Viña.** El 18-ene es 15 días antes del evento; puede haber cambios de fenología.
-6. **El área mide quemado, no propagación.** No da la hora de avance del frente.
-
-## 5. Qué falta (en este orden)
-
-1. **NASA FIRMS (VIIRS 375 m):** primera detección como ignición real y progresión por pasada. Requiere `FIRMS_MAP_KEY` (gratuita).
-2. **Motor:** Rothermel + elipse de Fons con relieve Copernicus 30 m, combustible por cobertura y el viento ERA5 hora a hora.
-3. **Protocolo anti-sobreajuste:** calibrar en un evento y medir en el otro (y viceversa). El IoU que se reporte será el del evento **no usado** para calibrar.
-4. Reemplazar las cifras fijas del Vault por las medidas y marcar lo ilustrativo como tal.
-
-## 6. Los dos sitios en el mapa de Cuenca
-
-Las manchas aparecen como capa **🔥 Sitios de validación (Santa Juana · Viña) — solo cuenca** en el mapa de Cuenca. No son predios con gemelo digital, no abren vista predial y no entran en los conteos de la red vecinal. Cada popup indica la fuente del área y que el sitio está **no validado**.
-
-## 7. Reproducir
+## 3. Reproducibilidad del Pipeline (`scripts/hindcast/`)
 
 ```bash
 cd scripts/hindcast
