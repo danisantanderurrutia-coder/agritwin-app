@@ -1372,7 +1372,9 @@
             // Mapeo hacia las secciones maestras
             if (tabId === 'docs-pipeline') {
                 tabId = 'docs-arch';
-            } else if (tabId === 'docs-scripts' || tabId === 'docs-reporter') {
+            } else if (tabId === 'docs-scripts' || tabId === 'docs-data') {
+                tabId = 'docs-data';
+            } else if (tabId === 'docs-reporter') {
                 tabId = 'docs-dossier';
             } else if (tabId === 'docs-biomes') {
                 tabId = 'docs-tables';
