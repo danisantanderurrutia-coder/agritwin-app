@@ -1618,13 +1618,14 @@
          VISTA 1: EL GALPÓN • TRABAJO DIARIO EN EL FUNDO (MOMENTO 1)
          ═══════════════════════════════════════════════════════════════════════ -->
     <div id="view-galpon" class="master-view !p-0 overflow-hidden bg-[#080c14] w-full" style="position: absolute; top: 56px; bottom: 0; left: 0; right: 0; height: calc(100vh - 56px);">
-        <iframe id="iframePredio" src="predio/" class="w-full border-0 select-none block" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%;" allow="accelerometer; camera; gyroscope; vr"></iframe>
+        <iframe id="iframePredio" src="predio/?mode=3d" class="w-full border-0 select-none block" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%;" allow="accelerometer; camera; gyroscope; vr"></iframe>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          VISTA 1: LANDING AOE MAESTRO • EL TALLER CENTRAL DEL DISEÑADOR TERRITORIAL
          ═══════════════════════════════════════════════════════════════════════ -->
-    <div id="view-landing" class="master-view active-view !p-0 overflow-hidden bg-black select-none relative w-full h-[calc(100vh-3.5rem)] min-h-[560px] flex items-center justify-center">
+    <div id="view-landing" class="master-view active-view !p-0 overflow-hidden bg-black select-none">
+        <div class="relative w-full h-[calc(100vh-3.5rem)] min-h-[560px] overflow-hidden flex items-center justify-center select-none bg-black">
         <!-- Fullscreen Background Image: El Taller Maestro -->
         <img src="assets/ui/workshop_bg.png" alt="Taller Central de Diseño Territorial" class="w-full h-full object-cover filter contrast-105 brightness-95 pointer-events-none" draggable="false">
         <div class="diegetic-vignette"></div>
@@ -1857,6 +1858,7 @@
                     <span class="text-slate-400">Fondo Incursión</span>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
@@ -5790,105 +5792,6 @@
 <!-- SECCIÓN DE DETALLE / VISTAS PREDEFINIDAS DE LA CUENCA (SCROLLABLE DEBAJO DEL LANDING) -->
         <div id="cerroDetailSection" class="max-w-7xl mx-auto p-4 sm:p-8 space-y-6">
             <!-- TABLERO MAESTRO PREDIAL AMPLIADO (ESTACIÓN 2 DEL LANDING AOE) -->
-            <div id="predioMasterPanelModal" class="diegetic-modal-backdrop" onclick="if(event.target === this) closePredioMasterPanel()">
-                <div class="diegetic-modal-card p-6 space-y-4 border-amber-500/40 relative max-w-4xl w-[94vw]">
-                    <!-- Cabecera del Tablero -->
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl text-amber-300 shadow">
-                                📋
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
-                                    CONSOLA MAESTRA PREDIAL • FUNDO MENIEL (12.8 HA)
-                                </span>
-                                <h3 id="predioMasterModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2 mt-0.5">
-                                    Panel Maestro Predial Ampliado & Permacultura
-                                </h3>
-                            </div>
-                        </div>
-                        <button onclick="closePredioMasterPanel()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-colors cursor-pointer" title="Cerrar panel (Esc)">
-                            &times;
-                        </button>
-                    </div>
-
-                    <!-- BARRA PERSISTENTE DE 5 SUBPESTAÑAS -->
-                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-white/10 text-xs font-mono select-none" id="predioMasterTabsBar">
-                        <button onclick="switchPredioMasterTab('permacultura')" id="tabPredio-permacultura" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-amber-500/25 text-amber-200 border-amber-400/60 font-bold shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-                            <span>📜</span> <span>1. Permacultura Zonas 0-5</span>
-                        </button>
-                        <button onclick="switchPredioMasterTab('telemetria')" id="tabPredio-telemetria" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
-                            <span>💧</span> <span>2. Telemetría & Tranque</span>
-                        </button>
-                        <button onclick="switchPredioMasterTab('limites')" id="tabPredio-limites" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
-                            <span>🗺️</span> <span>3. Límites & Deslindes (CBR)</span>
-                        </button>
-                        <button onclick="switchPredioMasterTab('esg')" id="tabPredio-esg" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
-                            <span>📚</span> <span>4. Huella ESG & EUDR</span>
-                        </button>
-                        <button onclick="switchPredioMasterTab('radio')" id="tabPredio-radio" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
-                            <span>📻</span> <span>5. Enlace Comunal & APR</span>
-                        </button>
-                    </div>
-
-                    <!-- Contenido Dinámico de las Subpestañas -->
-                    <div id="predioMasterModalBody" class="space-y-4 text-xs font-mono">
-                    </div>
-                </div>
-            </div>
-
-            <!-- TABLERO MAESTRO UNIFICADO DE CUENCA AOE II (DECK UNIFICADO DE SPRITES) -->
-            <div id="cerroHotspotModal" class="diegetic-modal-backdrop" onclick="if(event.target === this) closeCerroHotspotModal()">
-                <div class="diegetic-modal-card p-6 space-y-4 border-sky-500/40 relative max-w-4xl w-[94vw]">
-                    <!-- Cabecera del Tablero -->
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-xl text-sky-300 shadow">
-                                🏔️
-                            </div>
-                            <div>
-                                
-                                <h3 id="cerroModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2 mt-0.5">
-                                    Instrumento Diegético
-                                </h3>
-                            </div>
-                        </div>
-                        <button onclick="closeCerroHotspotModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-colors cursor-pointer" title="Cerrar panel (Esc)">
-                            &times;
-                        </button>
-                    </div>
-
-                    <!-- BARRA PERSISTENTE DE 6 ESTACIONES / SPRITES (NAVEGACIÓN INTERNA FLUIDA) -->
-                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-white/10 text-xs font-mono select-none" id="cerroUnifiedTabsBar">
-                        <button onclick="openCerroHotspotModal('drone')" id="tabHotspot-drone" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>🛸</span> <span>1. Drone LULC</span>
-                        </button>
-                        <button onclick="openCerroHotspotModal('clima')" id="tabHotspot-clima" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>🌪️</span> <span>2. Piro-Clima</span>
-                        </button>
-                        <button onclick="openCerroHotspotModal('mirador')" id="tabHotspot-mirador" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>🔭</span> <span>3. Locaciones</span>
-                        </button>
-                        <button onclick="openCerroHotspotModal('obras')" id="tabHotspot-obras" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>🛠️</span> <span>4. Plan Obras</span>
-                        </button>
-                        <button onclick="openCerroHotspotModal('hidro')" id="tabHotspot-hidro" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>📟</span> <span>5. Hidrología</span>
-                        </button>
-                        <button onclick="openCerroHotspotModal('lora')" id="tabHotspot-lora" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>📡</span> <span>6. Red LoRa</span>
-                        </button>
-                        <button onclick="openCerroHotspotModal('resumen')" id="tabHotspot-resumen" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
-                            <span>📋</span> <span>Resumen Cuenca</span>
-                        </button>
-                    </div>
-
-                    <!-- Contenido Dinámico inyectado por JS -->
-                    <div id="cerroModalBody">
-                    </div>
-                </div>
-            </div>
-
             <!-- 2. VISTAS PREDEFINIDAS / LOCACIONES ESTRATÉGICAS DE LA CUENCA (Botones Interactivos) -->
             <div class="rounded-3xl p-5 bg-slate-900/80 border border-sky-500/30 space-y-4 shadow-xl">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
@@ -18331,6 +18234,108 @@ function copyRScriptCode() {
         });
 }
 </script>
+
+
+
+    <!-- ═══ MODALES DIEGÉTICOS GLOBALES DIRECTOS EN BODY ═══ -->
+    <div id="predioMasterPanelModal" class="diegetic-modal-backdrop" onclick="if(event.target === this) closePredioMasterPanel()">
+                <div class="diegetic-modal-card p-6 space-y-4 border-amber-500/40 relative max-w-4xl w-[94vw]">
+                    <!-- Cabecera del Tablero -->
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl text-amber-300 shadow">
+                                📋
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
+                                    CONSOLA MAESTRA PREDIAL • FUNDO MENIEL (12.8 HA)
+                                </span>
+                                <h3 id="predioMasterModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2 mt-0.5">
+                                    Panel Maestro Predial Ampliado & Permacultura
+                                </h3>
+                            </div>
+                        </div>
+                        <button onclick="closePredioMasterPanel()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-colors cursor-pointer" title="Cerrar panel (Esc)">
+                            &times;
+                        </button>
+                    </div>
+
+                    <!-- BARRA PERSISTENTE DE 5 SUBPESTAÑAS -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-white/10 text-xs font-mono select-none" id="predioMasterTabsBar">
+                        <button onclick="switchPredioMasterTab('permacultura')" id="tabPredio-permacultura" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-amber-500/25 text-amber-200 border-amber-400/60 font-bold shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                            <span>📜</span> <span>1. Permacultura Zonas 0-5</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('telemetria')" id="tabPredio-telemetria" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>💧</span> <span>2. Telemetría & Tranque</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('limites')" id="tabPredio-limites" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>🗺️</span> <span>3. Límites & Deslindes (CBR)</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('esg')" id="tabPredio-esg" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>📚</span> <span>4. Huella ESG & EUDR</span>
+                        </button>
+                        <button onclick="switchPredioMasterTab('radio')" id="tabPredio-radio" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-400 hover:text-slate-200">
+                            <span>📻</span> <span>5. Enlace Comunal & APR</span>
+                        </button>
+                    </div>
+
+                    <!-- Contenido Dinámico de las Subpestañas -->
+                    <div id="predioMasterModalBody" class="space-y-4 text-xs font-mono">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLERO MAESTRO UNIFICADO DE CUENCA AOE II (DECK UNIFICADO DE SPRITES) -->
+            <div id="cerroHotspotModal" class="diegetic-modal-backdrop" onclick="if(event.target === this) closeCerroHotspotModal()">
+                <div class="diegetic-modal-card p-6 space-y-4 border-sky-500/40 relative max-w-4xl w-[94vw]">
+                    <!-- Cabecera del Tablero -->
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-xl text-sky-300 shadow">
+                                🏔️
+                            </div>
+                            <div>
+                                <span id="cerroModalBadge" class="text-[10px] font-mono text-sky-400 font-bold uppercase tracking-wider bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/30">OBJ-CUENCA</span>
+                                <h3 id="cerroModalTitle" class="text-base sm:text-lg font-black text-white flex items-center gap-2 mt-0.5">
+                                    Instrumento Diegético
+                                </h3>
+                            </div>
+                        </div>
+                        <button onclick="closeCerroHotspotModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center text-lg transition-colors cursor-pointer" title="Cerrar panel (Esc)">
+                            &times;
+                        </button>
+                    </div>
+
+                    <!-- BARRA PERSISTENTE DE 6 ESTACIONES / SPRITES (NAVEGACIÓN INTERNA FLUIDA) -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-white/10 text-xs font-mono select-none" id="cerroUnifiedTabsBar">
+                        <button onclick="openCerroHotspotModal('drone')" id="tabHotspot-drone" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>🛸</span> <span>1. Drone LULC</span>
+                        </button>
+                        <button onclick="openCerroHotspotModal('clima')" id="tabHotspot-clima" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>🌪️</span> <span>2. Piro-Clima</span>
+                        </button>
+                        <button onclick="openCerroHotspotModal('mirador')" id="tabHotspot-mirador" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>🔭</span> <span>3. Locaciones</span>
+                        </button>
+                        <button onclick="openCerroHotspotModal('obras')" id="tabHotspot-obras" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>🛠️</span> <span>4. Plan Obras</span>
+                        </button>
+                        <button onclick="openCerroHotspotModal('hidro')" id="tabHotspot-hidro" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>📟</span> <span>5. Hidrología</span>
+                        </button>
+                        <button onclick="openCerroHotspotModal('lora')" id="tabHotspot-lora" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>📡</span> <span>6. Red LoRa</span>
+                        </button>
+                        <button onclick="openCerroHotspotModal('resumen')" id="tabHotspot-resumen" class="px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white/5 border-white/10 text-slate-300 hover:text-white">
+                            <span>📋</span> <span>Resumen Cuenca</span>
+                        </button>
+                    </div>
+
+                    <!-- Contenido Dinámico inyectado por JS -->
+                    <div id="cerroModalBody">
+                    </div>
+                </div>
+            </div>
 
 </body>
 </html>

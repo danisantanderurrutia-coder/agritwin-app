@@ -630,6 +630,10 @@
             if (modal) modal.classList.remove('active');
         }
 
+        window.openCerroHotspotModal = openCerroHotspotModal;
+        window.closeCerroHotspotModal = closeCerroHotspotModal;
+        window.playDiegeticAudio = playDiegeticAudio;
+
         // ═══════════════════════════════════════════════════════════════════
         // MOMENTO 2: CUENCA MAULE SUR • DIGITAL TWIN & SIMULADOR TÁCTICO
         // ═══════════════════════════════════════════════════════════════════

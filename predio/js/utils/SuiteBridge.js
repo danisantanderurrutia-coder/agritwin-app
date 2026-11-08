@@ -196,6 +196,10 @@ export class SuiteBridge {
         if (typeof window.toggleGalponWorkshop === 'function') {
           window.toggleGalponWorkshop();
         }
+      } else if (event.data.action === 'closeWorkshop') {
+        if (typeof window.closeGalponWorkshop === 'function') {
+          window.closeGalponWorkshop();
+        }
       } else if (event.data.action === 'SET_ACTIVE_PROFILE') {
         const profile = event.data.profile;
         if (profile) {

@@ -946,7 +946,10 @@ const server = http.createServer(async (req, res) => {
   if (urlPath.startsWith('/predio/')) {
     let rel = urlPath.replace('/predio/', '') || 'index.html';
     if (rel.endsWith('/')) rel += 'index.html';
-    const PREDIO_DIR = path.join(ROOT_DIR, '..', 'agritwin-predio');
+    let PREDIO_DIR = path.join(ROOT_DIR, 'predio');
+    if (!fs.existsSync(PREDIO_DIR)) {
+      PREDIO_DIR = path.join(ROOT_DIR, '..', 'agritwin-predio');
+    }
     const predioFile = path.join(PREDIO_DIR, path.normalize(rel));
     if (predioFile.startsWith(PREDIO_DIR) && fs.existsSync(predioFile) && fs.statSync(predioFile).isFile()) {
       const ext = path.extname(predioFile).toLowerCase();
@@ -972,22 +975,41 @@ const server = http.createServer(async (req, res) => {
   }
 
   fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
+    if (err) {
       res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(`<h1>404 Not Found</h1><p>Archivo no encontrado: ${safePath}</p>`);
       return;
     }
 
-    const ext = path.extname(filePath).toLowerCase();
+    let finalFile = filePath;
+    let finalStats = stats;
+    if (stats.isDirectory()) {
+      finalFile = path.join(filePath, 'index.html');
+      try {
+        finalStats = fs.statSync(finalFile);
+      } catch (e) {
+        res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(`<h1>404 Not Found</h1><p>Archivo no encontrado: ${safePath}</p>`);
+        return;
+      }
+    }
+
+    if (!finalStats.isFile()) {
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(`<h1>404 Not Found</h1><p>Archivo no encontrado: ${safePath}</p>`);
+      return;
+    }
+
+    const ext = path.extname(finalFile).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
     res.writeHead(200, {
       'Content-Type': contentType,
-      'Content-Length': stats.size,
+      'Content-Length': finalStats.size,
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
     });
 
-    fs.createReadStream(filePath).pipe(res);
+    fs.createReadStream(finalFile).pipe(res);
   });
 });
 

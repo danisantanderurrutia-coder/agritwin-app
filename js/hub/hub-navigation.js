@@ -2145,6 +2145,12 @@ function openMesaMode() { launchModeWithTransition('mesa'); }
 
 function openPredioModeDirect() {
     switchMasterView('galpon');
+    const iframe = document.getElementById('iframePredio');
+    if (iframe && iframe.contentWindow) {
+        try {
+            iframe.contentWindow.postMessage({ action: 'closeWorkshop' }, '*');
+        } catch (e) {}
+    }
 }
 
 let hubPlanMaestroActive = false;
@@ -2775,6 +2781,15 @@ window.toggleHubCuadernoTask = toggleHubCuadernoTask;
 window.deleteHubCuadernoTask = deleteHubCuadernoTask;
 window.saveHubCuadernoScratchpad = saveHubCuadernoScratchpad;
 window.exportHubCuadernoTxt = exportHubCuadernoTxt;
+window.openPredioMode = openPredioMode;
+window.openInvernaderoMode = openInvernaderoMode;
+window.openEstabloMode = openEstabloMode;
+window.openIncursionMode = openIncursionMode;
+window.openCerroMode = openCerroMode;
+window.openMesaMode = openMesaMode;
+window.openCerroMap = openCerroMap;
+window.triggerCinematicTransition = triggerCinematicTransition;
+window.launchModeWithTransition = launchModeWithTransition;
 window.openPredioModeDirect = openPredioModeDirect;
 window.openInvernaderoModeDirect = openInvernaderoModeDirect;
 window.openEstabloModeDirect = openEstabloModeDirect;
@@ -2841,12 +2856,18 @@ window.scrollCuencaDoctrina = function(moduleKey) {
     }
 };
 
-// Escuchar tecla Escape para cerrar modal de doctrina
+// Escuchar tecla Escape para cerrar modales diegéticos
 window.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const modal = document.getElementById('cuencaDoctrinaModal');
         if (modal && !modal.classList.contains('hidden')) {
             window.closeCuencaDoctrinaModal();
+        }
+        if (typeof window.closePredioMasterPanel === 'function') {
+            window.closePredioMasterPanel();
+        }
+        if (typeof window.closeCerroHotspotModal === 'function') {
+            window.closeCerroHotspotModal();
         }
     }
 });
