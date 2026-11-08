@@ -5038,15 +5038,18 @@
         <!-- STICKY SUBDECK NAVIGATION BAR: MOMENTO 2 CUENCA (Visible sólo en sub-vistas operativas o mapa) -->
         <div id="cerroSubdeckNav" class="sticky top-0 z-40 bg-[#070d18]/95 backdrop-blur-md border-b border-sky-500/30 px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2.5 shadow-2xl" style="display: none;">
             <div class="flex items-center gap-1.5 sm:gap-2">
-                <button id="cerroNav-panorama" onclick="setCerroSubView('panorama')" class="cerro-subtab-btn active" title="Volver al Landing Panorámico de Cuenca">
-                    <span>🌄</span> <span>Mirador</span>
+                <button onclick="switchMasterView('landing')" class="cerro-subtab-btn bg-amber-500/15 border border-amber-500/40 text-amber-300 hover:bg-amber-500/25 transition-all flex items-center gap-1.5 font-bold cursor-pointer" title="Volver al Taller Central (Landing AOE)">
+                    <span>🏛️</span> <span>Taller Central</span>
+                </button>
+                <button id="cerroNav-map" onclick="openCerroMap()" class="cerro-subtab-btn active" title="Gemelo GIS Macro-Cuenca (122k ha)">
+                    <span>🗺️</span> <span>Gemelo GIS (122k ha)</span>
+                </button>
+                <button onclick="openCerroHotspotModal('drone')" class="cerro-subtab-btn bg-sky-500/15 border border-sky-500/40 text-sky-300 hover:bg-sky-500/25 transition-all flex items-center gap-1.5 font-bold cursor-pointer" title="Abrir Tablero Biofísico de Cuenca">
+                    <span>🏔️</span> <span>Tablero Cuenca</span>
                 </button>
                 <button id="cerroNav-sim" onclick="setCerroSubView('sim')" class="cerro-subtab-btn" title="Simulador de Cuenca & Crecidas Fluviales">
                     <span>⚡</span> <span>Simulador Crecidas</span>
                     <span class="ml-1 text-[8.5px] px-1.5 py-0.2 rounded bg-sky-500/30 text-sky-200 font-mono font-bold hidden sm:inline">DUAL-CURVE</span>
-                </button>
-                <button id="cerroNav-map" onclick="openCerroMap()" class="cerro-subtab-btn" title="Gemelo GIS Macro-Cuenca (122k ha)">
-                    <span>🗺️</span> <span>Gemelo GIS (122k ha)</span>
                 </button>
                 <button id="cerroNav-decreto" onclick="setCerroSubView('decreto')" class="cerro-subtab-btn" title="Expediente de Reparto & Decretos B2B">
                     <span>📜</span> <span>Expediente B2B</span>
@@ -14164,11 +14167,14 @@ print(meniel_soil)</code></pre>
     <!-- CUENCA SATELLITE VIEWER TOP BAR (Rediseñado: Tipografía nítida, alto contraste, ultra-compacto) -->
     <div id="cerroSatelliteSubdeckNav" class="absolute top-14 left-0 right-0 z-40 bg-[#060a14]/95 backdrop-blur-xl border-b border-sky-400/30 px-3 sm:px-5 py-1.5 flex flex-wrap items-center justify-between gap-2 shadow-2xl transition-all font-sans" style="display: none; height: 42px;">
         <div class="flex items-center gap-1.5 sm:gap-2">
+            <button onclick="switchMasterView('landing')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 hover:text-white border border-amber-400/40 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Volver al Taller Central (Landing AOE)">
+                <span>🏛️</span> <span class="tracking-tight text-white font-bold">Taller Central</span>
+            </button>
             <button onclick="if(window.openPredioMode) openPredioMode(); else switchMasterView('galpon');" id="btnNavPredioTwin" class="px-2.5 py-1 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-100 hover:text-white border border-emerald-400/50 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Ir al Predio Twin (Fundo Meniel 3D)">
                 <span>🏠</span> <span class="tracking-tight text-white font-bold">Predio Twin</span>
             </button>
-            <button onclick="openCerroMode()" class="px-2.5 py-1 rounded-lg bg-sky-500/25 hover:bg-sky-500/40 text-sky-100 hover:text-white border border-sky-400/50 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Mirador Panorámico de Cuenca">
-                <span>🌄</span> <span class="tracking-tight text-white font-bold">Mirador Cuenca</span>
+            <button onclick="openCerroHotspotModal('drone')" class="px-2.5 py-1 rounded-lg bg-sky-500/25 hover:bg-sky-500/40 text-sky-100 hover:text-white border border-sky-400/50 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Abrir Tablero Maestro Biofísico de Cuenca">
+                <span>🏔️</span> <span class="tracking-tight text-white font-bold">Tablero Cuenca</span>
             </button>
             <button onclick="switchMasterView('cerro'); setCerroSubView('sim');" class="px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 text-slate-100 hover:text-white border border-slate-600 hover:border-slate-400 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
                 <span class="text-amber-400">⚡</span> <span class="text-white font-bold">Simulador Crecidas</span>

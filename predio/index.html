@@ -152,16 +152,11 @@
   }
 
   window.openGalponWorkshop = function() {
-    const w = document.getElementById('workshopOverlay');
-    if (w) {
-      w.style.display = 'flex';
-      w.classList.add('active');
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ action: 'returnToLanding' }, '*');
+      return;
     }
-    if (window.agriTwinApp?.workshopOverlay) {
-      window.agriTwinApp.workshopOverlay.showCampaignBoard = true;
-      window.agriTwinApp.workshopOverlay.render?.();
-      window.agriTwinApp.workshopOverlay.open?.();
-    }
+    window.location.href = '../';
   };
   window.closeGalponWorkshop = function() {
     const w = document.getElementById('workshopOverlay');
@@ -339,9 +334,9 @@
     </div>
 
     <!-- Floating House Button to return to Workshop / Galpón -->
-    <button id="floatingHouseBtn" onclick="window.openGalponWorkshop()" class="floating-house-btn" title="Volver al Galpón / Casa (Landing)">
-      <span style="font-size: 16px;">🏡</span>
-      <span>Galpón Central</span>
+    <button id="floatingHouseBtn" onclick="window.openGalponWorkshop()" class="floating-house-btn" title="Volver al Taller Central (Landing AOE)">
+      <span style="font-size: 16px;">🏛️</span>
+      <span>Taller Central</span>
     </button>
 
     <!-- Collapsible 3D Bottom Toolbar with Hammer Icon -->

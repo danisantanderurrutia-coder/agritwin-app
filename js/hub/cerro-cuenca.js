@@ -640,6 +640,12 @@
         
         function setCerroSubView(subviewId) {
             playDiegeticAudio('wood');
+            if (subviewId === 'panorama') {
+                if (typeof openCerroMap === 'function') {
+                    openCerroMap();
+                    return;
+                }
+            }
             const subdeckNav = document.getElementById('cerroSubdeckNav');
             if (subdeckNav) {
                 if (subviewId === 'panorama') {

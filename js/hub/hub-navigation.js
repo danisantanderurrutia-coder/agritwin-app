@@ -1226,6 +1226,10 @@
         // Escucha de mensajes entrantes desde la rama Predio (Three.js WebGL en iframe)
         window.addEventListener('message', (event) => {
             if (!event.data) return;
+            if (event.data.action === 'returnToLanding' || event.data.action === 'closeGalpon') {
+                switchMasterView('landing');
+                return;
+            }
             if (event.data.type === 'PREDIO_IFRAME_READY') {
                 // El Gemelo 3D acaba de inicializar: sincronizar perfil activo, etiquetas y modo Plan Maestro sin carreras
                 window.syncPanelTagsToIframe(window.isPanelTagsVisible());
@@ -2293,9 +2297,7 @@ function openIncursionModeDirect() {
 }
 
 function openCerroModeDirect() {
-    switchMasterView('cerro');
-    if (typeof setCerroSubView === 'function') setCerroSubView('panorama');
-    if (typeof toggleCerroCampaignBoard === 'function') toggleCerroCampaignBoard(true);
+    openCerroMap();
 }
 
 function openMesaModeDirect() {

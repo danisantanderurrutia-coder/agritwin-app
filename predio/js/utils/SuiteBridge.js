@@ -92,25 +92,13 @@ export class SuiteBridge {
       if (m) m.style.display = 'none';
     };
 
-    // Galpón Workshop & Navegación Integrada
+    // Galpón Workshop & Navegación Integrada -> Retorno al Taller Central Hub
     window.openGalponWorkshop = function(branch = null) {
-      if (window.agriTwinApp?.workshopOverlay) {
-        window.agriTwinApp.workshopOverlay.open();
-        if (branch) {
-          window.agriTwinApp.workshopOverlay.selectedEnclosureBranch = branch;
-          window.agriTwinApp.workshopOverlay.openStationModal('station_b');
-        } else {
-          window.agriTwinApp.workshopOverlay.showCampaignBoard = true;
-          window.agriTwinApp.workshopOverlay.closeStationModal();
-          window.agriTwinApp.workshopOverlay.render();
-        }
-      } else {
-        const w = document.getElementById('workshopOverlay');
-        if (w) {
-          w.style.display = 'flex';
-          w.classList.add('active');
-        }
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ action: 'returnToLanding', branch: branch }, '*');
+        return;
       }
+      window.location.href = '../';
     };
 
     window.closeGalponWorkshop = function() {
