@@ -336,6 +336,15 @@
                 if (targetEl) targetEl.classList.add('active-view');
             }
 
+            if (viewId === 'landing') {
+                if (typeof window.closeCerroHotspotModal === 'function') window.closeCerroHotspotModal();
+                if (typeof window.closePredioMasterPanel === 'function') window.closePredioMasterPanel();
+                if (typeof window.closeMesaHotspotModal === 'function') window.closeMesaHotspotModal();
+                if (window.map) {
+                    try { window.map.closePopup(); } catch(e){}
+                }
+            }
+
             // Inicializar vistas específicas si es necesario
             if (viewId === 'telemetry') {
                 initStudioCharts();

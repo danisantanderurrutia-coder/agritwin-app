@@ -2038,6 +2038,101 @@
         // Clean Slate: Fundo Meniel es la única capa territorial activa por defecto
         menielLayer.addTo(map);
 
+        // ═══════════════════════════════════════════════════════════════════
+        // 1.1 MARCADOR DIEGÉTICO '🏡 CASITA PREDIAL' EN FUNDO MENIEL (ANCLA DE DESCENSO 3D)
+        // ═══════════════════════════════════════════════════════════════════
+        const menielCenter = [-36.21156, -71.60530];
+        const menielHomeIcon = L.divIcon({
+            className: 'meniel-home-pin-wrapper',
+            html: `
+                <div class="meniel-home-badge group cursor-pointer" style="position: relative; display: inline-flex; align-items: center; justify-content: center; transform: translate(-50%, -50%); cursor: pointer;">
+                    <div style="position: absolute; width: 48px; height: 48px; border-radius: 9999px; background: rgba(16, 185, 129, 0.45); animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
+                    <div style="position: relative; display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 9999px; background: rgba(6, 10, 20, 0.95); border: 2px solid #34d399; color: #ffffff; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 18px rgba(52, 211, 153, 0.6); font-family: 'Plus Jakarta Sans', sans-serif;">
+                        <span style="font-size: 20px; line-height: 1; filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));">🏡</span>
+                        <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.15;">
+                            <span style="font-size: 11.5px; font-weight: 800; color: #6ee7b7; letter-spacing: -0.01em;">Fundo Meniel</span>
+                            <span style="font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #cbd5e1; font-weight: 600;">PREDIO DE ESTUDIO • 24.8 HA</span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            iconSize: [160, 48],
+            iconAnchor: [80, 24]
+        });
+
+        const menielHomeMarker = L.marker(menielCenter, {
+            icon: menielHomeIcon,
+            zIndexOffset: 1500,
+            title: 'Fundo Meniel (Predio de Estudio) • Clic para descender al Gemelo 3D'
+        });
+
+        const menielPromptPopupHtml = `
+            <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 270px; max-width: 300px; padding: 4px; color: #f8fafc;">
+                <div style="display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(52, 211, 153, 0.4); padding-bottom: 7px; margin-bottom: 8px;">
+                    <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16, 185, 129, 0.25); border: 1.5px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        🏡
+                    </div>
+                    <div>
+                        <div style="font-weight: 800; font-size: 13.5px; color: #ffffff; letter-spacing: -0.01em;">Fundo Meniel</div>
+                        <div style="font-size: 9px; font-family: 'JetBrains Mono', monospace; color: #34d399; font-weight: 700;">PREDIO DE ESTUDIO • KEYLINE ACTIVO</div>
+                    </div>
+                </div>
+                <p style="font-size: 11.5px; color: #cbd5e1; margin-bottom: 12px; line-height: 1.45;">
+                    ¿Deseas conmutar la escala territorial y <b>descender al Gemelo Digital 3D del Predio</b>?
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <button onclick="descendToPredioTwin()" style="width: 100%; padding: 9px 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: 1px solid #34d399; border-radius: 9px; font-weight: 800; font-size: 11.5px; cursor: pointer; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;">
+                        <span>🚀</span> <span>Sí, descender al Predio 3D</span>
+                    </button>
+                    <button onclick="if(window.map) window.map.closePopup();" style="width: 100%; padding: 6px 10px; background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; font-size: 10px; cursor: pointer;">
+                        Permanecer en Visor Satelital
+                    </button>
+                </div>
+            </div>
+        `;
+
+        menielHomeMarker.bindPopup(menielPromptPopupHtml, {
+            maxWidth: 320,
+            className: 'meniel-descent-leaflet-popup'
+        });
+
+        menielHomeMarker.addTo(map);
+        overlayLayers['meniel_home_marker'] = menielHomeMarker;
+        window.menielHomeMarker = menielHomeMarker;
+
+        window.descendToPredioTwin = function() {
+            if (window.map) {
+                try { window.map.closePopup(); } catch(e){}
+                window.map.flyTo(menielCenter, 17, {
+                    duration: 1.3,
+                    easeLinearity: 0.25
+                });
+            }
+            setTimeout(() => {
+                if (typeof window.launchModeWithTransition === 'function') {
+                    window.launchModeWithTransition('galpon');
+                } else if (typeof window.openPredioMode === 'function') {
+                    window.openPredioMode();
+                } else {
+                    window.switchMasterView('galpon');
+                }
+            }, 750);
+        };
+
+        // Auto-sugerencia al hacer zoom profundo sobre Fundo Meniel
+        let hasAutoPromptedZoom = false;
+        map.on('zoomend', function() {
+            if (map.getZoom() >= 16 && !hasAutoPromptedZoom && window.currentMasterView === 'territory') {
+                const center = map.getCenter();
+                if (center.distanceTo(menielCenter) < 1400) {
+                    hasAutoPromptedZoom = true;
+                    menielHomeMarker.openPopup();
+                }
+            } else if (map.getZoom() < 14) {
+                hasAutoPromptedZoom = false;
+            }
+        });
+
         // 2. Capa Red Vecinal (9 Predios Colindantes - DESACTIVADA POR DEFECTO)
         const vecinosLayerGroup = L.geoJSON({ type: "FeatureCollection", features: vecinosFeatures }, {
             style: function(feature) {

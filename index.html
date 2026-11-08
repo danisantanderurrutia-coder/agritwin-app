@@ -417,6 +417,25 @@
             color: inherit;
         }
 
+        /* Estilos Tácticos Popup Descenso Predial Fundo Meniel */
+        .meniel-descent-leaflet-popup .leaflet-popup-content-wrapper {
+            background: rgba(8, 14, 26, 0.96) !important;
+            border: 1px solid rgba(52, 211, 153, 0.5) !important;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(16, 185, 129, 0.3) !important;
+            border-radius: 14px !important;
+            backdrop-filter: blur(12px) !important;
+        }
+        .meniel-descent-leaflet-popup .leaflet-popup-tip {
+            background: rgba(8, 14, 26, 0.96) !important;
+            border: 1px solid rgba(52, 211, 153, 0.5) !important;
+        }
+        .meniel-descent-leaflet-popup .leaflet-popup-close-button {
+            color: #94a3b8 !important;
+        }
+        .meniel-descent-leaflet-popup .leaflet-popup-close-button:hover {
+            color: #ffffff !important;
+        }
+
         #map {
             position: absolute;
             top: 3.5rem; /* Header height */
@@ -1549,7 +1568,7 @@
       
       <!-- Izquierda: Brand con Logo Oficial Original de AgriTwin 1 (Retorno al Hub) -->
       <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2.5 cursor-pointer group" onclick="switchMasterView('landing')" title="Haga clic para volver al Hub Principal">
+        <div class="flex items-center gap-2.5 cursor-pointer group" onclick="switchMasterView('landing')" title="Haga clic para volver al Hub Principal (Landing AOE)">
           <div class="w-9 h-9 rounded-xl border border-stone-800 bg-[#090d16] p-0.5 flex items-center justify-center group-hover:scale-105 group-hover:border-emerald-500/60 shadow-sm transition-all duration-300 overflow-hidden">
             <img src="assets/logo_official.png" alt="AgriTwin Logo" class="w-full h-full object-contain">
           </div>
@@ -1558,7 +1577,7 @@
               <span class="font-extrabold text-sm text-stone-900 tracking-tight font-serif group-hover:text-emerald-800 transition-colors">AGRITWIN</span>
               <span class="font-bold text-[10px] text-emerald-800 px-1.5 py-0.5 rounded bg-emerald-100/80 border border-emerald-300 font-mono">SUITE</span>
             </div>
-            <div onclick="event.stopPropagation(); openCerroMap();" class="text-[9px] text-stone-500 hover:text-sky-700 font-mono mt-0.5 hidden sm:block cursor-pointer" title="Abrir Gemelo Digital de Cuenca">CUENCA MAULE SUR • 122K HA ↗</div>
+            <div class="text-[9px] text-stone-500 group-hover:text-emerald-800 font-mono mt-0.5 hidden sm:block">CUENCA MAULE SUR • 122K HA</div>
           </div>
         </div>
       </div>
@@ -14293,23 +14312,10 @@ print(meniel_soil)</code></pre>
 
     <!-- CUENCA SATELLITE VIEWER TOP BAR (Rediseñado: Tipografía nítida, alto contraste, ultra-compacto) -->
     <div id="cerroSatelliteSubdeckNav" class="absolute top-14 left-0 right-0 z-40 bg-[#060a14]/95 backdrop-blur-xl border-b border-sky-400/30 px-3 sm:px-5 py-1.5 flex flex-wrap items-center justify-between gap-2 shadow-2xl transition-all font-sans" style="display: none; height: 42px;">
-        <div class="flex items-center gap-1.5 sm:gap-2">
-            <button onclick="switchMasterView('landing')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 hover:text-white border border-amber-400/40 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Volver al Taller Central (Landing AOE)">
-                <span>🏛️</span> <span class="tracking-tight text-white font-bold">Taller Central</span>
-            </button>
-            <button onclick="if(window.openPredioMode) openPredioMode(); else switchMasterView('galpon');" id="btnNavPredioTwin" class="px-2.5 py-1 rounded-lg bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-100 hover:text-white border border-emerald-400/50 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Ir al Predio Twin (Fundo Meniel 3D)">
-                <span>🏠</span> <span class="tracking-tight text-white font-bold">Predio Twin</span>
-            </button>
-            <button onclick="openCerroHotspotModal('drone')" class="px-2.5 py-1 rounded-lg bg-sky-500/25 hover:bg-sky-500/40 text-sky-100 hover:text-white border border-sky-400/50 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95" title="Abrir Tablero Maestro Biofísico de Cuenca">
-                <span>🏔️</span> <span class="tracking-tight text-white font-bold">Tablero Cuenca</span>
-            </button>
-            <button onclick="openCerroHotspotModal('sim');" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 hover:text-white border border-amber-400/50 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
-                <span class="text-amber-400">⚡</span> <span class="text-white font-bold">Simulador Crecidas</span>
-                <span class="ml-1 text-[8.5px] px-1.5 py-0.2 rounded bg-amber-500/40 text-amber-100 font-mono font-bold tracking-wider">DUAL-CURVE</span>
-            </button>
-            <button onclick="switchMasterView('expediente'); switchExpedienteTab('exp-b2b');" class="px-2.5 py-1 rounded-lg bg-slate-900/95 hover:bg-slate-800 text-slate-100 hover:text-white border border-slate-600 hover:border-slate-400 text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
-                <span>📜</span> <span class="text-white font-bold">Expediente B2B</span>
-            </button>
+        <div class="flex items-center gap-2">
+            <span class="text-xs">🏔️</span>
+            <span class="text-xs font-bold text-sky-200 tracking-tight">CUENCA MAULE SUR • 122.070 HA</span>
+            <span class="hidden md:inline-block text-[9.5px] font-mono px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-500/30 font-semibold">SATÉLITE ACTIVO</span>
         </div>
         <div class="flex items-center gap-2 text-[11px] font-mono">
             <div class="hidden xl:flex items-center gap-3 bg-black/85 px-3 py-1 rounded-lg border border-white/20 shadow-inner">
