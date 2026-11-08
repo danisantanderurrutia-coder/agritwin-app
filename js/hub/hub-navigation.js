@@ -206,7 +206,7 @@
 
         window.switchMasterView = switchMasterView;
         function switchMasterView(viewId, mode) {
-            if (typeof window.dismissAlchemicalSplash === 'function') {
+            if (!window.__bootPhase && typeof window.dismissAlchemicalSplash === 'function') {
                 window.dismissAlchemicalSplash();
             }
             // 'cuenca' y 'cerro' son alias del Visor Satelital (el mirador estático #view-cerro quedó obsoleto)

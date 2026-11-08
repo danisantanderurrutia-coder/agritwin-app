@@ -509,7 +509,10 @@
     const targetMode = urlParams.get('mode') || urlParams.get('view') || null;
 
     if (!rawHash && !targetMode) {
-      // Arranque en frío: el Árbol Alquímico es la consola de carga/selección de predio
+      // Arranque en frío: el Árbol Alquímico es la consola de carga/selección de predio.
+      // Durante el arranque, las navegaciones internas automáticas no deben cerrarlo.
+      window.__bootPhase = true;
+      setTimeout(function() { window.__bootPhase = false; }, 1500);
       openSplash();
     } else if (rawHash) {
       dismissSplash();
