@@ -661,7 +661,18 @@
       </div>
 
       <!-- Barra permanente de submenús y capas prediales (No desaparecen al seleccionar capas o entidades) -->
-      <div id="drawerNav" class="drawer-nav"></div>
+      <div id="drawerNav" class="drawer-nav">
+        <div class="panel-tab-bar" style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 0;">
+          <button id="tab_btn_meta" class="tab-btn active" title="Metabolismo y Balance Predial">🏡 Predio</button>
+          <button id="tab_btn_livestock" class="tab-btn" title="Ganadería PRV & Rotación 8 Potreros">🐄 Ganadería</button>
+          <button id="tab_btn_perma" class="tab-btn" title="Zonificación 0 a 5 & Keyline Yeomans">🌱 Permacultura</button>
+          <button id="tab_btn_sens" class="tab-btn" title="Red de 15 Sondas FDR IoT">📡 Sensores</button>
+          <button id="tab_btn_cams" class="tab-btn" title="Cámaras Terrestres PTZ & Drones Autónomos">📹 Cámaras</button>
+          <button id="tab_btn_weather" class="tab-btn" title="Estación Agroclimática & Pronóstico">🌦️ Clima</button>
+          <button id="tab_btn_astro" class="tab-btn" title="Tracker Solar 3D & Mareas">🧭 Sol</button>
+          <button id="tab_btn_feat" class="tab-btn" title="Features Prediales & WUI">⚡ Features</button>
+        </div>
+      </div>
 
       <div id="drawerBody" class="drawer-content">
         <div style="text-align: center; color: var(--text-muted); margin-top: 40px;">
@@ -1719,6 +1730,6 @@ SUITE AGRITWIN 1 (NIVEL PREDIAL) • MAULE SUR, CHILE
   <div id="modalsContainer"></div>
 
   <!-- Entry Script (ES6 Module) con Cache Buster -->
-  <script type="module" src="js/app.js?v=4.3.0"></script>
+  <script type="module" src="js/app.js?v=4.3.2"></script>
 </body>
 </html>

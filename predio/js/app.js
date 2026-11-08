@@ -11,7 +11,7 @@
  *  7. Starts IoT Telemetry Simulation & Wildfire Risk Analytics
  */
 
-import { MapManager } from './map/MapManager.js?v=4.3.0';
+import { MapManager } from './map/MapManager.js?v=4.3.2';
 import { DataSource } from './data/DataSource.js?v=3.9.6';
 import { ParcelManager } from './entities/ParcelManager.js?v=3.9.6';
 import { SensorManager } from './entities/SensorManager.js?v=3.9.6';
@@ -20,7 +20,7 @@ import { LivestockManager } from './entities/LivestockManager.js?v=3.9.6';
 import { PermacultureManager } from './entities/PermacultureManager.js?v=3.9.6';
 import { TerritorialCatanManager } from './entities/TerritorialCatanManager.js?v=3.9.6';
 import { SimulationEngine } from './sim/SimulationEngine.js?v=3.9.6';
-import { UIController } from './ui/UIController.js?v=4.3.0';
+import { UIController } from './ui/UIController.js?v=4.3.2';
 import { SpatialWidgets } from './map/SpatialWidgets.js?v=3.9.6';
 import { DrawingManager } from './map/DrawingManager.js?v=3.9.6';
 import { ProjectManager } from './data/ProjectManager.js?v=3.9.6';
@@ -29,8 +29,8 @@ import { WildfireRiskModel } from './sim/WildfireRiskModel.js?v=3.9.6';
 import { EngineInspectorModal } from './ui/EngineInspectorModal.js?v=3.9.6';
 import { AgroWorkshopOverlay } from './ui/AgroWorkshopOverlay.js?v=3.9.6';
 import { OperatorNotesManager } from './ui/OperatorNotesManager.js?v=3.2.0';
-import { VisionManager } from './entities/VisionManager.js?v=4.3.0';
-import { DroneMissionManager } from './entities/DroneMissionManager.js?v=4.3.0';
+import { VisionManager } from './entities/VisionManager.js?v=4.3.2';
+import { DroneMissionManager } from './entities/DroneMissionManager.js?v=4.3.2';
 import { ObjectPlacementManager } from './map/ObjectPlacementManager.js?v=1.0.0';
 import { SuiteBridge } from './utils/SuiteBridge.js';
 import { bus } from './utils/EventBus.js';
