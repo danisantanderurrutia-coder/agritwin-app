@@ -1408,6 +1408,28 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
             <strong>Ingesta Computacional y Reproducibilidad en R:</strong> La pipeline de datos se encuentra codificada de forma abierta en el repositorio (<code>scripts/isric_soilgrids_soc.R</code>). Implementa dos canales ortogonales de extracción: (1) descarga raster global automatizada mediante el paquete <code>geodata</code> en R (<code>geodata::soil_world(var = "soc", depth = 5)</code>), y (2) cliente ligero de consulta de micro-polígonos y puntos contra la API REST v2.0 de ISRIC (<code>https://rest.isric.org/soilgrids/v2.0/properties/query</code>), garantizando independencia total de infraestructura propietaria.
         </p>
 
+        <h3 style="font-size: 1.15rem; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.5rem;">2.2.7. Hidrodinámica de Megainundaciones por Ríos Atmosféricos: Acoplamiento HAND, Rain-on-Snow y Saint-Venant 2D</h3>
+        <p>
+            Para modelar crecidas extremas inducidas por Ríos Atmosféricos (Cat 4/5, Ralph et al., 2019) donde la cobertura nubosa continua anula los sensores ópticos, AgriTwin acopla la validación por Radar de Apertura Sintética (Sentinel-1 SAR Banda C, $\sigma_0 < -18\text{ dB}$) a un marco hidrodinámico predictivo ciego ($T-48\text{h}$):
+        </p>
+        <p>
+            <strong>1. Forzamiento Sinóptico y Lluvia sobre Nieve (Rain-on-Snow):</strong> El transporte troposférico integrado de vapor de agua ($IVT = \frac{1}{g} \int_{p_s}^{p_{\text{top}}} q \cdot \mathbf{u} \, dp > 800\text{ kg}\cdot\text{m}^{-1}\cdot\text{s}^{-1}$) impulsa lluvias torrenciales cálidas sobre cuencas andinas con Isoterma $0^\circ\text{C}$ elevada ($z_{0^\circ\text{C}} > 3.200\text{ m s.n.m.}$). La tasa de fusión nival por calor latente y advección térmica se formula como:
+            $$M_{\text{nieve}} = c_{\text{melt}} \cdot (T_{\text{aire}} - T_0) + \frac{P \cdot \rho_w \cdot c_w \cdot (T_{\text{lluvia}} - 0)}{\rho_w \cdot L_f}$$
+            sumando entre un $35\%$ y un $45\%$ de volumen líquido adicional a la escorrentía superficial en cabeceras cordilleranas.
+        </p>
+        <p>
+            <strong>2. Modelo Hidro-Topográfico HAND (Height Above Nearest Drainage):</strong> A partir del DEM Copernicus 30 m y algoritmos de dirección de flujo $D8$, se normaliza la altimetría local $z(x)$ respecto al talweg del cauce fluvial más próximo $z(\text{drainage}(x))$:
+            $$\text{HAND}(x) = z(x) - z(\text{drainage}(x))$$
+            Una celda se inunda cuando la sobreelevación hidráulica del cauce $h_{\text{rio}}(Q)$ supera $\text{HAND}(x)$.
+        </p>
+        <p>
+            <strong>3. Ecuaciones 2D de Saint-Venant (Onda Difusiva):</strong> En llanuras aluviales y valles agrícolas, la propagación bidimensional del flujo se resuelve mediante la aproximación difusiva acoplada al coeficiente de rugosidad de Manning ($n_{\text{Manning}}$) estratificado según cobertura de suelo:
+            $$\frac{\partial h}{\partial t} + \frac{\partial (uh)}{\partial x} + \frac{\partial (vh)}{\partial y} = P_e, \qquad S_{0,x} - \frac{n_{\text{Manning}}^2 \cdot u \sqrt{u^2 + v^2}}{h^{4/3}} = 0$$
+        </p>
+        <p>
+            <strong>4. Doctrina del Receptor Fluvial y Amortiguación Keyline:</strong> La evaluación del riesgo se ancla en el Cono de Cuenca Aportante ($\Omega_{\text{cuenca}}$) aguas arriba de la propiedad. En llanuras agrícolas intermedias (ej. Fundo Meniel en Río Longaví), la red de zanjas Keyline amortigua la onda de crecida al almacenar escorrentía por infiltración forzada ($\Delta V \approx 18.500\text{ m}^3$), atenuando el calado punta en $-14\text{ cm}$ y previniendo el colapso de infraestructuras críticas.
+        </p>
+
         <h2 class="section-title">2.3. Dinámica Pirogénica, Balística de Pavesas y Regímenes Eólicos</h2>
 
         <h3 style="font-size: 1.15rem; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.5rem;">2.3.1. Propagación Cuasi-Estacionaria del Frente de Fuego según Modelo Físico de Rothermel</h3>

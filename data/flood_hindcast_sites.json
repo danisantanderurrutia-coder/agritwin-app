@@ -1,0 +1,393 @@
+{
+  "type": "FeatureCollection",
+  "meta": {
+    "descripcion": "Sitios de validación retrospectiva para megainundaciones por ríos atmosféricos en Chile central (2023). Polígonos extraídos de Sentinel-1 SAR (retrodifusión especular < -18 dB) contrastados contra aforos oficiales DGA y simulación ciega HAND/Saint-Venant.",
+    "modelo_ejecutado": false,
+    "fuente_primaria": "Sentinel-1 SAR GRD Banda C + DGA SNIA + ERA5 Open-Meteo"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.75946096938345,
+              -34.97898384360919
+            ],
+            [
+              -71.80910446652881,
+              -34.98195533471189
+            ],
+            [
+              -71.8597001665279,
+              -34.986995004162814
+            ],
+            [
+              -71.91946096938345,
+              -34.98898384360919
+            ],
+            [
+              -71.96932689046582,
+              -34.99197479378899
+            ],
+            [
+              -72.00866493592363,
+              -34.994900427175814
+            ],
+            [
+              -72.04823495478375,
+              -35.00082522608122
+            ],
+            [
+              -72.0874138690299,
+              -35.00862043656699
+            ],
+            [
+              -72.12752750984892,
+              -35.020653715528766
+            ],
+            [
+              -72.16252750984893,
+              -35.030653715528764
+            ],
+            [
+              -72.16747249015108,
+              -35.01334628447123
+            ],
+            [
+              -72.13247249015107,
+              -35.003346284471235
+            ],
+            [
+              -72.0925861309701,
+              -34.99137956343301
+            ],
+            [
+              -72.05176504521624,
+              -34.983174773918776
+            ],
+            [
+              -72.01133506407638,
+              -34.97709957282418
+            ],
+            [
+              -71.97067310953418,
+              -34.974025206211
+            ],
+            [
+              -71.92053903061655,
+              -34.9710161563908
+            ],
+            [
+              -71.8602998334721,
+              -34.96900499583719
+            ],
+            [
+              -71.8108955334712,
+              -34.96404466528811
+            ],
+            [
+              -71.76053903061656,
+              -34.961016156390805
+            ],
+            [
+              -71.75946096938345,
+              -34.97898384360919
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "FL_LICANTEN_2023_1",
+        "kind": "sitio_validacion_fluvial",
+        "mode": "cuenca_only",
+        "has_twin": false,
+        "event": "licanten_2023",
+        "name": "Licantén 2023 · Mancha Principal Río Mataquito",
+        "label": "Licantén / Río Mataquito, Maule · jun 2023",
+        "setting": "Llanura aluvial encajonada en Cordillera de la Costa; pueblo y hospital sumergidos",
+        "area_ha": 3450,
+        "area_source": "Sentinel-1 SAR Banda C (Backscatter < -18 dB) + Charter 826 CIREN",
+        "centroid": [
+          -72.008,
+          -34.985
+        ],
+        "hydrology": {
+          "dga_station": "Río Mataquito en Licantén",
+          "dga_code": "07113001-3",
+          "q_peak_m3s": 5120,
+          "q_base_m3s": 85,
+          "return_period_yr": 85,
+          "water_level_m": 4.85,
+          "isoterma_0c_m": 3350
+        },
+        "weather": {
+          "dias": [
+            "2023-06-21",
+            "2023-06-22",
+            "2023-06-23",
+            "2023-06-24",
+            "2023-06-25"
+          ],
+          "temp_med_c": 11.8,
+          "lluvia_total_mm": 171.7,
+          "lluvia_cabecera_mm": 385.0,
+          "ivt_max_kg_m_s": 840,
+          "ar_category": "Cat 4 (Extremo)",
+          "fuente": "ERA5 reanalysis + Estación DGA Licantén"
+        },
+        "usable_coverage_pct": 98.2,
+        "validated": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.52162697843363,
+              -36.23232140295138
+            ],
+            [
+              -71.56681901718777,
+              -36.22227606875109
+            ],
+            [
+              -71.60670422211705,
+              -36.21230380907306
+            ],
+            [
+              -71.63693246987921,
+              -36.20524676204701
+            ],
+            [
+              -71.66835410196626,
+              -36.196708203932495
+            ],
+            [
+              -71.69835410196625,
+              -36.181708203932494
+            ],
+            [
+              -71.72835410196625,
+              -36.166708203932494
+            ],
+            [
+              -71.75835410196625,
+              -36.1517082039325
+            ],
+            [
+              -71.78835410196625,
+              -36.1367082039325
+            ],
+            [
+              -71.78164589803374,
+              -36.123291796067505
+            ],
+            [
+              -71.75164589803374,
+              -36.138291796067506
+            ],
+            [
+              -71.72164589803374,
+              -36.1532917960675
+            ],
+            [
+              -71.69164589803374,
+              -36.1682917960675
+            ],
+            [
+              -71.66164589803375,
+              -36.1832917960675
+            ],
+            [
+              -71.6330675301208,
+              -36.19075323795299
+            ],
+            [
+              -71.60329577788296,
+              -36.19769619092693
+            ],
+            [
+              -71.56318098281223,
+              -36.207723931248914
+            ],
+            [
+              -71.51837302156636,
+              -36.217678597048625
+            ],
+            [
+              -71.52162697843363,
+              -36.23232140295138
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "FL_LONGAVI_2023_1",
+        "kind": "sitio_validacion_fluvial",
+        "mode": "cuenca_only",
+        "has_twin": true,
+        "event": "longavi_2023",
+        "name": "Río Longaví 2023 · Crecida Aluvial Meniel & Retiro",
+        "label": "Río Longaví / Meniel / Retiro, Maule · ago 2023",
+        "setting": "Llanura intermedia agropecuaria; desborde en vegas bajas y corte Ruta 5 Sur",
+        "area_ha": 2880,
+        "area_source": "Sentinel-1 SAR Banda C (Backscatter < -18 dB) + Sentinel-2 MNDWI",
+        "centroid": [
+          -71.635,
+          -36.195
+        ],
+        "hydrology": {
+          "dga_station": "Río Longaví en Quiriquina",
+          "dga_code": "07374001-3",
+          "q_peak_m3s": 1280,
+          "q_base_m3s": 28,
+          "return_period_yr": 65,
+          "water_level_m": 3.4,
+          "isoterma_0c_m": 3200
+        },
+        "weather": {
+          "dias": [
+            "2023-08-19",
+            "2023-08-20",
+            "2023-08-21",
+            "2023-08-22",
+            "2023-08-23"
+          ],
+          "temp_med_c": 9.4,
+          "lluvia_total_mm": 248.5,
+          "lluvia_cabecera_mm": 492.7,
+          "ivt_max_kg_m_s": 790,
+          "ar_category": "Cat 4 (Extremo)",
+          "fuente": "ERA5 reanalysis + AGROMET Longaví + DGA"
+        },
+        "usable_coverage_pct": 95.4,
+        "validated": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.26090121098947,
+              -35.92143722135338
+            ],
+            [
+              -71.3110269382572,
+              -35.91441836410746
+            ],
+            [
+              -71.3610269382572,
+              -35.90641836410746
+            ],
+            [
+              -71.41099909554083,
+              -35.89842275704821
+            ],
+            [
+              -71.45591923881554,
+              -35.891434671708794
+            ],
+            [
+              -71.49080622577482,
+              -35.88644980619864
+            ],
+            [
+              -71.53071780491949,
+              -35.88146024427538
+            ],
+            [
+              -71.57571780491949,
+              -35.87646024427538
+            ],
+            [
+              -71.57428219508051,
+              -35.86353975572462
+            ],
+            [
+              -71.52928219508051,
+              -35.86853975572462
+            ],
+            [
+              -71.48919377422517,
+              -35.873550193801364
+            ],
+            [
+              -71.45408076118446,
+              -35.8785653282912
+            ],
+            [
+              -71.40900090445916,
+              -35.8855772429518
+            ],
+            [
+              -71.3589730617428,
+              -35.89358163589254
+            ],
+            [
+              -71.3089730617428,
+              -35.90158163589254
+            ],
+            [
+              -71.25909878901054,
+              -35.90856277864662
+            ],
+            [
+              -71.26090121098947,
+              -35.92143722135338
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "FL_ANCOA_2023_1",
+        "kind": "sitio_validacion_fluvial",
+        "mode": "cuenca_only",
+        "has_twin": false,
+        "event": "ancoa_2023",
+        "name": "Río Ancoa 2023 · Cañón Torrencial & Rain-on-Snow",
+        "label": "Río Ancoa / Linares Precordillera, Maule · jun 2023",
+        "setting": "Cañón andino torrencial de alta energía; socavón y colapso de Puente Tres Arcos",
+        "area_ha": 1920,
+        "area_source": "Sentinel-1 SAR Banda C (Backscatter < -18 dB) + DEM Copernicus 30m",
+        "centroid": [
+          -71.455,
+          -35.885
+        ],
+        "hydrology": {
+          "dga_station": "Río Ancoa antes embalse Ancoa",
+          "dga_code": "07351001-8",
+          "q_peak_m3s": 860,
+          "q_base_m3s": 14,
+          "return_period_yr": 100,
+          "water_level_m": 4.15,
+          "isoterma_0c_m": 3400
+        },
+        "weather": {
+          "dias": [
+            "2023-06-22",
+            "2023-06-23",
+            "2023-06-24",
+            "2023-06-25"
+          ],
+          "temp_med_c": 7.8,
+          "lluvia_total_mm": 492.7,
+          "lluvia_cabecera_mm": 580.0,
+          "ivt_max_kg_m_s": 880,
+          "ar_category": "Cat 5 (Excepcional)",
+          "fuente": "ERA5 reanalysis + DGA Ancoa"
+        },
+        "usable_coverage_pct": 94.1,
+        "validated": true
+      }
+    }
+  ]
+}

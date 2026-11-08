@@ -186,19 +186,17 @@ donde $\kappa_v \in [0.15, 0.25]$ pondera la interceptación del dosel y la infi
 #### 2.2.5. Redistribución Topográfica Subsuperficial e Índice Topográfico de Humedad TWI
 Para modelar la convergencia gravitacional del agua subsuperficial a partir del relieve, se integra la formulación de Beven y Kirkby (1979):
 
+$$TWI = \ln \left( \frac{\alpha}{\tan \beta} \right) \quad (4)$$
 
 * **Exégesis de Variables:** $\alpha$ es el área de contribución específica drenada aguas arriba por unidad de ancho de contorno [$\text{m}^2\cdot\text{m}^{-1}$], calculada mediante algoritmos $MD\infty$; y $\beta$ es la pendiente local de la ladera [$\text{rad}$].
 * **Aplicación Regenerativa en Keyline:** Los valores altos ($TWI > 9$) identifican quebradas con riesgo de erosión y anegamiento. AgriTwin utiliza este mapa para trazar los surcos Keyline (Yeomans, 1958), invirtiendo el gradiente para conducir el agua desde las vaguadas hacia los lomos secos ($TWI < 4$).
 
 #### 2.2.6. Línea de Base Edafológica Macro-Territorial ISRIC SoilGrids 2.0 a 250 m y Estimación de Stocks de Carbono Orgánico SOCS
-Para parametrizar las propiedades hidrofísicas y biogeoquímicas de la zona vadosa a escala de cuenca sin incurrir en la prohibitiva densidad de calicatas presenciales, AgriTwin acopla la base global de datos edafológicos grillados **ISRIC SoilGrids 2.0** (Poggio et al., 2021) a 250 metros de resolución espacial:
-
-$$\text{SOCS}_{0\text{-}5\,\text{cm}} = \text{SOC} \times \text{BDOD} \times \left(1 - \frac{\text{CRF}}{100}\right) \times \Delta z \times 0.1 \quad \left[\frac{\text{t C}}{\text{ha}}\right]$$ \quad (5)
-
 Para parametrizar las propiedades hidrofísicas y biogeoquímicas de la zona vadosa a escala de cuenca sin incurrir en la prohibitiva densidad de calicatas presenciales, AgriTwin acopla la base global de datos edafológicos grillados **ISRIC SoilGrids 2.0** (Poggio et al., 2021) a 250 metros de resolución espacial. Este sistema modela la distribución tridimensional de propiedades edáficas mediante bosques aleatorios cuantílicos (*Quantile Regression Forests*) calibrados sobre más de 240,000 perfiles estandarizados del repositorio global WoSIS acoplados a covariables bioclimáticas y geomorfológicas derivadas de MODIS y DEM.
 
 A partir de los horizontes superficiales ($0\text{--}5\,\text{cm}$), se extraen simultáneamente la concentración de carbono orgánico ($\text{SOC}$, $\text{dg}\cdot\text{kg}^{-1}$), la densidad aparente del suelo seco en terrón/tierra fina ($\text{BDOD}$, $\text{cg}\cdot\text{cm}^{-3}$) y la fracción volumétrica de fragmentos gruesos ($\text{CRF}$, $\text{cm}^3 / 100\,\text{cm}^3$ o $\%$). El stock areal de carbono orgánico del suelo ($\text{SOCS}$) se cuantifica siguiendo la formulación de pedotransferencia estandarizada por IPCC y Batjes (1996):
 
+$$\text{SOCS}_{0\text{-}5\,\text{cm}} = \text{SOC} \times \text{BDOD} \times \left(1 - \frac{\text{CRF}}{100}\right) \times \Delta z \times 0.1 \quad \left[\frac{\text{t C}}{\text{ha}}\right] \quad (5)$$
 
 * **Exégesis de Variables:** $\text{SOC}$ es el carbono orgánico en la fracción de tierra fina ($< 2\,\text{mm}$) [$\text{g}\cdot\text{kg}^{-1}$]; $\text{BDOD}$ es la densidad aparente seca de la fracción fina [$\text{g}\cdot\text{cm}^{-3}$]; $\text{CRF}$ es la fracción volumétrica de fragmentos gruesos ($> 2\,\text{mm}$) [$\%$]; $\Delta z = 5\,\text{cm}$ es el espesor del estrato analizado; y $0.1$ es el factor de conversión estequiométrica dimensional ($\text{g}\cdot\text{cm}^{-2} \to \text{t C}\cdot\text{ha}^{-1}$).
 
@@ -210,9 +208,21 @@ $$\text{Stock CO}_2\text{e} = \text{SOCS} \times \frac{M_{\text{CO}_2}}{M_{\text
 * **Downscaling Multiescala ($250\,\text{m} \to 10\,\text{m}$):** La macro-grilla regional de 250 m se refina a nivel intra-cuartel ($10\,\text{m}$) mediante el Índice de Suelo Desnudo ($BSI$) y reflectancias de infrarrojo de onda corta ($B_{11}, B_{12}$) de Sentinel-2 L2A (Castaldi et al., 2018) durante ventanas inter-cultivo, asimilando además lecturas in-situ de sondas KioT FDR instaladas en los nodos centinela.
 * **Reproducibilidad Computacional en R:** La pipeline se encuentra codificada de forma abierta en `scripts/isric_soilgrids_soc.R`, soportando tanto la descarga raster masiva mediante el paquete R `geodata::soil_world(var = "soc", depth = 5)` como consultas puntuales y micro-polígonos vía la API REST v2.0 de ISRIC.
 
----
+#### 2.2.7. Hidrodinámica de Megainundaciones por Ríos Atmosféricos: Acoplamiento HAND, Rain-on-Snow y Saint-Venant 2D
+Para modelar crecidas extremas inducidas por Ríos Atmosféricos (Cat 4/5, Ralph et al., 2019) donde la cobertura nubosa continua anula los sensores ópticos, AgriTwin acopla la validación por Radar de Apertura Sintética (Sentinel-1 SAR Banda C, $\sigma_0 < -18\text{ dB}$) a un marco hidrodinámico predictivo ciego ($T-48\text{h}$):
 
-### 2.3. Dinámica Pirogénica, Balística de Pavesas Rothermel y Albini con Regímenes de Viento
+1. **Forzamiento Sinóptico y Lluvia sobre Nieve (*Rain-on-Snow*):** El transporte troposférico integrado de vapor de agua ($IVT = \frac{1}{g} \int_{p_s}^{p_{\text{top}}} q \cdot \mathbf{u} \, dp > 800\text{ kg}\cdot\text{m}^{-1}\cdot\text{s}^{-1}$) impulsa lluvias torrenciales cálidas sobre cuencas andinas con Isoterma $0^\circ\text{C}$ elevada ($z_{0^\circ\text{C}} > 3.200\text{ m s.n.m.}$). La tasa de fusión nival por calor latente y advección térmica se formula como:
+$$M_{\text{nieve}} = c_{\text{melt}} \cdot (T_{\text{aire}} - T_0) + \frac{P \cdot \rho_w \cdot c_w \cdot (T_{\text{lluvia}} - 0)}{\rho_w \cdot L_f}$$
+sumando entre un $35\%$ y un $45\%$ de volumen líquido adicional a la escorrentía superficial en cabeceras cordilleranas.
+
+2. **Modelo Hidro-Topográfico HAND (*Height Above Nearest Drainage*):** A partir del DEM Copernicus 30 m y algoritmos de dirección de flujo $D8$, se normaliza la altimetría local $z(x)$ respecto al talweg del cauce fluvial más próximo $z(\text{drainage}(x))$:
+$$\text{HAND}(x) = z(x) - z(\text{drainage}(x))$$
+Una celda se inunda cuando la sobreelevación hidráulica del cauce $h_{\text{rio}}(Q)$ supera $\text{HAND}(x)$.
+
+3. **Ecuaciones 2D de Saint-Venant (Onda Difusiva):** En llanuras aluviales y valles agrícolas, la propagación bidimensional del flujo se resuelve mediante la aproximación difusiva acoplada al coeficiente de rugosidad de Manning ($n_{\text{Manning}}$) estratificado según cobertura de suelo:
+$$\frac{\partial h}{\partial t} + \frac{\partial (uh)}{\partial x} + \frac{\partial (vh)}{\partial y} = P_e, \qquad S_{0,x} - \frac{n_{\text{Manning}}^2 \cdot u \sqrt{u^2 + v^2}}{h^{4/3}} = 0$$
+
+4. **Doctrina del Receptor Fluvial y Amortiguación Keyline:** La evaluación del riesgo se ancla en el Cono de Cuenca Aportante ($\Omega_{\text{cuenca}}$) aguas arriba de la propiedad. En llanuras agrícolas intermedias (ej. Fundo Meniel en Río Longaví), la red de zanjas Keyline amortigua la onda de crecida al almacenar escorrentía por infiltración forzada ($\Delta V \approx 18.500\text{ m}^3$), atenuando el calado punta en $-14\text{ cm}$ y previniendo el colapso de infraestructuras críticas.
 
 #### 2.3.1. Propagación Cuasi-Estacionaria del Frente de Fuego según Modelo Físico de Rothermel
 El avance del frente de llama en pastizales, matorrales y rastrojos se modela mediante el balance térmico de Rothermel (1972):

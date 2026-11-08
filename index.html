@@ -13911,6 +13911,171 @@ print(meniel_soil)</code></pre>
         </div>
     </div>
 
+    
+    <!-- BOTÓN DISPARADOR DEL DRAWER IZQUIERDO DE BENCHMARK INUNDACIONES -->
+    <button onclick="window.openFloodBenchmarkDrawer()" id="btnToggleFloodDrawer" class="hidden fixed left-4 top-34 z-40 px-3 py-2 rounded-xl bg-[#061826]/95 hover:bg-cyan-950/80 border border-cyan-500/60 text-cyan-300 font-mono text-xs font-bold shadow-2xl flex items-center gap-2 cursor-pointer transition-all active:scale-95" title="Abrir Panel Táctico de Megainundaciones (Sentinel-1 SAR vs HAND / Saint-Venant 2D)">
+        <span class="text-base">🌊⚖️</span>
+        <span id="btnToggleFloodDrawerLabel">Panel Táctico Licantén 2023</span>
+        <span class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/30 text-cyan-200 border border-cyan-500/50">ABRIR</span>
+    </button>
+
+    <!-- DRAWER FLOTANTE IZQUIERDO: AUDITORÍA DE MEGAINUNDACIONES (LICANTÉN, LONGAVÍ & ANCOA 2023) -->
+    <div id="floodBenchmarkDrawer" class="hidden fixed left-4 top-20 bottom-8 w-[450px] max-w-[calc(100vw-2rem)] z-40 bg-[#040e17]/98 backdrop-blur-2xl border border-cyan-500/60 shadow-2xl rounded-2xl flex flex-col overflow-hidden text-slate-200 font-mono text-xs select-none transition-all duration-300">
+        
+        <!-- Header del Drawer con Arte Fluvial Militar, Switcher de Eventos y Badges TRL -->
+        <div class="p-3.5 bg-gradient-to-r from-cyan-950 via-[#061826] to-stone-950 border-b border-cyan-500/30 shrink-0 space-y-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-xl p-1.5 rounded-xl bg-cyan-950 border border-cyan-500/40 text-cyan-300">🌊⚖️</span>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-cyan-500/30 text-cyan-300 border border-cyan-500/40">SAR &bull; DGA &bull; 2D</span>
+                            <span class="text-[8.5px] font-mono text-amber-300 font-bold">ATMOSPHERIC RIVER &bull; TRL 7/8</span>
+                        </div>
+                        <h3 id="floodBenchmarkDrawerTitle" class="text-sm font-sans font-black text-white tracking-tight mt-0.5">Licantén 2023 • Catástrofe Mataquito</h3>
+                    </div>
+                </div>
+                <button onclick="window.closeFloodBenchmarkDrawer()" class="text-slate-400 hover:text-white text-base p-1 rounded-lg hover:bg-white/10 cursor-pointer" title="Minimizar panel">✕</button>
+            </div>
+            
+            <!-- Conmutador directo de los 3 Casos de Estudio Fluvial -->
+            <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+                <button id="drawerFloodSwitchLicanten" onclick="window.loadFloodBenchmarkInCuenca('licanten_2023')" class="py-1 px-1.5 rounded-lg text-[9.5px] font-bold bg-cyan-600 text-white border border-cyan-400 cursor-pointer shadow-sm text-center">
+                    🌊 Licantén 2023
+                </button>
+                <button id="drawerFloodSwitchLongavi" onclick="window.loadFloodBenchmarkInCuenca('longavi_2023')" class="py-1 px-1.5 rounded-lg text-[9.5px] font-bold bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 cursor-pointer text-center">
+                    🌊 Longaví 2023
+                </button>
+                <button id="drawerFloodSwitchAncoa" onclick="window.loadFloodBenchmarkInCuenca('ancoa_2023')" class="py-1 px-1.5 rounded-lg text-[9.5px] font-bold bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 cursor-pointer text-center">
+                    🌊 Ancoa 2023
+                </button>
+            </div>
+
+            <!-- Pastilla de Distancia Predial y Telemetría Rápida -->
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-black/60 border border-cyan-500/30 text-[10px]">
+                <span class="text-slate-300 flex items-center gap-1.5 font-sans">
+                    <span class="text-xs">📍</span> Distancia a tu predio activo:
+                </span>
+                <b id="drawerFloodFarmDistanceBadge" class="text-cyan-300 font-mono font-bold">Calculando...</b>
+            </div>
+            <p class="text-[10px] text-slate-300 font-sans leading-snug">
+                Contraste verídico entre la <strong>Mancha SAR Observada</strong> (Sentinel-1 GRD &sigma;₀ &lt; -18 dB) vs la <strong>Simulación Ciega T-48h</strong> (HAND / Saint-Venant 2D con forzamiento ERA5).
+            </p>
+        </div>
+
+        <!-- SELECTOR MAESTRO DE 3 CAPAS INDEPENDIENTES (TOGGLES TRILATERALES) -->
+        <div class="p-2.5 bg-black/70 border-b border-white/10 shrink-0 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-[9.5px] text-slate-400 font-mono block uppercase tracking-wider">Capas en Pantalla (Activar / Desactivar):</span>
+                <span class="text-[8.5px] font-mono text-cyan-300">Auditoría Trilateral</span>
+            </div>
+            
+            <div class="space-y-1.5 font-mono text-[10.5px]">
+                <!-- Capa 1: Polígono Histórico SAR -->
+                <label class="flex items-center justify-between p-2 rounded-xl bg-black/50 hover:bg-white/5 border border-cyan-500/30 transition-all cursor-pointer select-none">
+                    <span class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-md bg-cyan-500 shadow-sm border border-cyan-300"></span>
+                        <span class="font-bold text-cyan-300">1. Huella Observada SAR</span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] text-slate-400 font-sans hidden sm:inline">(Sentinel-1 &sigma;₀ &lt; -18 dB)</span>
+                        <input type="checkbox" id="chkFloodLayerPoligono" onchange="window.setFloodLayerState('poligono', this.checked)" checked class="w-4 h-4 accent-cyan-500 cursor-pointer">
+                    </div>
+                </label>
+
+                <!-- Capa 2: Reconstrucción Histórica Táctica -->
+                <label class="flex items-center justify-between p-2 rounded-xl bg-black/50 hover:bg-white/5 border border-sky-500/30 transition-all cursor-pointer select-none">
+                    <span class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-md bg-sky-500 shadow-sm border border-sky-300"></span>
+                        <span class="font-bold text-sky-300">2. Reconstrucción Histórica</span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] text-slate-400 font-sans hidden sm:inline">(Celdas, aforos DGA, 60fps)</span>
+                        <input type="checkbox" id="chkFloodLayerHistorica" onchange="window.setFloodLayerState('historica', this.checked)" checked class="w-4 h-4 accent-sky-500 cursor-pointer">
+                    </div>
+                </label>
+
+                <!-- Capa 3: Reconstrucción Predicción Ciega -->
+                <label class="flex items-center justify-between p-2 rounded-xl bg-black/50 hover:bg-white/5 border border-blue-500/30 transition-all cursor-pointer select-none">
+                    <span class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-md bg-blue-500 shadow-sm border border-blue-300"></span>
+                        <span class="font-bold text-blue-300">3. Reconstrucción Predicción</span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] text-slate-400 font-sans hidden sm:inline">(HAND / Saint-Venant 2D)</span>
+                        <input type="checkbox" id="chkFloodLayerPrediccion" onchange="window.setFloodLayerState('prediccion', this.checked)" checked class="w-4 h-4 accent-blue-500 cursor-pointer">
+                    </div>
+                </label>
+            </div>
+            
+            <!-- Botonera Rápida de Presets de Visualización -->
+            <div class="grid grid-cols-3 gap-1 pt-0.5 text-[9px] font-mono text-center">
+                <button type="button" onclick="window.applyFloodLayerPreset('solo_sar')" class="py-1 px-1 rounded-lg bg-black/40 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5 transition-all cursor-pointer">
+                    Solo Radar SAR
+                </button>
+                <button type="button" onclick="window.applyFloodLayerPreset('ciega_vs_real')" class="py-1 px-1 rounded-lg bg-black/40 hover:bg-white/10 text-cyan-300 hover:text-white border border-cyan-500/30 transition-all cursor-pointer">
+                    Ciega vs Real
+                </button>
+                <button type="button" onclick="window.applyFloodLayerPreset('todas')" class="py-1 px-1 rounded-lg bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-200 border border-cyan-500/30 transition-all cursor-pointer font-bold">
+                    Trilateral (3)
+                </button>
+            </div>
+
+            <!-- CONTROL HORARIO DE ISÓCRONAS DE LLENADO Y ARRIBO -->
+            <div id="floodIsochroneControlBox" class="p-2.5 rounded-xl bg-slate-900/90 border border-cyan-500/30 space-y-2 text-[10px]">
+                <div class="flex items-center justify-between">
+                    <span class="text-cyan-300 font-bold flex items-center gap-1 font-sans">
+                        <span>⏱️</span> Horizonte Hidrodinámico de Crecida:
+                    </span>
+                    <span id="floodHorizonLabel" class="text-amber-300 font-bold font-mono">+18h Pico Hidrológico</span>
+                </div>
+                <div class="grid grid-cols-4 gap-1 text-[9px] font-mono text-center">
+                    <button type="button" id="btnFloodH_6h" onclick="window.setFloodTimeHorizon(6)" class="py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer">
+                        +6h Arribo
+                    </button>
+                    <button type="button" id="btnFloodH_18h" onclick="window.setFloodTimeHorizon(18)" class="py-1.5 px-1 rounded-lg bg-cyan-600 text-white font-bold border border-cyan-400 transition-all cursor-pointer shadow-md">
+                        +18h Pico
+                    </button>
+                    <button type="button" id="btnFloodH_36h" onclick="window.setFloodTimeHorizon(36)" class="py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer">
+                        +36h Remanso
+                    </button>
+                    <button type="button" id="btnFloodH_72h" onclick="window.setFloodTimeHorizon(72)" class="py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer">
+                        +72h Drenaje
+                    </button>
+                </div>
+                <div class="flex items-center justify-between text-[9px] text-slate-400 font-sans pt-0.5 border-t border-white/5">
+                    <span>Lámina Hidráulica Inundada:</span>
+                    <b id="floodHorizonAreaBadge" class="text-cyan-300 font-mono">3.780 ha (teór)</b>
+                </div>
+                <!-- Botón de Doctrina del Receptor Fluvial (Cuenca Aportante) -->
+                <button type="button" id="btnToggleUpwindFloodBasin" onclick="window.toggleUpwindFloodBasin()" class="w-full py-1.5 px-2 rounded-lg bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-200 border border-cyan-500/30 font-mono text-[9.5px] font-bold flex items-center justify-between transition-all cursor-pointer">
+                    <span class="flex items-center gap-1.5">
+                        <span>🛡️</span>
+                        <span>Cono de Cuenca Aportante (Receptor Fluvial)</span>
+                    </span>
+                    <span id="badgeUpwindFloodBasinState" class="text-[8px] px-1 py-0.2 rounded bg-cyan-500/30 text-cyan-300">OFF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CUERPO SCROLLABLE CON CONTENIDO CONTEXTUAL -->
+        <div class="flex-1 overflow-y-auto p-3 space-y-3 font-sans text-xs custom-scrollbar">
+            <div id="floodDrawerContent-sar" class="hidden space-y-3 font-mono"></div>
+            <div id="floodDrawerContent-modelo" class="hidden space-y-3 font-mono"></div>
+            <div id="floodDrawerContent-comparar" class="space-y-3 font-mono"></div>
+
+            <!-- Botones de Acción Secundaria -->
+            <div class="flex items-center gap-2 pt-1 font-mono text-[10px]">
+                <a href="docs/INFORME_HINDCAST_REAL_INUNDACIONES_IMPRIMIBLE.html" target="_blank" class="flex-1 py-1.5 px-2 rounded-lg bg-cyan-700/80 hover:bg-cyan-700 text-white text-center font-bold transition-all shadow-sm">
+                    📄 Ver Informe Técnico HTML
+                </a>
+                <button onclick="window.closeFloodBenchmarkDrawer();" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 font-bold cursor-pointer">
+                    ✕ Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- CUENCA SATELLITE VIEWER TOP BAR (Rediseñado: Tipografía nítida, alto contraste, ultra-compacto) -->
     <div id="cerroSatelliteSubdeckNav" class="absolute top-14 left-0 right-0 z-40 bg-[#060a14]/95 backdrop-blur-xl border-b border-sky-400/30 px-3 sm:px-5 py-1.5 flex flex-wrap items-center justify-between gap-2 shadow-2xl transition-all font-sans" style="display: none; height: 42px;">
         <div class="flex items-center gap-2">
@@ -16017,6 +16182,43 @@ print(meniel_soil)</code></pre>
                             </label>
                         </div>
 
+                        
+                        <!-- BENCHMARK HINDCAST DE MEGAINUNDACIONES -->
+                        <div class="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-cyan-300 flex items-center gap-1.5 font-sans">
+                                    <span>🌊⚖️</span> <span>Benchmark Megainundaciones 2023</span>
+                                </span>
+                                <a href="docs/INFORME_HINDCAST_REAL_INUNDACIONES_IMPRIMIBLE.html" target="_blank" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-[9.5px] font-mono flex items-center gap-1 transition-all cursor-pointer">
+                                    <span>🖨️</span> <span>Informe</span>
+                                </a>
+                            </div>
+
+                            <p class="text-[10px] text-slate-400 leading-snug font-sans">
+                                Contraste verídico trilateral entre huella SAR Sentinel-1 (&sigma;₀ &lt; -18 dB), reconstrucción histórica (aforos DGA) y simulación ciega T-48h (HAND / Saint-Venant 2D).
+                            </p>
+
+                            <div class="grid grid-cols-3 gap-1">
+                                <button onclick="window.loadFloodBenchmarkInCuenca('licanten_2023');" id="btnSidebarFloodLicanten" class="py-1.5 px-1 rounded-lg bg-cyan-600 text-white font-sans text-[9px] font-medium border border-cyan-400 cursor-pointer transition-all flex flex-col items-center">
+                                    <span>Licantén</span>
+                                    <span class="text-[8px] text-cyan-200 font-mono">3.450 ha &bull; Mataquito</span>
+                                </button>
+                                <button onclick="window.loadFloodBenchmarkInCuenca('longavi_2023');" id="btnSidebarFloodLongavi" class="py-1.5 px-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-sans text-[9px] border border-white/10 cursor-pointer transition-all flex flex-col items-center">
+                                    <span>Longaví</span>
+                                    <span class="text-[8px] text-slate-400 font-mono">2.880 ha &bull; Meniel</span>
+                                </button>
+                                <button onclick="window.loadFloodBenchmarkInCuenca('ancoa_2023');" id="btnSidebarFloodAncoa" class="py-1.5 px-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-sans text-[9px] border border-white/10 cursor-pointer transition-all flex flex-col items-center">
+                                    <span>Ancoa</span>
+                                    <span class="text-[8px] text-slate-400 font-mono">1.920 ha &bull; Linares</span>
+                                </button>
+                            </div>
+
+                            <button onclick="window.openFloodBenchmarkDrawer();" class="w-full py-1.5 px-2.5 rounded-lg bg-cyan-900/40 hover:bg-cyan-900/60 border border-cyan-500/40 text-cyan-200 font-sans text-[10px] font-medium flex items-center justify-between transition-all cursor-pointer">
+                                <span class="flex items-center gap-1.5"><span>🌊</span><span>Abrir Panel Táctico Inundaciones</span></span>
+                                <span class="text-cyan-400">➔</span>
+                            </button>
+                        </div>
+
                         <!-- Leyenda Interna Calados & Períodos de Retorno -->
                         <details class="bg-black/30 p-2.5 rounded-lg border border-white/5 text-[9.5px] text-slate-200">
                             <summary class="cursor-pointer text-slate-300 hover:text-white font-medium flex justify-between select-none">
@@ -17935,6 +18137,29 @@ print(meniel_soil)</code></pre>
 document.addEventListener('DOMContentLoaded', () => {
     try {
         const urlParams = new URLSearchParams(window.location.search);
+        const floodParam = urlParams.get('flood') || (window.location.hash.includes('evento=licanten') ? 'licanten_2023' : (window.location.hash.includes('evento=longavi') ? 'longavi_2023' : (window.location.hash.includes('evento=ancoa') ? 'ancoa_2023' : null)));
+        if (floodParam) {
+            window.__bootPhase = false;
+            const splash = document.getElementById('alchemicalAppSplash');
+            if (splash) {
+                splash.style.display = 'none';
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+            }
+            if (typeof window.dismissAlchemicalSplash === 'function') {
+                window.dismissAlchemicalSplash();
+            }
+            setTimeout(() => {
+                const shouldMinimize = urlParams.get('minimize') !== '0';
+                if (typeof switchMasterView === 'function') {
+                    switchMasterView('territory', 'cerro');
+                }
+                if (typeof window.loadFloodBenchmarkInCuenca === 'function') {
+                    window.loadFloodBenchmarkInCuenca(floodParam, presetParam || 'todas', shouldMinimize);
+                }
+            }, 600);
+            return;
+        }
         const hindcastParam = urlParams.get('hindcast') || (window.location.hash.includes('evento=vina') ? 'vina_2024' : (window.location.hash.includes('evento=santajuana') ? 'santa_juana_2023' : null));
         const presetParam = urlParams.get('preset'); // 'solo_poligono' | 'historica' | 'prediccion' | 'ciega_vs_real' | 'todas'
         
