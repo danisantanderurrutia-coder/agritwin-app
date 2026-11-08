@@ -182,18 +182,22 @@ class AgriTwinApp {
 
   bindBrandHomeEvent() {
     const brandHomeBtn = document.getElementById('brandHomeBtn') || document.querySelector('.header-brand');
-    if (brandHomeBtn && this.workshopOverlay) {
+    if (brandHomeBtn) {
       brandHomeBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        this.workshopOverlay.open();
+        if (typeof window.openGalponWorkshop === 'function') {
+          window.openGalponWorkshop();
+        }
       });
     }
     const brandIcon = document.querySelector('.brand-icon');
-    if (brandIcon && this.workshopOverlay) {
+    if (brandIcon) {
       brandIcon.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        this.workshopOverlay.open();
+        if (typeof window.openGalponWorkshop === 'function') {
+          window.openGalponWorkshop();
+        }
       });
     }
   }

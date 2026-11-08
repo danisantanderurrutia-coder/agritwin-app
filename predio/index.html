@@ -158,6 +158,13 @@
     }
     window.location.href = '../';
   };
+  window.ascendToCuencaFromPredio = function() {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ action: 'ascendToCuenca' }, '*');
+      return;
+    }
+    window.location.href = '../#cerro';
+  };
   window.closeGalponWorkshop = function() {
     const w = document.getElementById('workshopOverlay');
     if (w) {
@@ -220,7 +227,7 @@
 
     <!-- Top Header Glass Panel (Harmonized with Master Suite) -->
     <header class="app-header glass-panel" style="height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(13, 19, 34, 0.95); backdrop-filter: blur(16px); z-index: 50;">
-      <div class="header-brand" id="brandHomeBtn" role="button" tabindex="0" style="cursor: pointer; display: flex; align-items: center; gap: 0.75rem;" title="Volver al Menú Principal / Taller de Campaña (Landing)" onclick="const w = document.getElementById('workshopOverlay'); if(w) w.classList.add('active'); window.agriTwinApp?.workshopOverlay?.open?.();">
+      <div class="header-brand" id="brandHomeBtn" role="button" tabindex="0" style="cursor: pointer; display: flex; align-items: center; gap: 0.75rem;" title="Volver al Taller Central (Landing AOE)" onclick="window.openGalponWorkshop()">
         <div style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.6);">
           <img src="assets/logo_official.png" alt="AgroTwin" style="width: 100%; height: 100%; object-fit: contain; transform: scale(1.08);">
         </div>
@@ -333,10 +340,14 @@
       </div>
     </div>
 
-    <!-- Floating House Button to return to Workshop / Galpón -->
+    <!-- Floating House Button to return to Workshop / Galpón & Ascend to Cuenca -->
     <button id="floatingHouseBtn" onclick="window.openGalponWorkshop()" class="floating-house-btn" title="Volver al Taller Central (Landing AOE)">
       <span style="font-size: 16px;">🏛️</span>
       <span>Taller Central</span>
+    </button>
+    <button id="floatingOrbitCuencaBtn" onclick="window.ascendToCuencaFromPredio()" class="floating-house-btn" style="left: 232px; border-color: rgba(56, 189, 248, 0.5); color: #38bdf8;" title="Ascender a Órbita Cuenca (Mapa Satelital)">
+      <span style="font-size: 15px;">🛰️</span>
+      <span>Órbita Cuenca ▴</span>
     </button>
 
     <!-- Collapsible 3D Bottom Toolbar with Hammer Icon -->

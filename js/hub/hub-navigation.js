@@ -181,6 +181,12 @@
                 viewId = 'territory';
                 if (!mode) mode = 'cerro';
             }
+            // Las 4 ramas clásicas delegan al Tablero Maestro unificado (#view-ramas)
+            const legacyBranchMap = { invernadero: 'agricola', establo: 'pecuario', incursion: 'exploracion', mesa: 'vecinal' };
+            if (legacyBranchMap[viewId] && typeof window.openBranchBoard === 'function') {
+                window.openBranchBoard(legacyBranchMap[viewId]);
+                return;
+            }
             currentMasterView = viewId;
             if (mode) currentTerritorialMode = mode;
             window.scrollTo(0, 0);
@@ -1188,6 +1194,10 @@
             if (!event.data) return;
             if (event.data.action === 'returnToLanding' || event.data.action === 'closeGalpon') {
                 switchMasterView('landing');
+                return;
+            }
+            if (event.data.action === 'ascendToCuenca') {
+                openCerroMap();
                 return;
             }
             if (event.data.type === 'PREDIO_IFRAME_READY') {
@@ -2882,6 +2892,10 @@ function syncActiveProfileToStaticSurfaces() {
     const expTitular = document.getElementById('expedienteTitularName');
     if (expTitular) {
         expTitular.textContent = d.userName;
+    }
+    const landingMetric = document.getElementById('landingPredioTwinMetric');
+    if (landingMetric) {
+        landingMetric.textContent = `WebGL Three.js • ${d.areaHa} ha`;
     }
 }
 

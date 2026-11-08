@@ -645,15 +645,18 @@ export class AgroWorkshopOverlay {
   bindEvents() {
     // Exponer ayudantes globales para interacción desde Drawer de Predio (Establo, Cultivos, etc.)
     window.openGalponWorkshop = (branch = null) => {
-      this.open();
-      if (branch) {
-        this.selectedEnclosureBranch = branch;
-        this.openStationModal('station_b');
-      } else {
-        this.showCampaignBoard = true;
-        this.closeStationModal();
-        this.render();
+      if (!branch) {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ action: 'returnToLanding' }, '*');
+          return;
+        }
+        window.location.href = '../';
+        return;
       }
+      this.showCampaignBoard = false;
+      this.selectedEnclosureBranch = branch;
+      this.open();
+      this.openStationModal('station_b');
     };
     window.triggerSimRain = () => {
       bus.emit('weather:toggle_rain');
@@ -667,7 +670,11 @@ export class AgroWorkshopOverlay {
           return;
         }
         if (!e.target.matches('input, textarea')) {
-          this.toggle();
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ action: 'returnToLanding' }, '*');
+          } else {
+            this.toggle();
+          }
         }
       }
       if (e.key === 'Escape' && this.overlayEl.classList.contains('active')) {
