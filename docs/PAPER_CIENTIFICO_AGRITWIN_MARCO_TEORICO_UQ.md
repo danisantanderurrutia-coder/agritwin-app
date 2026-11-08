@@ -116,7 +116,7 @@ Esta metodología de síntesis adaptativa se operativiza formalmente a través d
 * **Hipótesis 1 ($H_1$) • La Escala de Cuenca Salva al Predio (Acoplamiento vs. Parcela Aislada):** Modelar el balance de agua integrando la dinámica de la cuenca hidrográfica completa —en lugar de aislar el predio como un sistema cerrado— reduce el error sistemático ($PBIAS$) en la estimación del caudal y contenido de humedad en más de un **$35\%$** y amplía la ventana de alerta temprana ante sequía de **2 a más de 6 días** ($>+35\%$), otorgando a los regantes el tiempo crítico para coordinar turnos y trasvases antes de que los canales y pozos colapsen.
 * **Hipótesis 2 ($H_2$) • Inferencia de Raíz Profunda superando la Ceguera Satelital (Ver a 60 cm):** Al acoplar bandas satelitales ópticas sensibles al estrés (Red Edge de Sentinel-2 L2A) con las leyes físicas del continuo suelo-planta ($SPAC$), es posible predecir con exactitud el estrés hídrico en la raíz profunda (a **$60\,\text{cm}$**) con un error relativo **$RMSE_{\text{rel}} \le 15\%$**, superando la ceguera de los satélites comerciales que solo observan la superficie del dosel foliar.
 * **Hipótesis 3 ($H_3$) • Suficiencia del Sensor Mínimo Crítico (Fin de la «Trampa del Hardware»):** La física acoplada del clima y el suelo explica por sí sola más del $80\%$ del comportamiento del agua en el predio. Por ende, instalar una **única estación agrometeorológica local y una sonda TDR multinivel profunda** es suficiente para colapsar más del **$80\%$ de la incertidumbre epistémica** en toda la subcuenca, demostrando que desplegar decenas de micro-sensores IoT intra-hilera es un gasto económicamente ineficiente y redundante (con una mejora de precisión marginal inferior al $5\%$).
-* **Hipótesis 4 ($H_4$) • El Paisaje Diseñado como Escudo Biológico contra Incendios (Keyline vs. Puelche):** La cosecha e infiltración de escorrentía mediante líneas clave (Keyline) y cortafuegos biológicos vivos mantiene la vegetación nativa hidratada ($FMC > 120\%$) en pleno estiaje, reduciendo la velocidad de propagación de incendios en al menos un **$40\%$** y neutralizando el salto balístico de pavesas incandescentes bajo viento Puelche extremo, en comparación con monocultivos y pastizales continuos no intervenidos.
+* **Hipótesis 4 ($H_4$) • El Paisaje Diseñado como Escudo Biológico contra Incendios y Alerta Temprana en Cono Inverso (Keyline & Centinela Aguas Arriba vs. Puelche/Surazo):** La cosecha e infiltración de escorrentía mediante líneas clave (Keyline) y cortafuegos biológicos vivos mantiene la vegetación nativa hidratada ($FMC > 120\%$) en pleno estiaje, reduciendo la velocidad de propagación de incendios en más de un **$40\%$** y neutralizando el salto balístico de pavesas incandescentes bajo viento Puelche o Surazo extremo. Acoplado a esto, el análisis de **cuenca eólica inversa aguas arriba a $T-24\text{h}/T-48\text{h}$** detecta el corredor de amenaza antes de que ocurra la ignición, otorgando una ventana de defensa crítica de $1\text{ a }3\text{ horas}$ antes de la llegada de pavesas a la interfaz predial.
 
 ---
 
@@ -217,15 +217,38 @@ El avance del frente de llama en pastizales, matorrales y rastrojos se modela me
 
 $$R_{\text{fuego}} = \frac{I_{rx} \cdot \xi \cdot (1 + \phi_w + \phi_s)}{\rho_b \cdot \varepsilon \cdot Q_{ig}} \quad (7)$$
 
-* **Exégesis de Variables:** $R_{\text{fuego}}$ es la velocidad lineal de avance del frente [$\text{m}\cdot\text{min}^{-1}$]; $I_{rx}$ es el flujo de calor de reacción [$\text{kJ}\cdot\text{m}^{-2}\cdot\text{min}^{-1}$]; $\xi$ es el coeficiente de propagación radiativa; $\phi_w$ es el factor advectivo inducido por viento; $\phi_s = 5.275 \cdot (\tan \theta_s)^2$ es el factor de aceleración por pendiente; $\rho_b$ es la densidad aparente del combustible [$\text{kg}\cdot\text{m}^{-3}$]; $\varepsilon$ es la fracción de combustible calentada; y $Q_{ig}$ es el calor de ignición [$\text{kJ}\cdot\text{kg}^{-1}$].
+* **Exégesis de Variables:** $R_{\text{fuego}}$ es la velocidad lineal de avance del frente [$\text{m}\cdot\text{min}^{-1}$]; $I_{rx}$ es el flujo de calor de reacción [$\text{kJ}\cdot\text{m}^{-2}\cdot\text{min}^{-1}$]; $\xi$ es el coeficiente de propagación radiativa; $\phi_w = C \cdot U^B \cdot (\beta / \beta_{op})^{-E}$ es el factor advectivo inducido por viento a media altura de llama ($U$); $\phi_s = 5.275 \cdot (\tan \theta_s)^2$ es el factor de aceleración por pendiente topográfica ($\theta_s$); $\rho_b$ es la densidad aparente del combustible [$\text{kg}\cdot\text{m}^{-3}$]; $\varepsilon$ es la fracción de combustible calentada; y $Q_{ig}$ es el calor de ignición [$\text{kJ}\cdot\text{kg}^{-1}$].
 * **Mecanismo de Freno Biofísico Keyline:** Dado que $Q_{ig} = 581 + 2594 \cdot FMC$, los cortafuegos biológicos Keyline mantienen una humedad del combustible vivo $FMC > 120\%$ por recarga hídrica edáfica, triplicando $Q_{ig}$ y forzando $R_{\text{fuego}} \to 0$.
 
 #### 2.3.2. Balística de Pavesas, Vórtices Térmicos y Focos Secundarios según Albini y Byram
-El salto de fuego por encima de barreras físicas bajo viento Puelche se modela acoplando Albini (1979) con la intensidad frontal de Byram (1959):
+El salto de fuego por encima de barreras físicas bajo viento Puelche o Surazo se modela acoplando Albini (1979) con la intensidad frontal de Byram (1959):
 
+$$D_{\text{spot}} = 0.0252 \cdot U_{10}^{1.15} \cdot \left(\frac{I_B}{h_{\text{dosel}}}\right)^{0.45}, \qquad I_B = H_{\text{comb}} \cdot w_{\text{cons}} \cdot \frac{R_{\text{fuego}}}{60} \quad (8)$$
 
 * **Exégesis de Variables:** $D_{\text{spot}}$ es el alcance máximo de pavesas incandescentes [$\text{km}$]; $U_{10}$ es la velocidad del viento a $10\,\text{m}$ [$\text{km}\cdot\text{h}^{-1}$]; $I_B$ es la intensidad de línea de Byram [$\text{kW}\cdot\text{m}^{-1}$]; $h_{\text{dosel}}$ es la altura del estrato arbóreo [$\text{m}$]; $H_{\text{comb}} \approx 18,\!600\,\text{kJ}\cdot\text{kg}^{-1}$; y $w_{\text{cons}}$ es la carga de biomasa consumida [$\text{kg}\cdot\text{m}^{-2}$].
 * **Justificación de la Cortina Viva:** Cuando $I_B > 4,\!000\,\text{kW}\cdot\text{m}^{-1}$, $D_{\text{spot}}$ supera $1.5\,\text{km}$, invalidando los cortafuegos minerales angostos. AgriTwin diseña franjas agroforestales multiestrato que filtran y atrapan físicamente las pavesas aéreas.
+
+#### 2.3.3. Envolvente Bidimensional Fons-Rothermel, Principio de Huygens y Extinción Biofísica Diurna
+La transición del avance lineal unidimensional a la envolvente espacial bidimensional sobre la cuenca se formaliza mediante la elipse paramétrica de Fons (1946) y Rothermel (1972), cuya razón de alargamiento (largo sobre ancho) depende estrictamente de la velocidad del viento sinóptico a 10 m ($U_{10}$):
+
+$$\frac{L}{W} = 1 + 0.125 \cdot U_{10}, \qquad A_{\text{elipse}}(t) = \frac{\pi}{4} \cdot L(t) \cdot W(t)$$
+
+Bajo el principio ondulatorio de Huygens, cada vértice del frente de fuego actúa como un emisor de micro-elipses orográficas orientadas por el vector de viento local y la pendiente del DEM.
+* **Determinación del Horizonte Temporal ($T+2\text{h}$ a $T+48\text{h}$):** La duración de la carrera pirogénica no se trunca arbitrariamente a posteriori, sino que está regida por la ventana sinóptica de ERA5/GFS y el ciclo diurno. Al caer la noche o ingresar aire húmedo marino, el descenso térmico eleva la humedad relativa por sobre el $75\text{--}80\%$, lo que incrementa la humedad del combustible fino muerto:
+$$\text{DFMC} \approx 0.03 + 0.262 \cdot \left(\frac{\text{HR}}{100}\right) - 0.00104 \cdot T \quad [\text{fracción de masa}]$$
+Cuando $\text{DFMC} > 0.16$ ($\text{HR} > 80\%$), el flujo de calor de reacción colapsa ($I_{rx} \to 0$), forzando $R_{\text{fuego}} \to 0$ y extinguiendo el frente activo de copas, circunscribiendo la simulación a isócronas horarias de propagación diurna efectiva.
+
+#### 2.3.4. Doctrina del Receptor Predial: Análisis de Cono de Amenaza Inversa Aguas Arriba (*Upwind Danger Corridor*)
+A escala predial (parcela o fundo agrícola), el predio actúa como **blanco o receptor**, no como foco de ignición. Conociendo el vector de viento pronosticado $\vec{u}_{10} = (U_{10}, \theta_w)$, el gemelo proyecta en forma inversa hacia aguas arriba el **cono de captación de peligro**:
+$$\Omega_{\text{amenaza}} = \left\{ \mathbf{x} \in \mathbb{R}^2 \;|\; \arg(\mathbf{x}_{\text{predio}} - \mathbf{x}) \in [\theta_w - \Delta\theta, \theta_w + \Delta\theta], \; \|\mathbf{x}_{\text{predio}} - \mathbf{x}\| \le d_{\text{max}} \right\}$$
+Cualquier ignición dentro de $\Omega_{\text{amenaza}}$ viajará inexorablemente hacia el predio. El sistema computa el tiempo estimado de arribo del frente terrestre ($T_{\text{ETA,frente}} = d / R_{\text{cabeza}}$) frente al arribo aéreo anticipado de pavesas de Albini ($T_{\text{ETA,spot}}$), demostrando que las pavesas incandescentes impactan las techumbres e infraestructuras con un adelanto crítico:
+$$\Delta t_{\text{spot}} = \frac{D_{\text{spot}}}{R_{\text{cabeza}}} \sim 1\text{ a }2\text{ horas antes de la llegada visual del fuego de suelo}$$
+lo que habilita la activación autónoma de aspersión perimetral y la presurización de fajas Keyline antes del corte de suministro eléctrico.
+
+#### 2.3.5. Marco Epistémico de Validación Retrospectiva (*Scenario-Conditioned Hindcast* & Anti-Hindsight Bias)
+Para contrastar el modelo sin incurrir en fuga de información futura (*data leakage*), AgriTwin aplica el protocolo de corte temporal pre-evento ($T-24\text{h}$): se congelan los forzantes ERA5 horarios, la topografía DEM y la escena Sentinel-2 L2A previa. La envolvente teórica de Fons-Rothermel se superpone ex-post contra la cicatriz espectral de severidad observada:
+$$\text{dNBR} = \text{NBR}_{\text{pre}} - \text{NBR}_{\text{post}} = \left(\frac{B08 - B12}{B08 + B12}\right)_{\text{pre}} - \left(\frac{B08 - B12}{B08 + B12}\right)_{\text{post}} > 0.27$$
+declarando con rigor que la elipse teórica reproduce la orientación azimutal macroscópica ($>88.5\%$) y la escala del desastre, reconociendo como límites declarados la omisión de la combustión urbana estructural y los saltos de quebradas no cubiertos por modelos de combustible vegetal puro.
 
 ---
 
@@ -234,6 +257,7 @@ El salto de fuego por encima de barreras físicas bajo viento Puelche se modela 
 #### 2.4.1. Dinámica de Capa Límite Estable y Flujo Catabático según Modelo de Prandtl-Mahrt
 La acumulación de aire frío en fondos de cuenca durante heladas radiativas se modela con el balance de momento de flujo catabático:
 
+$$u_{\text{catab}} = \sqrt{\frac{2 \cdot g \cdot h_{\text{capa}} \cdot \sin \alpha_s \cdot \left(\dfrac{\theta_v(z) - \theta_{v,s}}{\theta_0}\right)}{c_d + \kappa_{\text{veg}}}} \quad (9)$$
 
 * **Exégesis de Variables:** $g = 9.81\,\text{m}\cdot\text{s}^{-2}$; $h_{\text{capa}}$ es el espesor de la capa de inversión térmica [$\text{m}$]; $\alpha_s$ es la pendiente topográfica; $\theta_v(z)$ y $\theta_{v,s}$ son las temperaturas potenciales virtuales libre y superficial [$\text{K}$]; $\theta_0 = 288.15\,\text{K}$; $c_d$ es el arrastre del suelo desnudo; y $\kappa_{\text{veg}}$ es la resistencia por dosel vegetal.
 * **Aplicación:** Identifica los cuellos de botella topográficos donde se estanca el aire gélido, diseñando deflectores de viento vegetal para drenarlo fuera del cultivo.
@@ -241,6 +265,7 @@ La acumulación de aire frío en fondos de cuenca durante heladas radiativas se 
 #### 2.4.2. Balance Radiativo Nocturno de Onda Larga
 La tasa de pérdida energética hacia el espacio exterior se formula mediante Stefan-Boltzmann corregido por la contra-radiación atmosférica:
 
+$$R_{nl} = \sigma \cdot \left( \varepsilon_{\text{suelo}} \cdot T_{\text{suelo}}^4 - \varepsilon_{\text{atm}}(e_a, T_a) \cdot T_{\text{aire}}^4 \right) \quad (10)$$
 
 * **Exégesis de Variables:** $\sigma = 5.67 \times 10^{-8}\,\text{W}\cdot\text{m}^{-2}\cdot\text{K}^{-4}$; $\varepsilon_{\text{suelo}} \approx 0.96$; $T$ son temperaturas absolutas [$\text{K}$]; y $\varepsilon_{\text{atm}} = 1.24 \cdot (e_a / T_a)^{1/7}$ según Brutsaert (1975).
 * **Mitigación Regenerativa:** Demuestra el rol térmico del mulch orgánico y el dosel vivo para reducir la pérdida radiativa directa y mantener el calor latente en el suelo.
@@ -252,12 +277,14 @@ La tasa de pérdida energética hacia el espacio exterior se formula mediante St
 #### 2.5.1. Inestabilidad Hidrostática y Energía Potencial Convectiva Disponible CAPE
 El potencial boyante vertical para la formación de celdas tormentosas se integra a lo largo del perfil atmosférico:
 
+$$\text{CAPE} = \int_{z_{LFC}}^{z_{EL}} g \cdot \left(\frac{T_{v,\text{parcela}} - T_{v,\text{entorno}}}{T_{v,\text{entorno}}}\right) dz \quad (11)$$
 
 * **Exégesis:** $z_{LFC}$ es el Nivel de Convección Libre [$\text{m}$]; $z_{EL}$ es el Nivel de Equilibrio [$\text{m}$]; y $T_v$ son las temperaturas virtuales de la parcela y del entorno circundante.
 
 #### 2.5.2. Cizalladura Vertical Profunda y Severidad Cinemática DLS 0 a 6 km
 La capacidad de organización convectiva y severidad de ráfagas destructivas (downbursts) se evalúa mediante:
 
+$$S_{0-6} = \sqrt{(u_6 - u_{10m})^2 + (v_6 - v_{10m})^2} \quad (12)$$
 
 * **Exégesis:** Componentes cinemáticas horizontales del viento a $6\,\text{km}$ y $10\,\text{m}$ [$\text{m}\cdot\text{s}^{-1}$] obtenidas de ERA5 y sondeos locales.
 
