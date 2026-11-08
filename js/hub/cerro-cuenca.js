@@ -130,6 +130,35 @@
                                 <div class="text-[11px] text-slate-400 mt-1">Caudal fluviométrico y zonas de anegamiento.</div>
                             </button>
                         </div>
+
+                        <!-- Casos de Estudio Externos: Validación Retrospectiva Hindcast -->
+                        <div class="pt-3 border-t border-rose-500/30 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span>🔥🛰️</span> Casos de Estudio Reales (Validación Hindcast)
+                                </span>
+                                <span class="text-[9.5px] font-mono px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40">Sentinel-2 dNBR + ERA5</span>
+                            </div>
+                            <p class="text-[11px] text-slate-300">
+                                Vuela a los polígonos satelitales reales de los megaincendios históricos para auditar el contraste entre la <b>cicatriz observada</b> y el <b>mapa de riesgo preventivo T-24h</b> de AgriTwin:
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <button onclick="closeCerroHotspotModal(); window.loadHindcastBenchmarkInCuenca('vina_2024');" class="p-3 rounded-xl bg-gradient-to-br from-rose-950/60 to-black/70 hover:from-rose-900/60 border border-rose-500/50 text-left transition-all group cursor-pointer shadow-md">
+                                    <div class="font-bold text-sm text-white group-hover:text-rose-200 flex items-center justify-between">
+                                        <span>🔥 Viña del Mar 2024</span>
+                                        <span class="text-[10px] font-mono text-rose-300 bg-rose-500/20 px-1.5 py-0.5 rounded border border-rose-400/30">2.989 ha</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-300 mt-1">Surazo 65 km/h • Panel Táctico 3 Vistas (Incendio vs Riesgo vs Comparar).</div>
+                                </button>
+                                <button onclick="closeCerroHotspotModal(); window.loadHindcastBenchmarkInCuenca('santa_juana_2023');" class="p-3 rounded-xl bg-gradient-to-br from-amber-950/50 to-black/70 hover:from-amber-900/50 border border-amber-500/50 text-left transition-all group cursor-pointer shadow-md">
+                                    <div class="font-bold text-sm text-white group-hover:text-amber-200 flex items-center justify-between">
+                                        <span>🔥 Santa Juana 2023</span>
+                                        <span class="text-[10px] font-mono text-amber-300 bg-amber-500/20 px-1.5 py-0.5 rounded border border-amber-400/30">42.599 ha</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-300 mt-1">Puelche 58 km/h & 40°C • Corredor Biobío y salto de pavesas en quebradas.</div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 `;
             } else if (id === 'hidro') {
@@ -372,6 +401,22 @@
                             </div>
                             <div class="text-[11px] text-emerald-400 bg-emerald-950/40 p-2.5 rounded-lg border border-emerald-500/30">
                                 🛡️ Con Faja Cortafuegos de 45m: Atenuación del 92% en avance de frente de fuego.
+                            </div>
+                        </div>
+
+                        <!-- Acceso Directo a Casos de Estudio Hindcast -->
+                        <div class="p-3.5 rounded-2xl bg-rose-950/30 border border-rose-500/40 space-y-2 font-mono">
+                            <div class="text-xs font-bold text-rose-300 flex items-center justify-between">
+                                <span>🔥 Casos de Estudio Reales (Benchmark Hindcast)</span>
+                                <span class="text-[9.5px] text-amber-300">TRL 7/8</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                <button onclick="closeCerroHotspotModal(); window.loadHindcastBenchmarkInCuenca('vina_2024');" class="py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer">
+                                    <span>🔥⚖️</span> <span>Caso Viña del Mar 2024</span>
+                                </button>
+                                <button onclick="closeCerroHotspotModal(); window.loadHindcastBenchmarkInCuenca('santa_juana_2023');" class="py-2 px-3 rounded-xl bg-amber-600/80 hover:bg-amber-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer">
+                                    <span>🔥🌲</span> <span>Caso Santa Juana 2023</span>
+                                </button>
                             </div>
                         </div>
 
