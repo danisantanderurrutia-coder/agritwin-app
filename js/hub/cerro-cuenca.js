@@ -79,6 +79,14 @@
                     </div>
                 `;
             } else if (id === 'mirador') {
+                const prof = (window.farmProfileManager && typeof window.farmProfileManager.getActiveProfile === 'function')
+                    ? window.farmProfileManager.getActiveProfile()
+                    : null;
+                const fName = (prof && prof.farmName) || 'Fundo Meniel';
+                const fArea = (prof && prof.areaHa) || 24.8;
+                const fLat = (prof && prof.coordinates && prof.coordinates.lat) || -36.21156;
+                const fLon = (prof && prof.coordinates && prof.coordinates.lon) || -71.60530;
+                const fSafeName = String(fName).replace(/'/g, "\\'");
                 if (badgeEl) badgeEl.innerText = 'OBJ-CUENCA-02 • MIRADOR';
                 titleEl.innerHTML = '<span>🔭</span> Vistas Predefinidas & Locaciones Estratégicas';
                 bodyEl.innerHTML = `
@@ -87,10 +95,10 @@
                             Haz clic en cualquiera de los puntos neurálgicos de la macro-cuenca para volar de inmediato en el visor cartográfico:
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <button onclick="closeCerroHotspotModal(); flyToCerroLocation(-36.21156, -71.60530, 15, 'Fundo Meniel', 'tab-territory');" class="p-3 rounded-xl bg-black/50 hover:bg-emerald-950/40 border border-emerald-500/40 text-left transition-all group">
+                            <button onclick="closeCerroHotspotModal(); flyToCerroLocation(${fLat}, ${fLon}, 15, '${fSafeName}', 'tab-territory');" class="p-3 rounded-xl bg-black/50 hover:bg-emerald-950/40 border border-emerald-500/40 text-left transition-all group">
                                 <div class="font-bold text-sm text-white group-hover:text-emerald-300 flex items-center justify-between">
-                                    <span>🏡 Fundo Meniel</span>
-                                    <span class="text-[10px] font-mono text-emerald-400">Keyline 18.5k m³</span>
+                                    <span>🏡 ${fName}</span>
+                                    <span class="text-[10px] font-mono text-emerald-400">${fArea} ha • Predio Activo</span>
                                 </div>
                                 <div class="text-[11px] text-slate-400 mt-1">Núcleo biofísico de retención y cortafuegos.</div>
                             </button>
@@ -1632,13 +1640,6 @@
             });
         };
 
-        window.toggleBasinEdgeDrawer = function(forceState) {
-            window.toggleCerroControlDrawer(forceState);
-            if (forceState !== false) {
-                window.switchCerroDrawerTab('locations');
-            }
-        };
-
         window.toggleCerroVector = function(type) {
             if (window.cerroVectorEngine) {
                 window.cerroVectorEngine.toggleVector(type);
@@ -2823,34 +2824,6 @@
             points: [],
             tempLine: null,
             tempPolygon: null
-        };
-
-        window.toggleCuencaCorteMenu = function(force) {
-            const el = document.getElementById('cuencaCorteFlyout');
-            if (!el) return;
-            const isHidden = el.classList.contains('hidden');
-            const show = (force !== undefined) ? force : isHidden;
-            if (show) {
-                el.classList.remove('hidden');
-                const polyFly = document.getElementById('cuencaPolyFlyout');
-                if (polyFly) polyFly.classList.add('hidden');
-            } else {
-                el.classList.add('hidden');
-            }
-        };
-
-        window.toggleCuencaPolyMenu = function(force) {
-            const el = document.getElementById('cuencaPolyFlyout');
-            if (!el) return;
-            const isHidden = el.classList.contains('hidden');
-            const show = (force !== undefined) ? force : isHidden;
-            if (show) {
-                el.classList.remove('hidden');
-                const corteFly = document.getElementById('cuencaCorteFlyout');
-                if (corteFly) corteFly.classList.add('hidden');
-            } else {
-                el.classList.add('hidden');
-            }
         };
 
         window.startDrawingCuencaPolygon = function() {

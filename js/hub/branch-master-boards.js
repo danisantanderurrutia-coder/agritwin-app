@@ -49,8 +49,9 @@
       subtitle: 'Pactos, fajas cortafuego y gobernanza del valle',
       bg: 'assets/ui/vecinal_meeting_landing.jpg',
       accent: { text: 'text-purple-300', border: 'border-purple-500/40', chip: 'bg-purple-500/20 text-purple-300 border-purple-500/40', hover: 'hover:border-purple-400/70' },
+      featuredAction: { icon: '🐝', label: 'Topología El Panal (11 Hexágonos)', fn: 'openPanalFromMesa', args: [] },
       cards: [
-        { sprite: 'sprite_mesa_chalkboard', title: 'Pizarra Comunitaria', desc: 'Asamblea rural, avisos y faenas compartidas.', fn: 'openMesaHotspotModal', args: ['panal'] },
+        { sprite: 'sprite_mesa_chalkboard', title: 'Pizarra Comunitaria & Panal', desc: 'Asamblea rural, flujos en vivo y avisos.', fn: 'openMesaHotspotModal', args: ['panal'] },
         { sprite: 'sprite_mesa_pacts', title: 'Convenios de Colindancia', desc: 'Acuerdos prediales y pastoreo vecino.', fn: 'openMesaHotspotModal', args: ['pactos'] },
         { sprite: 'sprite_mesa_briefcase', title: 'Protocolos & Fajas', desc: 'Cortafuegos perimetrales coordinados.', fn: 'openMesaHotspotModal', args: ['maletin'] },
         { sprite: 'sprite_mesa_dao_urn', title: 'Votación Descentralizada', desc: 'Gobernanza y fondo común.', fn: 'openMesaHotspotModal', args: ['balanza'] },
@@ -125,13 +126,23 @@
               <p class="text-xs text-stone-300 font-mono mt-0.5">${esc(b.subtitle)}</p>
               <p class="text-[11px] mt-1.5 font-mono ${configured ? b.accent.text : 'text-stone-400'}">${configured ? '● ' : '○ '}${esc(status)}</p>
             </div>
-            <button type="button" id="branchBoardBackBtn" class="px-3.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 border border-amber-500/40 text-xs font-mono font-bold cursor-pointer shadow-lg">🏠 Volver al Taller</button>
+            <div class="flex flex-wrap items-center gap-2">
+              ${b.featuredAction ? `<button type="button" id="branchBoardFeaturedBtn" class="px-3.5 py-2 rounded-xl bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 border border-amber-400/60 text-xs font-mono font-bold cursor-pointer shadow-lg flex items-center gap-1.5"><span>${b.featuredAction.icon}</span><span>${esc(b.featuredAction.label)}</span></button>` : ''}
+              <button type="button" id="branchBoardBackBtn" class="px-3.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 text-amber-200 border border-amber-500/40 text-xs font-mono font-bold cursor-pointer shadow-lg">🏠 Volver al Taller</button>
+            </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 ${b.cards.length > 4 ? 'lg:grid-cols-3' : 'lg:grid-cols-3'} gap-3">${cards}</div>
         </div>
       </div>`;
 
     root.querySelector('#branchBoardBackBtn').addEventListener('click', () => window.switchMasterView('landing'));
+    const featBtn = root.querySelector('#branchBoardFeaturedBtn');
+    if (featBtn && b.featuredAction) {
+      featBtn.addEventListener('click', () => {
+        const fn = window[b.featuredAction.fn];
+        if (typeof fn === 'function') fn.apply(window, b.featuredAction.args || []);
+      });
+    }
     root.querySelectorAll('.branch-card').forEach(btn => {
       btn.addEventListener('click', () => runCard(key, parseInt(btn.dataset.idx, 10)));
     });

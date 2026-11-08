@@ -2414,15 +2414,11 @@
         };
 
         // --- FUNCIONES DE NAVEGACIÓN Y APERTURA RÁPIDA ---
-        function openPanalFromCuenca() {
-            // El Panal pertenece a la escala comunitaria de Vecinos
-            openPanalFromMesa();
-        }
-
         function openPanalFromMesa() {
             switchMasterView('panal', 'mesa');
             setPanalLevel('mesa');
         }
+        window.openPanalFromMesa = openPanalFromMesa;
 
         function setPanalLevel(level) {
             panalCurrentLevel = level;
@@ -2473,10 +2469,6 @@
             }
 
             renderPanalSvg();
-        }
-
-        function togglePanalZoom() {
-            setPanalZoom(panalZoomMode === 'macro' ? 'detail' : 'macro');
         }
 
         function filterPanalFluxes(category) {

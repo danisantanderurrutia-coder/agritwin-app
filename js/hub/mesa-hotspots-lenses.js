@@ -909,8 +909,11 @@ AgriTwin Mosaico Vecinal Maule Sur
                                     </div>
                                 </div>
 
-                                <!-- Botón de Sincronización Directa -->
-                                <div class="pt-2">
+                                <!-- Botón de Sincronización Directa y Acceso a Vista Completa del Panal -->
+                                <div class="pt-2 space-y-1.5">
+                                    <button onclick="closeMesaHotspotModal(); openPanalFromMesa();" class="w-full py-2 px-3 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 border border-emerald-500/40 font-bold font-mono text-[11px] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow">
+                                        <span>🐝</span> Abrir Vista Completa El Panal (11 Hexágonos)
+                                    </button>
                                     <button onclick="downloadFormalAgreements()" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black font-mono text-[11px] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md">
                                         <span>📜</span> Exportar Ficha Notariada del Nodo
                                     </button>
@@ -2161,16 +2164,17 @@ AgriTwin Mosaico Vecinal Maule Sur
             });
         };
 
+        window.runBioScript = runBioScript;
         function runBioScript(scriptId) {
             const now = new Date().toLocaleTimeString();
 
             // 0. RAMA 1: PREDIO TWIN - PASTOREO RACIONAL VOISIN (PRV) & METABOLISMO DE CASA MENIELS
             if (scriptId === 'predio_prv') {
-                const ugm = parseFloat(document.getElementById('scriptPrvUgm')?.value || 1.8);
-                const restDays = parseInt(document.getElementById('scriptPrvRest')?.value || 38);
+                const ugm = parseFloat((document.getElementById('scriptPrvUgm') || document.getElementById('prv-ugm'))?.value || 1.8);
+                const restDays = parseInt((document.getElementById('scriptPrvRest') || document.getElementById('prv-rest'))?.value || 38);
                 const paddocksCount = parseInt(document.getElementById('scriptPrvPaddocks')?.value || 8);
                 const areaHa = 12.8;
-                const targetBiomass = parseFloat(document.getElementById('scriptPrvTargetBiomass')?.value || 2800);
+                const targetBiomass = parseFloat((document.getElementById('scriptPrvTargetBiomass') || document.getElementById('prv-biomass'))?.value || 2800);
                 const solarKwh = 920;
                 const aforoLs = 28.0;
 
@@ -2252,10 +2256,10 @@ AgriTwin Mosaico Vecinal Maule Sur
 
             // 2. FAO-56 PENMAN-MONTEITH
             } else if (scriptId === 'fao56') {
-                const T = parseFloat(document.getElementById('scriptFaoTemp')?.value || 28.4);
+                const T = parseFloat((document.getElementById('scriptFaoTemp') || document.getElementById('fao-temp'))?.value || 28.4);
                 const RH = parseFloat(document.getElementById('scriptFaoRh')?.value || 29.0);
-                const u2 = parseFloat(document.getElementById('scriptFaoWind')?.value || 4.2);
-                const Rn = parseFloat(document.getElementById('scriptFaoRad')?.value || 22.8);
+                const u2 = parseFloat((document.getElementById('scriptFaoWind') || document.getElementById('fao-wind'))?.value || 4.2);
+                const Rn = parseFloat((document.getElementById('scriptFaoRad') || document.getElementById('fao-rn'))?.value || 22.8);
                 const G = 0;
                 const delta = 4098 * (0.6108 * Math.exp((17.27 * T) / (T + 237.3))) / Math.pow(T + 237.3, 2);
                 const gamma = 0.067;
@@ -2325,8 +2329,8 @@ AgriTwin Mosaico Vecinal Maule Sur
 
             // 2. PIRO-RIESGO VAN WAGNER & ROTHERMEL
             } else if (scriptId === 'fire') {
-                const T = parseFloat(document.getElementById('scriptFireTemp')?.value || 34.0);
-                const wind = parseFloat(document.getElementById('scriptFireWind')?.value || 45.0);
+                const T = parseFloat((document.getElementById('scriptFireTemp') || document.getElementById('fwi-temp'))?.value || 34.0);
+                const wind = parseFloat((document.getElementById('scriptFireWind') || document.getElementById('fwi-wind'))?.value || 45.0);
                 const ffmc = parseFloat(document.getElementById('scriptFireFfmc')?.value || 91.5);
                 const slope = parseFloat(document.getElementById('scriptFireSlope')?.value || 22.0);
 

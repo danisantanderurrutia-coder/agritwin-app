@@ -132,24 +132,6 @@
         })();
 
         // Funciones de acceso directo para el Menú Superior Permanente
-        window.toggleDatosDropdown = function(event) {
-            if (event) event.stopPropagation();
-            const menu = document.getElementById('dropdown-datos-menu');
-            if (menu) menu.classList.toggle('hidden');
-        };
-
-        window.closeDatosDropdown = function() {
-            const menu = document.getElementById('dropdown-datos-menu');
-            if (menu) menu.classList.add('hidden');
-        };
-
-        window.addEventListener('click', function(e) {
-            const container = document.getElementById('dropdown-datos-container');
-            if (container && !container.contains(e.target)) {
-                window.closeDatosDropdown();
-            }
-        });
-
         window.openAdvisorsNav = function() {
             switchMasterView('dashboard');
             switchAdminTab('advisors');
@@ -157,17 +139,6 @@
             document.getElementById('navBtn-datos')?.classList.add('active-nav');
             setTimeout(() => {
                 const sec = document.getElementById('advSection-profiles');
-                if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        };
-
-        window.openInformesNav = function() {
-            switchMasterView('dashboard');
-            switchAdminTab('informes');
-            document.querySelectorAll('.master-nav-btn').forEach(btn => btn.classList.remove('active-nav'));
-            document.getElementById('navBtn-datos')?.classList.add('active-nav');
-            setTimeout(() => {
-                const sec = document.getElementById('advSection-dossier');
                 if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
         };
@@ -191,10 +162,6 @@
         };
 
         window.openTutorialNav = function() {
-            switchMasterView('juegos');
-        };
-
-        window.openJuegosNav = function() {
             switchMasterView('juegos');
         };
 
@@ -409,23 +376,6 @@
         function openCerroMap() {
             openCerroMapWithTab('tab-territory');
         }
-
-        window.toggleCuencaMapDock = function(show) {
-            const flyout = document.getElementById('cuencaMapDockFlyout');
-            const arrow = document.getElementById('dockTriggerArrow');
-            const label = document.getElementById('dockTriggerLabel');
-            if (!flyout) return;
-            const shouldOpen = (typeof show === 'boolean') ? show : flyout.classList.contains('hidden');
-            if (shouldOpen) {
-                flyout.classList.remove('hidden');
-                if (arrow) arrow.innerText = '▼';
-                if (label) label.innerText = 'Ocultar Menú';
-            } else {
-                flyout.classList.add('hidden');
-                if (arrow) arrow.innerText = '▲';
-                if (label) label.innerText = 'Capas & Flujos';
-            }
-        };
 
         window.toggleTerritorialSidebar = function(forceOpen) {
             const sidebar = document.getElementById('territorialSidebar');
@@ -2889,8 +2839,69 @@ window.addEventListener('keydown', function(e) {
 // ═══════════════════════════════════════════════════════════════════
 // CONTROLADOR DEL PANEL MAESTRO PREDIAL AMPLIADO (ESTACIÓN 2 LANDING AOE)
 // ═══════════════════════════════════════════════════════════════════
+function getActiveFarmData() {
+    const p = (window.farmProfileManager && typeof window.farmProfileManager.getActiveProfile === 'function')
+        ? window.farmProfileManager.getActiveProfile()
+        : null;
+    const isRef = !p || p.isReference !== false;
+    const pr = (p && p.branches && p.branches.predio) || {};
+    const inv = (p && p.branches && p.branches.invernadero) || {};
+    const tr = (p && p.transversal) || {};
+    return {
+        farmName: (p && p.farmName) || 'Fundo Meniel',
+        userName: (p && p.userName) || 'Familia Meniel & AgroTech',
+        location: (p && p.location) || 'Sector Río Longaví (Parral - Retiro), Maule, Chile',
+        areaHa: (p && p.areaHa) || 24.8,
+        rolSii: (p && p.rolSii) || '142-88 Retiro',
+        coords: (p && p.coordinates) || { lat: -36.2115, lon: -71.6050 },
+        waterStorageM3: isRef ? (pr.waterStorageM3 || 18500) : (pr.waterStorageM3 || 0),
+        solarKwp: isRef ? (pr.solarKwp || 9.9) : (pr.solarKwp || 0),
+        sensorsCount: isRef ? (pr.sensorsCount || 15) : (pr.sensorsCount || 0),
+        fdrPct: isRef ? (inv.fdrSoilMoisturePct || 37.2) : (inv.fdrSoilMoisturePct || 0),
+        soilCarbonTC: isRef ? (tr.soilCarbonFixedTC || 44.5) : (tr.soilCarbonFixedTC || 0),
+        isRef: isRef
+    };
+}
+
+function syncActiveProfileToStaticSurfaces() {
+    const d = getActiveFarmData();
+    const badge = document.getElementById('predioMasterModalBadge');
+    if (badge) {
+        badge.textContent = `CONSOLA MAESTRA PREDIAL • ${d.farmName.toUpperCase()} (${d.areaHa} HA)`;
+    }
+    const expTitle = document.getElementById('expedienteHeaderTitle');
+    if (expTitle) {
+        expTitle.innerHTML = `${d.farmName} <span class="text-amber-800 font-sans text-xl font-normal">(${d.isRef ? 'Predio Maestro' : 'Predio Activo'})</span>`;
+    }
+    const expMeta = document.getElementById('expedienteHeaderMeta');
+    if (expMeta) {
+        const latStr = Math.abs(d.coords.lat || -36.14).toFixed(2) + '°S';
+        const lonStr = Math.abs(d.coords.lon || -71.82).toFixed(2) + '°O';
+        expMeta.innerHTML = `${d.location} &bull; ${latStr}, ${lonStr} &bull; ${d.areaHa} Hectáreas &bull; Rol ${d.rolSii}`;
+    }
+    const expTitular = document.getElementById('expedienteTitularName');
+    if (expTitular) {
+        expTitular.textContent = d.userName;
+    }
+}
+
+window.addEventListener('agritwin:profileChanged', function() {
+    syncActiveProfileToStaticSurfaces();
+    const modal = document.getElementById('predioMasterPanelModal');
+    if (modal && modal.classList.contains('active') && window.__currentPredioMasterTab) {
+        window.switchPredioMasterTab(window.__currentPredioMasterTab);
+    }
+});
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncActiveProfileToStaticSurfaces);
+} else {
+    setTimeout(syncActiveProfileToStaticSurfaces, 50);
+}
+
 window.openPredioMasterPanel = function(tabId) {
     if (typeof playDiegeticAudio === 'function') playDiegeticAudio('wood');
+    syncActiveProfileToStaticSurfaces();
     const modal = document.getElementById('predioMasterPanelModal');
     if (!modal) return;
     modal.classList.add('active');
@@ -2903,6 +2914,8 @@ window.closePredioMasterPanel = function() {
 };
 
 window.switchPredioMasterTab = function(tabKey) {
+    window.__currentPredioMasterTab = tabKey;
+    const d = getActiveFarmData();
     const allTabs = ['permacultura', 'telemetria', 'limites', 'esg', 'radio'];
     allTabs.forEach(t => {
         const btn = document.getElementById('tabPredio-' + t);
@@ -2927,7 +2940,7 @@ window.switchPredioMasterTab = function(tabKey) {
                         <span class="text-emerald-400">Bill Mollison Zonas 0-5</span>
                     </div>
                     <p class="text-slate-300 leading-relaxed font-sans text-xs">
-                        Fundo Meniel (12.8 ha) diseñado bajo el principio de menor esfuerzo y máximo retorno termodinámico. Organización concéntrica de energía, captación pasiva de escorrentía Keyline y ciclado cerrado de biomasa.
+                        ${d.farmName} (${d.areaHa} ha) diseñado bajo el principio de menor esfuerzo y máximo retorno termodinámico. Organización concéntrica de energía, captación pasiva de escorrentía Keyline y ciclado cerrado de biomasa.
                     </p>
                 </div>
 
@@ -2935,22 +2948,22 @@ window.switchPredioMasterTab = function(tabKey) {
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-center">
                     <div class="p-3 rounded-xl bg-black/60 border border-emerald-500/40">
                         <span class="text-[10px] text-slate-400 block">Suelo Vivo Acumulado</span>
-                        <b class="text-emerald-400 text-sm sm:text-base">+340%</b>
+                        <b class="text-emerald-400 text-sm sm:text-base">${d.isRef ? '+340%' : 'En Línea Base'}</b>
                         <div class="text-[9px] text-slate-500 mt-0.5">MO & Hongos micorrícicos</div>
                     </div>
                     <div class="p-3 rounded-xl bg-black/60 border border-amber-500/40">
                         <span class="text-[10px] text-slate-400 block">Autonomía Hídrica</span>
-                        <b class="text-amber-400 text-sm sm:text-base">18.500 m³</b>
+                        <b class="text-amber-400 text-sm sm:text-base">${d.waterStorageM3.toLocaleString('es-CL')} m³</b>
                         <div class="text-[9px] text-slate-500 mt-0.5">Tranque Keyline + Zanjas</div>
                     </div>
                     <div class="p-3 rounded-xl bg-black/60 border border-sky-500/40">
                         <span class="text-[10px] text-slate-400 block">Eficiencia Insumos</span>
-                        <b class="text-sky-400 text-sm sm:text-base">92% Libre</b>
+                        <b class="text-sky-400 text-sm sm:text-base">${d.isRef ? '92% Libre' : 'Inicializando'}</b>
                         <div class="text-[9px] text-slate-500 mt-0.5">Bokashi & Biopreparados</div>
                     </div>
                     <div class="p-3 rounded-xl bg-black/60 border border-purple-500/40">
                         <span class="text-[10px] text-slate-400 block">Policultivo LER</span>
-                        <b class="text-purple-400 text-sm sm:text-base">1.34</b>
+                        <b class="text-purple-400 text-sm sm:text-base">${d.isRef ? '1.34' : '1.00'}</b>
                         <div class="text-[9px] text-slate-500 mt-0.5">Equivalencia de Suelo</div>
                     </div>
                 </div>
@@ -3001,8 +3014,8 @@ window.switchPredioMasterTab = function(tabKey) {
             <div class="space-y-4">
                 <div class="p-4 rounded-2xl bg-sky-950/40 border border-sky-500/30 space-y-2">
                     <div class="flex items-center justify-between font-mono">
-                        <span class="text-sky-300 font-bold">TELEMETRÍA EN VIVO • BALANCE HÍDRICO & SENSORES FDR</span>
-                        <span class="text-emerald-400">15 Nodos Activos</span>
+                        <span class="text-sky-300 font-bold">TELEMETRÍA EN VIVO • ${d.farmName.toUpperCase()}</span>
+                        <span class="text-emerald-400">${d.sensorsCount} Nodos Activos</span>
                     </div>
                     <p class="text-slate-300 leading-relaxed font-sans text-xs">
                         Monitoreo continuo de humedad volumétrica de suelo, volumen de embalse en tranque Keyline y curva de agotamiento hídrico diario.
@@ -3012,33 +3025,33 @@ window.switchPredioMasterTab = function(tabKey) {
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="p-3 rounded-2xl bg-black/50 border border-sky-500/30 space-y-2">
                         <span class="text-xs text-sky-300 font-bold flex items-center gap-1.5">💧 Tranque Keyline Principal</span>
-                        <div class="text-2xl font-black text-white font-mono">18.500 m³</div>
+                        <div class="text-2xl font-black text-white font-mono">${d.waterStorageM3.toLocaleString('es-CL')} m³</div>
                         <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                            <div class="bg-sky-400 h-full" style="width: 86%;"></div>
+                            <div class="bg-sky-400 h-full" style="width: ${d.isRef ? '86%' : '15%'};"></div>
                         </div>
                         <div class="flex justify-between text-[10px] text-slate-400 font-mono">
-                            <span>Nivel: 86% Capacidad</span>
-                            <span class="text-emerald-400">+1.2 m³/h</span>
+                            <span>Nivel: ${d.isRef ? '86% Capacidad' : 'Por Aforar'}</span>
+                            <span class="text-emerald-400">${d.isRef ? '+1.2 m³/h' : 'Semilla'}</span>
                         </div>
                     </div>
 
                     <div class="p-3 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-2">
                         <span class="text-xs text-emerald-300 font-bold flex items-center gap-1.5">🌱 Humedad Volumétrica (FDR)</span>
-                        <div class="text-2xl font-black text-white font-mono">37.2% VWC</div>
+                        <div class="text-2xl font-black text-white font-mono">${d.fdrPct}% VWC</div>
                         <div class="space-y-1 text-[10px] text-slate-300 font-mono">
-                            <div class="flex justify-between"><span>Sonda 10cm (Raíz activa):</span><b class="text-emerald-400">38.4%</b></div>
-                            <div class="flex justify-between"><span>Sonda 30cm (Estratigráfico):</span><b class="text-sky-400">37.1%</b></div>
-                            <div class="flex justify-between"><span>Sonda 60cm (Subsuperficie):</span><b class="text-amber-400">36.0%</b></div>
+                            <div class="flex justify-between"><span>Sonda 10cm (Raíz activa):</span><b class="text-emerald-400">${d.isRef ? '38.4%' : '--'}</b></div>
+                            <div class="flex justify-between"><span>Sonda 30cm (Estratigráfico):</span><b class="text-sky-400">${d.isRef ? '37.1%' : '--'}</b></div>
+                            <div class="flex justify-between"><span>Sonda 60cm (Subsuperficie):</span><b class="text-amber-400">${d.isRef ? '36.0%' : '--'}</b></div>
                         </div>
                     </div>
 
                     <div class="p-3 rounded-2xl bg-black/50 border border-amber-500/30 space-y-2">
                         <span class="text-xs text-amber-300 font-bold flex items-center gap-1.5">☀️ Bomba Solar & Aforo</span>
-                        <div class="text-2xl font-black text-white font-mono">28.0 L/s</div>
+                        <div class="text-2xl font-black text-white font-mono">${d.isRef ? '28.0 L/s' : '0.0 L/s'}</div>
                         <div class="space-y-1 text-[10px] text-slate-300 font-mono">
-                            <div class="flex justify-between"><span>Generación Solar:</span><b class="text-amber-400">4.2 kW</b></div>
-                            <div class="flex justify-between"><span>Presión Matriz:</span><b class="text-white">2.8 bar</b></div>
-                            <div class="flex justify-between"><span>Salinidad EC:</span><b class="text-emerald-400">0.42 dS/m</b></div>
+                            <div class="flex justify-between"><span>Generación Solar:</span><b class="text-amber-400">${d.solarKwp} kWp</b></div>
+                            <div class="flex justify-between"><span>Presión Matriz:</span><b class="text-white">${d.isRef ? '2.8 bar' : '--'}</b></div>
+                            <div class="flex justify-between"><span>Salinidad EC:</span><b class="text-emerald-400">${d.isRef ? '0.42 dS/m' : '--'}</b></div>
                         </div>
                     </div>
                 </div>
@@ -3060,17 +3073,17 @@ window.switchPredioMasterTab = function(tabKey) {
                     <img src="assets/ui/sprite_map_vecinal.png" alt="Límites Prediales" class="w-24 h-24 object-contain rounded-xl border border-white/10 p-1 bg-amber-950/20 shadow-md">
                     <div class="space-y-2 flex-1">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-amber-300">EXPEDIENTE DE LÍMITES & DESLINDES RURALES</span>
-                            <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">CBR LINARES AL DÍA</span>
+                            <span class="text-xs font-bold text-amber-300">EXPEDIENTE DE LÍMITES & DESLINDES • ${d.farmName.toUpperCase()}</span>
+                            <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">${d.isRef ? 'CBR LINARES AL DÍA' : 'MODO SEMILLA'}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
-                            <div>• Rol SII: <b class="text-white">142-08 Retiro</b></div>
-                            <div>• Superficie Total: <b class="text-amber-300">12.80 ha</b></div>
-                            <div>• Régimen: <b class="text-white">DL 3516 Rústico</b></div>
-                            <div>• Fojas / N°: <b class="text-white">Fs. 342 N° 418 (2018)</b></div>
+                            <div>• Rol SII: <b class="text-white">${d.rolSii}</b></div>
+                            <div>• Superficie Total: <b class="text-amber-300">${Number(d.areaHa).toFixed(2)} ha</b></div>
+                            <div>• Titular: <b class="text-white">${d.userName}</b></div>
+                            <div>• Ubicación: <b class="text-white">${d.location}</b></div>
                         </div>
                         <p class="text-slate-400 text-xs font-sans">
-                            Deslindes georreferenciados en datum WGS84 / Huso 19S. Borde norte con Estero Colliguay, faja cortafuego de 15m coordinada con predio Retiro Poniente.
+                            Deslindes georreferenciados en datum WGS84 / Huso 19S (${d.coords.lat.toFixed(4)}, ${d.coords.lon.toFixed(4)}).
                         </p>
                     </div>
                 </div>

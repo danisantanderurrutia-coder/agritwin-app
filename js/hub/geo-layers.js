@@ -1871,19 +1871,6 @@
             }
         };
 
-        window.toggleCuencaTacticalLegendCompact = function() {
-            const body = document.getElementById('cuencaTacticalLegendBody');
-            const widget = document.getElementById('cuencaTacticalLegendWidget');
-            if (!body || !widget) return;
-            if (body.style.display === 'none') {
-                body.style.display = 'block';
-                widget.style.maxHeight = '480px';
-            } else {
-                body.style.display = 'none';
-                widget.style.maxHeight = '48px';
-            }
-        };
-
         window.refreshAndAutoUpdateMap = function() {
             if (!map) return;
             const btn = document.getElementById('btnAutoRefreshMap');
@@ -3526,6 +3513,7 @@
                         <div style="margin-top:6px; color:#cbd5e1; font-size:10px; line-height:1.4;">
                             ${p.geologia}
                         </div>
+                        <button onclick="openLandslideDetailModal('${p.id || 'A110'}')" style="margin-top:8px; width:100%; padding:5px 8px; border-radius:6px; background:rgba(245,158,11,0.25); border:1px solid #f59e0b; color:#fde68a; font-weight:bold; font-size:10px; cursor:pointer;">⛰️ Ver Ficha In-Situ &amp; Contingencia</button>
                     </div>
                 `);
                 layer.bindTooltip(`<b>${p.tipo}</b><br><span style="font-size:10px;color:#f59e0b;">${p.susceptibilidad}</span>`, { sticky: true });
@@ -7448,14 +7436,6 @@ DOCUMENTO GENERADO AUTOMÁTICAMENTE POR AGROTWIN REGIONAL V2.6
             playTimer: null,
             cachedData: null,
             activePreset: 'normal'
-        };
-
-        // 1. Alternar barra de 8 momentos climáticos en el mapa
-        window.toggleCuencaMomentsBar = function(show) {
-            const bar = document.getElementById('cuencaMomentsQuickBar');
-            if (!bar) return;
-            const isVis = (typeof show === 'boolean') ? show : (bar.style.display !== 'none');
-            bar.style.display = isVis ? 'none' : 'flex';
         };
 
         // 2. Alternar visibilidad de overlays teóricos de simulación
