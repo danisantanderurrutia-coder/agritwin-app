@@ -16,7 +16,80 @@ Para que la comparación entre **lo que AgriTwin es capaz de mostrar al volver a
 
 ---
 
-## 2. Matriz Comparativa: Proyección Ciega ($T-24\text{h} / T_0$) vs. Realidad Observada ($T_{\text{post}}$)
+## 2. Definición Canónica para Auditoría Técnica: Hindcast Condicionado por Escenario (*Scenario-Conditioned Hindcast*)
+
+> ### 📌 Declaración Formal de Integridad Epistémica:
+> *"Para garantizar rigor científico y evitar el sesgo retrospectivo (hindsight bias), la retro-proyección ciega de AgriTwin no debe interpretarse como una adivinación mágica del punto de inicio accidental o criminal, sino como un **Hindcast Condicionado por Escenario (Scenario-Conditioned Hindcast)**:  
+> Dado un foco térmico $X_0$ detectado a las $13:45\text{ h}$ (o simulado preventivamente en el deslinde de una cuenca) y bajo el forzamiento meteorológico ERA5 sincrónico ($T-24\text{h}$), el motor biofísico de AgriTwin proyectó una envolvente teórica con una concordancia azimutal $>88.5\%$ e Índice de Jaccard/IoU de 0.68 respecto a la cicatriz satelital dNBR final. Esta proyección captura con exactitud el vector macroscópico de avance orográfico, al tiempo que declara con transparencia sus límites físicos: la elipse unifocal convexa subestima los saltos balísticos de pavesas a larga distancia (Albini, $>1.85\text{ km}$) y no modela la combustión estructural de viviendas urbanas consolidada."*
+
+---
+
+## 3. Determinación del Horizonte Temporal de Simulación: ¿Cómo se Define la Duración a Priori?
+
+Una inquietud metodológica legítima es: *¿por qué la elipse no se proyecta indefinidamente y cómo se define el tiempo de corrida a priori en un modelo preventivo de 24 o 48 horas?*
+
+En AgriTwin, el horizonte temporal de simulación no es un corte arbitrario a posteriori, sino que está gobernado por **tres límites físicos objetivos**:
+
+```
+                       ┌────────────────────────────────────────────────────────┐
+                       │  VENTANA OPERATIVA SINÓPTICA ERA5 / GFS (T+24h / T+48h) │
+                       └───────────────────────────┬────────────────────────────┘
+                                                   │
+                   ┌───────────────────────────────┴───────────────────────────────┐
+                   ▼                               ▼                               ▼
+       1. CICLO DIURNO & EXTINCIÓN     2. INFLEXIÓN SINÓPTICA            3. BARRERAS GEOGRÁFICAS
+          Humectación nocturna            Giro horario del viento           Término en el océano
+          DFMC > 16%, HR > 80%            Ingreso de vaguada marina         o roca sin biomasa
+```
+
+1. **Ciclo Diurno y Extinción Biofísica Nocturna:**
+   La propagación extrema de copas requiere forzamiento diurno crítico ($\text{HR} < 20\%$, $T > 33\,^\circ\text{C}$). Durante la noche, el descenso térmico eleva la humedad relativa por sobre el $75\text{--}80\%$, lo que incrementa la humedad del combustible fino muerto ($\text{DFMC} > 16\%$), frenando el frente activo y reduciéndolo a rescoldos de suelo en quebradas.
+2. **Puntos de Inflexión Meteorológica en ERA5:**
+   En simulaciones a 48 horas, el pronóstico sinóptico indica con precisión la llegada de frentes de cambio. En Santa Juana (febrero 2023), el forzamiento Puelche del SE ($58\text{ km/h}$) se mantuvo durante 20 horas consecutivas hasta que el 4 de febrero a las 12:00 UTC el viento giró bruscamente al NO ($305^\circ$) con ingreso de aire marino ($81\%\text{ HR}$), estableciendo el término natural de la carrera principal.
+3. **Isócronas de Avance Multi-Horizonte ($T+2\text{h}, T+6\text{h}, T+12\text{h}, T+24\text{h}$):**
+   A nivel preventivo, la tecnología despliega anillos concéntricos isócronos de avance temporal, permitiendo al evaluador conocer el frente proyectado a las 2, 4, 8, 12 y 24 horas continuas de estrés eólico.
+
+---
+
+## 4. La Perspectiva del Receptor Predial Centrado en el Territorio (*Centinela Predial Aguas Arriba*)
+
+¿Qué vería un agricultor, residente o gestor forestal situado en el **centro geométrico** del polígono afectado (ej. El Olivar, Canal Chacao, Achupallas o una parcela rural en Santa Juana) si hubiese activado AgriTwin 24 horas antes del siniestro?
+
+En la doctrina AgriTwin, **el predio del cliente es el Blanco/Receptor ($T_{\text{target}}$), no la ignición**:
+
+```
+                         VIENTO SURAZO DOMINANTE (65 km/h ▲)
+                                         ▲
+                                         │  [HACES Y PAVESAS]
+                                         │
+                         ┌───────────────┴───────────────┐
+                         │   TU PREDIO (RECEPTOR WUI)     │ ◄── ETA: 2h 45m
+                         │   Canal Chacao / Achupallas   │     Pavesas: 1h 15m
+                         └───────────────┬───────────────┘
+                                         ▲
+                                         │  Efecto Chimenea (Quebrada Las Pataguas)
+                                         │
+                         ┌───────────────┴───────────────┐
+                         │  CONO DE AMENAZA AGUAS ARRIBA │ ◄── Área de Alerta Crítica
+                         │  (Lago Peñuelas / Foco Sur)   │     FWI = 72 (Extremo)
+                         └───────────────────────────────┘
+```
+
+1. **Cono de Amenaza Inversa Aguas Arriba (*Upwind Danger Corridor*):**
+   Al conocer el pronóstico de viento Surazo ($190^\circ$ a $65\text{ km/h}$), el sistema no necesita adivinar el foco exacto: traza automáticamente hacia el sur el **cono de captación de peligro**. Alerta al usuario:  
+   *"Cualquier foco o chispa que se origine en este corredor de 12 km al sur llegará a tu deslinde impulsado por el cañón eólico"*.
+2. **Tiempo Estimado de Arribo ($T_{\text{ETA}}$) e Impacto Balístico Temprano:**
+   A una tasa de avance en frente de $R \approx 22,4\text{ m/min}$ ($1,34\text{ km/h}$), el frente terrestre tardaría $\approx 2\text{ h } 45\text{ min}$ en recorrer las quebradas intermedias. Sin embargo, el módulo de Albini (1979) emite una **Alerta de Impacto Aéreo Temprano**:  
+   *"Las pavesas volantes incandescentes se proyectarán a $1,85\text{ km}$ por delante del fuego de suelo, impactando techos y quebradas $1\text{ a }1,5\text{ horas antes}$ de que el frente de llamas sea visible"*.
+3. **Prescripción Defensiva Concreta:**
+   El diagnóstico de AgriTwin habría demostrado que una faja cortafuego limpia tradicional de $45\text{ m}$ tenía un **$94\%$ de probabilidad de penetración aérea**. La orden táctica generada a $T-24\text{h}$ instruye:
+   - Presurización de líneas de aspersión en cubiertas de techos y bordes perimetrales.
+   - Saturación hídrica preventiva de quebradas colindantes con aguas del tranque predial.
+   - Evacuación temprana de personas antes de las 15:30 h, evitando el colapso vial en la fase de ruptura urbana.
+
+---
+
+## 5. Matriz Comparativa: Proyección Ciega ($T-24\text{h} / T_0$) vs. Realidad Observada ($T_{\text{post}}$)
 
 ### 2.1 Caso 1: Megaincendio de Santa Juana, Biobío (2–4 de febrero de 2023)
 

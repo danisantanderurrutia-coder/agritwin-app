@@ -296,7 +296,57 @@
             </tbody>
         </table>
 
-        <h2>2. Caso de Estudio 1: Megaincendio de Santa Juana, Biobío (Febrero 2023)</h2>
+        <h2>2. Definición Canónica para Auditoría Técnica: Hindcast Condicionado por Escenario (<em>Scenario-Conditioned Hindcast</em>)</h2>
+
+        <div class="callout" style="border-left: 4px solid var(--accent); background: var(--bg-callout);">
+            <strong>Declaración Formal de Integridad Epistémica &amp; Anti-Hindsight Bias:</strong><br>
+            <em>«Para garantizar rigor científico y evitar el sesgo retrospectivo (hindsight leakage), la retro-proyección ciega de AgriTwin no debe interpretarse como una adivinación mágica del punto de inicio accidental o criminal, sino como un <strong>Hindcast Condicionado por Escenario (Scenario-Conditioned Hindcast)</strong>:<br>
+            Dado un foco térmico $X_0$ detectado a las $13:45\text{ h}$ (o simulado preventivamente en el deslinde de una cuenca) y bajo el forzamiento meteorológico ERA5 sincrónico ($T-24\text{h}$), el motor biofísico de AgriTwin proyectó una envolvente teórica con una concordancia azimutal $>88.5\%$ e Índice de Jaccard/IoU de 0.68 respecto a la cicatriz satelital dNBR final. Esta proyección captura con exactitud el vector macroscópico de avance orográfico, al tiempo que declara con transparencia sus límites físicos: la elipse unifocal convexa subestima los saltos balísticos de pavesas a larga distancia (Albini, $>1.85\text{ km}$) y no modela la combustión estructural de viviendas urbanas consolidada.»</em>
+        </div>
+
+        <h2>3. Determinación del Horizonte Temporal de Simulación: ¿Cómo se Define la Duración a Priori?</h2>
+
+        <p>
+            Una inquietud metodológica legítima es: <em>¿por qué la elipse no se proyecta indefinidamente y cómo se define el tiempo de corrida a priori en un modelo preventivo de 24 o 48 horas?</em> En AgriTwin, el horizonte temporal de simulación no es un corte arbitrario a posteriori, sino que está gobernado por <strong>tres límites físicos objetivos</strong>:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0;">
+            <div style="background: var(--bg-subtle); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 700; color: var(--accent); margin-bottom: 6px;">1. Ciclo Diurno &amp; Extinción Nocturna</div>
+                <div style="font-size: 0.9em; line-height: 1.6; color: var(--text-muted);">
+                    La propagación extrema de copas requiere forzamiento diurno crítico ($\text{HR} < 20\%$, $T > 33\,^\circ\text{C}$). Durante la noche, el descenso térmico eleva la humedad relativa por sobre el $75\text{--}80\%$, incrementando la humedad del combustible fino muerto ($\text{DFMC} > 16\%$), lo que frena el avance frontal activo y lo reduce a rescoldos de suelo en cañadas.
+                </div>
+            </div>
+            <div style="background: var(--bg-subtle); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 6px;">2. Inflexión Sinóptica en ERA5</div>
+                <div style="font-size: 0.9em; line-height: 1.6; color: var(--text-muted);">
+                    En pronósticos a 48 horas, la serie meteorológica anticipa con precisión la llegada de frentes de cambio. En Santa Juana (febrero 2023), el forzamiento Puelche del SE ($58\text{ km/h}$) se sostuvo durante 20 horas continuas hasta que el 4 de febrero a las 12:00 UTC el viento giró bruscamente al NO ($305^\circ$) con ingreso de aire marino húmedo ($81\%\text{ HR}$), marcando el término natural de la carrera principal.
+                </div>
+            </div>
+            <div style="background: var(--bg-subtle); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+                <div style="font-weight: 700; color: #3b82f6; margin-bottom: 6px;">3. Isócronas Multi-Horizonte (T+2h a T+48h)</div>
+                <div style="font-size: 0.9em; line-height: 1.6; color: var(--text-muted);">
+                    A nivel preventivo, la tecnología no depende de una duración única, sino que despliega <strong>anillos concéntricos isócronos</strong> de avance temporal ($T+2\text{h}, T+6\text{h}, T+12\text{h}, T+24\text{h}$), permitiendo al evaluador conocer la progresión del frente hora a hora bajo el perfil de viento proyectado.
+                </div>
+            </div>
+        </div>
+
+        <h2>4. La Perspectiva del Receptor Predial Centrado en el Territorio (<em>Centinela Predial Aguas Arriba</em>)</h2>
+
+        <p>
+            ¿Qué vería un agricultor, residente o gestor forestal situado en el <strong>centro geométrico</strong> del polígono afectado (ej. El Olivar, Canal Chacao, Achupallas o una parcela rural en Santa Juana) si hubiese activado AgriTwin 24 horas antes del siniestro? En la doctrina AgriTwin, <strong>el predio del cliente es el Blanco/Receptor ($T_{\text{target}}$), no la ignición</strong>:
+        </p>
+
+        <div class="callout" style="background: rgba(16, 185, 129, 0.06); border-left: 4px solid var(--accent-secondary);">
+            <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 8px;">🛰️ Triada de Detección &amp; Alerta para el Receptor Predial:</div>
+            <ol style="margin: 0; padding-left: 20px; font-size: 0.95em; line-height: 1.7;">
+                <li><strong>Cono de Amenaza Inversa Aguas Arriba (<em>Upwind Danger Corridor</em>):</strong> Al conocer el pronóstico de viento Surazo ($190^\circ$ a $65\text{ km/h}$), el sistema no necesita adivinar el foco exacto: traza automáticamente hacia el sur el cono de captación de peligro. Alerta al usuario: <em>«Cualquier foco o chispa que se origine en este corredor de 12 km al sur llegará a tu deslinde impulsado por el cañón eólico»</em>.</li>
+                <li><strong>Tiempo Estimado de Arribo ($T_{\text{ETA}}$) e Impacto Balístico Temprano:</strong> A una tasa de avance en frente de $R \approx 22,4\text{ m/min}$ ($1,34\text{ km/h}$), el frente terrestre tardaría $\approx 2\text{ h } 45\text{ min}$ en recorrer las quebradas intermedias. Sin embargo, el módulo de Albini (1979) emite una <strong>Alerta de Impacto Aéreo Temprano</strong>: <em>«Las pavesas volantes incandescentes se proyectarán a $1,85\text{ km}$ por delante del fuego de suelo, impactando techos y quebradas $1\text{ a }1,5\text{ horas antes}$ de que el frente de llamas sea visible»</em>.</li>
+                <li><strong>Prescripción Táctica Defensiva Personalizada:</strong> El diagnóstico de AgriTwin habría demostrado que una faja cortafuego limpia tradicional de $45\text{ m}$ tenía un <strong>$94\%$ de probabilidad de penetración aérea</strong>. La orden táctica generada a $T-24\text{h}$ instruye: presurización de líneas de aspersión en cubiertas de techos y bordes perimetrales, saturación hídrica preventiva de quebradas colindantes con aguas del tranque predial, y evacuación temprana de personas antes de las 15:30 h, evitando el colapso vial en la fase de ruptura urbana.</li>
+            </ol>
+        </div>
+
+        <h2>5. Caso de Estudio 1: Megaincendio de Santa Juana, Biobío (Febrero 2023)</h2>
 
         <p>
             Entre el 2 y el 4 de febrero de 2023, la cuenca del Biobío experimentó un evento sinóptico extremo de viento <strong>Puelche</strong> (componente cálida y seca descendente del sureste) combinado con una ola de calor récord de $40,0\,^\circ\text{C}$ y humedad relativa mínima de $11\%$.
@@ -387,7 +437,7 @@
             </div>
         </div>
 
-        <h2>3. Caso de Estudio 2: Megaincendio de Viña del Mar – Quilpué (Febrero 2024)</h2>
+        <h2>6. Caso de Estudio 2: Megaincendio de Viña del Mar – Quilpué (Febrero 2024)</h2>
 
         <p>
             El 2 de febrero de 2024, desde la Reserva Nacional Lago Peñuelas avanzó hacia el norte un frente pirogénico impulsado por ráfagas del Sur/Suroeste de $65\text{ km/h}$ ($190^\circ$), con $34,4\,^\circ\text{C}$, $21\%$ de humedad relativa y una sequía antecedente severa de apenas $30,6\text{ mm}$ acumulados en los 90 días previos.
@@ -492,7 +542,7 @@
             </div>
         </div>
 
-        <h2>5. Reproducibilidad Computacional del Pipeline Ciego</h2>
+        <h2>7. Reproducibilidad Computacional del Pipeline Ciego</h2>
         <p>
             Todo el flujo de descarga de forzantes ERA5, selección de escenas STAC en Microsoft Planetary Computer y extracción de cicatrices dNBR se encuentra automatizado en <code>scripts/hindcast/</code>:
         </p>
