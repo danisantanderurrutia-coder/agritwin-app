@@ -46,8 +46,12 @@ En AgriTwin, el horizonte temporal de simulación no es un corte arbitrario a po
    La propagación extrema de copas requiere forzamiento diurno crítico ($\text{HR} < 20\%$, $T > 33\,^\circ\text{C}$). Durante la noche, el descenso térmico eleva la humedad relativa por sobre el $75\text{--}80\%$, lo que incrementa la humedad del combustible fino muerto ($\text{DFMC} > 16\%$), frenando el frente activo y reduciéndolo a rescoldos de suelo en quebradas.
 2. **Puntos de Inflexión Meteorológica en ERA5:**
    En simulaciones a 48 horas, el pronóstico sinóptico indica con precisión la llegada de frentes de cambio. En Santa Juana (febrero 2023), el forzamiento Puelche del SE ($58\text{ km/h}$) se mantuvo durante 20 horas consecutivas hasta que el 4 de febrero a las 12:00 UTC el viento giró bruscamente al NO ($305^\circ$) con ingreso de aire marino ($81\%\text{ HR}$), estableciendo el término natural de la carrera principal.
-3. **Isócronas de Avance Multi-Horizonte ($T+2\text{h}, T+6\text{h}, T+12\text{h}, T+24\text{h}$):**
-   A nivel preventivo, la tecnología despliega anillos concéntricos isócronos de avance temporal, permitiendo al evaluador conocer el frente proyectado a las 2, 4, 8, 12 y 24 horas continuas de estrés eólico.
+3. **Isócronas de Avance Multi-Horizonte ($T+2\text{h}, T+6\text{h}, \text{Pico}, T+24\text{h}, T+48\text{h}$):**
+   A nivel preventivo y operacional, la tecnología despliega anillos concéntricos e isócronas multi-escala:
+   - **$T+2\text{h}$ a $T+6\text{h}$ (Fase Convectiva Inicial):** Carrera explosiva diurna unidireccional en cañones y quebradas (115 a 1.030 ha en Viña; 428 a 3.820 ha en Santa Juana).
+   - **Pico Calibrado (9.5h en Viña / 20h en Santa Juana):** Envolvente máxima de propagación a plena radiación solar antes del freno diurno (3.420 ha teór. en Viña; 44.850 ha en Santa Juana).
+   - **$T+24\text{h}$ (Extinción Nocturna & Desaceleración):** Inversión térmica de medianoche ($\text{HR} > 80\%$, $\text{DFMC} > 16\%$) que detiene el avance frontal de copas y ensancha los flancos en rescoldos de sotobosque (3.850 ha en Viña; 21.500 ha en Día 1 de Santa Juana).
+   - **$T+48\text{h}$ (Ciclo Multidiurno Compuesto):** Vital para megaincendios de escala regional como Santa Juana 2023, que arden durante múltiples jornadas. Modela la secuencia física **[Día 1: Carrera Convectiva] $\to$ [Noche 1: Freno y Salto de Pavesas Biobío 2.4 km] $\to$ [Día 2: Re-ignición bajo Puelche y Carrera Paralela al Río]** hasta la inflexión sinóptica del 4 de febrero a las 12:00 UTC (viento NO $305^\circ$ y $\text{HR } 81\%$), consolidando las 44.850 ha proyectadas frente a las 42.599 ha observadas satelitalmente. En Viña del Mar, a $T+48\text{h}$ el fuego ya se encontraba contenido frontalmente por la vaguada marina y la trama urbana, estabilizándose en 4.120 ha teóricas.
 
 ---
 

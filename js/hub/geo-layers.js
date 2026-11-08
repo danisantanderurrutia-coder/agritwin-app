@@ -2751,6 +2751,7 @@
             const btn6h = document.getElementById('btnIsochrone_6h');
             const btnMax = document.getElementById('btnIsochrone_max');
             const btn24h = document.getElementById('btnIsochrone_24h');
+            const btn48h = document.getElementById('btnIsochrone_48h');
 
             const inactiveClass = 'py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer';
             const activeClass = 'py-1.5 px-1 rounded-lg bg-sky-600 text-white font-bold border border-sky-400 transition-all cursor-pointer shadow-md';
@@ -2759,6 +2760,7 @@
             if (btn6h) btn6h.className = (horizon === 6) ? activeClass : inactiveClass;
             if (btnMax) btnMax.className = (horizon === 'max') ? activeClass : inactiveClass;
             if (btn24h) btn24h.className = (horizon === 24) ? activeClass : inactiveClass;
+            if (btn48h) btn48h.className = (horizon === 48) ? activeClass : inactiveClass;
 
             const labelEl = document.getElementById('hindcastIsochroneLabel');
             const areaBadgeEl = document.getElementById('hindcastIsochroneAreaBadge');
@@ -2792,6 +2794,12 @@
                     widthKm = 4.8;
                     areaHaText = '3.850 ha (estabilizado)';
                     descText = 'Colapso nocturno del frente por vaguada marina (HR > 85%, DFMC > 16%); ensanchamiento de flancos sin avance hacia el norte.';
+                } else if (horizon === 48) {
+                    labelText = 'T+48h (Estabilización Post-Vaguada)';
+                    lenKm = 14.2;
+                    widthKm = 5.4;
+                    areaHaText = '4.120 ha (estabilizado)';
+                    descText = 'Frente norte contenido por tejido urbano y niebla marina; rescoldos y focos residuales en flancos de quebradas.';
                 } else { // 'max'
                     labelText = 'Pico Calibrado (9.5h)';
                     lenKm = 12.8;
@@ -2814,11 +2822,17 @@
                     areaHaText = '3.820 ha (teór)';
                     descText = 'Desarrollo de pirocúmulos y frente continuo hacia Santa Juana.';
                 } else if (horizon === 24) {
-                    labelText = 'T+24h (Cruce Biobío & Día 2)';
-                    lenKm = 36.0;
-                    widthKm = 17.5;
-                    areaHaText = '49.500 ha (teór)';
-                    descText = 'Fuego activo multidiurno con salto trans-ribera del río Biobío (2.4 km) previo al giro eólico del 4-feb.';
+                    labelText = 'T+24h (Fin Día 1 & Noche 🌙)';
+                    lenKm = 24.5;
+                    widthKm = 11.2;
+                    areaHaText = '21.500 ha (teór)';
+                    descText = 'Avance del primer día y desaceleración nocturna previa a la re-ignición del Día 2.';
+                } else if (horizon === 48) {
+                    labelText = 'T+48h (Multidiurno Completo ⚡)';
+                    lenKm = 34.5;
+                    widthKm = 15.8;
+                    areaHaText = '44.850 ha (teór)';
+                    descText = 'Ciclo multidiurno completo (Día 1 + Noche 1 + Carrera Día 2 cruzando el Biobío) hasta la inflexión sinóptica del 4-feb (viento NO 305° y HR 81%).';
                 } else { // 'max'
                     labelText = 'Pico Calibrado (20h)';
                     lenKm = 34.5;

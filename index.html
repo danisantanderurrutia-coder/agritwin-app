@@ -13723,7 +13723,7 @@ print(meniel_soil)</code></pre>
                     </span>
                     <span id="hindcastIsochroneLabel" class="text-amber-300 font-bold font-mono">Pico Calibrado</span>
                 </div>
-                <div class="grid grid-cols-4 gap-1 text-[9px] font-mono text-center">
+                <div class="grid grid-cols-5 gap-1 text-[9px] font-mono text-center">
                     <button type="button" id="btnIsochrone_2h" onclick="window.setHindcastTimeHorizon(2)" class="py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer">
                         +2h
                     </button>
@@ -13735,6 +13735,9 @@ print(meniel_soil)</code></pre>
                     </button>
                     <button type="button" id="btnIsochrone_24h" onclick="window.setHindcastTimeHorizon(24)" class="py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer" title="Simulación a 24h con extinción nocturna por HR > 80%">
                         +24h 🌙
+                    </button>
+                    <button type="button" id="btnIsochrone_48h" onclick="window.setHindcastTimeHorizon(48)" class="py-1.5 px-1 rounded-lg bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 transition-all cursor-pointer" title="Ciclo multidiurno a 48h: Día 1 + Noche 1 + Carrera Día 2 hasta inflexión sinóptica">
+                        +48h ⚡
                     </button>
                 </div>
                 <div class="flex items-center justify-between text-[9px] text-slate-400 font-sans pt-0.5 border-t border-white/5">
