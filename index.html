@@ -299,6 +299,16 @@
             }
         };
 
+        window.toggleAssetVaultVisibility = function() {
+            const el = document.getElementById('assetVaultContainer');
+            const icon = document.getElementById('iconToggleAssetVault');
+            const lbl = document.getElementById('lblToggleAssetVault');
+            if (!el) return;
+            const isHidden = el.classList.toggle('hidden');
+            if (icon) icon.innerText = isHidden ? '👁️' : '🙈';
+            if (lbl) lbl.innerText = isHidden ? 'Mostrar Galería' : 'Colapsar Galería';
+        };
+
         window.switchUqTab = function(tabId) {
             if (!tabId) tabId = 'benchmark';
             document.querySelectorAll('.uq-subcontent').forEach(el => el.classList.add('hidden'));
@@ -5880,20 +5890,283 @@
                 <!-- PILARES ESTRATÉGICOS CONSOLIDADOS: PAPER, PITCH & DOSSIER      -->
                 <!-- ============================================================== -->
 
-                <!-- Mirador de Cuenca: escena limpia (sin sprites ni tablero) -->
-                <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 font-sans">
-                    <div class="flex items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
+                <!-- Catálogo de Recursos Gráficos & Sprites (Asset Vault 100x100) -->
+                <div class="p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4 font-sans">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E7DAC6] pb-3">
                         <div class="flex items-center gap-2.5">
-                            <span class="text-xl p-1.5 rounded-lg bg-sky-50 border border-sky-200">🏔️</span>
+                            <span class="text-xl p-1.5 rounded-lg bg-amber-50 border border-amber-200">🎨</span>
                             <div>
-                                <h3 class="text-sm font-bold text-stone-900 font-serif">Mirador de Cuenca • Maule Sur</h3>
-                                <p class="text-[11px] text-stone-500">Escena panorámica del valle del Río Longaví. Clic para verla a tamaño completo.</p>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Catálogo de Recursos Gráficos, Fondos &amp; Sprites</h3>
+                                <p class="text-[11px] text-stone-500">Mosaico visual canónico del gemelo digital (tamaño ≤ 100×100 px). Preservación organizada de fondos, panal territorial y sprites.</p>
+                            </div>
+                        </div>
+                        <button onclick="toggleAssetVaultVisibility()" id="btnToggleAssetVault" class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer">
+                            <span id="iconToggleAssetVault">👁️</span> <span id="lblToggleAssetVault">Colapsar / Mostrar Galería</span>
+                        </button>
+                    </div>
+
+                    <div id="assetVaultContainer" class="space-y-5">
+                        <!-- Grupo 1: Fondos Territoriales & Panoramas -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🏔️</span> <span>Fondos Territoriales &amp; Panoramas (Incluye Mirador de Cuenca)</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/cerro_landing_bg.jpg" alt="Mirador de Cuenca • Maule Sur" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Mirador de Cuenca • Maule Sur</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/establo_landing_bg.jpg" alt="Fondo Establo • Ganadería" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Fondo Establo • Ganadería</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/invernadero_landing_bg.jpg" alt="Fondo Invernadero • Horticultura" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Fondo Invernadero • Horticultura</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/incursion_landing_bg.jpg" alt="Fondo Incursión • Rewilding" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Fondo Incursión • Rewilding</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/arbol_alquimico_splash.jpg" alt="Árbol Alquímico de Gobernanza" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Árbol Alquímico de Gobernanza</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo 2: Mosaicos del Panal Ecosistémico (Catan) -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>⬡</span> <span>Dibujos del Panal Ecosistémico (Tablero &amp; Mosaicos Catan)</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/parchment_board.jpg" alt="Tablero Pergamino Catan" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Tablero Pergamino Catan</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_forest.jpg" alt="Hexágono Bosque Nativo" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Bosque Nativo</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_colliguay.jpg" alt="Hexágono Colliguay Esclerófilo" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Colliguay Esclerófilo</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_pasture.jpg" alt="Hexágono Pradera PRV" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Pradera PRV</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_vineyard.jpg" alt="Hexágono Viñedo Agroecológico" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Viñedo Agroecológico</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_wheat.jpg" alt="Hexágono Trigo y Rastrojo" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Trigo y Rastrojo</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_water.jpg" alt="Hexágono Tranque y Humedal" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Tranque y Humedal</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_pines.jpg" alt="Hexágono Plantación Forestal" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Plantación Forestal</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/catan/tile_mountain.jpg" alt="Hexágono Montaña y Roca" class="max-w-full max-h-full object-cover" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Hexágono Montaña y Roca</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo 3: Sprites Isométricos de Cerro & Telemetría -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>📡</span> <span>Sprites Isométricos de Cerro &amp; Telemetría</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cerro_antenna.png" alt="Antena y Repetidor LoRaWAN" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Antena y Repetidor LoRaWAN</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cerro_telescope.png" alt="Telescopio Óptico Territorial" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Telescopio Óptico Territorial</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cerro_drone.png" alt="Drone Monitoreo Térmico" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Drone Monitoreo Térmico</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cerro_weather.png" alt="Estación Agroclimática" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Estación Agroclimática</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cerro_tablet.png" alt="Terminal Táctico de Terreno" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Terminal Táctico de Terreno</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_cerro_blueprints.png" alt="Planos Keyline e Hipsometría" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Planos Keyline e Hipsometría</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_b_iot_board.png" alt="Tablero Centinela IoT KioT" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Tablero Centinela IoT KioT</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_map_vecinal.png" alt="Mapa Catastral Vecinal" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Mapa Catastral Vecinal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo 4: Sprites de Mesa & Gobernanza -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🤝</span> <span>Sprites de Mesa &amp; Gobernanza Comunitaria</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_mesa_campfire.png" alt="Fogón y Mancomunidad" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Fogón y Mancomunidad</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_mesa_dao_urn.png" alt="Urna Votación Cuadrática DAO" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Urna Votación Cuadrática DAO</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_mesa_chalkboard.png" alt="Pizarra de Balance Hídrico" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Pizarra de Balance Hídrico</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_mesa_briefcase.png" alt="Portafolio Legal y Aguas DGA" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Portafolio Legal y Aguas DGA</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_mesa_pacts.png" alt="Pactos de Cuenca y Acuerdos" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Pactos de Cuenca y Acuerdos</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_mesa_radio.png" alt="Transmisor Radial de Emergencia" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Transmisor Radial de Emergencia</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo 5: Herramientas de Campo, Monitoreo & Identidad -->
+                        <div class="space-y-2">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5 border-b border-stone-100 pb-1">
+                                <span>🛠️</span> <span>Herramientas de Campo, Monitoreo &amp; Logotipos</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_a_clipboard.png" alt="Planilla Pastoreo PRV" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Planilla Pastoreo PRV</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_c_monitor.png" alt="Monitor Telemetría SCADA" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Monitor Telemetría SCADA</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_d_esg_book.png" alt="Libro Contabilidad Ecológica" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Libro Contabilidad Ecológica</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_e_radio.png" alt="Radio Comunicador VHF" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Radio Comunicador VHF</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/ui/sprite_f_toolbox.png" alt="Caja Herramientas de Terreno" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Caja Herramientas de Terreno</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/agritwin_isotype_clean.png" alt="Isotipo AgriTwin Limpio" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Isotipo AgriTwin Limpio</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/agritwin_logo_1.png" alt="Logotipo Oficial AgriTwin" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Logotipo Oficial AgriTwin</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] flex flex-col items-center justify-between text-center space-y-1.5 shadow-2xs">
+                                    <div class="w-[96px] h-[96px] rounded-lg overflow-hidden border border-stone-200/80 bg-white flex items-center justify-center shrink-0 p-1">
+                                        <img src="assets/favicon-192.png" alt="Favicon Oficial 192" class="max-w-full max-h-full object-contain" loading="lazy">
+                                    </div>
+                                    <span class="text-[9.5px] font-mono font-bold text-stone-800 line-clamp-2 leading-tight w-full px-0.5">Favicon Oficial 192</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <a href="assets/ui/cerro_landing_bg.jpg" target="_blank" rel="noopener" class="block rounded-xl overflow-hidden border border-[#E7DAC6] shadow-sm group">
-                        <img src="assets/ui/cerro_landing_bg.jpg" alt="Mirador de Cuenca Maule Sur" class="w-full h-auto group-hover:scale-[1.01] transition-transform duration-500" loading="lazy">
-                    </a>
                 </div>
 
                 <!-- Banner Destacado: INFORME TÉCNICO DE AUDITORÍA RETROSPECTIVA CIEGA (HINDCAST) -->
