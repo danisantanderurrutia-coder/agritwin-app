@@ -17967,21 +17967,54 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             setTimeout(() => {
+                const shouldMinimize = urlParams.get('minimize') !== '0';
                 if (typeof switchMasterView === 'function') {
                     switchMasterView('territory', 'cerro');
                 }
                 if (typeof window.loadHindcastBenchmarkInCuenca === 'function') {
-                    window.loadHindcastBenchmarkInCuenca(hindcastParam);
-                    if (typeof window.openVinaBenchmarkDrawer === 'function') {
-                        window.openVinaBenchmarkDrawer();
-                    }
-                    if (presetParam && typeof window.applyHindcastLayerPreset === 'function') {
-                        setTimeout(() => {
-                            window.applyHindcastLayerPreset(presetParam);
-                        }, 500);
-                    }
+                    window.loadHindcastBenchmarkInCuenca(hindcastParam, presetParam || 'todas', shouldMinimize);
                 }
-            }, 800);
+
+                // Minimizar paneles laterales para maximizar el área cartográfica satelital
+                if (shouldMinimize) {
+                    setTimeout(() => {
+                        // Minimizar lateral derecho (Visor Táctico de Riesgos)
+                        const sidebar = document.getElementById('territorialSidebar');
+                        if (sidebar) {
+                            sidebar.classList.add('sidebar-collapsed');
+                            sidebar.style.display = 'none';
+                            sidebar.style.transform = 'translateX(100%)';
+                            sidebar.style.pointerEvents = 'none';
+                        }
+                        const expandBtn = document.getElementById('btnExpandTerritorialSidebar');
+                        if (expandBtn) expandBtn.classList.remove('hidden');
+
+                        // Minimizar lateral izquierdo (Drawer de Auditoría)
+                        const drawer = document.getElementById('vinaBenchmarkDrawer');
+                        if (drawer) {
+                            drawer.classList.add('hidden');
+                            drawer.style.display = 'none';
+                        }
+                        const btnToggle = document.getElementById('btnToggleVinaDrawer');
+                        if (btnToggle) {
+                            btnToggle.classList.remove('hidden');
+                        }
+
+                        // Recalibrar mapa Leaflet a pantalla completa
+                        if (window.map) {
+                            window.map.invalidateSize(true);
+                            const fallbackBounds = {
+                                vina_2024: L.latLngBounds([[-33.16, -71.56], [-33.01, -71.41]]),
+                                santa_juana_2023: L.latLngBounds([[-37.45, -73.15], [-37.10, -72.70]])
+                            };
+                            const b = (window.hindcastBoundsByEvent && window.hindcastBoundsByEvent[hindcastParam]) || fallbackBounds[hindcastParam];
+                            if (b && b.isValid()) {
+                                window.map.fitBounds(b, { padding: [40, 40] });
+                            }
+                        }
+                    }, 800);
+                }
+            }, 600);
         }
     } catch(e) {
         console.warn('Auto-init hindcast param error:', e);

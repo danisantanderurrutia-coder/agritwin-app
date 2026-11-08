@@ -2748,10 +2748,13 @@
         };
 
         // Controlador Maestro: Carga el Benchmark Hindcast en el mapa y la barra lateral
-        window.loadHindcastBenchmarkInCuenca = function(eventKey, initialPreset) {
+        window.loadHindcastBenchmarkInCuenca = function(eventKey, initialPreset, minimizeSidebars) {
             const isVina = (eventKey === 'vina_2024');
             window.currentHindcastEvent = eventKey;
             const evSlug = isVina ? 'vina' : 'santajuana';
+
+            const urlP = new URLSearchParams(window.location.search);
+            const shouldMinimize = (minimizeSidebars !== undefined) ? !!minimizeSidebars : (urlP.get('minimize') === '1');
 
             if (history && history.replaceState) {
                 history.replaceState(null, null, '#cuenca-incendios?evento=' + evSlug);
@@ -2763,15 +2766,27 @@
 
             // 1. Asegurar vista Cuenca / Cerro completa con todos sus elementos visibles
             if (typeof switchMasterView === 'function') switchMasterView('territory', 'cerro');
+            if (typeof window.setMapBaseLayer === 'function') {
+                window.setMapBaseLayer('esriSat');
+            }
             const cerroSatNav = document.getElementById('cerroSatelliteSubdeckNav');
             if (cerroSatNav) cerroSatNav.style.display = 'flex';
             const sidebar = document.getElementById('territorialSidebar');
             if (sidebar) {
                 sidebar.style.top = '98px';
-                sidebar.style.display = 'flex';
-                sidebar.classList.remove('sidebar-collapsed');
-                sidebar.style.transform = 'translateX(0)';
-                sidebar.style.pointerEvents = 'auto';
+                if (shouldMinimize) {
+                    sidebar.classList.add('sidebar-collapsed');
+                    sidebar.style.display = 'none';
+                    sidebar.style.transform = 'translateX(100%)';
+                    sidebar.style.pointerEvents = 'none';
+                    const expandBtn = document.getElementById('btnExpandTerritorialSidebar');
+                    if (expandBtn) expandBtn.classList.remove('hidden');
+                } else {
+                    sidebar.style.display = 'flex';
+                    sidebar.classList.remove('sidebar-collapsed');
+                    sidebar.style.transform = 'translateX(0)';
+                    sidebar.style.pointerEvents = 'auto';
+                }
             }
             const mapDock = document.getElementById('cuencaMapControlDock');
             if (mapDock) mapDock.style.display = 'flex';
@@ -2782,7 +2797,7 @@
 
             // 2. Abrir pestaña de Riesgos Climáticos en barra lateral derecha ("Visor Táctico")
             if (typeof window.selectSidebarTab === 'function') {
-                window.selectSidebarTab('tab-riesgos');
+                window.selectSidebarTab('tab-riesgos', !shouldMinimize);
             } else {
                 const btnRiesgos = document.querySelector('.tab-btn[data-target="tab-riesgos"]');
                 if (btnRiesgos) btnRiesgos.click();
@@ -3368,7 +3383,31 @@
             if (typeof window.updateBenchmarkDrawerForEvent === 'function') {
                 window.updateBenchmarkDrawerForEvent(eventKey);
             }
-            window.openVinaBenchmarkDrawer();
+            if (shouldMinimize) {
+                window.closeVinaBenchmarkDrawer();
+                const drawer = document.getElementById('vinaBenchmarkDrawer');
+                if (drawer) {
+                    drawer.classList.add('hidden');
+                    drawer.style.display = 'none';
+                }
+                const btnDrawer = document.getElementById('btnToggleVinaDrawer');
+                if (btnDrawer) btnDrawer.classList.remove('hidden');
+
+                if (typeof window.toggleTerritorialSidebar === 'function') {
+                    window.toggleTerritorialSidebar(false);
+                }
+                const sidebar = document.getElementById('territorialSidebar');
+                if (sidebar) {
+                    sidebar.classList.add('sidebar-collapsed');
+                    sidebar.style.display = 'none';
+                    sidebar.style.transform = 'translateX(100%)';
+                    sidebar.style.pointerEvents = 'none';
+                }
+                const expandBtn = document.getElementById('btnExpandTerritorialSidebar');
+                if (expandBtn) expandBtn.classList.remove('hidden');
+            } else {
+                window.openVinaBenchmarkDrawer();
+            }
             if (initialPreset) {
                 window.applyHindcastLayerPreset(initialPreset);
             } else {
@@ -7065,14 +7104,15 @@
             });
         });
 
-        function selectSidebarTab(tabId) {
+        function selectSidebarTab(tabId, forceOpen) {
             if (tabId === 'tab-windy' || tabId === 'tab-water') tabId = 'tab-tiempo';
             if (tabId === 'tab-territory' || tabId === 'tab-centinela') tabId = 'tab-sig';
             if (tabId === 'tab-tactico') tabId = 'tab-riesgos';
             if (tabId === 'tab-tranques' || tabId === 'tab-agua') tabId = 'tab-recursos';
             const btn = document.querySelector(`.tab-btn[data-target="${tabId}"]`);
             if (btn) btn.click();
-            if (typeof window.toggleTerritorialSidebar === 'function') {
+            const shouldOpen = (forceOpen !== undefined) ? !!forceOpen : true;
+            if (shouldOpen && typeof window.toggleTerritorialSidebar === 'function') {
                 window.toggleTerritorialSidebar(true);
             }
         }

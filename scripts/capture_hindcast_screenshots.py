@@ -81,7 +81,7 @@ def main():
     print("═══════════════════════════════════════════════════════════════════")
 
     for idx, t in enumerate(TASKS, 1):
-        target_url = f"{BASE_URL}/?hindcast={t['event']}&preset={t['preset']}"
+        target_url = f"{BASE_URL}/?hindcast={t['event']}&preset={t['preset']}&minimize=1"
         out_path = os.path.join(OUTPUT_DIR, t['outfile'])
         print(f"[{idx}/{len(TASKS)}] Capturando: {t['desc']}...")
         print(f"     URL: {target_url}")
@@ -92,13 +92,13 @@ def main():
             "--headless=new",
             f"--screenshot={out_path}",
             "--window-size=1600,1000",
-            "--virtual-time-budget=7500",
+            "--virtual-time-budget=12000",
             "--hide-scrollbars",
             target_url
         ]
 
         try:
-            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=35)
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=45)
             if os.path.exists(out_path) and os.path.getsize(out_path) > 10000:
                 sz_kb = os.path.getsize(out_path) / 1024
                 print(f"     ✔ OK ({sz_kb:.1f} KB)")
