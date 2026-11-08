@@ -2351,6 +2351,20 @@
                     : 'py-1 px-2 rounded-lg text-[10px] font-bold bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 cursor-pointer';
             }
 
+            const distBadge = document.getElementById('drawerFarmDistanceBadge');
+            if (distBadge) {
+                const originPt = isVina ? L.latLng(-33.1380, -71.4980) : L.latLng(-37.3820, -72.7850);
+                const prof = (window.farmProfileManager && window.farmProfileManager.getActiveProfile)
+                    ? window.farmProfileManager.getActiveProfile()
+                    : null;
+                const farmLat = prof?.coordinates?.lat || -36.2115;
+                const farmLon = prof?.coordinates?.lon || -71.6050;
+                const distKm = (typeof map !== 'undefined' && map)
+                    ? (map.distance(originPt, L.latLng(farmLat, farmLon)) / 1000).toFixed(1)
+                    : (isVina ? '341.9' : '135.0');
+                distBadge.innerText = `${distKm} km desde ${activeFarmName}`;
+            }
+
             const infoIncendio = document.getElementById('vinaDrawerContent-incendio');
             const infoRiesgo = document.getElementById('vinaDrawerContent-riesgo');
             const infoComparar = document.getElementById('vinaDrawerContent-comparar');
@@ -2626,6 +2640,20 @@
             if (chkR && chkR.checked !== window.hindcastLayersState.prediccion) chkR.checked = window.hindcastLayersState.prediccion;
 
             // Actualizar vistas del drawer según la combinación activa
+            const distBadge = document.getElementById('drawerFarmDistanceBadge');
+            if (distBadge) {
+                const originPt = isVina ? L.latLng(-33.1380, -71.4980) : L.latLng(-37.3820, -72.7850);
+                const prof = (window.farmProfileManager && window.farmProfileManager.getActiveProfile)
+                    ? window.farmProfileManager.getActiveProfile()
+                    : null;
+                const farmLat = prof?.coordinates?.lat || -36.2115;
+                const farmLon = prof?.coordinates?.lon || -71.6050;
+                const distKm = (typeof map !== 'undefined' && map)
+                    ? (map.distance(originPt, L.latLng(farmLat, farmLon)) / 1000).toFixed(1)
+                    : (isVina ? '341.9' : '135.0');
+                distBadge.innerText = `${distKm} km desde ${activeFarmName}`;
+            }
+
             const infoIncendio = document.getElementById('vinaDrawerContent-incendio');
             const infoRiesgo = document.getElementById('vinaDrawerContent-riesgo');
             const infoComparar = document.getElementById('vinaDrawerContent-comparar');
@@ -2736,8 +2764,6 @@
             const lat = prof?.coordinates?.lat || -36.2115;
             const lon = prof?.coordinates?.lon || -71.6050;
             map.flyTo([lat, lon], 13, { duration: 1.2 });
-            const hud = document.getElementById('hindcastMapHUD');
-            if (hud) hud.classList.add('hidden');
             if (map.hasLayer(hindcastSimulationLayer)) map.removeLayer(hindcastSimulationLayer);
             if (map.hasLayer(hindcastTacticalLayer)) map.removeLayer(hindcastTacticalLayer);
             if (map.hasLayer(hindcastPredictionLayer)) map.removeLayer(hindcastPredictionLayer);
@@ -3480,17 +3506,9 @@
                 });
             }
 
-            // 9. Mostrar y actualizar HUD flotante en el mapa
-            const hud = document.getElementById('hindcastMapHUD');
-            if (hud) {
-                hud.classList.remove('hidden');
-                document.getElementById('hindcastHudTitle').innerText = titleEvent;
-                document.getElementById('hindcastHudObsArea').innerText = scarAreaHa;
-                document.getElementById('hindcastHudSimArea').innerText = simAreaHa;
-                document.getElementById('hindcastHudWind').innerText = `${windLabel} ${windGust}`;
-                document.getElementById('hindcastHudTemp').innerText = `${tempC} · HR ${hrPct}`;
-                document.getElementById('hindcastHudRain').innerText = rain90d;
-
+            // 9. Actualizar badge de distancia en drawer de benchmark
+            const distBadge = document.getElementById('drawerFarmDistanceBadge');
+            if (distBadge) {
                 const prof = (window.farmProfileManager && window.farmProfileManager.getActiveProfile)
                     ? window.farmProfileManager.getActiveProfile()
                     : null;
@@ -3498,7 +3516,7 @@
                 const farmLat = prof?.coordinates?.lat || -36.2115;
                 const farmLon = prof?.coordinates?.lon || -71.6050;
                 const distKm = (map.distance(L.latLng(originLat, originLng), L.latLng(farmLat, farmLon)) / 1000).toFixed(1);
-                document.getElementById('hindcastHudFarmDist').innerText = `${distKm} km desde ${farmName}`;
+                distBadge.innerText = `${distKm} km desde ${farmName}`;
             }
 
             // 10. Sincronizar botones en la barra lateral

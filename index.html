@@ -13644,6 +13644,14 @@ print(meniel_soil)</code></pre>
                     🔥 Viña del Mar 2024 (2.989 ha)
                 </button>
             </div>
+
+            <!-- Pastilla de Distancia Predial y Telemetría Rápida (incorporada del HUD de operaciones anterior) -->
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-black/60 border border-purple-500/30 text-[10px]">
+                <span class="text-slate-300 flex items-center gap-1.5 font-sans">
+                    <span class="text-xs">📍</span> Distancia a tu predio activo:
+                </span>
+                <b id="drawerFarmDistanceBadge" class="text-purple-300 font-mono font-bold">Calculando...</b>
+            </div>
             <p class="text-[10px] text-slate-300 font-sans leading-snug">
                 Contraste verídico entre el <strong>Incendio Real Observado</strong> (satélite dNBR post-evento) vs la <strong>Retro-Proyección Ciega T-24h</strong> (calculada solo con insumos previos al evento).
             </p>
@@ -13861,69 +13869,6 @@ print(meniel_soil)</code></pre>
                 </button>
             </div>
 
-        </div>
-    </div>
-
-    <!-- FLOATING BENCHMARK HINDCAST MAP HUD (Overlay interactivo en Mirador Cuenca) -->
-    <div id="hindcastMapHUD" class="hidden absolute bottom-36 left-6 z-30 w-96 max-w-[calc(100vw-3rem)] bg-[#070e1a]/95 backdrop-blur-2xl border border-rose-500/60 p-3.5 rounded-2xl shadow-2xl space-y-2.5 text-slate-200 font-mono text-xs select-none">
-        <div class="flex items-center justify-between border-b border-rose-500/30 pb-2">
-            <div class="flex items-center gap-2">
-                <span class="text-base p-1 rounded-lg bg-rose-950/80 border border-rose-500/40 text-rose-300">🔥🛰️</span>
-                <div>
-                    <span class="text-[9px] font-bold text-rose-400 uppercase tracking-wider block">BENCHMARK HINDCAST CANÓNICO</span>
-                    <strong id="hindcastHudTitle" class="text-xs text-white font-bold font-sans">Santa Juana 2023</strong>
-                </div>
-            </div>
-            <button onclick="document.getElementById('hindcastMapHUD').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer" title="Cerrar HUD">✕</button>
-        </div>
-
-        <!-- Métricas comparativas lado a lado -->
-        <div class="grid grid-cols-2 gap-2 text-[10.5px]">
-            <div class="p-2 rounded-xl bg-black/60 border border-rose-500/30 space-y-0.5">
-                <span class="text-slate-400 text-[9px] block flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-sm bg-rose-500"></span> Observado (Sentinel-2 dNBR):
-                </span>
-                <b id="hindcastHudObsArea" class="text-rose-300 text-xs font-black">42.599 ha</b>
-            </div>
-            <div class="p-2 rounded-xl bg-black/60 border border-amber-500/30 space-y-0.5">
-                <span class="text-slate-400 text-[9px] block flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-sm bg-amber-500"></span> Simulado (Rothermel-Fons):
-                </span>
-                <b id="hindcastHudSimArea" class="text-amber-300 text-xs font-black">44.850 ha</b>
-            </div>
-        </div>
-
-        <!-- Clima y Viento ERA5 de esa semana -->
-        <div class="p-2 rounded-xl bg-slate-900/80 border border-white/5 space-y-1 text-[10px]">
-            <div class="flex justify-between items-center text-slate-300">
-                <span>🌪️ Viento Sinóptico ERA5:</span>
-                <b id="hindcastHudWind" class="text-sky-300 font-bold">SE 58 km/h</b>
-            </div>
-            <div class="flex justify-between items-center text-slate-300">
-                <span>🌡️ Temperatura & HR:</span>
-                <b id="hindcastHudTemp" class="text-amber-200">40,0 °C · HR 11%</b>
-            </div>
-            <div class="flex justify-between items-center text-slate-300">
-                <span>🌧️ Lluvia 90d previa:</span>
-                <b id="hindcastHudRain" class="text-emerald-300">96,8 mm</b>
-            </div>
-            <div class="flex justify-between items-center pt-1 border-t border-white/10 text-[9.5px] text-purple-300">
-                <span>📍 Distancia a tu predio:</span>
-                <b id="hindcastHudFarmDist" class="text-purple-200">135 km desde Fundo Meniel</b>
-            </div>
-        </div>
-
-        <!-- Botones de Acción Rápida -->
-        <div class="flex items-center gap-1.5 pt-0.5">
-            <button onclick="window.toggleHindcastSimulationLayer()" id="btnToggleHindcastEllipse" class="flex-1 py-1.5 px-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-amber-200 hover:text-white text-[10px] font-bold text-center transition-all cursor-pointer">
-                🎯 Capa Táctica AgriTwin (ON/OFF)
-            </button>
-            <button onclick="window.returnToActiveFarmFromHindcast()" class="py-1.5 px-2.5 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 border border-sky-400/50 text-sky-200 hover:text-white text-[10px] font-bold transition-all cursor-pointer" title="Volver a centrar el mapa en tu predio activo">
-                🏠 Mi Predio
-            </button>
-            <a href="docs/INFORME_HINDCAST_REAL_IMPRIMIBLE.html" target="_blank" class="py-1.5 px-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold transition-all flex items-center justify-center cursor-pointer shadow-sm" title="Abrir Informe Técnico Imprimible">
-                📄 Informe
-            </a>
         </div>
     </div>
 
