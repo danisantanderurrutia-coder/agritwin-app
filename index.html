@@ -13312,18 +13312,61 @@ print(meniel_soil)</code></pre>
             </p>
         </div>
 
-        <!-- SELECTOR MAESTRO GLOBAL TRIPARTITO (EL NÚCLEO DE LA COMPARACIÓN) -->
-        <div class="p-2.5 bg-black/60 border-b border-white/10 shrink-0 space-y-1.5">
-            <span class="text-[9.5px] text-slate-400 font-mono block uppercase tracking-wider">Modo de Visualización en Pantalla:</span>
-            <div class="grid grid-cols-3 gap-1 bg-black/80 p-1 rounded-xl border border-white/10 text-[10px]">
-                <button onclick="window.setVinaDisplayMode('incendio')" id="btnVinaMode-incendio" class="py-1.5 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-black/40 hover:bg-white/10 text-slate-300 border border-white/5">
-                    🔥 1. Incendio
+        <!-- SELECTOR MAESTRO DE 3 CAPAS INDEPENDIENTES (TOGGLES TRILATERALES) -->
+        <div class="p-2.5 bg-black/70 border-b border-white/10 shrink-0 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-[9.5px] text-slate-400 font-mono block uppercase tracking-wider">Capas en Pantalla (Activar / Desactivar):</span>
+                <span class="text-[8.5px] font-mono text-purple-300">Auditoría Trilateral</span>
+            </div>
+            
+            <div class="space-y-1.5 font-mono text-[10.5px]">
+                <!-- Capa 1: Polígono Histórico -->
+                <label class="flex items-center justify-between p-2 rounded-xl bg-black/50 hover:bg-white/5 border border-rose-500/30 transition-all cursor-pointer select-none">
+                    <span class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-md bg-rose-500 shadow-sm border border-rose-300"></span>
+                        <span class="font-bold text-rose-300">1. Polígono Histórico</span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] text-slate-400 font-sans hidden sm:inline">(Cicatriz dNBR 20m)</span>
+                        <input type="checkbox" id="chkHindcastLayerPoligono" onchange="window.setHindcastLayerState('poligono', this.checked)" checked class="w-4 h-4 accent-rose-500 cursor-pointer">
+                    </div>
+                </label>
+
+                <!-- Capa 2: Reconstrucción Histórica -->
+                <label class="flex items-center justify-between p-2 rounded-xl bg-black/50 hover:bg-white/5 border border-amber-500/30 transition-all cursor-pointer select-none">
+                    <span class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-md bg-amber-500 shadow-sm border border-amber-300"></span>
+                        <span class="font-bold text-amber-300">2. Reconstrucción Histórica</span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] text-slate-400 font-sans hidden sm:inline">(Haces, pavesas, 60fps)</span>
+                        <input type="checkbox" id="chkHindcastLayerHistorica" onchange="window.setHindcastLayerState('historica', this.checked)" checked class="w-4 h-4 accent-amber-500 cursor-pointer">
+                    </div>
+                </label>
+
+                <!-- Capa 3: Reconstrucción Predicción -->
+                <label class="flex items-center justify-between p-2 rounded-xl bg-black/50 hover:bg-white/5 border border-sky-500/30 transition-all cursor-pointer select-none">
+                    <span class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-md bg-sky-500 shadow-sm border border-sky-300"></span>
+                        <span class="font-bold text-sky-300">3. Reconstrucción Predicción</span>
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] text-slate-400 font-sans hidden sm:inline">(Elipse ciega T-24h)</span>
+                        <input type="checkbox" id="chkHindcastLayerPrediccion" onchange="window.setHindcastLayerState('prediccion', this.checked)" checked class="w-4 h-4 accent-sky-500 cursor-pointer">
+                    </div>
+                </label>
+            </div>
+            
+            <!-- Botonera Rápida de Presets de Visualización -->
+            <div class="grid grid-cols-3 gap-1 pt-0.5 text-[9px] font-mono text-center">
+                <button type="button" onclick="window.applyHindcastLayerPreset('solo_poligono')" class="py-1 px-1 rounded-lg bg-black/40 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5 transition-all cursor-pointer">
+                    Solo Histórico
                 </button>
-                <button onclick="window.setVinaDisplayMode('riesgo')" id="btnVinaMode-riesgo" class="py-1.5 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-black/40 hover:bg-white/10 text-slate-300 border border-white/5">
-                    🛡️ 2. Riesgo
+                <button type="button" onclick="window.applyHindcastLayerPreset('ciega_vs_real')" class="py-1 px-1 rounded-lg bg-black/40 hover:bg-white/10 text-sky-300 hover:text-white border border-sky-500/30 transition-all cursor-pointer">
+                    Ciega vs Real
                 </button>
-                <button onclick="window.setVinaDisplayMode('comparar')" id="btnVinaMode-comparar" class="py-1.5 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-rose-600 text-white shadow-md border border-rose-400">
-                    ⚖️ 3. Comparar
+                <button type="button" onclick="window.applyHindcastLayerPreset('todas')" class="py-1 px-1 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 text-purple-200 border border-purple-500/30 transition-all cursor-pointer font-bold">
+                    Trilateral (3)
                 </button>
             </div>
         </div>
@@ -17567,28 +17610,31 @@ print(meniel_soil)</code></pre>
 </script>
 
 <script>
-function copyRScriptCode() {
-    fetch('scripts/r_benchmark_cases.R')
-        .then(response => response.text())
-        .then(text => {
-            navigator.clipboard.writeText(text).then(() => {
-                const btnText = document.getElementById('copyRScriptText');
-                if (btnText) {
-                    const original = btnText.innerText;
-                    btnText.innerText = '¡Copiado al Portapapeles!';
-                    btnText.classList.add('text-emerald-400');
-                    setTimeout(() => {
-                        btnText.innerText = original;
-                        btnText.classList.remove('text-emerald-400');
-                    }, 2500);
+// Auto-ejecución opcional para auditoría satelital, capturas headless o enlaces directos
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hindcastParam = urlParams.get('hindcast') || (window.location.hash.includes('evento=vina') ? 'vina_2024' : (window.location.hash.includes('evento=santajuana') ? 'santa_juana_2023' : null));
+        const presetParam = urlParams.get('preset'); // 'solo_poligono' | 'historica' | 'prediccion' | 'ciega_vs_real' | 'todas'
+        
+        if (hindcastParam) {
+            setTimeout(() => {
+                if (typeof window.loadHindcastBenchmarkInCuenca === 'function') {
+                    window.loadHindcastBenchmarkInCuenca(hindcastParam);
+                    if (presetParam && typeof window.applyHindcastLayerPreset === 'function') {
+                        setTimeout(() => {
+                            window.applyHindcastLayerPreset(presetParam);
+                        }, 700);
+                    }
                 }
-            });
-        })
-        .catch(err => {
-            console.error('Error al leer script R:', err);
-        });
-}
+            }, 1200);
+        }
+    } catch(e) {
+        console.warn('Auto-init hindcast param error:', e);
+    }
+});
 </script>
+
 
 
 

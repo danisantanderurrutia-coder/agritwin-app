@@ -2237,10 +2237,30 @@
             })
             .catch(err => console.warn('[Hindcast] No se pudo cargar data/hindcast_sites.json:', err));
 
-        // Capa de simulación teórica comparativa Rothermel-Fons
+        // ── CAPAS TRILATERALES DE AUDITORÍA HINDCAST (3 NIVELES INDEPENDIENTES) ──
+        // Capa 1: Polígono Histórico Observado (Sentinel-2 dNBR) -> window.hindcastSitesLayer (declarado arriba)
+
+        // Capa 2: Reconstrucción Histórica A Posteriori (Haces Huygens, celdas orográficas, salto pavesas Albini, fajas cortafuego)
+        const hindcastTacticalLayer = L.layerGroup();
+        overlayLayers['hindcast_tactical'] = hindcastTacticalLayer;
+        window.hindcastTacticalLayer = hindcastTacticalLayer;
+
+        // Capa 3: Reconstrucción Predicción Ciega A Priori (Elipse teórica Rothermel-Fons T-24h, vector ERA5, foco ignición)
+        const hindcastPredictionLayer = L.layerGroup();
+        overlayLayers['hindcast_prediction'] = hindcastPredictionLayer;
+        window.hindcastPredictionLayer = hindcastPredictionLayer;
+
+        // Capa combinada para compatibilidad retroactiva
         const hindcastSimulationLayer = L.layerGroup();
         overlayLayers['hindcast_simulation'] = hindcastSimulationLayer;
         window.hindcastSimulationLayer = hindcastSimulationLayer;
+
+        // Estado trilateral independiente
+        window.hindcastLayersState = {
+            poligono: true,
+            historica: true,
+            prediccion: true
+        };
 
         // Generador geodésico de elipse de fuego orientada (Rothermel-Fons)
         function generateFireEllipseCoords(originLat, originLng, lengthKm, widthKm, bearingDeg, numPoints = 48) {
@@ -2549,74 +2569,135 @@
             }
         };
 
-        window.setVinaDisplayMode = function(mode) {
-            window.activeVinaMode = mode;
+        // ── CONTROLADOR MAESTRO DE CAPAS TRILATERALES INDEPENDIENTES ──
+        window.setHindcastLayerState = function(layerKey, isChecked) {
+            const checked = (isChecked !== undefined) ? !!isChecked : !window.hindcastLayersState[layerKey];
+            window.hindcastLayersState[layerKey] = checked;
+
             const isVina = (window.currentHindcastEvent !== 'santa_juana_2023');
             const evWindDir = isVina ? 190 : 150;
             const evWindSpeed = isVina ? 35 : 38;
-            const evBadgeLabel = isVina ? 'ACTIVO (VIÑA)' : 'ACTIVO (STA JUANA)';
 
-            // Actualizar botones en drawer
-            ['incendio', 'riesgo', 'comparar'].forEach(m => {
-                const b = document.getElementById(`btnVinaMode-${m}`);
-                if (b) {
-                    if (m === mode) {
-                        b.className = 'py-2 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-rose-600 text-white shadow-md border border-rose-400';
-                    } else {
-                        b.className = 'py-2 px-1 rounded-lg text-center font-bold transition-all cursor-pointer bg-black/40 hover:bg-white/10 text-slate-300 border border-white/5';
+            // Capa 1: Polígono Histórico Observado (dNBR Sentinel-2)
+            if (layerKey === 'poligono') {
+                if (checked) {
+                    if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
+                } else {
+                    if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
+                }
+            }
+
+            // Capa 2: Reconstrucción Histórica A Posteriori (Haces balísticos, celdas orográficas, pavesas Albini y Flujos Vivos 60fps)
+            if (layerKey === 'historica') {
+                if (checked) {
+                    if (!map.hasLayer(hindcastTacticalLayer)) hindcastTacticalLayer.addTo(map);
+                    if (window.energyFlowEngine) {
+                        window.energyFlowEngine.toggle('fireWave', true);
+                        window.energyFlowEngine.toggles.wind = true;
+                        window.energyFlowEngine.windDir = evWindDir;
+                        window.energyFlowEngine.windSpeed = evWindSpeed;
+                        window.energyFlowEngine.render();
+                    }
+                } else {
+                    if (map.hasLayer(hindcastTacticalLayer)) map.removeLayer(hindcastTacticalLayer);
+                    // Solo apagar flujos si tampoco está activa la predicción
+                    if (!window.hindcastLayersState.prediccion && window.energyFlowEngine) {
+                        window.energyFlowEngine.toggle('fireWave', false);
+                        window.energyFlowEngine.render();
                     }
                 }
-            });
+            }
 
-            // Actualizar bloques informativos dentro del drawer
+            // Capa 3: Reconstrucción Predicción Ciega A Priori (Elipse Rothermel-Fons ciega T-24h, foco ignición y viento ERA5)
+            if (layerKey === 'prediccion') {
+                if (checked) {
+                    if (!map.hasLayer(hindcastPredictionLayer)) hindcastPredictionLayer.addTo(map);
+                } else {
+                    if (map.hasLayer(hindcastPredictionLayer)) map.removeLayer(hindcastPredictionLayer);
+                }
+            }
+
+            // Sincronizar checkboxes en el drawer
+            const chkP = document.getElementById('chkHindcastLayerPoligono');
+            const chkH = document.getElementById('chkHindcastLayerHistorica');
+            const chkR = document.getElementById('chkHindcastLayerPrediccion');
+            if (chkP && chkP.checked !== window.hindcastLayersState.poligono) chkP.checked = window.hindcastLayersState.poligono;
+            if (chkH && chkH.checked !== window.hindcastLayersState.historica) chkH.checked = window.hindcastLayersState.historica;
+            if (chkR && chkR.checked !== window.hindcastLayersState.prediccion) chkR.checked = window.hindcastLayersState.prediccion;
+
+            // Actualizar vistas del drawer según la combinación activa
             const infoIncendio = document.getElementById('vinaDrawerContent-incendio');
             const infoRiesgo = document.getElementById('vinaDrawerContent-riesgo');
             const infoComparar = document.getElementById('vinaDrawerContent-comparar');
-            if (infoIncendio) infoIncendio.className = (mode === 'incendio') ? 'space-y-3' : 'hidden space-y-3';
-            if (infoRiesgo) infoRiesgo.className = (mode === 'riesgo') ? 'space-y-3' : 'hidden space-y-3';
-            if (infoComparar) infoComparar.className = (mode === 'comparar') ? 'space-y-3' : 'hidden space-y-3';
 
-            // Control de Capas en el Mapa Leaflet y Flujos Vivos (Living Energy Flow 60 FPS)
-            const badgeVectors = document.getElementById('badgeSidebarFireVectors');
-            if (mode === 'incendio') {
-                // Solo cicatriz real observada (rojo)
-                if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
-                if (map.hasLayer(hindcastSimulationLayer)) map.removeLayer(hindcastSimulationLayer);
-                if (window.energyFlowEngine) window.energyFlowEngine.toggle('fireWave', false);
-                if (badgeVectors) {
-                    badgeVectors.innerText = 'INACTIVO';
-                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-400 font-mono';
-                }
-            } else if (mode === 'riesgo') {
-                // Solo emulación táctica preventiva de AgriTwin (transectos, haces, faja, pavesas, flujos)
-                if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
-                if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
-                if (window.energyFlowEngine) {
-                    window.energyFlowEngine.toggle('fireWave', true);
-                    window.energyFlowEngine.toggles.wind = true;
-                    window.energyFlowEngine.windDir = evWindDir;
-                    window.energyFlowEngine.windSpeed = evWindSpeed;
-                    window.energyFlowEngine.render();
-                }
-                if (badgeVectors) {
-                    badgeVectors.innerText = evBadgeLabel;
-                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-red-600 text-white font-mono font-bold';
-                }
+            const hasP = window.hindcastLayersState.poligono;
+            const hasH = window.hindcastLayersState.historica;
+            const hasR = window.hindcastLayersState.prediccion;
+
+            if (hasP && !hasH && !hasR) {
+                // Solo histórico observado
+                if (infoIncendio) infoIncendio.classList.remove('hidden');
+                if (infoRiesgo) infoRiesgo.classList.add('hidden');
+                if (infoComparar) infoComparar.classList.add('hidden');
+            } else if (!hasP && (hasH || hasR)) {
+                // Solo reconstrucción o predicción
+                if (infoIncendio) infoIncendio.classList.add('hidden');
+                if (infoRiesgo) infoRiesgo.classList.remove('hidden');
+                if (infoComparar) infoComparar.classList.add('hidden');
             } else {
-                // Modo 'comparar': AMBAS capas activas simultáneamente + flujos
-                if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
-                if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
-                if (window.energyFlowEngine) {
-                    window.energyFlowEngine.toggle('fireWave', true);
-                    window.energyFlowEngine.toggles.wind = true;
-                    window.energyFlowEngine.windDir = evWindDir;
-                    window.energyFlowEngine.windSpeed = evWindSpeed;
-                    window.energyFlowEngine.render();
-                }
-                if (badgeVectors) {
-                    badgeVectors.innerText = evBadgeLabel;
-                    badgeVectors.className = 'text-[8.5px] px-1.5 py-0.2 rounded bg-red-600 text-white font-mono font-bold';
-                }
+                // Combinación comparativa (trilateral o múltiple)
+                if (infoIncendio) infoIncendio.classList.add('hidden');
+                if (infoRiesgo) infoRiesgo.classList.add('hidden');
+                if (infoComparar) infoComparar.classList.remove('hidden');
+            }
+
+            // Sincronizar badge de vectores en barra lateral
+            const badgeVectors = document.getElementById('badgeSidebarFireVectors');
+            if (badgeVectors) {
+                const isActive = hasH || hasR;
+                badgeVectors.innerText = isActive ? (isVina ? 'ACTIVO (VIÑA)' : 'ACTIVO (STA JUANA)') : 'INACTIVO';
+                badgeVectors.className = isActive
+                    ? 'text-[8.5px] px-1.5 py-0.2 rounded bg-red-600 text-white font-mono font-bold'
+                    : 'text-[8.5px] px-1.5 py-0.2 rounded bg-black/60 text-slate-400 font-mono';
+            }
+        };
+
+        // Presets rápidos para alternar combinaciones comunes
+        window.applyHindcastLayerPreset = function(preset) {
+            if (preset === 'solo_poligono') {
+                window.setHindcastLayerState('poligono', true);
+                window.setHindcastLayerState('historica', false);
+                window.setHindcastLayerState('prediccion', false);
+            } else if (preset === 'historica' || preset === 'solo_historica') {
+                window.setHindcastLayerState('poligono', false);
+                window.setHindcastLayerState('historica', true);
+                window.setHindcastLayerState('prediccion', false);
+            } else if (preset === 'prediccion' || preset === 'solo_prediccion') {
+                window.setHindcastLayerState('poligono', false);
+                window.setHindcastLayerState('historica', false);
+                window.setHindcastLayerState('prediccion', true);
+            } else if (preset === 'ciega_vs_real') {
+                window.setHindcastLayerState('poligono', true);
+                window.setHindcastLayerState('historica', false);
+                window.setHindcastLayerState('prediccion', true);
+            } else if (preset === 'todas') {
+                window.setHindcastLayerState('poligono', true);
+                window.setHindcastLayerState('historica', true);
+                window.setHindcastLayerState('prediccion', true);
+            }
+        };
+
+        // Compatibilidad con invocaciones previas
+        window.setVinaDisplayMode = function(mode) {
+            window.activeVinaMode = mode;
+            if (mode === 'incendio') {
+                window.applyHindcastLayerPreset('solo_poligono');
+            } else if (mode === 'riesgo') {
+                window.setHindcastLayerState('poligono', false);
+                window.setHindcastLayerState('historica', true);
+                window.setHindcastLayerState('prediccion', true);
+            } else {
+                window.applyHindcastLayerPreset('todas');
             }
         };
 
@@ -2658,6 +2739,8 @@
             const hud = document.getElementById('hindcastMapHUD');
             if (hud) hud.classList.add('hidden');
             if (map.hasLayer(hindcastSimulationLayer)) map.removeLayer(hindcastSimulationLayer);
+            if (map.hasLayer(hindcastTacticalLayer)) map.removeLayer(hindcastTacticalLayer);
+            if (map.hasLayer(hindcastPredictionLayer)) map.removeLayer(hindcastPredictionLayer);
             if (map.hasLayer(hindcastSitesLayer)) map.removeLayer(hindcastSitesLayer);
             if (history && history.replaceState) {
                 history.replaceState(null, null, '#cuenca');
@@ -2753,6 +2836,8 @@
             //    • Faja defensiva WUI de contención y diagnóstico de salto de pavesas
             //    • Elipse paramétrica Rothermel-Fons
             hindcastSimulationLayer.clearLayers();
+            hindcastTacticalLayer.clearLayers();
+            hindcastPredictionLayer.clearLayers();
 
             // Helper de chispa / pavesa compartida para ambos megaincendios
             function createPavesaSpark(lat, lng, label) {
@@ -2797,8 +2882,8 @@
                     `,
                     notes: '🎯 Ignición en sotobosque deshidratado (30 mm lluvia en 90 días). Masa forestal densa con pendiente positiva hacia el norte.'
                 });
-                cellVina01.poly.addTo(hindcastSimulationLayer);
-                cellVina01.badge.addTo(hindcastSimulationLayer);
+                cellVina01.poly.addTo(hindcastTacticalLayer);
+                cellVina01.badge.addTo(hindcastTacticalLayer);
 
                 // P-VINA-02: Cañón Quebrada Las Pataguas & Aceleración Chimenea
                 const cellVina02 = createTacticalAlertCell({
@@ -2822,8 +2907,8 @@
                     `,
                     notes: '🎯 Canalización eólica en cañones estrechos. Proyección masiva de pavesas sobre las quebradas intermedias.'
                 });
-                cellVina02.poly.addTo(hindcastSimulationLayer);
-                cellVina02.badge.addTo(hindcastSimulationLayer);
+                cellVina02.poly.addTo(hindcastTacticalLayer);
+                cellVina02.badge.addTo(hindcastTacticalLayer);
 
                 // P-VINA-03: Interfaz Urbano-Forestal (WUI) Achupallas / Canal Chacao / Jardín Botánico
                 const cellVina03 = createTacticalAlertCell({
@@ -2847,8 +2932,8 @@
                     `,
                     notes: '🎯 Penetración violenta del fuego por lluvia de pavesas sobre techos y quebradas no desmalezadas.'
                 });
-                cellVina03.poly.addTo(hindcastSimulationLayer);
-                cellVina03.badge.addTo(hindcastSimulationLayer);
+                cellVina03.poly.addTo(hindcastTacticalLayer);
+                cellVina03.badge.addTo(hindcastTacticalLayer);
 
                 // ── HACES VECTORIALES BALÍSTICOS TÁCTICOS (ROTHERMEL + HUYGENS) ──
                 // Haz Central de Cabeza (Norte hacia Viña / Canal Chacao)
@@ -2870,9 +2955,9 @@
                         `
                     }
                 );
-                arrowVinaHead.shaft.addTo(hindcastSimulationLayer);
-                arrowVinaHead.headMarker.addTo(hindcastSimulationLayer);
-                if (arrowVinaHead.badgeMarker) arrowVinaHead.badgeMarker.addTo(hindcastSimulationLayer);
+                arrowVinaHead.shaft.addTo(hindcastTacticalLayer);
+                arrowVinaHead.headMarker.addTo(hindcastTacticalLayer);
+                if (arrowVinaHead.badgeMarker) arrowVinaHead.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // Flanco Izquierdo (Hacia Achupallas / Mirador Reñaca)
                 const arrowVinaFlankW = createTacticalFireArrow(
@@ -2887,9 +2972,9 @@
                         popupHtml: '<div><b>Flanco Oeste WUI</b>: Propagación lateral por ladera sur hacia Mirador Reñaca.</div>'
                     }
                 );
-                arrowVinaFlankW.shaft.addTo(hindcastSimulationLayer);
-                arrowVinaFlankW.headMarker.addTo(hindcastSimulationLayer);
-                if (arrowVinaFlankW.badgeMarker) arrowVinaFlankW.badgeMarker.addTo(hindcastSimulationLayer);
+                arrowVinaFlankW.shaft.addTo(hindcastTacticalLayer);
+                arrowVinaFlankW.headMarker.addTo(hindcastTacticalLayer);
+                if (arrowVinaFlankW.badgeMarker) arrowVinaFlankW.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // Flanco Derecho (Hacia Quilpué / Villa Alemana)
                 const arrowVinaFlankE = createTacticalFireArrow(
@@ -2904,9 +2989,9 @@
                         popupHtml: '<div><b>Flanco Este</b>: Avance hacia Paso Hondo y sectores periurbanos de Quilpué.</div>'
                     }
                 );
-                arrowVinaFlankE.shaft.addTo(hindcastSimulationLayer);
-                arrowVinaFlankE.headMarker.addTo(hindcastSimulationLayer);
-                if (arrowVinaFlankE.badgeMarker) arrowVinaFlankE.badgeMarker.addTo(hindcastSimulationLayer);
+                arrowVinaFlankE.shaft.addTo(hindcastTacticalLayer);
+                arrowVinaFlankE.headMarker.addTo(hindcastTacticalLayer);
+                if (arrowVinaFlankE.badgeMarker) arrowVinaFlankE.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // ── SALTO BALÍSTICO DE PAVESAS (ALBINI 1979 - SPOTTING D_SPOT = 1.85 KM) ──
                 // Pavesa 1: Achupallas (Salto sobre Faja Cortafuegos 45m)
@@ -2933,9 +3018,9 @@
                         `
                     }
                 );
-                spotArrowAchupallas.shaft.addTo(hindcastSimulationLayer);
-                spotArrowAchupallas.headMarker.addTo(hindcastSimulationLayer);
-                if (spotArrowAchupallas.badgeMarker) spotArrowAchupallas.badgeMarker.addTo(hindcastSimulationLayer);
+                spotArrowAchupallas.shaft.addTo(hindcastTacticalLayer);
+                spotArrowAchupallas.headMarker.addTo(hindcastTacticalLayer);
+                if (spotArrowAchupallas.badgeMarker) spotArrowAchupallas.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // Pavesa 2: Jardín Botánico (Foco Secundario)
                 const spotArrowBotanico = createTacticalFireArrow(
@@ -2958,9 +3043,9 @@
                         `
                     }
                 );
-                spotArrowBotanico.shaft.addTo(hindcastSimulationLayer);
-                spotArrowBotanico.headMarker.addTo(hindcastSimulationLayer);
-                if (spotArrowBotanico.badgeMarker) spotArrowBotanico.badgeMarker.addTo(hindcastSimulationLayer);
+                spotArrowBotanico.shaft.addTo(hindcastTacticalLayer);
+                spotArrowBotanico.headMarker.addTo(hindcastTacticalLayer);
+                if (spotArrowBotanico.badgeMarker) spotArrowBotanico.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // Pavesa 3: Canal Chacao
                 const spotArrowChacao = createTacticalFireArrow(
@@ -2976,13 +3061,13 @@
                         popupHtml: '<div style="font-family:\'JetBrains Mono\',monospace; font-size:11px;">Salto de pavesas incandescentes sobre población Canal Chacao (Quilpué / Viña).</div>'
                     }
                 );
-                spotArrowChacao.shaft.addTo(hindcastSimulationLayer);
-                spotArrowChacao.headMarker.addTo(hindcastSimulationLayer);
-                if (spotArrowChacao.badgeMarker) spotArrowChacao.badgeMarker.addTo(hindcastSimulationLayer);
+                spotArrowChacao.shaft.addTo(hindcastTacticalLayer);
+                spotArrowChacao.headMarker.addTo(hindcastTacticalLayer);
+                if (spotArrowChacao.badgeMarker) spotArrowChacao.badgeMarker.addTo(hindcastTacticalLayer);
 
-                createPavesaSpark(-33.0480, -71.5080, 'Impacto Pavesa: Achupallas (Salto Faja 45m)').addTo(hindcastSimulationLayer);
-                createPavesaSpark(-33.0420, -71.4950, 'Impacto Pavesa: Jardín Botánico').addTo(hindcastSimulationLayer);
-                createPavesaSpark(-33.0480, -71.4700, 'Impacto Pavesa: Canal Chacao').addTo(hindcastSimulationLayer);
+                createPavesaSpark(-33.0480, -71.5080, 'Impacto Pavesa: Achupallas (Salto Faja 45m)').addTo(hindcastTacticalLayer);
+                createPavesaSpark(-33.0420, -71.4950, 'Impacto Pavesa: Jardín Botánico').addTo(hindcastTacticalLayer);
+                createPavesaSpark(-33.0480, -71.4700, 'Impacto Pavesa: Canal Chacao').addTo(hindcastTacticalLayer);
 
                 // ── FAJA DEFENSIVA CORTAFUEGOS WUI DE CONTENCIÓN TEÓRICA ──
                 const vinaFirebreak = L.polyline([
@@ -2998,10 +3083,10 @@
                         🛡️ FAJA DEFENSIVA WUI 45m &bull; Diagnóstico: 94% Penetración Aérea por Pavesas (Viento 65 km/h)
                     </div>
                 `, { permanent: true, direction: 'top', offset: [0, -8] });
-                vinaFirebreak.addTo(hindcastSimulationLayer);
+                vinaFirebreak.addTo(hindcastTacticalLayer);
 
                 // Flecha táctica operacional de avance de frente en Viña del Mar
-                createTacticalArrowMarker(-33.0880, -71.4980, 270, 'AVANCE SURAZO 65 km/h ▲', 'rgba(220, 38, 38, 0.92)', '#ffffff', false).addTo(hindcastSimulationLayer);
+                createTacticalArrowMarker(-33.0880, -71.4980, 270, 'AVANCE SURAZO 65 km/h ▲', 'rgba(220, 38, 38, 0.92)', '#ffffff', false).addTo(hindcastTacticalLayer);
 
             } else {
                 // ── TRANSECTOS TÁCTICOS SANTA JUANA (P-SJ-01 A 03) CON POLÍGONOS TOPOGRÁFICOS ──
@@ -3026,8 +3111,8 @@
                     `,
                     notes: '🎯 Ignición en monocultivo forestal continuo (pino/eucalipto) bajo onda de calor histórica (40 °C) y humedad relativa de 11%.'
                 });
-                cellSJ01.poly.addTo(hindcastSimulationLayer);
-                cellSJ01.badge.addTo(hindcastSimulationLayer);
+                cellSJ01.poly.addTo(hindcastTacticalLayer);
+                cellSJ01.badge.addTo(hindcastTacticalLayer);
 
                 const cellSJ02 = createTacticalAlertCell({
                     id: 'P-SJ-02',
@@ -3050,8 +3135,8 @@
                     `,
                     notes: '🎯 Canalización del viento Puelche SE por el valle del Biobío; proyección balística de pavesas cruza el río hacia San Rosendo / Laja.'
                 });
-                cellSJ02.poly.addTo(hindcastSimulationLayer);
-                cellSJ02.badge.addTo(hindcastSimulationLayer);
+                cellSJ02.poly.addTo(hindcastTacticalLayer);
+                cellSJ02.badge.addTo(hindcastTacticalLayer);
 
                 const cellSJ03 = createTacticalAlertCell({
                     id: 'P-SJ-03',
@@ -3072,8 +3157,8 @@
                     `,
                     notes: '🎯 El 4 de febrero a las 12 UTC el viento gira al NO (305°) e ingresa aire húmedo marino (81% HR), frenando la cabeza noroeste.'
                 });
-                cellSJ03.poly.addTo(hindcastSimulationLayer);
-                cellSJ03.badge.addTo(hindcastSimulationLayer);
+                cellSJ03.poly.addTo(hindcastTacticalLayer);
+                cellSJ03.badge.addTo(hindcastTacticalLayer);
 
                 // Haces Vectoriales Santa Juana (Hacia Noroeste 330°)
                 const arrowSJHead = createTacticalFireArrow(
@@ -3094,9 +3179,9 @@
                         `
                     }
                 );
-                arrowSJHead.shaft.addTo(hindcastSimulationLayer);
-                arrowSJHead.headMarker.addTo(hindcastSimulationLayer);
-                if (arrowSJHead.badgeMarker) arrowSJHead.badgeMarker.addTo(hindcastSimulationLayer);
+                arrowSJHead.shaft.addTo(hindcastTacticalLayer);
+                arrowSJHead.headMarker.addTo(hindcastTacticalLayer);
+                if (arrowSJHead.badgeMarker) arrowSJHead.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // Flanco Suroeste (Cordillera de Nahuelbuta / Interior)
                 const arrowSJFlankW = createTacticalFireArrow(
@@ -3111,9 +3196,9 @@
                         popupHtml: '<div><b>Flanco Suroeste</b>: Ascenso topográfico hacia lomajes interiores de Santa Juana.</div>'
                     }
                 );
-                arrowSJFlankW.shaft.addTo(hindcastSimulationLayer);
-                arrowSJFlankW.headMarker.addTo(hindcastSimulationLayer);
-                if (arrowSJFlankW.badgeMarker) arrowSJFlankW.badgeMarker.addTo(hindcastSimulationLayer);
+                arrowSJFlankW.shaft.addTo(hindcastTacticalLayer);
+                arrowSJFlankW.headMarker.addTo(hindcastTacticalLayer);
+                if (arrowSJFlankW.badgeMarker) arrowSJFlankW.badgeMarker.addTo(hindcastTacticalLayer);
 
                 // Pavesas cruce río Biobío (2.4 km)
                 const spotArrowSJ = createTacticalFireArrow(
@@ -3129,12 +3214,12 @@
                         popupHtml: '<div><b>Salto Transfronterizo Río Biobío</b>: Pavesas incandescentes cruzan el cauce de más de 1.5 km de ancho hacia la ribera norte.</div>'
                     }
                 );
-                spotArrowSJ.shaft.addTo(hindcastSimulationLayer);
-                spotArrowSJ.headMarker.addTo(hindcastSimulationLayer);
-                if (spotArrowSJ.badgeMarker) spotArrowSJ.badgeMarker.addTo(hindcastSimulationLayer);
+                spotArrowSJ.shaft.addTo(hindcastTacticalLayer);
+                spotArrowSJ.headMarker.addTo(hindcastTacticalLayer);
+                if (spotArrowSJ.badgeMarker) spotArrowSJ.badgeMarker.addTo(hindcastTacticalLayer);
 
-                createPavesaSpark(-37.2400, -72.8550, 'Impacto Pavesa: Ribera Norte Río Biobío (+2.4 km)').addTo(hindcastSimulationLayer);
-                createPavesaSpark(-37.1950, -72.9850, 'Impacto Pavesa: Periurbano Sur Santa Juana').addTo(hindcastSimulationLayer);
+                createPavesaSpark(-37.2400, -72.8550, 'Impacto Pavesa: Ribera Norte Río Biobío (+2.4 km)').addTo(hindcastTacticalLayer);
+                createPavesaSpark(-37.1950, -72.9850, 'Impacto Pavesa: Periurbano Sur Santa Juana').addTo(hindcastTacticalLayer);
 
                 // Línea de amortiguación ribereña / quebradas nativas
                 const sjFirebreak = L.polyline([
@@ -3150,10 +3235,10 @@
                         🛡️ CINTURÓN RIBEREÑO & QUEBRADAS NATIVAS &bull; Amortiguación + Giro Marino 04-Feb
                     </div>
                 `, { permanent: true, direction: 'top', offset: [0, -8] });
-                sjFirebreak.addTo(hindcastSimulationLayer);
+                sjFirebreak.addTo(hindcastTacticalLayer);
 
                 // Flecha táctica operacional de avance en Santa Juana
-                createTacticalArrowMarker(-37.2900, -72.9100, 315, 'AVANCE PUELCHE 58 km/h ↖', 'rgba(220, 38, 38, 0.92)', '#ffffff', true).addTo(hindcastSimulationLayer);
+                createTacticalArrowMarker(-37.2900, -72.9100, 315, 'AVANCE PUELCHE 58 km/h ↖', 'rgba(220, 38, 38, 0.92)', '#ffffff', true).addTo(hindcastTacticalLayer);
             }
 
             const ellipseCoords = generateFireEllipseCoords(originLat, originLng, lenKm, widthKm, bearingDeg);
@@ -3189,7 +3274,7 @@
                     </div>
                 </div>
             `, { maxWidth: 300 });
-            simPoly.addTo(hindcastSimulationLayer);
+            simPoly.addTo(hindcastPredictionLayer);
 
             // Marcador de Foco de Ignición
             const ignitionIcon = L.divIcon({
@@ -3206,7 +3291,7 @@
             });
             const ignMarker = L.marker([originLat, originLng], { icon: ignitionIcon });
             ignMarker.bindTooltip(`<b>Foco Ignición ${titleEvent}</b>`, { permanent: false, direction: 'top' });
-            ignMarker.addTo(hindcastSimulationLayer);
+            ignMarker.addTo(hindcastPredictionLayer);
 
             // Vector de viento ERA5 (flecha)
             const arrowEnd = destLatLng(originLat, originLng, Math.min(lenKm * 0.75, 18), bearingDeg);
@@ -3216,9 +3301,18 @@
                 dashArray: '4, 4'
             });
             windArrow.bindTooltip(`🌪️ Vector Viento ERA5: ${windLabel} ${windGust}`, { permanent: true, direction: 'right' });
-            windArrow.addTo(hindcastSimulationLayer);
+            windArrow.addTo(hindcastPredictionLayer);
 
-            if (!map.hasLayer(hindcastSimulationLayer)) hindcastSimulationLayer.addTo(map);
+            // Aplicar capas trilaterales al mapa según su estado activo
+            if (window.hindcastLayersState.poligono) {
+                if (!map.hasLayer(hindcastSitesLayer)) hindcastSitesLayer.addTo(map);
+            }
+            if (window.hindcastLayersState.historica) {
+                if (!map.hasLayer(hindcastTacticalLayer)) hindcastTacticalLayer.addTo(map);
+            }
+            if (window.hindcastLayersState.prediccion) {
+                if (!map.hasLayer(hindcastPredictionLayer)) hindcastPredictionLayer.addTo(map);
+            }
 
             // 6. Activar partículas vivas a 60 FPS (Living Energy Flow) acordes al evento
             if (window.energyFlowEngine) {

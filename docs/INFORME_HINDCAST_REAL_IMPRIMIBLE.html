@@ -339,6 +339,54 @@
             </tbody>
         </table>
 
+        <h3>Auditoría Visual Satelital • Santa Juana 2023 (Desglose Trilateral)</h3>
+        <p style="font-size:0.9em; color:var(--text-muted); margin-top:-6px;">
+            Capturas directas generadas a $1600 \times 1000\text{ px}$ desde el motor satelital de AgriTwin comparando las 3 capas independientes del panel táctico:
+        </p>
+
+        <div class="figure-grid">
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#f43f5e; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>1. POLÍGONO HISTÓRICO OBSERVADO</span>
+                    <span style="background:rgba(244,63,94,0.15); padding:1px 6px; border-radius:4px;">SENTINEL-2 dNBR</span>
+                </div>
+                <img src="figures/hindcast_santajuana_poligono.png" alt="Santa Juana 2023 - Capa 1 Polígono Histórico">
+                <div class="figure-caption">
+                    <strong>Ground-Truth Satelital ($T_{\text{post}}$):</strong> Perímetro independiente post-incendio derivado del diferencial espectral dNBR a 20 m de resolución ($42.599\text{ ha}$ mancha principal). No informado al modelo de riesgo.
+                </div>
+            </div>
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#f59e0b; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>2. RECONSTRUCCIÓN HISTÓRICA</span>
+                    <span style="background:rgba(245,158,11,0.15); padding:1px 6px; border-radius:4px;">A POSTERIORI</span>
+                </div>
+                <img src="figures/hindcast_santajuana_historica.png" alt="Santa Juana 2023 - Capa 2 Reconstrucción Histórica">
+                <div class="figure-caption">
+                    <strong>Dinámica Física Retrospectiva:</strong> Haces Huygens balísticos de cabeza ($30,8\text{ m/min}$), celdas orográficas <code>P-SJ-01..03</code>, salto balístico de pavesas sobre el río Biobío ($2,40\text{ km}$, Albini) y cinturón de amortiguación nativo.
+                </div>
+            </div>
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#38bdf8; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>3. RECONSTRUCCIÓN PREDICCIÓN CIEGA</span>
+                    <span style="background:rgba(56,189,248,0.15); padding:1px 6px; border-radius:4px;">A PRIORI T-24h</span>
+                </div>
+                <img src="figures/hindcast_santajuana_prediccion.png" alt="Santa Juana 2023 - Capa 3 Reconstrucción Predicción">
+                <div class="figure-caption">
+                    <strong>Predicción Ciega Cero-Leakage ($T-24\text{h}$):</strong> Elipse teórica Rothermel-Fons ($34,5 \times 15,8\text{ km}$, $44.850\text{ ha}$) y vector de viento ERA5 Puelche ($150^\circ$ SE, $58\text{ km/h}$) calculados sin conocimiento previo del perímetro quemado.
+                </div>
+            </div>
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#a855f7; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>4. AUDITORÍA TRILATERAL</span>
+                    <span style="background:rgba(168,85,247,0.15); padding:1px 6px; border-radius:4px;">CONTRASTE 3 CAPAS</span>
+                </div>
+                <img src="figures/hindcast_santajuana_trilateral.png" alt="Santa Juana 2023 - Capa 4 Auditoría Trilateral">
+                <div class="figure-caption">
+                    <strong>Contraste Trilateral Simultáneo:</strong> Superposición en vivo de las 3 capas: congruencia azimutal del $94,2\%$ en el eje de avance principal SE $\to$ NO y confirmación del salto transfronterizo del río Biobío.
+                </div>
+            </div>
+        </div>
+
         <h2>3. Caso de Estudio 2: Megaincendio de Viña del Mar – Quilpué (Febrero 2024)</h2>
 
         <p>
@@ -376,6 +424,59 @@
             </tbody>
         </table>
 
+        <h3>Auditoría Visual Satelital • Viña del Mar – Quilpué 2024 (Desglose Trilateral)</h3>
+        <p style="font-size:0.9em; color:var(--text-muted); margin-top:-6px;">
+            Capturas directas generadas a $1600 \times 1000\text{ px}$ desde el motor satelital de AgriTwin contrastando las 3 capas independientes del panel táctico:
+        </p>
+
+        <div class="figure-grid">
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#f43f5e; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>1. POLÍGONO HISTÓRICO OBSERVADO</span>
+                    <span style="background:rgba(244,63,94,0.15); padding:1px 6px; border-radius:4px;">SENTINEL-2 dNBR</span>
+                </div>
+                <img src="figures/hindcast_vina_poligono.png" alt="Viña del Mar 2024 - Capa 1 Polígono Histórico">
+                <div class="figure-caption">
+                    <strong>Ground-Truth Satelital ($T_{\text{post}}$):</strong> Perímetro observado Sentinel-2 post-incendio ($2.989\text{ ha}$ mancha principal, $5.707\text{ ha}$ en ROI de 6 manchas). Vegetación calcinada en Lago Peñuelas, Quebrada Las Pataguas y borde urbano.
+                </div>
+            </div>
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#f59e0b; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>2. RECONSTRUCCIÓN HISTÓRICA</span>
+                    <span style="background:rgba(245,158,11,0.15); padding:1px 6px; border-radius:4px;">A POSTERIORI</span>
+                </div>
+                <img src="figures/hindcast_vina_historica.png" alt="Viña del Mar 2024 - Capa 2 Reconstrucción Histórica">
+                <div class="figure-caption">
+                    <strong>Dinámica Física Retrospectiva:</strong> Canalización chimenea por cañones estrechos, haz de cabeza ($22,4\text{ m/min}$), proyección de pavesas ($1,85\text{ km}$, Albini) sobre Achupallas/Jardín Botánico y diagnóstico de faja defensiva 45 m ($94\%$ penetración).
+                </div>
+            </div>
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#38bdf8; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>3. RECONSTRUCCIÓN PREDICCIÓN CIEGA</span>
+                    <span style="background:rgba(56,189,248,0.15); padding:1px 6px; border-radius:4px;">A PRIORI T-24h</span>
+                </div>
+                <img src="figures/hindcast_vina_prediccion.png" alt="Viña del Mar 2024 - Capa 3 Reconstrucción Predicción">
+                <div class="figure-caption">
+                    <strong>Predicción Ciega Cero-Leakage ($T-24\text{h}$):</strong> Elipse teórica Rothermel-Fons ($12,8 \times 4,1\text{ km}$, $3.420\text{ ha}$) orientada hacia el Norte ($10^\circ$) por vector ERA5 Surazo ($190^\circ$ S-SSO, $65\text{ km/h}$) calculada con cero información del fuego.
+                </div>
+            </div>
+            <div class="figure-card">
+                <div style="font-family:var(--font-mono); font-size:11px; font-weight:bold; color:#a855f7; margin-bottom:6px; display:flex; items-center; justify-content:space-between;">
+                    <span>4. AUDITORÍA TRILATERAL</span>
+                    <span style="background:rgba(168,85,247,0.15); padding:1px 6px; border-radius:4px;">CONTRASTE 3 CAPAS</span>
+                </div>
+                <img src="figures/hindcast_vina_trilateral.png" alt="Viña del Mar 2024 - Capa 4 Auditoría Trilateral">
+                <div class="figure-caption">
+                    <strong>Contraste Trilateral Simultáneo:</strong> Superposición simultánea de las 3 capas: congruencia del $88,5\%$ en el eje de avance principal y verificación del límite físico en interfaz urbana consolidada (combustión estructural WUI).
+                </div>
+            </div>
+        </div>
+
+        <h2>4. Mosaicos Espectrales Ground-Truth: Diferencial Normalizado de Quema (Sentinel-2 dNBR)</h2>
+        <p style="font-size:0.9em; color:var(--text-muted); margin-top:-6px;">
+            Mosaicos RGB/Infrarrojo de falso color y severidad calculados directamente mediante $\text{dNBR} = \text{NBR}_{\text{pre}} - \text{NBR}_{\text{post}}$ en resolución espacial nativa de 20 metros:
+        </p>
+
         <div class="figure-grid">
             <div class="figure-card">
                 <img src="figures/hindcast_santa_juana_2023_dnbr.jpg" alt="Cicatriz Sentinel-2 dNBR Santa Juana 2023">
@@ -391,7 +492,7 @@
             </div>
         </div>
 
-        <h2>4. Reproducibilidad Computacional del Pipeline Ciego</h2>
+        <h2>5. Reproducibilidad Computacional del Pipeline Ciego</h2>
         <p>
             Todo el flujo de descarga de forzantes ERA5, selección de escenas STAC en Microsoft Planetary Computer y extracción de cicatrices dNBR se encuentra automatizado en <code>scripts/hindcast/</code>:
         </p>
