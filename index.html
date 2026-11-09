@@ -11867,21 +11867,27 @@
                 </div>
 
                 <!-- SUBMÓDULO 1: CATÁLOGO CANÓNICO DE PROVEEDORES OFICIALES (7 FICHAS CON HISTORIA & FOTO) -->
-                <div class="space-y-3 font-sans">
-                    <div class="flex items-center justify-between border-b border-[#E7DAC6] pb-2">
-                        <div class="flex items-center gap-2">
+                <div class="space-y-4 font-sans">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-2.5">
+                        <div class="flex items-center gap-2.5">
                             <span class="text-xl">🏛️</span>
                             <div>
                                 <h4 class="text-xs font-bold text-stone-900 font-mono uppercase tracking-wider">Catálogo Institucional de Proveedores &amp; Reseñas Históricas</h4>
-                                <p class="text-[11px] text-stone-500">Misión fundacional, autoridad técnica y especificaciones de ingesta de cada organismo.</p>
+                                <p class="text-[11px] text-stone-500">Haz clic en cualquier organismo para inspeccionar en vivo el payload JSON extraído, su protocolo de ingesta y utilidad agronómica.</p>
                             </div>
                         </div>
-                        <span class="text-[10px] font-mono text-stone-500 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">7 Organismos Auditados</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-bold flex items-center gap-1.5 shadow-2xs">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span>7 Organismos Auditados</span>
+                            </span>
+                        </div>
                     </div>
 
+                    <!-- Cuadrícula de 7 Tarjetas Clickeables -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
                         <!-- Ficha 1: DGA-MOP -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <div onclick="inspectDataSource('dga')" id="source-card-dga" class="source-provider-card ring-2 ring-emerald-600 border-emerald-600 bg-emerald-50/15 p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-md space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
@@ -11889,205 +11895,241 @@
                                             <img src="assets/sources/dga_logo.jpg" alt="DGA-MOP Chile" class="max-w-full max-h-full object-contain">
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">DGA-MOP</h5>
-                                            <span class="text-[10px] text-stone-500 block">Dirección General de Aguas</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">DGA-MOP Chile</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Fundado en 1969 • Chile 🇨🇱</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-blue-100 text-blue-900 px-1.5 py-0.5 rounded border border-blue-200">CHILE • 1969</span>
+                                    <span class="text-[9px] font-mono font-bold bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded border border-blue-200 shrink-0">API REST</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    Fundada el <strong>14 de noviembre de 1969</strong> (DFL N° 1.115), la DGA es el organismo técnico del Estado de Chile que gestiona las aguas terrestres y opera la <strong>Red Hidrométrica Nacional</strong> con cientos de estaciones de caudal, niveles y calidad.
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Creada bajo la Ley 16.640 de Reforma Agraria (1969) para fiscalizar las aguas de Chile. Opera la red fluviométrica nacional y el Banco Nacional de Aguas (BNA).
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">Caudales ($Q$), Embalses, Derechos CPA</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-blue-800 font-bold">Estaciones in-situ • Horaria satelital</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">SNIA REST / CSV HidroLínea</span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Estación Piloto:</b> Longaví en El Canelo (07354002-1)</div>
+                                    <div><b>Variables:</b> Caudal ($m^3/s$), Nivel ($m$), Pozos SHAC</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="switchScriptDatasetItem('pozos')" class="text-sky-700 hover:text-sky-900 font-bold cursor-pointer">Ver Dataset ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
                         </div>
 
-                        <!-- Ficha 2: ISRIC SoilGrids -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <!-- Ficha 2: ISRIC SoilGrids 2.0 -->
+                        <div onclick="inspectDataSource('isric')" id="source-card-isric" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
                                         <div class="w-12 h-12 rounded-xl bg-white border border-stone-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                                            <img src="assets/sources/isric_museum_thumb.jpg" alt="ISRIC SoilGrids" class="max-w-full max-h-full object-cover rounded-lg">
+                                            <img src="assets/sources/isric_museum_thumb.jpg" alt="ISRIC World Soil Museum" class="max-w-full max-h-full object-cover rounded-lg">
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">ISRIC SoilGrids 2.0</h5>
-                                            <span class="text-[10px] text-stone-500 block">World Soil Information</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">ISRIC SoilGrids 2.0</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Fund. 1966 • Países Bajos 🇳🇱</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-emerald-100 text-emerald-900 px-1.5 py-0.5 rounded border border-emerald-200">GLOBAL • 1966</span>
+                                    <span class="text-[9px] font-mono font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200 shrink-0">WCS / REST</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    Fundado en <strong>1966</strong> bajo UNESCO e ISSS en Wageningen (Países Bajos), ISRIC custodia la información de suelos mundial. Su sistema <strong>SoilGrids 2.0</strong> predice propiedades edáficas a 250m con *Machine Learning* sobre 240.000 perfiles WoSIS.
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Fundado en 1966 por la UNESCO y el ISSS en Wageningen. Custodio del World Soil Museum. Modela propiedades globales del suelo a 250m con bosques aleatorios cuantílicos.
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">$	ext{SOC}$, $	ext{BDOD}$, $	ext{CRF}$, Texturas</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-emerald-800 font-bold">250 metros • 6 estratos ($0	ext{-}200\,	ext{cm}$)</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">REST API v2.0 / R <code>geodata</code></span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Capas Clave:</b> SOC ($g/kg$), BDOD, Textura, CRF</div>
+                                    <div><b>Stock SOCS:</b> $0	ext{-}5\,	ext{cm}$ ($16.62\,	ext{t C/ha}$ en Meniel)</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="switchScriptDatasetItem('soilgrids')" class="text-emerald-700 hover:text-emerald-900 font-bold cursor-pointer">Ver Script R ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
                         </div>
 
-                        <!-- Ficha 3: Copernicus Sentinel-2 -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <!-- Ficha 3: Copernicus / Sentinel-2 -->
+                        <div onclick="inspectDataSource('copernicus')" id="source-card-copernicus" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
                                         <div class="w-12 h-12 rounded-xl bg-white border border-stone-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                                            <img src="assets/sources/esa_logo.svg" alt="Copernicus Sentinel-2 ESA" class="max-w-full max-h-full object-contain">
+                                            <img src="assets/sources/esa_logo.svg" alt="ESA Copernicus" class="max-w-full max-h-full object-contain">
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">Sentinel-2 (ESA)</h5>
-                                            <span class="text-[10px] text-stone-500 block">Copernicus Programme</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">Copernicus Sentinel-2</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Fund. 1998 • Europa 🇪🇺</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-indigo-100 text-indigo-900 px-1.5 py-0.5 rounded border border-indigo-200">EUROPA • 2015</span>
+                                    <span class="text-[9px] font-mono font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0">STAC / COG</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    Constelación óptica de la Agencia Espacial Europea (ESA) lanzada en <strong>2015 (2A)</strong>, <strong>2017 (2B)</strong> y <strong>2024 (2C)</strong>. Su sensor MSI captura 13 bandas para monitoreo de biomasa, agua foliar, clorofila y suelos.
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Programa insignia de la Unión Europea y la ESA. Constelación de satélites multiespectrales (10-20m) con revisita de 5 días para monitoreo de vegetación y agua.
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">Reflectancias BOA (NDVI, NDRE, MSI)</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-indigo-800 font-bold">10 m y 20 m • Revisita 5 días</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">AWS COGs / STAC API Element 84</span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Bandas L2A BOA:</b> 10 bandas ($B02	ext{-}B12$)</div>
+                                    <div><b>Índices:</b> NDVI, NDRE, MCARI, NDWI, SAVI</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-3-sentinel');" class="text-indigo-700 hover:text-indigo-900 font-bold cursor-pointer">Teledetección ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
                         </div>
 
                         <!-- Ficha 4: AGROMET-INIA -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <div onclick="inspectDataSource('inia')" id="source-card-inia" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
                                         <div class="w-12 h-12 rounded-xl bg-white border border-stone-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                                            <img src="assets/sources/inia_logo.jpg" alt="AGROMET INIA Chile" class="max-w-full max-h-full object-contain">
+                                            <img src="assets/sources/inia_logo.jpg" alt="INIA Chile" class="max-w-full max-h-full object-contain">
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">AGROMET - INIA</h5>
-                                            <span class="text-[10px] text-stone-500 block">Inst. Invest. Agropecuarias</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">AGROMET-INIA</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Fund. 1964 • Chile 🇨🇱</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded border border-amber-200">CHILE • 1964</span>
+                                    <span class="text-[9px] font-mono font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0">API REST</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    Creado en <strong>1964</strong>, el INIA opera la mayor red agroclimática de Chile con más de <strong>380 Estaciones Meteorológicas Automáticas (EMAs)</strong> in-situ, monitoreando heladas, temperaturas, déficit hídrico y evapotranspiración.
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Creado en 1964 como el principal instituto de investigación agropecuaria de Chile. Opera la Red Agrometeorológica Nacional con >320 estaciones automáticas.
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">$T_a$, $HR$, $U_{10}$, Radiación, $ET_0$ FAO-56</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-amber-800 font-bold">In-situ • Registro continuo horario</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">agrometeorologia.cl / API REST</span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Estación Longaví:</b> Las Mercedes (ST-342)</div>
+                                    <div><b>Balance FAO-56:</b> $ET_0 = 5.42\,	ext{mm/d}$, Radiación</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="switchScriptDatasetItem('fao56')" class="text-amber-700 hover:text-amber-900 font-bold cursor-pointer">Ver Script FAO-56 ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
                         </div>
 
-                        <!-- Ficha 5: CONAF & NASA FIRMS -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <!-- Ficha 5: CONAF / NASA FIRMS -->
+                        <div onclick="inspectDataSource('conaf')" id="source-card-conaf" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
                                         <div class="w-12 h-12 rounded-xl bg-white border border-stone-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                                            <img src="assets/sources/conaf_logo.png" alt="CONAF & NASA FIRMS" class="max-w-full max-h-full object-contain">
+                                            <img src="assets/sources/conaf_logo.png" alt="CONAF Chile" class="max-w-full max-h-full object-contain">
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">CONAF / FIRMS</h5>
-                                            <span class="text-[10px] text-stone-500 block">Incendios &amp; Hotspots</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">CONAF &amp; NASA FIRMS</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Fund. 1970 • Chile / EE.UU.</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-rose-100 text-rose-900 px-1.5 py-0.5 rounded border border-rose-200">CHILE/NASA • 1970</span>
+                                    <span class="text-[9px] font-mono font-bold bg-red-100 text-red-800 px-1.5 py-0.5 rounded border border-red-200 shrink-0">API FIRMS</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    CONAF (fundada en <strong>1970</strong>) administra la prevención de incendios y modelos de combustible en Chile. En conjunto con <strong>NASA FIRMS (2007)</strong>, se integran focos térmicos satelitales VIIRS (375 m) y MODIS (1 km).
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> CONAF gestiona los bosques y el combate de incendios desde 1970 (SIDCO). Acoplada a NASA FIRMS (2007) para detección satelital térmica VIIRS/MODIS a 375m.
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">Focos activos, Perímetros de fuego, FWI</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-rose-800 font-bold">375 m (VIIRS) • Subdiaria (3 hrs)</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">NASA FIRMS API / SICOF CONAF</span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Sensores:</b> VIIRS 375m &amp; MODIS 1km</div>
+                                    <div><b>Física Pirogénica:</b> Rothermel, Albini (Pavesas)</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="switchScriptDatasetItem('fwi')" class="text-rose-700 hover:text-rose-900 font-bold cursor-pointer">Ver Script FWI ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
                         </div>
 
                         <!-- Ficha 6: ECMWF ERA5-Land -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <div onclick="inspectDataSource('ecmwf')" id="source-card-ecmwf" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
                                         <div class="w-12 h-12 rounded-xl bg-white border border-stone-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                                            <img src="assets/sources/ecmwf_logo.svg" alt="ECMWF ERA5-Land" class="max-w-full max-h-full object-contain">
+                                            <img src="assets/sources/ecmwf_logo.svg" alt="ECMWF" class="max-w-full max-h-full object-contain">
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">ECMWF ERA5-Land</h5>
-                                            <span class="text-[10px] text-stone-500 block">Reanálisis Climático C3S</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">ECMWF ERA5-Land</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Fund. 1975 • Europa 🇪🇺</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-teal-100 text-teal-900 px-1.5 py-0.5 rounded border border-teal-200">EUROPA • 1975</span>
+                                    <span class="text-[9px] font-mono font-bold bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded border border-purple-200 shrink-0">CDS API</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    El Centro Europeo (creado en <strong>1975</strong>) produce el reanálisis <strong>ERA5</strong>, que combina física de fluidos y asimilación de datos desde 1940. Su versión <strong>ERA5-Land</strong> optimiza variables terrestres a $\sim 9\,	ext{km}$.
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Creado en 1975 en Reading (Reino Unido). Referente mundial en predicción numérica del clima. ERA5-Land reanaliza el clima terrestre a 9km horario desde 1950.
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">Viento 10/30m, Cizalladura ($DLS$), $CAPE$</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-teal-800 font-bold">~9 km (0.1°) • Horaria global</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">Copernicus Climate Data Store (CDS)</span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Capas Vadosas:</b> Humedad en 4 niveles ($0	ext{-}289\,	ext{cm}$)</div>
+                                    <div><b>Termodinámica:</b> CAPE, Cizalladura vertical $S_{0-6}$</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="window.jumpToDocModule('docs-vecino', 'mod-teorico-5-convectivo');" class="text-teal-700 hover:text-teal-900 font-bold cursor-pointer">Termodinámica ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
                         </div>
 
                         <!-- Ficha 7: Red Centinela KioT -->
-                        <div class="p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between">
+                        <div onclick="inspectDataSource('kiot')" id="source-card-kiot" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-emerald-500 hover:shadow-md transition-all group">
                             <div class="space-y-2.5">
                                 <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
                                     <div class="flex items-center gap-2.5">
-                                        <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                                            <img src="assets/ui/sprite_b_iot_board.png" alt="Red Centinela KioT" class="max-w-full max-h-full object-contain">
+                                        <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 p-1 flex items-center justify-center shrink-0 shadow-xs text-xl">
+                                            📡
                                         </div>
                                         <div>
-                                            <h5 class="font-bold text-xs text-stone-900 leading-tight">Red Centinela KioT</h5>
-                                            <span class="text-[10px] text-stone-500 block">Hardware IoT In-Situ</span>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-emerald-900 transition-colors">Red Centinela KioT</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">2024 • AgriTwin SpA 🇨🇱</span>
                                         </div>
                                     </div>
-                                    <span class="text-[9px] font-mono font-bold bg-purple-100 text-purple-900 px-1.5 py-0.5 rounded border border-purple-200">AGRITWIN • 2024</span>
+                                    <span class="text-[9px] font-mono font-bold bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded border border-teal-200 shrink-0">LoRaWAN</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed">
-                                    Dispositivos industriales IP67 de ultrabajo consumo desarrollados para reportar en tiempo real mediante <strong>LoRaWAN</strong> la telemetría edáfica e hidrológica crítica sin depender de cobertura celular.
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Infraestructura sensorial frugal desarrollada por AgriTwin para validar la zona vadosa profunda y pozos APR sin depender de costosas mallas comerciales.
                                 </p>
-                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-stone-200/70 text-[10px] font-mono space-y-1">
-                                    <div><span class="text-stone-500">Variables:</span> <strong class="text-stone-800">Sondas FDR ($0	ext{-}60\,	ext{cm}$), Tranque, Pozos APR</strong></div>
-                                    <div><span class="text-stone-500">Resolución:</span> <span class="text-purple-800 font-bold">Centinela in-situ • Telemetría cada 15 min</span></div>
-                                    <div><span class="text-stone-500">Acceso:</span> <span class="text-stone-700">NATS Streaming / MQTT Gateway</span></div>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Hardware:</b> RP2040 / ESP32 + LoRa AU915</div>
+                                    <div><b>Asimilación:</b> Filtro Kalman con Sentinel-2</div>
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[10.5px] font-mono">
-                                <button onclick="switchScriptDatasetItem('telemetry')" class="text-purple-700 hover:text-purple-900 font-bold cursor-pointer">Ver Telemetría ➔</button>
-                                <button onclick="switchMasterView('dashboard'); switchAdminTab('profile');" class="text-stone-500 hover:text-stone-800 cursor-pointer">Recorte Predial</button>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- VISOR OPERACIONAL & MUESTRA DE DATOS EXTRAÍDOS (INTERACTIVO) -->
+                    <div id="dataSourceInspector" class="mt-4 p-4 sm:p-6 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-4 transition-all">
+                        <!-- Cabecera del Inspector -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#E7DAC6] pb-4">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-xl bg-white border border-stone-200 p-1 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
+                                    <img id="inspectorSourceLogo" src="assets/sources/dga_logo.jpg" alt="Organismo" class="max-w-full max-h-full object-contain">
+                                </div>
+                                <div class="space-y-0.5">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h4 id="inspectorSourceName" class="text-sm font-bold text-stone-900 font-serif">Dirección General de Aguas (DGA-MOP Chile)</h4>
+                                        <span id="inspectorSourceProtocol" class="text-[10px] font-mono px-2 py-0.5 rounded border bg-blue-100 text-blue-800 border-blue-300">API REST SNIH / BNA</span>
+                                    </div>
+                                    <p id="inspectorSourceCountry" class="text-xs text-stone-500 font-mono">Chile 🇨🇱 • Fundado en 1969</p>
+                                    <p id="inspectorSourceHeadline" class="text-xs text-stone-600 font-sans mt-0.5">Red Hidrométrica Oficial de Cauces Fluviales y Pozos de Agua Subterránea (SHAC)</p>
+                                </div>
+                            </div>
+
+                            <!-- Selector de Pestañas del Inspector -->
+                            <div class="flex items-center gap-1.5 p-1 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] shrink-0 self-start lg:self-auto overflow-x-auto">
+                                <button onclick="setSourceInspectorTab('payload')" id="inspectorTabBtn-payload" class="inspector-tab-btn px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer bg-emerald-800 text-white shadow-xs">
+                                    <span>📑</span> <span>Muestra de Datos (JSON Real)</span>
+                                </button>
+                                <button onclick="setSourceInspectorTab('operation')" id="inspectorTabBtn-operation" class="inspector-tab-btn px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer bg-white text-stone-700 hover:bg-stone-50">
+                                    <span>⚙️</span> <span>Cómo Opera la Fuente</span>
+                                </button>
+                                <button onclick="setSourceInspectorTab('agronomic')" id="inspectorTabBtn-agronomic" class="inspector-tab-btn px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer bg-white text-stone-700 hover:bg-stone-50">
+                                    <span>🌾</span> <span>Guía para el Agricultor</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Barra de Métricas Clave de la Fuente -->
+                        <div id="inspectorSourceMetrics" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <!-- Inyectado dinámicamente -->
+                        </div>
+
+                        <!-- Contenedor Dinámico de la Pestaña Activa -->
+                        <div id="inspectorTabContent" class="transition-all">
+                            <!-- Inyectado dinámicamente -->
                         </div>
                     </div>
                 </div>
@@ -12179,36 +12221,41 @@
 
                 <!-- SUBMÓDULO 3: CONSOLA DE SCRIPTS, MODELOS & DATASETS REPRODUCIBLES -->
 
-                <!-- Banner de Introducción a Scripts & Datasets -->
-                <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3.5">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-xl shrink-0">
-                            ⚙️
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold text-stone-900 font-serif">Catálogo Unificado de Modelos Biofísicos & Datasets Territoriales</h3>
-                            <p class="text-xs text-stone-600 mt-0.5">Selecciona cualquier script o dataset en el panel izquierdo para inspeccionar su código, ajustar sus parámetros en el simulador en vivo o exportar sus geometrías.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <input type="text" id="scriptSearchInput" oninput="filterScriptsAndDatasets(this.value)" placeholder="🔍 Filtrar scripts o datasets..." class="px-3 py-1.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] text-xs font-mono text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-amber-500 w-52 sm:w-64">
-                    </div>
-                </div>
-
-                <!-- DIAGRAMA DE ORDENAMIENTO & PIPELINE DE EJECUCIÓN DE SCRIPTS -->
-                <div class="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">📊</span>
+                <!-- SUBMÓDULO 3: CONSOLA INTEGRADA DE MODELOS & DATASETS REPRODUCIBLES -->
+                <div class="rounded-2xl bg-white border border-[#E7DAC6] shadow-sm overflow-hidden font-sans">
+                    <!-- 1. Header Bar de la Consola con Buscador y Control del Flujo -->
+                    <div class="p-4 sm:p-5 bg-white border-b border-[#E7DAC6] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-xl shrink-0">
+                                ⚙️
+                            </div>
                             <div>
-                                <h4 class="text-xs font-bold text-stone-900 font-mono uppercase tracking-wider">Pipeline de Ejecución & Dependencia de Scripts Biofísicos</h4>
-                                <p class="text-[11px] text-stone-500">Flujo ordenado desde los inputs geofísicos (DEM / Clima) hasta la gobernanza comunitaria y balance MRV.</p>
+                                <h3 class="text-sm font-bold text-stone-900 font-serif">Catálogo Unificado de Modelos Biofísicos &amp; Datasets Territoriales</h3>
+                                <p class="text-xs text-stone-600 mt-0.5">Selecciona cualquier script o dataset en el panel izquierdo para inspeccionar su código, ajustar sus parámetros en el simulador en vivo o exportar sus geometrías.</p>
                             </div>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="togglePipelineFlowDiagram()" class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-xs font-mono text-stone-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                                <span>📊</span> <span id="pipelineToggleLabel">Ocultar Flujo</span>
+                            </button>
+                            <input type="text" id="scriptSearchInput" oninput="filterScriptsAndDatasets(this.value)" placeholder="🔍 Filtrar scripts o datasets..." class="px-3 py-1.5 rounded-xl bg-[#FAF7F2] border border-[#E7DAC6] text-xs font-mono text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-amber-500 w-52 sm:w-64">
+                        </div>
                     </div>
 
-                    <div class="overflow-x-auto py-2 bg-[#FAF7F2] p-3 rounded-xl border border-[#E7DAC6]">
-                        <svg viewBox="0 0 940 180" class="w-full min-w-[880px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 2. Diagrama de Pipeline de Ejecución (Sub-sección colapsable integrada) -->
+                    <div id="pipelineDiagramContainer" class="p-4 sm:p-5 bg-[#FAF7F2] border-b border-[#E7DAC6] space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7DAC6] pb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">📊</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-stone-900 font-mono uppercase tracking-wider">Pipeline de Ejecución &amp; Dependencia de Scripts Biofísicos</h4>
+                                    <p class="text-[11px] text-stone-500">Flujo ordenado desde los inputs geofísicos (DEM / Clima) hasta la gobernanza comunitaria y balance MRV.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto py-2 bg-white p-3 rounded-xl border border-[#E7DAC6]">
+                            <svg viewBox="0 0 940 180" class="w-full min-w-[880px] h-auto select-none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <filter id="pipeShadow" x="-10%" y="-10%" width="120%" height="130%">
                                     <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.06"/>
@@ -12287,11 +12334,12 @@
                                 <text x="769" y="128" fill="#57534E" font-family="'JetBrains Mono', monospace" font-size="8.5">+4.8 t CO₂e/ha/año PRV</text>
                             </g>
                         </svg>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Master-Detail Layout de Scripts & Datasets -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- 3. Consola Maestro-Detalle (Workspace Integrado) -->
+                    <div class="p-4 sm:p-6 bg-white">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     
                     <!-- PANEL IZQUIERDO: Lista Agrupada de Scripts y Datasets -->
                     <div class="lg:col-span-4 space-y-4 bg-white p-3.5 rounded-2xl border border-[#E7DAC6] shadow-sm">
@@ -13060,6 +13108,8 @@ print(meniel_soil)</code></pre>
 ]</code></pre>
                         </div>
 
+                    </div>
+                </div>
                     </div>
                 </div>
             </div>
@@ -17415,6 +17465,7 @@ print(meniel_soil)</code></pre>
     <script src="js/engines/data-cube-engine.js"></script>
     <script src="js/hub/geo-layers.js?v=4.1.0-windy-cuenca"></script>
     <script src="js/hub/hub-navigation.js?v=4.1.0-windy-cuenca"></script>
+    <script src="js/hub/hub-data-sources.js"></script>
     <script src="js/hub/mesa-vecinos.js"></script>
     <script src="js/hub/vault-cockpit.js"></script>
     <script src="js/hub/cerro-cuenca.js?v=4.3.2"></script>

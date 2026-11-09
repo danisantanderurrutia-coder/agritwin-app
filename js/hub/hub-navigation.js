@@ -1401,6 +1401,10 @@
                     }
                 } else if (tabId === 'docs-tables') {
                     if (typeof initDocsCatalog === 'function') initDocsCatalog();
+                } else if (tabId === 'docs-data') {
+                    if (typeof inspectDataSource === 'function') {
+                        inspectDataSource(typeof currentInspectedSourceId !== 'undefined' ? currentInspectedSourceId : 'dga');
+                    }
                 }
 
                 // Renderizado reactivo universal de LaTeX en la subpestaña activa
