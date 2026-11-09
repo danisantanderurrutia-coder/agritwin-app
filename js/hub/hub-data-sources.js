@@ -177,6 +177,50 @@ const AGRITWIN_DATA_SOURCES = {
         }
     },
 
+    copernicus_sar: {
+        id: 'copernicus_sar',
+        name: 'Copernicus / ESA – Sentinel-1 SAR Banda C',
+        shortName: 'Sentinel-1 SAR GRD',
+        country: 'Unión Europea 🇪🇺 / Global',
+        founded: 2014,
+        logo: 'assets/sources/esa_logo.svg',
+        color: '#06b6d4',
+        accentBg: 'rgba(6, 182, 212, 0.12)',
+        description: 'Constelación de satélites radar de apertura sintética (SAR) en Banda C (5.405 GHz). Su longitud de onda penetra la cubierta nubosa densa de ríos atmosféricos y tormentas extremas, permitiendo mapear la huella física real de inundaciones en aguas libres por reflexión especular (retrodispersión &sigma;₀ < -18 dB).',
+        payloadSample: {
+            "sensor": "Sentinel-1A C-SAR Level-1 GRD",
+            "polarization": ["VV", "VH"],
+            "resolution_m": 10.0,
+            "pass_direction": "DESCENDING",
+            "orbit_relative": 149,
+            "backscatter_metrics": {
+                "water_surface_sigma0_db": -21.4,
+                "saturated_soil_sigma0_db": -14.2,
+                "dry_pasture_sigma0_db": -8.7,
+                "detection_threshold_water_db": -18.0
+            },
+            "flood_detection": {
+                "water_mask_pixels": 345000,
+                "total_inundated_ha": 3450.0,
+                "optical_cloud_penetration_pct": 100.0,
+                "confidence_score": 0.96
+            }
+        },
+        operation: {
+            frequency: 'Revisita de 6 a 12 días; adquisición garantizada de noche y bajo tormentas severas.',
+            acquisition: 'Ingesta automática de productos Level-1 Ground Range Detected (GRD) vía Copernicus Data Space Ecosystem y Google Earth Engine.',
+            preprocessing: 'Corrección radiométrica (calibración gamma0/sigma0), filtrado speckle de Lee refinado (7x7) y corrección de terreno por elevación DEM Copernicus 30m.',
+            storageSize: '~350 KB por escena recortada al corredor fluvial de interés.',
+            coverageScope: 'Cobertura global sistemática en modo Interferometric Wide (IW).'
+        },
+        agronomicUtility: {
+            question: '¿Por qué es indispensable el Radar SAR en la gestión de inundaciones agrícolas?',
+            answer: 'Porque cuando cae un río atmosférico y se desbordan los ríos, las nubes son tan espesas que las cámaras ópticas normales (Sentinel-2, drones) quedan 100% ciegas. El radar emite pulsos de microondas que atraviesan las nubes y rebotan como espejo sobre el agua, mostrándote con precisión métrica dónde está inundado tu campo en medio de la tormenta.',
+            economicImpact: 'Evacuación temprana de ganado y maquinaria en vegas riparias antes del corte de puentes, ahorrando millones en pérdidas de activos agrícolas.',
+            expedienteAction: 'Genera la máscara satelital real de inundación (&sigma;₀ < -18 dB) para auditar la póliza de seguro agrícola y validar obras Keyline.'
+        }
+    },
+
     inia: {
         id: 'inia',
         name: 'AGROMET – INIA Chile',

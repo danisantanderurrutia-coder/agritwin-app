@@ -4570,6 +4570,14 @@
                 map.addLayer(macroCuencaLayer);
             }
 
+            // Limpiar flechas tácticas residuales de línea base predial si estuvieran montadas
+            if (window.longaviFluvialArrowMarker && map.hasLayer(window.longaviFluvialArrowMarker)) {
+                map.removeLayer(window.longaviFluvialArrowMarker);
+            }
+            if (typeof transectoFluvialGroup !== 'undefined' && map.hasLayer(transectoFluvialGroup)) {
+                map.removeLayer(transectoFluvialGroup);
+            }
+
             // Helper de marcador de infraestructura crítica
             function createInfraMarker(lat, lng, iconChar, label, details) {
                 const markerIcon = L.divIcon({
@@ -5089,8 +5097,10 @@
                 window.openFloodBenchmarkDrawer();
             }
 
-            // 9. Conectar partículas de agua en EnergyFlowEngine
+            // 9. Conectar partículas de agua y apagar estrictamente cualquier onda o flujo de fuego
             if (window.energyFlowEngine) {
+                window.energyFlowEngine.toggle('fireWave', false);
+                window.energyFlowEngine.toggles.fireWave = false;
                 window.energyFlowEngine.toggle('floodWave', true);
                 window.energyFlowEngine.toggle('water', true);
                 window.energyFlowEngine.render();
@@ -5145,9 +5155,9 @@
             const badgeIcon = L.divIcon({
                 className: 'tactical-cell-badge-icon',
                 html: `
-                    <div style="background: rgba(8, 12, 22, 0.94); border: 1.4px ${isCritical ? 'solid' : 'dashed'} ${opts.color}; border-radius: 6px; padding: 2px 7px; box-shadow: 0 2px 10px rgba(0,0,0,0.7); font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 800; color: ${opts.color}; display: flex; align-items: center; gap: 5px; white-space: nowrap; pointer-events: none;">
-                        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${opts.color}; box-shadow: 0 0 6px ${opts.color};"></span>
-                        <span>${badgeLabel}</span>
+                    <div style="background: rgba(8, 12, 22, 0.94); border: 1.4px ${isCritical ? 'solid' : 'dashed'} ${opts.color || '#38bdf8'}; border-radius: 6px; padding: 2px 7px; box-shadow: 0 2px 10px rgba(0,0,0,0.7); font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 800; color: ${opts.color || '#38bdf8'}; display: flex; align-items: center; gap: 5px; white-space: nowrap; pointer-events: none;">
+                        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${opts.color || '#38bdf8'}; box-shadow: 0 0 6px ${opts.color || '#38bdf8'};"></span>
+                        <span style="color:${opts.color || '#38bdf8'};">${badgeLabel}</span>
                     </div>
                 `,
                 iconSize: [140, 22],
@@ -5266,8 +5276,10 @@
         `, { permanent: true, direction: 'top', offset: [0, -10], className: 'tactical-tooltip-clean' });
         keylineDefenseLine.addTo(transectoFluvialGroup);
 
-        // Flecha direccional táctica fluvial
-        createTacticalArrowMarker(-36.1880, -71.6550, -22, 'FLUJO LONGAVÍ ➔', 'rgba(56, 189, 248, 0.75)', '#e0f2fe', false).addTo(transectoFluvialGroup);
+        // Flecha direccional táctica fluvial (Flujo Crecida Río Longaví)
+        const flFluvialArrow = createTacticalArrowMarker(-36.1880, -71.6550, -22, 'FLUJO CRECIDA RÍO LONGAVÍ ➔ 142 m³/s (2.4 m/s)', 'rgba(56, 189, 248, 0.75)', '#e0f2fe', false);
+        // NO agregarlo a grupos globales por defecto; se gestiona bajo demanda
+        window.longaviFluvialArrowMarker = flFluvialArrow;
 
         // Polígonos de Envolvente y Zonificación de Inundación Fluvial (T=10, T=50, T=100)
         const inundacionGeoJsonLayer = L.geoJSON(geojsonInundacion, {
@@ -5402,7 +5414,7 @@
 
         // Flecha táctica de piro-avance (Exclusiva del menú de Incendios Forestales)
         const puelcheFireArrow = createTacticalArrowMarker(-36.1880, -71.5250, 0, 'AVANCE PUELCHE ◄', 'rgba(220, 38, 38, 0.90)', '#ffffff', true);
-        puelcheFireArrow.addTo(transectoIncendioGroup);
+        // NO agregar automáticamente al mapa ni a grupos predeterminados; solo cuando el usuario active expresamente Incendios
         window.puelcheFireArrowMarker = puelcheFireArrow;
 
         // Polígonos de Peligro y Zonificación de Incendio Forestal (CONAF / FWI)

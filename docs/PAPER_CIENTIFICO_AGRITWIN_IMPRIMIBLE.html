@@ -1429,6 +1429,13 @@ $$\frac{\partial \theta}{\partial t} = \frac{\partial}{\partial z} \left[ K(\the
         <p>
             <strong>4. Doctrina del Receptor Fluvial y Amortiguación Keyline:</strong> La evaluación del riesgo se ancla en el Cono de Cuenca Aportante ($\Omega_{\text{cuenca}}$) aguas arriba de la propiedad. En llanuras agrícolas intermedias (ej. Fundo Meniel en Río Longaví), la red de zanjas Keyline amortigua la onda de crecida al almacenar escorrentía por infiltración forzada ($\Delta V \approx 18.500\text{ m}^3$), atenuando el calado punta en $-14\text{ cm}$ y previniendo el colapso de infraestructuras críticas.
         </p>
+        <p>
+            <strong>5. Operadores Dinámicos de Mitigación Local como Condiciones de Borde:</strong> Para superar representaciones estáticas, las intervenciones de diseño agroecológico (Keyline y Fajas WUI) se formalizan en AgriTwin como operadores biofísicos dinámicos:
+            <br>
+            • <em>Sumidero Keyline en Saint-Venant 2D:</em> $\frac{\partial h}{\partial t} + \nabla \cdot (h \mathbf{u}) = P_e - S_{\text{keyline}}(x, y, t)$, donde $S_{\text{keyline}} = \min\left( \frac{V_{\text{tranque}} - V(t)}{\Delta t \cdot A_{\text{celda}}}, \; K_{\text{sat}} \cdot \nabla h \cdot \frac{w_{\text{zanja}}}{L_{\text{celda}}} \cdot \psi(\text{AMC}) \right)$. En Río Longaví atenúa el pico en $-22.4\%$ y expande la alerta temprana en $+2.4\text{ h}$.
+            <br>
+            • <em>Contención Térmica WUI en Byram-Albini:</em> Balance de Byram $D_{\text{radiante}} = 4 \cdot L_{\text{llama}}$ acoplado a la probabilidad estocástica de salto de pavesas $P_{\text{spotting}} = 1 - \exp\left( - 0.042 \cdot \frac{U_{10}^{1.35}}{W_{\text{faja}}} \cdot (1 - \text{HR}) \cdot \frac{C_{\text{dosel}}}{50} \right)$, demostrando un $81.3\%$ de retención efectiva bajo viento Puelche ($42\text{ km/h}$, $\text{HR}=18\%$).
+        </p>
 
         <h2 class="section-title">2.3. Dinámica Pirogénica, Balística de Pavesas y Regímenes Eólicos</h2>
 

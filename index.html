@@ -9798,35 +9798,76 @@
                             </div>
                         </div>
 
-                        <!-- Las 4 Etapas de la Tubería de Casos de Estudio -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
-                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                                <div class="font-mono text-[10px] font-bold text-sky-800 uppercase">Etapa 1 • Congelamiento T-24h</div>
-                                <div class="font-bold text-stone-900">Ingesta Pre-Evento Ciega</div>
-                                <p class="text-stone-600 text-[11px] leading-relaxed">
-                                    <code>01_fetch_inputs.py</code> rebobina el reloj a la víspera del evento: descarga lluvia acumulada de 90 días, serie horaria ERA5 ($T_{2m}, \text{HR}, U_{10m}$) y <strong>solo la escena Sentinel-2 L2A previa al incendio</strong> (estado hídrico foliar NDMI/NBR pre-fuego).
-                                </p>
+                        <!-- Las 4 Etapas de la Tubería Dual de Casos de Estudio (Incendios & Inundaciones) -->
+                        <div class="space-y-3">
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between border-b border-stone-200 pb-1">
+                                <span>🔥 TUBERÍA A: PROTOCOLO MEGAINCENDIOS (SENTINEL-2 dNBR &amp; ROTHERMEL-ALBINI)</span>
+                                <span class="text-rose-700 font-bold">T-24h Ciego vs Ground-Truth Satelital</span>
                             </div>
-                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                                <div class="font-mono text-[10px] font-bold text-amber-800 uppercase">Etapa 2 • Emulación T0 Ciega</div>
-                                <div class="font-bold text-stone-900">Motor de Amenaza Sin Leakage</div>
-                                <p class="text-stone-600 text-[11px] leading-relaxed">
-                                    Con cero conocimiento del perímetro final, AgriTwin calcula el índice <strong>FWI (Van Wagner)</strong>, la elipse balística <strong>Rothermel-Fons</strong> ($\frac{L}{W}=1+0,125U$), el salto de pavesas <strong>Albini</strong> y los corredores topográficos (`P-VINA-01..03`, `P-SJ-01..03`).
-                                </p>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-sky-800 uppercase">Etapa 1 • Congelamiento T-24h</div>
+                                    <div class="font-bold text-stone-900">Ingesta Pre-Evento Ciega</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        <code>01_fetch_inputs.py</code> rebobina el reloj: descarga lluvia acumulada 90d, serie horaria ERA5 ($T_{2m}, \text{HR}, U_{10m}$) y <strong>solo la escena Sentinel-2 L2A previa al incendio</strong> (índices foliares NDMI/NBR pre-fuego).
+                                    </p>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-amber-800 uppercase">Etapa 2 • Emulación T0 Ciega</div>
+                                    <div class="font-bold text-stone-900">Motor FWI &amp; Rothermel</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        Sin conocer el perímetro, computa el índice <strong>FWI (Van Wagner)</strong>, la elipse paramétrica <strong>Rothermel-Fons</strong> ($\frac{L}{W}=1+0,125U$), pavesas <strong>Albini</strong> y celdas tácticas (<code>P-VINA</code>, <code>P-SJ</code>).
+                                    </p>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-rose-800 uppercase">Etapa 3 • Ground-Truth Post</div>
+                                    <div class="font-bold text-stone-900">Cicatriz Satelital dNBR 20m</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        <code>02_burn_scar.py</code> procesa la escena Sentinel-2 post-evento, extrae el diferencial $\Delta\text{dNBR} > 0,27$ y exporta <code>data/hindcast_sites.json</code> (22 polígonos reales, 459 vértices en Santa Juana).
+                                    </p>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-emerald-800 uppercase">Etapa 4 • Contraste &amp; Predio</div>
+                                    <div class="font-bold text-stone-900">Drawer Bipolar &amp; Faja WUI</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        El Visor superpone <em>1. Incendio Real</em> vs <em>2. Ciega T-24h</em> vs <em>3. Trilateral</em>, y evalúa la eficacia de la faja cortafuego WUI ($P_{\text{spotting}} = 18,7\%$ con viento $42\text{ km/h}$).
+                                    </p>
+                                </div>
                             </div>
-                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                                <div class="font-mono text-[10px] font-bold text-rose-800 uppercase">Etapa 3 • Ground-Truth Post</div>
-                                <div class="font-bold text-stone-900">Cicatriz Satelital dNBR 20m</div>
-                                <p class="text-stone-600 text-[11px] leading-relaxed">
-                                    <code>02_burn_scar.py</code> y <code>03_export_sites.py</code> procesan la escena Sentinel-2 posterior al evento, extraen el diferencial espectral $\text{dNBR} = \text{NBR}_{\text{pre}} - \text{NBR}_{\text{post}} &gt; 0,27$ y exportan <code>data/hindcast_sites.json</code> (22 polígonos reales).
-                                </p>
+
+                            <div class="text-[11px] font-mono font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between border-b border-stone-200 pb-1 pt-2">
+                                <span>🌊 TUBERÍA B: PROTOCOLO MEGAINUNDACIONES (SENTINEL-1 SAR &amp; SAINT-VENANT 2D)</span>
+                                <span class="text-cyan-700 font-bold">T-48h Ciego vs Radar SAR Banda C</span>
                             </div>
-                            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
-                                <div class="font-mono text-[10px] font-bold text-emerald-800 uppercase">Etapa 4 • Contraste & Predio</div>
-                                <div class="font-bold text-stone-900">Drawer Bipolar & Stress-Test</div>
-                                <p class="text-stone-600 text-[11px] leading-relaxed">
-                                    El Visor de Cuenca superpone <em>1. Incendio Real</em> vs <em>2. Riesgo Ciego T-24h</em> vs <em>3. Comparar</em>, y permite transferir el régimen meteorológico extremo sobre el predio activo (<code>FarmProfileManager</code>) para auditar sus fajas Keyline.
-                                </p>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                                <div class="p-3.5 rounded-xl bg-cyan-50/50 border border-cyan-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-sky-800 uppercase">Etapa 1 • Congelamiento T-48h</div>
+                                    <div class="font-bold text-stone-900">Río Atmosférico &amp; Isoterma 0°C</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        Congela el pronóstico ERA5: Transporte Integrado de Vapor de Agua ($IVT \ge 840\text{ kg}\cdot\text{m}^{-1}\cdot\text{s}^{-1}$) e Isoterma $0^\circ\text{C}$ a más de $3.350\text{ m}$ (lluvia líquida sobre nieve previa <em>Rain-on-Snow</em>).
+                                    </p>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-cyan-50/50 border border-cyan-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-amber-800 uppercase">Etapa 2 • Emulación T0 Ciega</div>
+                                    <div class="font-bold text-stone-900">HAND &amp; Saint-Venant 2D</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        Resuelve la hidrodinámica 2D acoplada al DEM Copernicus 30m y rugosidad Manning Sentinel-2, integrando el operador dinámico de sumidero Keyline ($S_{\text{keyline}}$, amortiguación $-22,4\%$).
+                                    </p>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-cyan-50/50 border border-cyan-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-cyan-800 uppercase">Etapa 3 • Ground-Truth Radar</div>
+                                    <div class="font-bold text-stone-900">Sentinel-1 SAR (&sigma;₀ &lt; -18 dB)</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        El Radar Banda C penetra la tormenta al 100%. Por reflexión especular en agua libre, extrae la máscara satelital real ($3.450\text{ ha}$ en Mataquito) y contrasta con los aforos punta DGA SNIA ($5.120\text{ m}^3/\text{s}$).
+                                    </p>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-cyan-50/50 border border-cyan-200 space-y-1.5">
+                                    <div class="font-mono text-[10px] font-bold text-emerald-800 uppercase">Etapa 4 • Contraste Trilateral</div>
+                                    <div class="font-bold text-stone-900">Auditoría CSI &ge; 89%</div>
+                                    <p class="text-stone-600 text-[11px] leading-relaxed">
+                                        Superpone las 3 capas independientes (SAR, DGA, HAND 2D), computa Hit Rate ($93,8\%$) y CSI ($89,4\%$) y audita puntos ciegos (remanso estuarino La Pesca y colapso Puente Tres Arcos).
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
@@ -11879,7 +11920,7 @@
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-bold flex items-center gap-1.5 shadow-2xs">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span>7 Organismos Auditados</span>
+                                <span>8 Organismos Auditados</span>
                             </span>
                         </div>
                     </div>
@@ -12085,6 +12126,35 @@
                             </div>
                             <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-bold group-hover:text-emerald-900">
                                 <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload &amp; Operación</span></span>
+                                <span>➔</span>
+                            </div>
+                        </div>
+
+                        <!-- Ficha 8: Copernicus Sentinel-1 SAR (Radar Banda C) -->
+                        <div onclick="inspectDataSource('copernicus_sar')" id="source-card-copernicus-sar" class="source-provider-card p-4 rounded-2xl bg-white border border-[#E7DAC6] shadow-sm space-y-3 flex flex-col justify-between cursor-pointer hover:border-cyan-500 hover:shadow-md transition-all group">
+                            <div class="space-y-2.5">
+                                <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-12 h-12 rounded-xl bg-cyan-950 border border-cyan-800 p-1 flex items-center justify-center shrink-0 shadow-xs text-xl">
+                                            🛰️
+                                        </div>
+                                        <div>
+                                            <h5 class="text-xs font-bold text-stone-900 font-serif leading-tight group-hover:text-cyan-900 transition-colors">Copernicus Sentinel-1 SAR</h5>
+                                            <span class="text-[10px] font-mono text-stone-500">Banda C (5.4 GHz) • ESA 🇪🇺</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-[9px] font-mono font-bold bg-cyan-100 text-cyan-800 px-1.5 py-0.5 rounded border border-cyan-200 shrink-0">SAR GRD</span>
+                                </div>
+                                <p class="text-[11px] text-stone-600 leading-snug">
+                                    <b>Historia &amp; Misión:</b> Constelación radar de la ESA operativa desde 2014. Su longitud de onda de 5.6 cm penetra la densa nubosidad de los ríos atmosféricos. En agua libre genera retrodispersión especular (&sigma;₀ &lt; -18 dB).
+                                </p>
+                                <div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#E7DAC6] text-[10px] font-mono text-stone-700 space-y-0.5">
+                                    <div><b>Polarización:</b> VV + VH Dual Pol (10m)</div>
+                                    <div><b>Eventos Auditados:</b> Mataquito, Longaví, Ancoa 2023</div>
+                                </div>
+                            </div>
+                            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px] font-mono text-cyan-800 font-bold group-hover:text-cyan-900">
+                                <span class="flex items-center gap-1.5"><span>🔍</span> <span>Ver Payload Radar SAR</span></span>
                                 <span>➔</span>
                             </div>
                         </div>
