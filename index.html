@@ -18645,7 +18645,10 @@ print(meniel_soil)</code></pre>
 document.addEventListener('DOMContentLoaded', () => {
     try {
         const urlParams = new URLSearchParams(window.location.search);
+        const presetParam = urlParams.get('preset'); // 'solo_sar' | 'solo_poligono' | 'historica' | 'prediccion' | 'ciega_vs_real' | 'todas'
         const floodParam = urlParams.get('flood') || (window.location.hash.includes('evento=licanten') ? 'licanten_2023' : (window.location.hash.includes('evento=longavi') ? 'longavi_2023' : (window.location.hash.includes('evento=ancoa') ? 'ancoa_2023' : null)));
+        const hindcastParam = urlParams.get('hindcast') || (window.location.hash.includes('evento=vina') ? 'vina_2024' : (window.location.hash.includes('evento=santajuana') ? 'santa_juana_2023' : null));
+
         if (floodParam) {
             window.__bootPhase = false;
             const splash = document.getElementById('alchemicalAppSplash');
@@ -18668,8 +18671,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 600);
             return;
         }
-        const hindcastParam = urlParams.get('hindcast') || (window.location.hash.includes('evento=vina') ? 'vina_2024' : (window.location.hash.includes('evento=santajuana') ? 'santa_juana_2023' : null));
-        const presetParam = urlParams.get('preset'); // 'solo_poligono' | 'historica' | 'prediccion' | 'ciega_vs_real' | 'todas'
         
         if (hindcastParam) {
             window.__bootPhase = false;
