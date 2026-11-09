@@ -2286,11 +2286,11 @@
                         </div>
                     `;
                     const layer = L.polygon(coords, {
-                        color: '#0284c7',
-                        weight: 2.5,
-                        fillColor: '#0284c7',
-                        fillOpacity: 0.35,
-                        dashArray: '4, 2',
+                        color: p.color || '#0284c7',
+                        weight: p.weight || 2.5,
+                        fillColor: p.fillColor || '#0284c7',
+                        fillOpacity: p.fillOpacity !== undefined ? p.fillOpacity : 0.35,
+                        dashArray: p.dashArray || '4, 2',
                         className: 'flood-sar-polygon'
                     });
                     layer.on('mouseover', function() { this.setStyle({ fillOpacity: 0.55 }); });

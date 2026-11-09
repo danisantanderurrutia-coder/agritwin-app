@@ -139,7 +139,11 @@
           "fuente": "ERA5 reanalysis + Estación DGA Licantén"
         },
         "usable_coverage_pct": 98.2,
-        "validated": true
+        "validated": true,
+        "color": "#0284c7",
+        "fillColor": "#0369a1",
+        "fillOpacity": 0.35,
+        "weight": 2.0
       }
     },
     {
@@ -267,7 +271,11 @@
           "fuente": "ERA5 reanalysis + AGROMET Longaví + DGA"
         },
         "usable_coverage_pct": 95.4,
-        "validated": true
+        "validated": true,
+        "color": "#0284c7",
+        "fillColor": "#0369a1",
+        "fillOpacity": 0.35,
+        "weight": 2.0
       }
     },
     {
@@ -386,7 +394,11 @@
           "fuente": "ERA5 reanalysis + DGA Ancoa"
         },
         "usable_coverage_pct": 94.1,
-        "validated": true
+        "validated": true,
+        "color": "#0284c7",
+        "fillColor": "#0369a1",
+        "fillOpacity": 0.35,
+        "weight": 2.0
       }
     },
     {
@@ -404,7 +416,32 @@
         "color": "#ef4444",
         "fillColor": "#ef4444",
         "fillOpacity": 0.35,
-        "dashArray": "4, 2"
+        "dashArray": "4, 2",
+        "weight": 2.0,
+        "hydrology": {
+          "dga_station": "Río Mataquito en Licantén",
+          "dga_code": "07113001-3",
+          "q_peak_m3s": 5120,
+          "q_base_m3s": 85,
+          "return_period_yr": 85,
+          "water_level_m": 4.85,
+          "isoterma_0c_m": 3350
+        },
+        "weather": {
+          "dias": [
+            "2023-06-21",
+            "2023-06-22",
+            "2023-06-23",
+            "2023-06-24",
+            "2023-06-25"
+          ],
+          "temp_med_c": 11.8,
+          "lluvia_total_mm": 171.7,
+          "lluvia_cabecera_mm": 385.0,
+          "ivt_max_kg_m_s": 840,
+          "ar_category": "Cat 4 (Extremo)",
+          "fuente": "ERA5 reanalysis + Estación DGA Licantén"
+        }
       },
       "geometry": {
         "type": "Polygon",
@@ -457,7 +494,32 @@
         "color": "#0891b2",
         "fillColor": "#0891b2",
         "fillOpacity": 0.25,
-        "dashArray": "5, 4"
+        "dashArray": "5, 4",
+        "weight": 2.0,
+        "hydrology": {
+          "dga_station": "Río Mataquito en Licantén",
+          "dga_code": "07113001-3",
+          "q_peak_m3s": 5120,
+          "q_base_m3s": 85,
+          "return_period_yr": 85,
+          "water_level_m": 4.85,
+          "isoterma_0c_m": 3350
+        },
+        "weather": {
+          "dias": [
+            "2023-06-21",
+            "2023-06-22",
+            "2023-06-23",
+            "2023-06-24",
+            "2023-06-25"
+          ],
+          "temp_med_c": 11.8,
+          "lluvia_total_mm": 171.7,
+          "lluvia_cabecera_mm": 385.0,
+          "ivt_max_kg_m_s": 840,
+          "ar_category": "Cat 4 (Extremo)",
+          "fuente": "ERA5 reanalysis + Estación DGA Licantén"
+        }
       },
       "geometry": {
         "type": "Polygon",
@@ -506,7 +568,31 @@
         "color": "#0284c7",
         "fillColor": "#0369a1",
         "fillOpacity": 0.35,
-        "dashArray": "6, 4"
+        "dashArray": "6, 4",
+        "weight": 2.0,
+        "hydrology": {
+          "dga_station": "Río Ancoa antes embalse Ancoa",
+          "dga_code": "07351001-8",
+          "q_peak_m3s": 860,
+          "q_base_m3s": 14,
+          "return_period_yr": 100,
+          "water_level_m": 4.15,
+          "isoterma_0c_m": 3400
+        },
+        "weather": {
+          "dias": [
+            "2023-06-22",
+            "2023-06-23",
+            "2023-06-24",
+            "2023-06-25"
+          ],
+          "temp_med_c": 7.8,
+          "lluvia_total_mm": 492.7,
+          "lluvia_cabecera_mm": 580.0,
+          "ivt_max_kg_m_s": 880,
+          "ar_category": "Cat 5 (Excepcional)",
+          "fuente": "ERA5 reanalysis + DGA Ancoa"
+        }
       },
       "geometry": {
         "type": "Polygon",
@@ -555,7 +641,31 @@
         "color": "#dc2626",
         "fillColor": "#ef4444",
         "fillOpacity": 0.38,
-        "dashArray": "4, 2"
+        "dashArray": "4, 2",
+        "weight": 2.0,
+        "hydrology": {
+          "dga_station": "Río Ancoa antes embalse Ancoa",
+          "dga_code": "07351001-8",
+          "q_peak_m3s": 860,
+          "q_base_m3s": 14,
+          "return_period_yr": 100,
+          "water_level_m": 4.15,
+          "isoterma_0c_m": 3400
+        },
+        "weather": {
+          "dias": [
+            "2023-06-22",
+            "2023-06-23",
+            "2023-06-24",
+            "2023-06-25"
+          ],
+          "temp_med_c": 7.8,
+          "lluvia_total_mm": 492.7,
+          "lluvia_cabecera_mm": 580.0,
+          "ivt_max_kg_m_s": 880,
+          "ar_category": "Cat 5 (Excepcional)",
+          "fuente": "ERA5 reanalysis + DGA Ancoa"
+        }
       },
       "geometry": {
         "type": "Polygon",
@@ -580,6 +690,148 @@
             [
               -71.478,
               -35.876
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FL_LONGAVI_VEGAS_MENIEL",
+      "properties": {
+        "id": "FL_LONGAVI_VEGAS_MENIEL",
+        "kind": "desborde_agricola",
+        "mode": "cuenca_only",
+        "has_twin": true,
+        "event": "longavi_2023",
+        "name": "Llanura Aluvial & Vegas Bajas Meniel",
+        "label": "Vegas de Inundación Meniel",
+        "setting": "Terrazas bajas y vegas de pastoreo anegadas por crecida de retorno Tr=65a",
+        "area_ha": 480,
+        "calado_m": 1.15,
+        "color": "#0891b2",
+        "fillColor": "#0891b2",
+        "fillOpacity": 0.32,
+        "dashArray": "4, 3",
+        "hydrology": {
+          "dga_station": "Río Longaví en Quiriquina",
+          "dga_code": "07374001-3",
+          "q_peak_m3s": 1280,
+          "q_base_m3s": 28,
+          "return_period_yr": 65,
+          "water_level_m": 3.4,
+          "isoterma_0c_m": 3200
+        },
+        "weather": {
+          "dias": [
+            "2023-08-19",
+            "2023-08-20",
+            "2023-08-21",
+            "2023-08-22",
+            "2023-08-23"
+          ],
+          "temp_med_c": 9.4,
+          "lluvia_total_mm": 248.5,
+          "lluvia_cabecera_mm": 492.7,
+          "ivt_max_kg_m_s": 790,
+          "ar_category": "Cat 4 (Extremo)",
+          "fuente": "ERA5 reanalysis + AGROMET Longaví + DGA"
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.615,
+              -36.208
+            ],
+            [
+              -71.645,
+              -36.195
+            ],
+            [
+              -71.66,
+              -36.205
+            ],
+            [
+              -71.635,
+              -36.22
+            ],
+            [
+              -71.615,
+              -36.208
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FL_LONGAVI_CRUCE_RETIRO",
+      "properties": {
+        "id": "FL_LONGAVI_CRUCE_RETIRO",
+        "kind": "corte_infraestructura",
+        "mode": "cuenca_only",
+        "has_twin": false,
+        "event": "longavi_2023",
+        "name": "Desborde Longitudinal Retiro & Ruta 5 Sur",
+        "label": "Corte Vial Ruta 5 Retiro",
+        "setting": "Sobrepaso de terraplén vial panamericano e interrupción de conectividad norte-sur",
+        "area_ha": 360,
+        "calado_m": 0.65,
+        "color": "#ef4444",
+        "fillColor": "#ef4444",
+        "fillOpacity": 0.35,
+        "dashArray": "5, 3",
+        "hydrology": {
+          "dga_station": "Río Longaví en Quiriquina",
+          "dga_code": "07374001-3",
+          "q_peak_m3s": 1280,
+          "q_base_m3s": 28,
+          "return_period_yr": 65,
+          "water_level_m": 3.4,
+          "isoterma_0c_m": 3200
+        },
+        "weather": {
+          "dias": [
+            "2023-08-19",
+            "2023-08-20",
+            "2023-08-21",
+            "2023-08-22",
+            "2023-08-23"
+          ],
+          "temp_med_c": 9.4,
+          "lluvia_total_mm": 248.5,
+          "lluvia_cabecera_mm": 492.7,
+          "ivt_max_kg_m_s": 790,
+          "ar_category": "Cat 4 (Extremo)",
+          "fuente": "ERA5 reanalysis + AGROMET Longaví + DGA"
+        }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.71,
+              -36.152
+            ],
+            [
+              -71.735,
+              -36.142
+            ],
+            [
+              -71.755,
+              -36.16
+            ],
+            [
+              -71.73,
+              -36.175
+            ],
+            [
+              -71.71,
+              -36.152
             ]
           ]
         ]
