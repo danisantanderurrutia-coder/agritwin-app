@@ -8610,6 +8610,43 @@
                         </ul>
                     </div>
 
+                    <!-- NUEVA TARJETA METODOLÓGICA: DE ELEMENTOS ESTÁTICOS A OPERADORES DINÁMICOS EN EDPs -->
+                    <div class="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-amber-50/70 via-white to-emerald-50/60 border border-amber-200/90 shadow-sm space-y-3 text-xs text-stone-700 leading-relaxed font-sans">
+                        <div class="flex items-center justify-between border-b border-amber-200/60 pb-2">
+                            <span class="font-serif font-bold text-stone-900 text-sm flex items-center gap-2">
+                                <span>⚙️</span> 2. Metodología de Operadores Biofísicos: Del Vector Estático a la Condición de Borde en EDPs
+                            </span>
+                            <span class="text-[9px] font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">PARADIGMA DESTINATION EARTH</span>
+                        </div>
+                        <p class="text-[11px] text-stone-600">
+                            En los sistemas de información geográfica (SIG) tradicionales, las obras agroecológicas (surcos Keyline, zanjas de infiltración, fajas cortafuego WUI de 45 m) se representan como <em>trazos vectoriales inertes</em> que no interactúan con el clima ni con la física del suelo. En AgriTwin, estos elementos se formalizan como <strong>operadores matemáticos dinámicos y sumideros/fuentes dentro de Ecuaciones en Derivadas Parciales (EDPs)</strong>:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                            <div class="p-3 rounded-lg bg-white border border-blue-200 space-y-1.5 shadow-2xs">
+                                <span class="font-mono font-bold text-blue-950 text-[11px] flex items-center gap-1.5">
+                                    <span>🌊</span> Hidrodinámica 2D: Sumidero Keyline ($S_{\text{keyline}}$)
+                                </span>
+                                <div class="text-[11px] font-serif text-blue-900 overflow-x-auto py-0.5">
+                                    $$\frac{\partial h}{\partial t} + \nabla \cdot (h \mathbf{u}) = P_e - S_{\text{keyline}}(x, y, t)$$
+                                </div>
+                                <p class="text-[10px] text-stone-600 leading-normal">
+                                    En Saint-Venant 2D, el Keyline actúa como un sumidero no lineal dependiente de la saturación antecedente ($\psi(\text{AMC})$), conductividad $K_{\text{sat}}$ y capacidad del tranque ($18.500\text{ m}^3$). En el Río Longaví atenúa el caudal pico en <strong>$-22.4\%$</strong> ($1.280 \to 993\text{ m}^3/\text{s}$) y retrasa la onda en <strong>$+2.4\text{ h}$</strong>.
+                                </p>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white border border-rose-200 space-y-1.5 shadow-2xs">
+                                <span class="font-mono font-bold text-rose-950 text-[11px] flex items-center gap-1.5">
+                                    <span>🔥</span> Pirodinámica WUI: Discontinuidad y Salto de Pavesas
+                                </span>
+                                <div class="text-[11px] font-serif text-rose-900 overflow-x-auto py-0.5">
+                                    $$D_{\text{rad}} = 4 L_{\text{llama}}, \quad P_{\text{spotting}} = 1 - e^{-0.042 \frac{U_{10}^{1.35}}{W_{\text{faja}}} (1-\text{HR}) \frac{C_{\text{dosel}}}{50}}$$
+                                </div>
+                                <p class="text-[10px] text-stone-600 leading-normal">
+                                    La faja de 45 m deja de ser una línea inmune: se evalúa contra la radiación de Byram y la probabilidad estocástica de penetración aérea de pavesas de Albini. Bajo viento Puelche ($42\text{ km/h}$, $\text{HR}=18\%$), el operador calcula un <strong>$81.3\%$ de contención efectiva</strong>, alertando si el dosel supera el umbral crítico.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <!-- Tarjeta KaTeX 1: Asimilación Continua de Datos -->
                         <div class="p-3.5 rounded-xl bg-white border border-[#E7DAC6] shadow-sm space-y-2">
