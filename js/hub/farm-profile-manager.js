@@ -474,6 +474,7 @@
     // Cierre/apertura reutilizables (sin cerrojo de un solo uso: el splash puede reabrirse sin quedar pegado)
     function dismissSplash() {
       if (!splashEl) return;
+      document.documentElement.classList.add('skip-splash');
       splashEl.style.opacity = '0';
       splashEl.style.pointerEvents = 'none';
       splashEl.style.display = 'none';
@@ -482,6 +483,7 @@
 
     function openSplash() {
       if (!splashEl) return;
+      document.documentElement.classList.remove('skip-splash');
       if (window.farmProfileManager) window.farmProfileManager.renderSplashConsole();
       splashEl.style.display = 'flex';
       splashEl.style.pointerEvents = 'auto';

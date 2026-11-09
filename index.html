@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgroTwin Master Suite • Plataforma Unificada</title>
+
+    <!-- Anti-flicker: Determina en frame 0 si se muestra el Árbol Alquímico o se pasa directo a una ruta -->
+    <script>
+        (function() {
+            try {
+                var h = window.location.hash ? window.location.hash.replace('#', '') : '';
+                var s = window.location.search || '';
+                var hasRoute = !!h || s.indexOf('mode=') !== -1 || s.indexOf('view=') !== -1 || s.indexOf('hindcast=') !== -1 || s.indexOf('flood=') !== -1;
+                if (hasRoute) {
+                    document.documentElement.classList.add('skip-splash');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <style>
+        .skip-splash #alchemicalAppSplash {
+            display: none !important;
+        }
+    </style>
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=logo_official_2026">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=logo_official_2026">
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=logo_official_2026">
@@ -1547,7 +1566,7 @@
          PANTALLA DE CARGA INICIAL: ARBOR TELLURICA AGRITWIN (ENTRADA AL HUB)
          Tratado Alquímico de Datos: Raíces, Tronco Hub y las 6 Ramas
          ═══════════════════════════════════════════════════════════════════════ -->
-    <div id="alchemicalAppSplash" class="fixed inset-0 z-[10000] flex flex-col justify-between p-4 sm:p-10 select-none overflow-hidden transition-opacity duration-1000 bg-[#0e0a06]" style="display: none;">
+    <div id="alchemicalAppSplash" class="fixed inset-0 z-[10000] flex flex-col justify-between p-4 sm:p-10 select-none overflow-hidden transition-opacity duration-1000 bg-[#0e0a06]" style="display: flex;">
         <!-- Fondo Grabado Alquímico en Pergamino Widescreen -->
         <div id="splashTreeBg" class="absolute inset-0 w-full h-full bg-cover bg-center filter contrast-105 brightness-95 transform scale-100 transition-transform duration-3500 ease-out" style="background-image: url('assets/ui/arbol_alquimico_splash.jpg');"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-[#140c06]/95 via-transparent to-[#140c06]/80 pointer-events-none"></div>
@@ -18540,7 +18559,8 @@ print(meniel_soil)</code></pre>
 <script src="js/hub/pitch-deck-viewer.js"></script>
 <script src="js/hub/hub-diegetic-modals.js"></script>
 <script src="js/hub/hub-report-generator.js"></script>
-<script src="js/hub/farm-profile-manager.js">
+<script src="js/hub/farm-profile-manager.js"></script>
+<script>
     function runInteractiveSoilGridsCalc() {
         const soc = parseFloat(document.getElementById('sg-soc')?.value || 38.5);
         const bdod = parseFloat(document.getElementById('sg-bdod')?.value || 1.28);

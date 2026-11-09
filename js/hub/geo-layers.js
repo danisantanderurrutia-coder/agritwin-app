@@ -4538,6 +4538,15 @@
             if (typeof transectoIncendioGroup !== 'undefined' && map.hasLayer(transectoIncendioGroup)) {
                 map.removeLayer(transectoIncendioGroup);
             }
+            if (window.puelcheFireArrowMarker && map.hasLayer(window.puelcheFireArrowMarker)) {
+                map.removeLayer(window.puelcheFireArrowMarker);
+            }
+            if (typeof window.deactivateRiskLayer === 'function') {
+                window.deactivateRiskLayer('incendios');
+            }
+            if (typeof window.setPuelcheState === 'function') {
+                window.setPuelcheState(false);
+            }
             if (typeof tacticalFireVectorsLayer !== 'undefined' && map.hasLayer(tacticalFireVectorsLayer)) {
                 map.removeLayer(tacticalFireVectorsLayer);
             }
@@ -5048,11 +5057,29 @@
             // 6. Actualizar textos e información del drawer
             window.updateFloodDrawerForEvent(eventKey);
 
-            // 7. Aplicar preset inicial
-            if (initialPreset) {
-                window.applyFloodLayerPreset(initialPreset);
-            } else {
-                window.applyFloodLayerPreset('todas');
+            // 7. Aplicar preset inicial asegurando activación explícita en Leaflet
+            const pToApply = initialPreset || 'todas';
+            window.applyFloodLayerPreset(pToApply);
+            if (pToApply === 'solo_sar' || pToApply === 'solo_poligono') {
+                if (!map.hasLayer(floodSitesLayer)) floodSitesLayer.addTo(map);
+                if (map.hasLayer(floodTacticalLayer)) map.removeLayer(floodTacticalLayer);
+                if (map.hasLayer(floodPredictionLayer)) map.removeLayer(floodPredictionLayer);
+            } else if (pToApply === 'historica' || pToApply === 'solo_historica') {
+                if (map.hasLayer(floodSitesLayer)) map.removeLayer(floodSitesLayer);
+                if (!map.hasLayer(floodTacticalLayer)) floodTacticalLayer.addTo(map);
+                if (map.hasLayer(floodPredictionLayer)) map.removeLayer(floodPredictionLayer);
+            } else if (pToApply === 'prediccion' || pToApply === 'solo_prediccion') {
+                if (map.hasLayer(floodSitesLayer)) map.removeLayer(floodSitesLayer);
+                if (map.hasLayer(floodTacticalLayer)) map.removeLayer(floodTacticalLayer);
+                if (!map.hasLayer(floodPredictionLayer)) floodPredictionLayer.addTo(map);
+            } else if (pToApply === 'ciega_vs_real') {
+                if (!map.hasLayer(floodSitesLayer)) floodSitesLayer.addTo(map);
+                if (map.hasLayer(floodTacticalLayer)) map.removeLayer(floodTacticalLayer);
+                if (!map.hasLayer(floodPredictionLayer)) floodPredictionLayer.addTo(map);
+            } else { // 'todas' | 'trilateral'
+                if (!map.hasLayer(floodSitesLayer)) floodSitesLayer.addTo(map);
+                if (!map.hasLayer(floodTacticalLayer)) floodTacticalLayer.addTo(map);
+                if (!map.hasLayer(floodPredictionLayer)) floodPredictionLayer.addTo(map);
             }
 
             // 8. Abrir o minimizar drawer según parámetro
@@ -5373,8 +5400,10 @@
         `, { permanent: true, direction: 'bottom', offset: [0, 10], className: 'tactical-tooltip-clean' });
         firebreakLine.addTo(transectoIncendioGroup);
 
-        // Flecha táctica de piro-avance
-        createTacticalArrowMarker(-36.1880, -71.5250, 0, 'AVANCE PUELCHE ◄', 'rgba(220, 38, 38, 0.90)', '#ffffff', true).addTo(transectoIncendioGroup);
+        // Flecha táctica de piro-avance (Exclusiva del menú de Incendios Forestales)
+        const puelcheFireArrow = createTacticalArrowMarker(-36.1880, -71.5250, 0, 'AVANCE PUELCHE ◄', 'rgba(220, 38, 38, 0.90)', '#ffffff', true);
+        puelcheFireArrow.addTo(transectoIncendioGroup);
+        window.puelcheFireArrowMarker = puelcheFireArrow;
 
         // Polígonos de Peligro y Zonificación de Incendio Forestal (CONAF / FWI)
         const incendiosGeoJsonLayer = L.geoJSON(geojsonIncendios, {
