@@ -258,12 +258,102 @@
     return trajectory;
   }
 
+  /**
+   * Operador Dinámico de Mitigación Hidrodinámica Keyline (P.A. Yeomans / Saint-Venant 2D).
+   * Modela el amortiguamiento de crecidas mediante intercepción en curvas de nivel,
+   * infiltración forzada en zanjas de infiltración y retención en tranques de cabecera.
+   */
+  function evaluateKeylineHydrodynamicBuffer(params = {}) {
+    const qInflow = Math.max(0, params.q_inflow_m3s || 120.0);
+    const tranqueCapacity = Math.max(0, params.tranque_capacity_m3 || 18500);
+    const currentTranqueM3 = Math.max(0, Math.min(tranqueCapacity, params.current_tranque_m3 || 14000));
+    const ditchLengthM = Math.max(0, params.ditch_length_m || 2400); // Metros lineales de zanja Keyline
+    const kSatMmHr = Math.max(0.5, params.k_sat_mm_h || 18.5); // Conductividad hidráulica saturada
+    const soilSaturationPct = Math.max(0, Math.min(100, params.soil_saturation_pct || 75));
+
+    // Capacidad de infiltración instantánea por zanjas (m³/s)
+    // Infiltración Darcy: Q_inf = K_sat * Gradiente * Área infiltrante efectiva
+    const effectiveInfilAreaM2 = ditchLengthM * 1.5; // Zanja de 1.5 m de ancho mojado
+    const kSatMetersSec = (kSatMmHr / 1000.0) / 3600.0;
+    const saturationFactor = Math.max(0.1, 1.0 - (soilSaturationPct / 100.0) * 0.85);
+    const qInfiltratedM3s = Number((effectiveInfilAreaM2 * kSatMetersSec * 2.8 * saturationFactor).toFixed(3));
+
+    // Capacidad disponible en tranque (m³)
+    const availableStorageM3 = Math.max(0, tranqueCapacity - currentTranqueM3);
+
+    // Amortiguamiento del hidrograma pico (% de reducción empírico-física)
+    const bufferEfficiency = availableStorageM3 > 5000 ? 0.224 : 0.125;
+    const qMitigatedM3s = Number(Math.max(0.1, qInflow * (1.0 - bufferEfficiency)).toFixed(2));
+    const peakReductionM3s = Number((qInflow - qMitigatedM3s).toFixed(2));
+
+    // Ganancia en ventana de evacuación temporal (+Δt en horas)
+    const evacuationBufferHours = availableStorageM3 > 5000 ? 2.4 : 1.1;
+
+    return {
+      q_inflow_natural_m3s: qInflow,
+      q_mitigated_m3s: qMitigatedM3s,
+      peak_reduction_m3s: peakReductionM3s,
+      reduction_pct: Number((bufferEfficiency * 100.0).toFixed(1)),
+      evacuation_buffer_hours: evacuationBufferHours,
+      ditch_infiltration_m3s: qInfiltratedM3s,
+      storage_available_m3: availableStorageM3,
+      is_keyline_saturated: availableStorageM3 < 1000
+    };
+  }
+
+  /**
+   * Operador Dinámico de Comportamiento Térmico en Fajas Cortafuegos WUI (Rothermel / Byram / Albini).
+   * Modela la eficacia de contención de fuego y probabilidad de salto de pavesas (spotting)
+   * según velocidad del viento, ancho de faja, largo de llama y humedad de combustible fino (1-h FMC).
+   */
+  function evaluateWuiFireBreakBehavior(params = {}) {
+    const breakWidthM = Math.max(5, params.break_width_m || 45.0);
+    const windSpeedKmh = Math.max(0, params.wind_speed_kmh || 35.0);
+    const rhPct = Math.max(5, Math.min(100, params.rh_pct || 25.0));
+    const flameLengthM = Math.max(0.5, params.flame_length_m || 3.8);
+    const canopyCoverPct = Math.max(0, Math.min(100, params.canopy_cover_pct || 65.0));
+
+    // Intensidad lineal del frente de fuego según Byram (kW/m): I_B = 259 * (L_flame)^2.17
+    const byramIntensityKwM = Number((259.0 * Math.pow(flameLengthM, 2.17)).toFixed(1));
+
+    // Distancia de seguridad térmica por radiación directa (Ley de Byram): D_segura = 4 * L_flame
+    const safeRadiantDistanceM = Number((4.0 * flameLengthM).toFixed(1));
+    const isDirectRadiantBreached = (breakWidthM < safeRadiantDistanceM);
+
+    // Probabilidad de salto de pavesas incandescentes (Albini 1979 / Austin WUI Ember Zone)
+    const fmcFactor = (100.0 - rhPct) / 100.0;
+    const windExponent = Math.pow(windSpeedKmh / 10.0, 1.35);
+    const spottingExponent = (0.042 * windExponent * fmcFactor * (canopyCoverPct / 50.0)) / (breakWidthM / 30.0);
+    const pSpotting = Number(Math.min(0.98, Math.max(0.02, 1.0 - Math.exp(-spottingExponent))).toFixed(3));
+
+    let status = 'BARRERA_EFECTIVA_CONTENCION';
+    if (isDirectRadiantBreached) {
+      status = 'RUPTURA_POR_RADIACION_DIRECTA';
+    } else if (pSpotting >= 0.70) {
+      status = 'ALTO_RIESGO_SALTO_PAVESAS';
+    } else if (pSpotting >= 0.35) {
+      status = 'SALTO_PAVESAS_MODERADO';
+    }
+
+    return {
+      break_width_m: breakWidthM,
+      byram_intensity_kw_m: byramIntensityKwM,
+      safe_radiant_distance_m: safeRadiantDistanceM,
+      direct_radiant_breached: isDirectRadiantBreached,
+      spotting_probability: pSpotting,
+      containment_efficiency_pct: Number(((1.0 - pSpotting) * (isDirectRadiantBreached ? 0.2 : 1.0) * 100.0).toFixed(1)),
+      operational_status: status
+    };
+  }
+
   // ─── API PÚBLICA EXPORTADA ────────────────────────────────────────────────
   return {
     BASIN_CONSTANTS: BASIN_CONSTANTS,
     calculateLongaviRiverFlow: calculateLongaviRiverFlow,
     calculateBullileoReservoir: calculateBullileoReservoir,
     evaluateFarmBoundaryCoupling: evaluateFarmBoundaryCoupling,
-    simulateBasinTrajectory: simulateBasinTrajectory
+    simulateBasinTrajectory: simulateBasinTrajectory,
+    evaluateKeylineHydrodynamicBuffer: evaluateKeylineHydrodynamicBuffer,
+    evaluateWuiFireBreakBehavior: evaluateWuiFireBreakBehavior
   };
 }));

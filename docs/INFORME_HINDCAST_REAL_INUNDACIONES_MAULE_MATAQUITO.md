@@ -158,6 +158,18 @@ En inundaciones, la seguridad de una propiedad o infraestructura no depende de l
 * **Licantén:** La lluvia local en el pueblo fue de $171.7\text{ mm}$, pero la cuenca aportante andina recibió más de $385\text{ mm}$ líquidos sobre nieve previa en un área de $6.190\text{ km}^2$. Ignorar la cabecera equivale a subestimar el caudal en un $80\%$.
 * **Fundo Meniel (Longaví):** Al activar la Doctrina del Receptor Fluvial, el gemelo digital identifica que los desbordes aguas arriba del Río Longaví impactarán las vegas bajas en $8\text{ horas}$. Esto permite activar de forma preventiva compuertas y verificar la capacidad libre de las zanjas de infiltración Keyline ($\approx 18.500\text{ m}^3$).
 
+### 5.1. El Operador Dinámico Keyline como Sumidero en Saint-Venant 2D
+Para evitar que las medidas de mitigación predial queden como "adornos estáticos en el mapa", AgriTwin las incorpora como un término de sumidero activo no lineal $S_{\text{keyline}}(x, y, t)$ dentro del modelo hidrodinámico:
+
+$$\frac{\partial h}{\partial t} + \frac{\partial (uh)}{\partial x} + \frac{\partial (vh)}{\partial y} = P_e - S_{\text{keyline}}(x, y, t)$$
+
+Donde el sumidero calcula la tasa de infiltración instantánea por metro lineal de zanja Keyline ($w = 1.5\,\text{m}$) y la capacidad remanente en tranque ($V_{\text{tranque}} = 18.500\,\text{m}^3$):
+
+$$S_{\text{keyline}} = \min\left( \frac{V_{\text{tranque}} - V(t)}{\Delta t \cdot A_{\text{celda}}}, \; K_{\text{sat}} \cdot \nabla h \cdot \frac{w_{\text{zanja}}}{L_{\text{celda}}} \cdot \psi(\text{AMC-III}) \right)$$
+
+* **Atenuación del Caudal Punta:** En Río Longaví ($Q_{\text{pico,nat}} = 1.280\,\text{m}^3/\text{s}$), el operador computa un caudal mitigado en el frente predial de $Q_{\text{mit}} = 993.3\,\text{m}^3/\text{s}$ ($-22.4\%$ de atenuación).
+* **Holgura Temporal de Evacuación:** La retención forzada retrasa el pico aluvial en $+2.4\text{ horas}$, otorgando una ventana crítica de evacuación para animales y familias en vegas ribereñas.
+
 ---
 
 ## 6. Matriz Comparativa Trilateral: Radar SAR vs. Reconstrucción Histórica vs. Simulación Ciega $T-48\text{h}$

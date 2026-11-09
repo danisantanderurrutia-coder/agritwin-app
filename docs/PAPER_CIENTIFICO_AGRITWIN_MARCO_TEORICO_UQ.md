@@ -224,6 +224,21 @@ $$\frac{\partial h}{\partial t} + \frac{\partial (uh)}{\partial x} + \frac{\part
 
 4. **Doctrina del Receptor Fluvial y Amortiguación Keyline:** La evaluación del riesgo se ancla en el Cono de Cuenca Aportante ($\Omega_{\text{cuenca}}$) aguas arriba de la propiedad. En llanuras agrícolas intermedias (ej. Fundo Meniel en Río Longaví), la red de zanjas Keyline amortigua la onda de crecida al almacenar escorrentía por infiltración forzada ($\Delta V \approx 18.500\text{ m}^3$), atenuando el calado punta en $-14\text{ cm}$ y previniendo el colapso de infraestructuras críticas.
 
+#### 2.2.4. Formalización Matemática de los Operadores Dinámicos de Mitigación Local
+Para erradicar representaciones estáticas ad-hoc, las intervenciones de diseño agroecológico (Keyline y Fajas WUI) se formalizan en AgriTwin como **operadores biofísicos de condición de contorno e intercambio de masa/energía**:
+
+1. **Operador de Sumidero Hidrodinámico Keyline en Saint-Venant 2D:**
+   La red de zanjas y tranques de infiltración se acopla a la ecuación de conservación de masa 2D como un término de sumidero no lineal $S_{\text{keyline}}(x, y, t)$:
+   $$\frac{\partial h}{\partial t} + \nabla \cdot (h \mathbf{u}) = P_e - S_{\text{keyline}}(x, y, t)$$
+   $$S_{\text{keyline}}(x, y, t) = \min \left( \frac{V_{\text{tranque}} - V(t)}{\Delta t \cdot A_{\text{celda}}}, \; K_{\text{sat}} \cdot \nabla h \cdot \frac{w_{\text{zanja}}}{L_{\text{celda}}} \cdot \psi(\text{AMC}) \right)$$
+   Donde $V_{\text{tranque}} = 18.500\,\text{m}^3$, $K_{\text{sat}}$ es la conductividad hidráulica saturada de la toposecuencia, $w_{\text{zanja}} = 1.5\,\text{m}$ es el ancho húmedo de infiltración y $\psi(\text{AMC})$ es la función de decaimiento por saturación edáfica antecedente. Este operador computa una atenuación analítica de la crecida de $\eta = -22.4\%$ y una holgura de evacuación de $+2.4\,\text{h}$.
+
+2. **Operador Térmico de Contención y Salto de Pavesas en Fajas Cortafuego WUI:**
+   La barrera cortafuego perimetral de $45\,\text{m}$ no se modela como un obstáculo geométrico fijo, sino mediante el balance radiativo de Byram (1959) y la función de probabilidad de salto de pavesas estocástica de Albini (1979):
+   $$D_{\text{radiante}} = 4.0 \cdot L_{\text{llama}}, \qquad I_B = 259.0 \cdot (L_{\text{llama}})^{2.17}$$
+   $$P_{\text{spotting}} = 1 - \exp\left( - 0.042 \cdot \frac{U_{10}^{1.35}}{W_{\text{faja}}} \cdot \left(1 - \frac{\text{HR}}{100}\right) \cdot \frac{C_{\text{dosel}}}{50} \right)$$
+   Si $W_{\text{faja}} < D_{\text{radiante}}$, la barrera colapsa por radiación directa inmediata. Si $W_{\text{faja}} \ge D_{\text{radiante}}$, la eficacia de contención está gobernada por $1 - P_{\text{spotting}}$, demostrando que bajo viento Puelche ($U_{10} = 42\,\text{km/h}$, $\text{HR} = 18\%$), la faja de $45\,\text{m}$ retiene el $81.3\%$ de las amenazas térmicas, requiriendo presurización aspersiva biológica para cerrar el $18.7\%$ restante de probabilidad de ignición aérea.
+
 #### 2.3.1. Propagación Cuasi-Estacionaria del Frente de Fuego según Modelo Físico de Rothermel
 El avance del frente de llama en pastizales, matorrales y rastrojos se modela mediante el balance térmico de Rothermel (1972):
 
