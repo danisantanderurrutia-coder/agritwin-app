@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GoWild Rewilding Survey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16241C;
+  --canopy:#24402F;
+  --canopy-2:#2F4F3A;
+  --moss:#6E8F63;
+  --moss-light:#B9CBA9;
+  --sand:#EFE9D8;
+  --sand-2:#E4DCC6;
+  --paper:#FAF7EE;
+  --clay:#A85A34;
+  --clay-dark:#8A4527;
+  --horizon:#3E6E7E;
+  --horizon-light:#DCE9EA;
+  --warn:#B4432F;
+  --line:#CFC5A6;
+  --shadow: 0 1px 2px rgba(22,36,28,.08), 0 4px 14px rgba(22,36,28,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--sand);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:'Fraunces',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+#root{max-width:900px;margin:0 auto;min-height:100vh;background:var(--paper);box-shadow:0 0 40px rgba(0,0,0,.06);}
+a{color:var(--horizon);}
+
+/* ===== Top bar / header ===== */
+.topbar{
+  background:linear-gradient(160deg,var(--canopy) 0%,var(--canopy-2) 100%);
+  color:var(--sand);
+  padding:22px 28px 18px;
+  position:relative;
+  overflow:hidden;
+}
+.topbar::after{
+  content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+  background:radial-gradient(circle,rgba(185,203,169,.18) 0%,transparent 70%);
+}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--moss-light);font-weight:600;}
+.topbar h1{font-size:26px;margin:4px 0 2px;font-weight:600;letter-spacing:-.01em;}
+.topbar .org{font-size:13px;color:var(--sand-2);opacity:.85;}
+
+/* Succession ladder = main step nav */
+.ladder{display:flex;align-items:flex-end;gap:0;margin-top:18px;padding:0 2px;}
+.ladder .rung{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;}
+.ladder .rung .dot{
+  width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.18);
+  border:2px solid rgba(255,255,255,.35);margin-bottom:6px;transition:.2s;
+}
+.ladder .rung.done .dot{background:var(--moss-light);border-color:var(--moss-light);}
+.ladder .rung.active .dot{width:18px;height:18px;background:var(--clay);border-color:#fff;}
+.ladder .rung .bar{height:3px;width:100%;background:rgba(255,255,255,.18);position:absolute;top:6px;left:-50%;z-index:-1;}
+.ladder .rung:first-child .bar{display:none;}
+.ladder .rung.done .bar, .ladder .rung.active .bar{background:var(--moss-light);}
+.ladder .rung .lbl{font-size:10.5px;color:var(--sand-2);text-align:center;letter-spacing:.02em;}
+.ladder .rung.active .lbl{color:#fff;font-weight:600;}
+
+/* ===== Body / content ===== */
+.content{padding:26px 28px 100px;}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:10px;
+  padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.section-title{font-size:20px;font-weight:600;margin:0 0 4px;color:var(--canopy);}
+.section-sub{font-size:13.5px;color:#5b6b5f;margin:0 0 18px;line-height:1.5;}
+.helptext{
+  background:var(--horizon-light);border-left:3px solid var(--horizon);
+  padding:10px 14px;border-radius:0 6px 6px 0;font-size:12.5px;color:#2c4a52;
+  margin:10px 0 16px;line-height:1.55;
+}
+.field{margin-bottom:20px;}
+.field label.q{display:block;font-weight:600;font-size:14px;margin-bottom:3px;color:var(--ink);}
+.field .note{font-size:12px;color:#7a7264;font-style:italic;margin-bottom:8px;}
+.req{color:var(--clay-dark);margin-left:3px;}
+input[type=text], input[type=number], input[type=date], input[type=time], textarea{
+  width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:7px;
+  font-family:'Inter',sans-serif;font-size:14px;background:var(--paper);color:var(--ink);
+}
+input.mono-input{font-family:'JetBrains Mono',monospace;}
+textarea{resize:vertical;min-height:60px;}
+input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--horizon);outline-offset:1px;}
+
+/* pill choice buttons (radio/checkbox) */
+.choices{display:flex;flex-wrap:wrap;gap:8px;}
+.choice{
+  border:1px solid var(--line);background:var(--paper);border-radius:8px;
+  padding:9px 13px;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  transition:.15s; user-select:none;
+}
+.choice:hover{border-color:var(--moss);}
+.choice .mark{width:15px;height:15px;border:1.5px solid var(--moss);flex:none;}
+.choice.radio .mark{border-radius:50%;}
+.choice.checkbox .mark{border-radius:4px;}
+.choice.selected{background:var(--canopy);border-color:var(--canopy);color:#fff;}
+.choice.selected .mark{background:#fff;border-color:#fff;}
+.choice.selected.radio .mark{box-shadow:inset 0 0 0 3px var(--canopy);}
+.choice.selected.checkbox .mark::after{content:"✓";color:var(--canopy);font-size:11px;display:block;text-align:center;line-height:13px;font-weight:700;}
+
+/* stage ladder chips (succession stage questions) */
+.stagewrap{display:flex;flex-wrap:wrap;gap:8px;}
+.stagechip{
+  border:1px solid var(--line);border-radius:9px;padding:10px 14px;cursor:pointer;
+  max-width:320px;font-size:13px;line-height:1.4;display:flex;gap:9px;align-items:flex-start;
+  background:linear-gradient(180deg,#fff,var(--paper));
+}
+.stagechip .num{
+  font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--canopy);
+  background:var(--moss-light);border-radius:50%;width:26px;height:26px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.stagechip.selected{border-color:var(--canopy);background:var(--canopy);color:#fff;}
+.stagechip.selected .num{background:var(--clay);color:#fff;}
+
+/* compass grid */
+.compass{
+  display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,52px);
+  gap:6px;justify-content:start;margin-bottom:8px;
+}
+.compass .cbtn{
+  border:1px solid var(--line);border-radius:8px;background:var(--paper);cursor:pointer;
+  font-size:11.5px;font-weight:600;color:var(--canopy);display:flex;align-items:center;justify-content:center;
+}
+.compass .cbtn.selected{background:var(--horizon);border-color:var(--horizon);color:#fff;}
+.compass .cbtn.center{background:transparent;border:none;cursor:default;}
+.pos-N{grid-column:2;grid-row:1;} .pos-NE{grid-column:3;grid-row:1;}
+.pos-W{grid-column:1;grid-row:2;} .pos-C{grid-column:2;grid-row:2;} .pos-E{grid-column:3;grid-row:2;}
+.pos-SW{grid-column:1;grid-row:3;} .pos-S{grid-column:2;grid-row:3;} .pos-SE{grid-column:3;grid-row:3;}
+.extra-choices{margin-top:8px;}
+
+/* color swatches */
+.swatches{display:flex;gap:10px;flex-wrap:wrap;}
+.swatch{width:78px;text-align:center;cursor:pointer;}
+.swatch .chip{width:56px;height:56px;border-radius:50%;border:2px solid var(--line);margin:0 auto 6px;}
+.swatch.selected .chip{border-color:var(--canopy);box-shadow:0 0 0 3px var(--moss-light);}
+.swatch .lbl{font-size:11px;color:#5b6b5f;}
+.swatch.selected .lbl{color:var(--canopy);font-weight:700;}
+
+/* gps group */
+.gpsgroup{border:1px dashed var(--horizon);border-radius:9px;padding:14px;background:var(--horizon-light);}
+.gpsrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.btn{
+  border:none;border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:600;
+  cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:'Inter',sans-serif;
+}
+.btn-primary{background:var(--clay);color:#fff;}
+.btn-primary:hover{background:var(--clay-dark);}
+.btn-ghost{background:transparent;border:1.5px solid var(--canopy);color:var(--canopy);}
+.btn-ghost:hover{background:var(--canopy);color:#fff;}
+.btn-horizon{background:var(--horizon);color:#fff;}
+.btn-sm{padding:6px 11px;font-size:12.5px;}
+.gpsstatus{font-size:12px;margin-top:6px;color:#2c4a52;}
+
+/* photo field */
+.photobox{
+  border:2px dashed var(--line);border-radius:9px;padding:16px;text-align:center;
+  background:var(--paper);cursor:pointer;position:relative;
+}
+.photobox img{max-width:100%;max-height:220px;border-radius:6px;display:block;margin:0 auto;}
+.photobox .hint{font-size:12.5px;color:#8a8272;}
+.photobox input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.photo-remove{margin-top:8px;}
+
+/* repeat groups */
+.repeat-item{border:1px solid var(--line);border-radius:9px;padding:14px;margin-bottom:10px;background:var(--paper);position:relative;}
+.repeat-item .idx{
+  position:absolute;top:-10px;left:12px;background:var(--moss);color:#fff;font-size:11px;font-weight:700;
+  padding:2px 9px;border-radius:20px;
+}
+.repeat-remove{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--warn);cursor:pointer;font-size:12px;font-weight:600;}
+.add-row{border:1.5px dashed var(--moss);border-radius:9px;padding:10px;text-align:center;color:var(--canopy);
+  background:var(--moss-light);opacity:.5;cursor:pointer;font-size:13px;font-weight:600;}
+.add-row:hover{opacity:.75;}
+
+/* footer nav */
+.footer-nav{
+  position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);
+  padding:14px 28px;display:flex;justify-content:space-between;align-items:center;
+  max-width:900px;margin:0 auto;
+}
+.footer-nav .step-lbl{font-size:12px;color:#7a7264;}
+
+/* patches list */
+.patch-card{
+  border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px;
+  background:#fff;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.patch-card .pname{font-weight:700;font-size:15px;color:var(--canopy);}
+.patch-card .pmeta{font-size:12px;color:#7a7264;margin-top:2px;}
+.patch-actions{display:flex;gap:8px;}
+.progress-ring{width:34px;height:34px;border-radius:50%;background:conic-gradient(var(--moss) calc(var(--pct,0)*1%), var(--sand-2) 0);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--canopy);flex:none;}
+.progress-ring span{background:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+
+/* tabs inside patch editor */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid var(--sand-2);padding-bottom:0;}
+.tab{padding:9px 13px;font-size:12.5px;font-weight:600;color:#7a7264;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;}
+.tab.active{color:var(--canopy);border-bottom-color:var(--clay);}
+.tab.done::after{content:" ✓";color:var(--moss);}
+
+.badge{display:inline-block;background:var(--sand-2);color:var(--canopy);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:8px;}
+.intro-block{font-size:13.5px;line-height:1.6;color:#3c473d;border-left:3px solid var(--moss);padding:8px 14px;margin-bottom:14px;background:var(--paper);border-radius:0 6px 6px 0;}
+.top-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;}
+@media print{
+  .footer-nav,.topbar .ladder,.top-tools{display:none!important;}
+  .card{box-shadow:none;border:1px solid #999;break-inside:avoid;}
+}
+@media (max-width:520px){
+  .content{padding:18px 14px 90px;}
+  .topbar{padding:16px 16px 14px;}
+  .compass{grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,46px);}
+  .gpsrow{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ===================== DATA MODEL ===================== */
+function uid(){ return Math.random().toString(36).slice(2,10); }
+
+function newPatch(){
+  return {
+    id: uid(),
+    patchId:'', gisVerified:'',
+    cardinalPoints:[],
+    aspect:[], aspectNote:'',
+    slope:[], slopeNote:'',
+    climaxType:'',
+    isSilviculture:'',
+    plantedSpecies:[],
+    undergrowth:[], nativeVegDominates:'', nativeVegUnderPlanted:'',
+    canopyCover:'', canopyDominates:'',
+    groundLayer:[], groundVegDominates:'', bushLandDominates:'',
+    invasives:[],
+    neophyta:[],
+    samplingPoint:{lat:'',lon:'',altitude:'',accuracy:''},
+    habitatAccess:'',
+    hasLargeTrees:'',
+    trees:[],
+    litterLayer:[],
+    topsoilThickness:'', soilHolePhoto:null, topsoilSmell:'',
+    subsoilThickness:'', subsoilColor:'', subsoilTexture:'', soilPh:'',
+    sightingsDesc:'', sightingsPhoto:null,
+    upgradeJustified:'', finalRatingModifier:'', finalRating:'',
+    improvementSuggestions:'', groupPhoto:null,
+  };
+}
+
+const state = {
+  step: 0, // 0 intro,1 demographics,2 general,3 patches list,4 patch editor,5 review
+  editingPatch: -1,
+  patchTab: 'location',
+  helpPref:'', mode:'', teamName:'', surveyorName:'',
+  affiliations:[], affiliationOther:'', email:'', groupSize:'',
+  date:'', time:'', propertyName:'',
+  patches: [],
+  gpsBusy:false,
+};
+
+/* ===================== OPTION SETS ===================== */
+const YES_NO_UNSURE=[{v:'yes',l:'Yes'},{v:'no',l:'No'},{v:'unsure',l:'I am not sure. I will need to verify later.'}];
+const YES_NO=[{v:'yes',l:'Yes'},{v:'no',l:'No'}];
+const YES_NO_UNSURE2=[{v:'yes',l:'Yes'},{v:'no',l:'No'},{v:'unsure',l:'I am not sure'}];
+const CARDINALS=[{v:'N',l:'North'},{v:'NE',l:'Northeast'},{v:'E',l:'East'},{v:'SE',l:'Southeast'},{v:'S',l:'South'},{v:'SW',l:'Southwest'},{v:'W',l:'West'},{v:'NW',l:'Northwest'}];
+const ASPECT_EXTRA=[{v:'mixed',l:'Mixed (several orientations)'},{v:'flat',l:'(almost) flat'}];
+const SLOPE_OPTIONS=[{v:'gentle',l:'Gentle sloping ( < 15°)'},{v:'moderate',l:'Moderate slope (15-25°)'},{v:'steep',l:'Steep sloping ( > 25°)'},{v:'flat',l:'Mostly flat'},{v:'mixture',l:'A mixture (leave a note)'}];
+const CLIMAX_OPTIONS=[{v:'91E0_oak',l:'Natura 2000: 91E0 (oak forest)'},{v:'91E0_riparian',l:'Riparian / Swampy Alder woodland - Natura 2000: 91E0'},{v:'2250',l:'Coastal dunes with juniper - Natura 2000: 2250'},{v:'92D0',l:'Oleander scrub (laurel forest) - Natura 2000: 92D0'},{v:'unsure',l:'I am not sure'}];
+const PLANTED_SPECIES=[{v:'eucalyptus',l:'Eucalyptus (Eucalyptus globulus)'},{v:'maritime_pine',l:'Maritime pine (Pinus pinaster)'},{v:'stone_pine',l:'Stone pine (Pinus pinea)'},{v:'cork_oak',l:'Cork oak (Quercus suber)'},{v:'strawberry_tree',l:'Strawberry tree (Arbutus unedo)'},{v:'unsure',l:'I am not sure'}];
+const GROUND_STAGE0=[{v:'stage0',l:'Stage 0: Mostly bare ground or just dead branches, needles or leaves'},{v:'sparse',l:'Mostly short, knee to hip-high (<50cm) and/or very patchy native vegetation'},{v:'dense',l:'Larger (>50cm) and/or more dense native vegetation'}];
+const STAGE123=[{v:'stage1',l:'Stage 1: low growing vegetation; very patchy coverage (<30%)'},{v:'stage2',l:'Stage 2: larger vegetation but very patchy or denser coverage with short vegetation (>30%)'},{v:'stage3',l:'Stage 3: dense coverage with bushes and herbs (often gum cystus >80%)'}];
+const STAGE34=[{v:'stage3',l:'Stage 3: mostly gum cistus (Cistus ladanifer), few other species'},{v:'stage4',l:'Stage 4: dense coverage of mostly tree heather (Erica arborea) or tree strawberry (Arbutus unedo) with oak (Quercus spp)'}];
+const CANOPY_COVER=[{v:'ge50',l:'≥ 50%'},{v:'lt50',l:'< 50%'}];
+const CANOPY_DOMINATES=[{v:'stage5',l:'Stage 5: Maquis scrubland dominated by tall bushes like medronho, tree heather and small oaks'},{v:'stage6',l:'Stage 6: Climax or near climax forest dominated by larger oak trees'}];
+const INVASIVES_OPTIONS=[{v:'acacia',l:'Acacia spp.'},{v:'sour_fig',l:'Sour fig (Carpobrotus edulis)'},{v:'maritime_pine',l:'Maritime pine (Pinus pinaster)'},{v:'giant_reed',l:'Giant reed (Arando donax)'},{v:'pampas_grass',l:'Pampas grass (Cortaderia selloana)'},{v:'eucalyptus',l:'Eucalyptus (Eucalyptus globulus)'},{v:'bugle_lily',l:'Bugle lily (Watsonia meriana)'},{v:'others',l:'Others (please take a picture)'},{v:'none',l:'None'}];
+const HABITAT_ACCESS=[{v:'easy',l:'Yes, it is easily possible to walk perpendicular from the habitat edge into the vegetation'},{v:'medium',l:'Yes, but with some difficulty'},{v:'impenetrable',l:'No. The undergrowth is impenetrable.'}];
+const LITTER_OPTIONS=[{v:'none',l:'No undecomposed material'},{v:'thin',l:'Very thin layer of dry, undecomposed material (<50% ground cover)'},{v:'some',l:'Some litter (more than 50% ground cover)'},{v:'thick',l:'Thick layer of litter and/or small dead branches'},{v:'large',l:'Mostly large branches and dead tree trunks'}];
+const TOPSOIL_THICK=[{v:'none',l:'No distinguishable layer'},{v:'lt2',l:'< 2cm'},{v:'2-10',l:'between 2cm and 10cm'},{v:'gt10',l:'> 10cm'}];
+const TOPSOIL_SMELL=[{v:'earthy',l:'Earthy (contains a lot of organic materials)'},{v:'foul',l:'Foul (indicates conditions with low oxygen)'},{v:'neutral',l:'Neutral'}];
+const SUBSOIL_THICK=[{v:'lt2',l:'< 2cm'},{v:'2-10',l:'2 - 10cm'},{v:'gt10',l:'> 10cm'},{v:'hard',l:'The ground is very hard. It is impossible to dig to the full depth.'}];
+const SUBSOIL_COLOR=[{v:'blackish',l:'Blackish',hex:'#3B342A'},{v:'brownish',l:'Brownish',hex:'#7A5230'},{v:'reddish',l:'Reddish',hex:'#A6472C'},{v:'yellowish',l:'Yellowish',hex:'#D9B14C'},{v:'white',l:'White',hex:'#EDE8DC'}];
+const SUBSOIL_TEXTURE=[{v:'clay',l:'Smooth (indicates clay)'},{v:'silt',l:'Smooth but grainy (indicates silt)'},{v:'sand',l:'Sandy'}];
+const UPGRADE_OPTIONS=[{v:'up',l:'+1 : the vegetation patch is significant enough to justify an upgrade'},{v:'no',l:'No overall upgrade'}];
+const RATING_MODIFIER=[{v:'upper',l:'+ (upper end)'},{v:'lower',l:'- (lower end)'},{v:'middle',l:'middle of category'}];
+const FINAL_RATING=['0','1-','1','1+','2-','2','2+','3-','3','3+','4-','4','4+','5-','5','5+','6-','6','6+'];
+const AFFILIATIONS=['Universidade de Lisboa','CAU Kiel','Leiden University','National University of Ireland (Cork)','Universität Osnabrück','Uniwersytet Przyrodnizcy we Wroclawiu','University of Bologna','Debreceni Egyetem','Waterford Institute of Technology','HNE Eberswalde','Rewilding Sudoeste','Brunel University of London','Others (please use the next text box)','None'];
+
+/* ===================== UTIL ===================== */
+function getPath(obj,path){return path.split('.').reduce((o,k)=>(o==null?undefined:o[k]),obj);}
+function setPath(obj,path,val){const k=path.split('.');let o=obj;for(let i=0;i<k.length-1;i++){o=o[k[i]];}o[k[k.length-1]]=val;}
+function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ===================== FIELD RENDERERS ===================== */
+function qLabel(label, required, note){
+  return `<label class="q">${esc(label)}${required?'<span class="req">*</span>':''}</label>` + (note?`<div class="note">${esc(note)}</div>`:'');
+}
+
+function radioGroup(path,label,options,required,note){
+  const val=getPath(state,path)||'';
+  return `<div class="field">${qLabel(label,required,note)}
+    <div class="choices">
+      ${options.map(o=>`<div class="choice radio ${val===o.v?'selected':''}" data-bind-radio="${path}" data-value="${esc(o.v)}"><span class="mark"></span>${esc(o.l)}</div>`).join('')}
+    </div></div>`;
+}
+function checkboxGroup(path,label,options,required,note){
+  const arr=getPath(state,path)||[];
+  return `<div class="field">${qLabel(label,required,note)}
+    <div class="choices">
+      ${options.map(o=>`<div class="choice checkbox ${arr.includes(o.v)?'selected':''}" data-bind-checkbox="${path}" data-value="${esc(o.v)}"><span class="mark"></span>${esc(o.l)}</div>`).join('')}
+    </div></div>`;
+}
+function stageRadio(path,label,options,required,note){
+  const val=getPath(state,path)||'';
+  return `<div class="field">${qLabel(label,required,note)}
+    <div class="stagewrap">
+      ${options.map(o=>{
+        const m=o.l.match(/^Stage\s*([0-9]+)/i);
+        const num=m?m[1]:'•';
+        return `<div class="stagechip ${val===o.v?'selected':''}" data-bind-radio="${path}" data-value="${esc(o.v)}"><span class="num">${num}</span><span>${esc(o.l)}</span></div>`;
+      }).join('')}
+    </div></div>`;
+}
+function stageCheckbox(path,label,options,required,note){
+  const arr=getPath(state,path)||[];
+  return `<div class="field">${qLabel(label,required,note)}
+    <div class="stagewrap">
+      ${options.map(o=>{
+        const m=o.l.match(/^Stage\s*([0-9]+)/i);
+        const num=m?m[1]:'•';
+        return `<div class="stagechip ${arr.includes(o.v)?'selected':''}" data-bind-checkbox="${path}" data-value="${esc(o.v)}"><span class="num">${num}</span><span>${esc(o.l)}</span></div>`;
+      }).join('')}
+    </div></div>`;
+}
+function textField(path,label,required,note,placeholder){
+  const val=getPath(state,path)||'';
+  return `<div class="field">${qLabel(label,required,note)}
+    <input type="text" data-bind-text="${path}" value="${esc(val)}" placeholder="${esc(placeholder||'')}"></div>`;
+}
+function textareaField(path,label,required,note,placeholder){
+  const val=getPath(state,path)||'';
+  return `<div class="field">${qLabel(label,required,note)}
+    <textarea data-bind-text="${path}" placeholder="${esc(placeholder||'')}">${esc(val)}</textarea></div>`;
+}
+function numberField(path,label,required,note,unit){
+  const val=getPath(state,path)||'';
+  return `<div class="field">${qLabel(label+(unit?' ('+unit+')':''),required,note)}
+    <input class="mono-input" type="number" step="any" data-bind-text="${path}" value="${esc(val)}"></div>`;
+}
+function dateTimeField(datePath,timePath,label,required){
+  const d=getPath(state,datePath)||'', t=getPath(state,timePath)||'';
+  return `<div class="field">${qLabel(label,required)}
+    <div class="gpsrow">
+      <input type="date" data-bind-text="${datePath}" value="${esc(d)}">
+      <input type="time" data-bind-text="${timePath}" value="${esc(t)}">
+    </div></div>`;
+}
+function compassSingle(path,label,required,note){
+  const val=getPath(state,path)||'';
+  const dirs={N:'N',NE:'NE',E:'E',SE:'SE',S:'S',SW:'SW',W:'W',NW:'NW'};
+  const pos={N:'pos-N',NE:'pos-NE',E:'pos-E',SE:'pos-SE',S:'pos-S',SW:'pos-SW',W:'pos-W',NW:'pos-W'};
+  // proper 8-way grid mapping
+  const gridPos={N:'pos-N',NE:'pos-NE',E:'pos-E',SE:'pos-SE',S:'pos-S',SW:'pos-SW',W:'pos-W',NW:'pos-NW'};
+  return `<div class="field">${qLabel(label,required,note)}
+    <div class="compass" style="grid-template-areas:'nw n ne' 'w c e' 'sw s se';">
+      ${CARDINALS.map(o=>`<div class="cbtn ${val===o.v?'selected':''}" style="grid-area:${o.v.toLowerCase()}" data-bind-radio="${path}" data-value="${esc(o.v)}" title="${esc(o.l)}">${o.v}</div>`).join('')}
+      <div class="cbtn center" style="grid-area:c">🧭</div>
+    </div></div>`;
+}
+function colorSwatchGroup(path,label,options,required,note){
+  const val=getPath(state,path)||'';
+  return `<div class="field">${qLabel(label,required,note)}
+    <div class="swatches">
+      ${options.map(o=>`<div class="swatch ${val===o.v?'selected':''}" data-bind-radio="${path}" data-value="${esc(o.v)}">
+        <div class="chip" style="background:${o.hex}"></div><div class="lbl">${esc(o.l)}</div></div>`).join('')}
+    </div></div>`;
+}
+function gpsField(basePath,label,required){
+  const lat=getPath(state,basePath+'.lat')||'', lon=getPath(state,basePath+'.lon')||'';
+  const alt=getPath(state,basePath+'.altitude')||'', acc=getPath(state,basePath+'.accuracy')||'';
+  return `<div class="field">${qLabel(label,required)}
+    <div class="gpsgroup">
+      <div class="gpsrow">
+        <div><div class="note" style="margin-bottom:4px">latitude (x.y °)</div><input class="mono-input" type="text" data-bind-text="${basePath}.lat" value="${esc(lat)}"></div>
+        <div><div class="note" style="margin-bottom:4px">longitude (x.y °)</div><input class="mono-input" type="text" data-bind-text="${basePath}.lon" value="${esc(lon)}"></div>
+      </div>
+      <div class="gpsrow">
+        <div><div class="note" style="margin-bottom:4px">altitude (m)</div><input class="mono-input" type="text" data-bind-text="${basePath}.altitude" value="${esc(alt)}"></div>
+        <div><div class="note" style="margin-bottom:4px">accuracy (m)</div><input class="mono-input" type="text" data-bind-text="${basePath}.accuracy" value="${esc(acc)}"></div>
+      </div>
+      <button class="btn btn-horizon btn-sm" data-action="gps" data-path="${basePath}" type="button">📍 ${state.gpsBusy? 'Localizando…':'Usar mi ubicación GPS'}</button>
+      <div class="gpsstatus" id="gpsstatus-${basePath.replace(/\./g,'-')}"></div>
+    </div></div>`;
+}
+function photoField(path,label,required){
+  const val=getPath(state,path);
+  return `<div class="field">${qLabel(label,required)}
+    <div class="photobox">
+      ${val?`<img src="${val}">`:`<div class="hint">📷 Toca para tomar o subir una foto<br><span style="font-size:11px">(&lt; 10MB)</span></div>`}
+      <input type="file" accept="image/*" capture="environment" data-bind-photo="${path}">
+    </div>
+    ${val?`<button class="btn btn-ghost btn-sm photo-remove" data-action="clearphoto" data-path="${path}" type="button">Quitar foto</button>`:''}
+  </div>`;
+}
+
+/* ===================== REPEAT GROUPS ===================== */
+function renderCardinalPoints(pi){
+  const patch=state.patches[pi];
+  const items=patch.cardinalPoints.map((cp,ci)=>{
+    const base=`patches.${pi}.cardinalPoints.${ci}`;
+    return `<div class="repeat-item"><span class="idx">Punto ${ci+1}</span>
+      <button class="repeat-remove" data-action="removeItem" data-path="patches.${pi}.cardinalPoints" data-index="${ci}" type="button">Eliminar ✕</button>
+      ${compassSingle(base+'.cardinal','Cardinal point',false)}
+      ${gpsField(base,'Record the point',false)}
+      </div>`;
+  }).join('');
+  return `<div class="field"><label class="q">» Record not correctly marked patches, ideally at all four cardinal points<span class="req">*</span></label>
+    <div class="note">The coordinates will help to better delimit the area on aerial pictures.</div>
+    ${items}
+    <div class="add-row" data-action="addItem" data-path="patches.${pi}.cardinalPoints" data-kind="cardinal">+ Añadir punto</div>
+  </div>`;
+}
+function renderNeophyta(pi){
+  const patch=state.patches[pi];
+  const items=patch.neophyta.map((n,ni)=>{
+    const base=`patches.${pi}.neophyta.${ni}`;
+    return `<div class="repeat-item"><span class="idx">Registro ${ni+1}</span>
+      <button class="repeat-remove" data-action="removeItem" data-path="patches.${pi}.neophyta" data-index="${ni}" type="button">Eliminar ✕</button>
+      ${textareaField(base+'.details','Provide more details about the neophyta you have recorded',false,'e.g. abundance estimation for the whole patch')}
+      ${photoField(base+'.photo','Take a photo of the invasive species',false)}
+      </div>`;
+  }).join('');
+  return `<div class="field"><label class="q">» Neophyta and invasives</label>
+    ${items}
+    <div class="add-row" data-action="addItem" data-path="patches.${pi}.neophyta" data-kind="neophyta">+ Añadir registro de especie invasora</div>
+  </div>`;
+}
+function renderTrees(pi){
+  const patch=state.patches[pi];
+  const items=patch.trees.map((t,ti)=>{
+    const base=`patches.${pi}.trees.${ti}`;
+    return `<div class="repeat-item"><span class="idx">Árbol ${ti+1}</span>
+      <button class="repeat-remove" data-action="removeItem" data-path="patches.${pi}.trees" data-index="${ti}" type="button">Eliminar ✕</button>
+      ${textField(base+'.number','Tree number',false,'Use an abbreviation for the species followed by the identifier (O=Oak, P=Pine): e.g. O1')}
+      ${numberField(base+'.circumference','Circumference',false,'','cm')}
+      </div>`;
+  }).join('');
+  return `<div class="field"><label class="q">» Note the circumference at breast height (cbh = 130cm) for all native trees above 20cm cbh</label>
+    <div class="note">Surround the trunk at 130cm distance from the ground with the tape measure.</div>
+    ${items}
+    <div class="add-row" data-action="addItem" data-path="patches.${pi}.trees" data-kind="tree">+ Añadir árbol</div>
+  </div>`;
+}
+
+/* ===================== PATCH SECTION BUILDERS ===================== */
+function sectionLocation(pi){
+  const p=state.patches[pi];
+  let html = `<div class="card">
+    <div class="section-title">Ubicación y verificación GIS</div>
+    <div class="section-sub">Move to a location from where you have a good overview over the patch to be surveyed.</div>
+    ${textField(`patches.${pi}.patchId`,'Record the identification number of the patch according to the map.',false)}
+    ${radioGroup(`patches.${pi}.gisVerified`,'Verify the GIS delimitation of the patch in situ. Are all borders correctly marked on the map?',YES_NO_UNSURE.slice(0,2).concat([{v:'unsure',l:'I am not sure. I will need to verify later.'}]),true,'Please check specifically whether any recent changes have been made to the patch that are not reflected in the latest satellite images.')}
+  `;
+  if(p.gisVerified==='no'){ html += renderCardinalPoints(pi); }
+  html += `</div>`;
+  return html;
+}
+function sectionVegetation(pi){
+  const p=state.patches[pi];
+  let html=`<div class="card">
+    <div class="section-title">Aspecto, pendiente y clasificación de vegetación</div>
+    <div class="section-sub">Aspect and slope are important environmental factors that influence vegetation type.</div>
+    ${checkboxGroup(`patches.${pi}.aspect`,'Predominate orientation (aspect) of the patch',CARDINALS.concat(ASPECT_EXTRA),true)}
+    ${textField(`patches.${pi}.aspectNote`,'Give approximate percentage of different aspects (or describe the landscape)',false,null,'e.g. 40% north, 60% east')}
+    ${checkboxGroup(`patches.${pi}.slope`,'Estimate the average slope of the patch',SLOPE_OPTIONS,true,'If the plot is terraced note the OVERALL slope')}
+    ${textField(`patches.${pi}.slopeNote`,'Give approximate percentage of different slope angles (or describe the landscape)',false,null,'e.g. 90% steep sloping, 10% flat')}
+    ${radioGroup(`patches.${pi}.climaxType`,'There are four principal types of native vegetation in the Aljezur region. Note the climax vegetation for your vegetation plot.',CLIMAX_OPTIONS,false)}
+    ${radioGroup(`patches.${pi}.isSilviculture`,'Is the patch a silviculture?',[{v:'yes',l:'Yes'},{v:'no',l:'No'},{v:'unsure',l:'I am not sure'}],true,'Trees like eucalyptus, pine and sometimes cork oak are often planted. A plantation can usually be recognised by its uniformity.')}
+  `;
+  if(p.isSilviculture==='yes'){
+    html += checkboxGroup(`patches.${pi}.plantedSpecies`,'What species has been planted?',PLANTED_SPECIES,false);
+    html += `<div class="helptext">In a plantation the decision what successional stage is prevailing is based on the abundance and size of native, non-planted vegetation.</div>`;
+    html += stageCheckbox(`patches.${pi}.undergrowth`,'Do you see any native vegetation on the ground underneath the planted trees?',GROUND_STAGE0,true);
+    html += stageRadio(`patches.${pi}.nativeVegDominates`,'Which type of native vegetation dominates:',STAGE123,false);
+    html += stageRadio(`patches.${pi}.nativeVegUnderPlanted`,'Which type of native vegetation dominates under the planted trees:',STAGE34,false);
+  }
+  html += radioGroup(`patches.${pi}.canopyCover`,'Canopy cover: Estimate the overall canopy cover with trees and bushes more than 3m high.',CANOPY_COVER,true,'Planted and/or invasive tree species (eucalyptus, acacia, Mediterranean pine) are NOT taken into account for this survey!');
+  if(p.canopyCover==='ge50'){
+    html += stageRadio(`patches.${pi}.canopyDominates`,'Which vegetation type dominates the canopy?',CANOPY_DOMINATES,false);
+  }
+  if(p.canopyCover==='lt50' && p.isSilviculture!=='yes'){
+    html += stageCheckbox(`patches.${pi}.groundLayer`,'Do you see a layer of grass, herbs or bushes on the ground?',GROUND_STAGE0,true);
+    html += stageRadio(`patches.${pi}.groundVegDominates`,'Which type of vegetation dominates:',STAGE123,false);
+    html += stageRadio(`patches.${pi}.bushLandDominates`,'Which type of bush land dominates:',STAGE34,false);
+  }
+  html+=`</div>`;
+  return html;
+}
+function sectionInvasives(pi){
+  const p=state.patches[pi];
+  let html=`<div class="card">
+    <div class="section-title">Especies invasoras</div>
+    ${checkboxGroup(`patches.${pi}.invasives`,'Report the abundance of non-native (neophyta) and/or invasive plants in this patch',INVASIVES_OPTIONS,true,'Check carefully! The answer has a big effect on the overall rating.')}
+  `;
+  if(p.invasives.length && !(p.invasives.length===1 && p.invasives[0]==='none')){
+    html += renderNeophyta(pi);
+  }
+  html+=`</div>`;
+  return html;
+}
+function sectionSampling(pi){
+  return `<div class="card">
+    <div class="section-title">Punto de muestreo</div>
+    <div class="section-sub">Walk from your overview position to a location to sample the vegetation patch. Randomly select a focal point as close as you can get to the vegetation.</div>
+    ${gpsField(`patches.${pi}.samplingPoint`,'Record the location of your sampling point',true)}
+    ${radioGroup(`patches.${pi}.habitatAccess`,'Can you access the habitat or is the undergrowth very thick?',HABITAT_ACCESS,true,'Long trousers and walking boots are essential')}
+  </div>`;
+}
+function sectionTrees(pi){
+  const p=state.patches[pi];
+  let html=`<div class="card">
+    <div class="section-title">Árboles nativos</div>
+    ${radioGroup(`patches.${pi}.hasLargeTrees`,'Do you have any larger native (!) trees in your sample quadrat?',YES_NO,true)}
+  `;
+  if(p.hasLargeTrees==='yes'){ html+=renderTrees(pi); }
+  html+=`</div>`;
+  return html;
+}
+function sectionSoil(pi){
+  const p=state.patches[pi];
+  return `<div class="card">
+    <div class="section-title">Análisis de suelo</div>
+    ${checkboxGroup(`patches.${pi}.litterLayer`,'Randomly select a point within your sample quadrat. Describe the litter layer',LITTER_OPTIONS,true)}
+    ${radioGroup(`patches.${pi}.topsoilThickness`,'Dig a small square hole (app. 20x20cm). Can you distinguish a layer mixed with partly decayed organic material (O- and A-horizon)? How thick is this layer on average?',TOPSOIL_THICK,true)}
+    ${photoField(`patches.${pi}.soilHolePhoto`,'Take a picture of the sample hole (include a scale e.g. a ruler!)',true)}
+    ${radioGroup(`patches.${pi}.topsoilSmell`,'Describe the smell of the topsoil:',TOPSOIL_SMELL,true)}
+    ${radioGroup(`patches.${pi}.subsoilThickness`,'The layer under the topsoil is called the B-horizon (subsoil). How thick is this layer on average?',SUBSOIL_THICK,true)}
+    ${colorSwatchGroup(`patches.${pi}.subsoilColor`,'Describe the predominant colour of the subsoil (B-horizon):',SUBSOIL_COLOR,true)}
+    ${radioGroup(`patches.${pi}.subsoilTexture`,'Rub a sample of the subsoil between your fingers. Does it feel....',SUBSOIL_TEXTURE,true)}
+    ${numberField(`patches.${pi}.soilPh`,'Optional: measure the soil pH',false)}
+  </div>`;
+}
+function sectionClose(pi){
+  return `<div class="card">
+    <div class="section-title">Hallazgos y valoración final</div>
+    ${textareaField(`patches.${pi}.sightingsDesc`,'Describe weird and wonderful sightings and try to quantify abundance',false,'Leave blank if you have nothing to report')}
+    ${photoField(`patches.${pi}.sightingsPhoto`,'Take a photo of interesting fauna and flora',false)}
+    ${radioGroup(`patches.${pi}.upgradeJustified`,'Will the size and nature of this vegetation patch justify an upgrade of the whole survey area by one stage?',UPGRADE_OPTIONS,false)}
+    ${radioGroup(`patches.${pi}.finalRatingModifier`,'Taking also into account the soil sampling, size and density of the native vegetation, would you rate the rewilding potential at the lower or upper end of the successional stage?',RATING_MODIFIER,false)}
+    <div class="field">${qLabel('Final total rating of the vegetation patch',false,'Taking into account: a) the succession stage base rating, b) -1 for invasive species, c) +1 for special areas, d) +/- based on soil characteristics')}
+      <div class="choices">${FINAL_RATING.map(v=>`<div class="choice radio ${getPath(state,`patches.${pi}.finalRating`)===v?'selected':''}" data-bind-radio="patches.${pi}.finalRating" data-value="${v}" style="min-width:44px;justify-content:center"><b>${v}</b></div>`).join('')}</div>
+    </div>
+    ${textareaField(`patches.${pi}.improvementSuggestions`,'Can you offer suggestions on how to improve the habitat?',false)}
+    ${photoField(`patches.${pi}.groupPhoto`,'Take a group picture (or selfie). Smile!!! Or a picture of an amazing habitat feature',false)}
+  </div>`;
+}
+
+const PATCH_TABS=[
+  {key:'location',label:'Ubicación',fn:sectionLocation},
+  {key:'vegetation',label:'Vegetación',fn:sectionVegetation},
+  {key:'invasives',label:'Invasoras',fn:sectionInvasives},
+  {key:'sampling',label:'Muestreo',fn:sectionSampling},
+  {key:'trees',label:'Árboles',fn:sectionTrees},
+  {key:'soil',label:'Suelo',fn:sectionSoil},
+  {key:'close',label:'Cierre',fn:sectionClose},
+];
+
+function patchCompleteness(p){
+  let total=0, done=0;
+  const req=[p.patchId,p.gisVerified,p.aspect.length,p.slope.length,p.isSilviculture,p.canopyCover,
+    p.invasives.length,p.samplingPoint.lat,p.habitatAccess,p.hasLargeTrees,p.litterLayer.length,
+    p.topsoilThickness,p.soilHolePhoto,p.topsoilSmell,p.subsoilThickness,p.subsoilColor,p.subsoilTexture];
+  req.forEach(v=>{total++; if(v && v!=='' ) done++; });
+  return Math.round(done/total*100);
+}
+
+/* ===================== TOP-LEVEL STEPS ===================== */
+const MAIN_STEPS=['Introducción','Equipo','General','Parcelas','Resumen'];
+
+function renderTopbar(){
+  return `<div class="topbar">
+    <div class="eyebrow">Rewilding Sudoeste</div>
+    <h1>GoWild Certification Survey</h1>
+    <div class="org">Associação de desenvolvimento da natureza e ambiente</div>
+    <div class="ladder">
+      ${MAIN_STEPS.map((lbl,i)=>{
+        const stepIdx = i===3 && (state.step===3||state.step===4) ? 3 : i;
+        const active = (state.step===i) || (i===3 && state.step===4);
+        const done = state.step> i && !(i===3 && state.step===4);
+        return `<div class="rung ${active?'active':''} ${done?'done':''}" data-action="gotostep" data-step="${i===3?3:i}">
+          <div class="bar"></div><div class="dot"></div><div class="lbl">${lbl}</div></div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function renderIntro(){
+  return `<div class="content">
+    <div class="card">
+      <div class="section-title">Antes de empezar</div>
+      <div class="intro-block">This survey provides a standardised template for the GoWild: Rewilding Certification.</div>
+      <div class="intro-block">The first step of the certification involves mapping of the rewilding property on GIS or Google Earth. Areas of similar vegetation and management history above 0.5 ha are marked on the map. This map should be available before you start this survey.</div>
+      <div class="intro-block"><b>Materials you should bring:</b> Tape measure (min. 10m), a short flexible tape measure to measure tree circumference, a small folding rule, a small shovel, 2 teabags per sample site (green and black), mesh material for long-term soil monitoring and a large bag to clean up any trash you might find.</div>
+      <div class="intro-block">The survey form follows a logical order. Please do not skip questions. If you are working as a group, read the FULL QUESTIONS loud for everyone.</div>
+      ${radioGroup('helpPref','Do you need help with this survey?',[
+        {v:'first',l:'I am doing it for the first time (or it is a while ago since I completed a survey). I appreciate detailed explanations.'},
+        {v:'experienced',l:'I have done it before. I know what I am doing.'}],false)}
+    </div>
+  </div>`;
+}
+function renderDemographics(){
+  return `<div class="content">
+    <div class="card">
+      <div class="section-title">Demographic characteristics</div>
+      ${radioGroup('mode','Are you surveying alone or as part of a team?',[{v:'alone',l:'Alone'},{v:'team',l:'Team'}],false)}
+      ${state.mode==='team'?textField('teamName','Give your team a (nick)name',false,'The name will be displayed on the BigGreen map (with your permission of course).'):''}
+      ${textField('surveyorName','Surveyor name',false,'The name will be displayed on the BigGreen map (with your permission of course).')}
+      ${checkboxGroup('affiliations','Your affiliation(s)',AFFILIATIONS.map(a=>({v:a,l:a})),false)}
+      ${state.affiliations.includes('Others (please use the next text box)')?textField('affiliationOther','Record the name of your affiliation',false):''}
+      ${textField('email','Email address',false,'One main contact address is sufficient')}
+      ${numberField('groupSize','How many people are in your group?',false)}
+    </div>
+  </div>`;
+}
+function renderGeneral(){
+  return `<div class="content">
+    <div class="card">
+      <div class="section-title">General information</div>
+      ${dateTimeField('date','time','Enter the date and time of the survey',false)}
+      ${textField('propertyName','Enter the name of the property',false,"or the owner's name if you know it")}
+    </div>
+    <div class="helptext">The next step is to evaluate individual vegetation patches as identified on the GIS map. This part has to be repeated for each vegetation area identified on the map.</div>
+  </div>`;
+}
+function renderPatchesList(){
+  const items = state.patches.map((p,i)=>{
+    const pct=patchCompleteness(p);
+    return `<div class="patch-card">
+      <div class="progress-ring" style="--pct:${pct}"><span>${pct}%</span></div>
+      <div style="flex:1">
+        <div class="pname">${p.patchId? esc(p.patchId): 'Parcela '+(i+1)}</div>
+        <div class="pmeta">${p.climaxType? esc((CLIMAX_OPTIONS.find(c=>c.v===p.climaxType)||{}).l||''):'Sin clasificar aún'} ${p.finalRating? ' · Rating: '+esc(p.finalRating):''}</div>
+      </div>
+      <div class="patch-actions">
+        <button class="btn btn-primary btn-sm" data-action="editpatch" data-index="${i}" type="button">Editar</button>
+        <button class="btn btn-ghost btn-sm" data-action="removepatch" data-index="${i}" type="button">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="content">
+    <div class="card">
+      <div class="section-title">Sampling individual vegetation patches</div>
+      <div class="section-sub">Repite esta sección para cada área de vegetación identificada en tu mapa GIS.</div>
+      ${items || '<div class="note">Todavía no has añadido ninguna parcela.</div>'}
+      <div class="add-row" data-action="addpatch" type="button">+ Añadir nueva parcela de vegetación</div>
+    </div>
+  </div>`;
+}
+function renderPatchEditor(){
+  const pi=state.editingPatch;
+  const p=state.patches[pi];
+  const tab=PATCH_TABS.find(t=>t.key===state.patchTab)||PATCH_TABS[0];
+  return `<div class="content">
+    <button class="btn btn-ghost btn-sm" data-action="backtolist" type="button" style="margin-bottom:14px">← Volver a la lista de parcelas</button>
+    <div class="section-title" style="margin-bottom:2px">${p.patchId? esc(p.patchId):'Parcela '+(pi+1)} <span class="badge">${patchCompleteness(p)}% completo</span></div>
+    <div class="tabs">
+      ${PATCH_TABS.map(t=>`<div class="tab ${t.key===state.patchTab?'active':''}" data-action="patchtab" data-tab="${t.key}">${t.label}</div>`).join('')}
+    </div>
+    ${tab.fn(pi)}
+  </div>`;
+}
+function surveySummaryStats(){
+  const n=state.patches.length;
+  const avgPct = n? Math.round(state.patches.reduce((s,p)=>s+patchCompleteness(p),0)/n) : 0;
+  return {n, avgPct};
+}
+function renderReview(){
+  const stats=surveySummaryStats();
+  return `<div class="content">
+    <div class="card">
+      <div class="section-title">Resumen de la encuesta</div>
+      <div class="section-sub">Encuestador: ${esc(state.surveyorName||'—')} ${state.mode==='team' && state.teamName? ' · Equipo: '+esc(state.teamName):''} · Propiedad: ${esc(state.propertyName||'—')}</div>
+      <div class="section-sub">Parcelas registradas: <b>${stats.n}</b> · Completitud media: <b>${stats.avgPct}%</b></div>
+      ${state.patches.map((p,i)=>`<div class="patch-card" style="cursor:default">
+        <div class="progress-ring" style="--pct:${patchCompleteness(p)}"><span>${patchCompleteness(p)}%</span></div>
+        <div style="flex:1"><div class="pname">${p.patchId?esc(p.patchId):'Parcela '+(i+1)}</div>
+        <div class="pmeta">Rating final: ${esc(p.finalRating||'—')} · Fotos: ${[p.soilHolePhoto,p.sightingsPhoto,p.groupPhoto].filter(Boolean).length + p.neophyta.filter(n=>n.photo).length}</div></div>
+        <button class="btn btn-ghost btn-sm" data-action="editpatch" data-index="${i}" type="button">Ver/editar</button>
+      </div>`).join('')}
+      <div class="top-tools">
+        <button class="btn btn-primary" data-action="exportjson" type="button">⬇ Descargar datos (JSON)</button>
+        <button class="btn btn-horizon" data-action="exportcsv" type="button">⬇ Descargar parcelas (CSV)</button>
+        <button class="btn btn-ghost" data-action="printview" type="button">🖨 Vista de impresión / PDF</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ===================== MAIN RENDER ===================== */
+function renderFooter(){
+  const labels=['Introducción','Equipo','Información general','Parcelas','Editor de parcela','Resumen'];
+  return `<div class="footer-nav">
+    <button class="btn btn-ghost btn-sm" data-action="prevstep" type="button">← Atrás</button>
+    <span class="step-lbl">${labels[state.step]}</span>
+    <button class="btn btn-primary btn-sm" data-action="nextstep" type="button">Siguiente →</button>
+  </div>`;
+}
+
+function render(){
+  let body='';
+  if(state.step===0) body=renderIntro();
+  else if(state.step===1) body=renderDemographics();
+  else if(state.step===2) body=renderGeneral();
+  else if(state.step===3) body=renderPatchesList();
+  else if(state.step===4) body=renderPatchEditor();
+  else if(state.step===5) body=renderReview();
+  document.getElementById('root').innerHTML = renderTopbar() + body + renderFooter();
+}
+
+/* ===================== ACTIONS ===================== */
+function gotoStep(n){ state.step=n; if(n!==4) state.editingPatch=-1; render(); }
+function nextStep(){
+  if(state.step<5){ state.step++; if(state.step===4 && state.editingPatch<0){ state.step=3; } render(); window.scrollTo(0,0);}
+}
+function prevStep(){
+  if(state.step===4){ state.step=3; } else if(state.step>0){ state.step--; }
+  render(); window.scrollTo(0,0);
+}
+
+document.addEventListener('click', function(e){
+  const t = e.target.closest('[data-action]');
+  if(!t) return;
+  const action=t.getAttribute('data-action');
+
+  if(action==='gotostep'){ gotoStep(parseInt(t.getAttribute('data-step'))); }
+  else if(action==='nextstep'){ nextStep(); }
+  else if(action==='prevstep'){ prevStep(); }
+  else if(action==='addpatch'){ state.patches.push(newPatch()); state.editingPatch=state.patches.length-1; state.patchTab='location'; state.step=4; render(); }
+  else if(action==='editpatch'){ state.editingPatch=parseInt(t.getAttribute('data-index')); state.patchTab='location'; state.step=4; render(); }
+  else if(action==='removepatch'){ if(confirm('¿Eliminar esta parcela y todos sus datos?')){ state.patches.splice(parseInt(t.getAttribute('data-index')),1); render(); } }
+  else if(action==='backtolist'){ state.step=3; state.editingPatch=-1; render(); }
+  else if(action==='patchtab'){ state.patchTab=t.getAttribute('data-tab'); render(); }
+  else if(action==='addItem'){
+    const path=t.getAttribute('data-path'), kind=t.getAttribute('data-kind');
+    const arr=getPath(state,path);
+    if(kind==='cardinal') arr.push({cardinal:'',lat:'',lon:'',altitude:'',accuracy:''});
+    else if(kind==='neophyta') arr.push({details:'',photo:null});
+    else if(kind==='tree') arr.push({number:'',circumference:''});
+    render();
+  }
+  else if(action==='removeItem'){
+    const path=t.getAttribute('data-path'), idx=parseInt(t.getAttribute('data-index'));
+    getPath(state,path).splice(idx,1); render();
+  }
+  else if(action==='clearphoto'){ setPath(state,t.getAttribute('data-path'),null); render(); }
+  else if(action==='gps'){ doGps(t.getAttribute('data-path')); }
+  else if(action==='exportjson'){ exportJSON(); }
+  else if(action==='exportcsv'){ exportCSV(); }
+  else if(action==='printview'){ window.print(); }
+  return;
+});
+
+// radio / checkbox choice clicks (not buttons, use click delegation too)
+document.addEventListener('click', function(e){
+  const r=e.target.closest('[data-bind-radio]');
+  if(r){ setPath(state, r.getAttribute('data-bind-radio'), r.getAttribute('data-value')); render(); return; }
+  const c=e.target.closest('[data-bind-checkbox]');
+  if(c){
+    const path=c.getAttribute('data-bind-checkbox'), val=c.getAttribute('data-value');
+    const arr=getPath(state,path)||[];
+    const idx=arr.indexOf(val);
+    if(idx>-1) arr.splice(idx,1); else arr.push(val);
+    setPath(state,path,arr);
+    render();
+    return;
+  }
+});
+
+// text/number/date/time inputs: update state without full re-render (preserve focus)
+document.addEventListener('input', function(e){
+  const el=e.target.closest('[data-bind-text]');
+  if(el){ setPath(state, el.getAttribute('data-bind-text'), el.value); }
+});
+document.addEventListener('change', function(e){
+  const el=e.target.closest('input[type=date],input[type=time]');
+  if(el && el.hasAttribute('data-bind-text')){ setPath(state, el.getAttribute('data-bind-text'), el.value); render(); }
+});
+
+// photo inputs
+document.addEventListener('change', function(e){
+  const el=e.target.closest('[data-bind-photo]');
+  if(!el || !el.files || !el.files[0]) return;
+  const path=el.getAttribute('data-bind-photo');
+  const file=el.files[0];
+  const reader=new FileReader();
+  reader.onload=function(ev){ setPath(state,path,ev.target.result); render(); };
+  reader.readAsDataURL(file);
+});
+
+function doGps(basePath){
+  const statusEl = ()=>document.getElementById('gpsstatus-'+basePath.replace(/\./g,'-'));
+  if(!navigator.geolocation){
+    const el=statusEl(); if(el) el.textContent='La geolocalización no está disponible en este navegador/entorno.';
+    return;
+  }
+  state.gpsBusy=true; render();
+  navigator.geolocation.getCurrentPosition(function(pos){
+    setPath(state,basePath+'.lat', pos.coords.latitude.toFixed(6));
+    setPath(state,basePath+'.lon', pos.coords.longitude.toFixed(6));
+    setPath(state,basePath+'.altitude', pos.coords.altitude!=null? Math.round(pos.coords.altitude): '');
+    setPath(state,basePath+'.accuracy', pos.coords.accuracy!=null? Math.round(pos.coords.accuracy): '');
+    state.gpsBusy=false; render();
+  }, function(err){
+    state.gpsBusy=false; render();
+    const el=statusEl(); if(el) el.textContent='No se pudo obtener la ubicación (' + err.message + '). Puedes introducir las coordenadas manualmente.';
+  }, {enableHighAccuracy:true, timeout:10000});
+}
+
+/* ===================== EXPORT ===================== */
+function downloadBlob(filename, content, type){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); },300);
+}
+function exportJSON(){
+  downloadBlob('gowild-survey-'+(state.date||'sin-fecha')+'.json', JSON.stringify(state,null,2), 'application/json');
+}
+function exportCSV(){
+  const cols=['patchId','gisVerified','aspect','slope','climaxType','isSilviculture','canopyCover','canopyDominates','groundVegDominates','bushLandDominates','invasives','habitatAccess','hasLargeTrees','litterLayer','topsoilThickness','topsoilSmell','subsoilThickness','subsoilColor','subsoilTexture','soilPh','finalRating','improvementSuggestions'];
+  const rows=[cols.join(',')];
+  state.patches.forEach(p=>{
+    rows.push(cols.map(c=>{
+      let v=p[c];
+      if(Array.isArray(v)) v=v.join('|');
+      v = (v==null?'':String(v)).replace(/"/g,'""');
+      return '"'+v+'"';
+    }).join(','));
+  });
+  downloadBlob('gowild-parcelas-'+(state.date||'sin-fecha')+'.csv', rows.join(String.fromCharCode(10)), 'text/csv');
+}
+
+render();
+</script>
+</body>
+</html>

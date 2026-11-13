@@ -1,0 +1,17 @@
+{
+  "name": "Rewilding Field Survey Protocols",
+  "short_name": "Rewild",
+  "start_url": "./rewilding-field-suite.html",
+  "display": "standalone",
+  "background_color": "#101410",
+  "theme_color": "#182019",
+  "description": "Ecological survey protocols and field suite for habitat restoration, soil analysis, and rewilding certification.",
+  "icons": [
+    {
+      "src": "./app_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
